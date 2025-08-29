@@ -1,0 +1,123 @@
+/* =========================================
+   Bootstrap and Component Class Overrides
+=========================================== */
+
+/* Global */
+body {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--color-nav-bg) !important;
+  color: var(--color-text) !important;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Cards */
+.card {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* Forms */
+.form-control {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+.btn[class*="btn-"]:hover,
+.btn[class*="btn-"]:focus,
+.btn[class*="btn-"].active {
+  /* background-color: var(--color-bg) !important; */
+  border-color: var(--color-border) !important;
+  color: var(--color-bg) !important;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #fff;
+}
+.btn-outline-primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-outline-primary:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+.btn-outline-secondary {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+.btn-outline-secondary:hover {
+  background-color: var(--color-secondary);
+  color: #fff;
+}
+
+/* Tables */
+.table,
+.table th,
+.table td {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Alerts */
+.alert-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-border);
+}
+.alert-secondary {
+  background-color: var(--color-secondary);
+  color: #fff;
+  border-color: var(--color-border);
+}
+
+/* Links */
+a {
+  color: var(--color-link);
+}
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--color-scrollbar-bg);
+}
+
+/* Muted Text */
+.text-muted {
+  color: var(--color-muted) !important;
+}
+
+
+/* modal */
+.modal-dialog-centered{
+  background: transparent !important;
+}

@@ -1,3 +1,9 @@
+/* Global theme application */
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +11,341 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Theme variables */
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Apply theme to root div */
+#root {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  min-height: 100vh;
+}
+
+/* Auth container styling */
+.auth-container {
+  background-color: var(--color-card-bg) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px var(--color-shadow) !important;
+  transition: all 0.3s ease !important;
+}
+
+.auth-container:hover {
+  box-shadow: 0 6px 12px var(--color-shadow-hover) !important;
+}
+
+/* Auth router styling */
+.auth-router {
+  background-color: var(--color-bg) !important;
+}
+
+/* Loading container styling */
+.loading-container {
+  background-color: var(--color-bg) !important;
+}
+
+/* Override Bootstrap background classes */
+.bg-light {
+  background-color: var(--color-card-bg) !important;
+}
+
+.bg-white {
+  background-color: var(--color-bg) !important;
+}
+
+.bg-dark {
+  background-color: var(--color-nav-bg) !important;
+}
+
+/* Override Bootstrap text classes */
+.text-dark {
+  color: var(--color-text) !important;
+}
+
+.text-light {
+  color: var(--color-text) !important;
+}
+
+.text-white {
+  color: var(--color-text) !important;
+}
+
+/* Override Bootstrap navbar classes */
+.navbar-dark {
+  background-color: var(--color-nav-bg) !important;
+}
+
+.navbar-light {
+  background-color: var(--color-nav-bg) !important;
+}
+
+.navbar-brand {
+  color: var(--color-text) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--color-text) !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--color-link-hover) !important;
+}
+
+/* Override Bootstrap container classes */
+.container, .container-fluid {
+  background-color: var(--color-bg) !important;
+}
+
+/* Override Bootstrap row and column classes */
+.row, .col, .col-*, .col-md-*, .col-lg-* {
+  background-color: transparent !important;
+}
+
+/* Override Bootstrap card classes */
+.card {
+  background-color: var(--color-card-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.card-body {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text) !important;
+}
+
+.card-header {
+  background-color: var(--color-card-bg) !important;
+  border-bottom-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.card-footer {
+  background-color: var(--color-card-bg) !important;
+  border-top-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+/* Override Bootstrap form classes */
+.form-control {
+  background-color: var(--color-input-bg) !important;
+  border-color: var(--color-input-border) !important;
+  color: var(--color-text) !important;
+}
+
+.form-control:focus {
+  background-color: var(--color-input-bg) !important;
+  border-color: var(--color-input-focus) !important;
+  color: var(--color-text) !important;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.form-label {
+  color: var(--color-text) !important;
+}
+
+.form-text {
+  color: var(--color-muted) !important;
+}
+
+/* Override Bootstrap button classes */
+.btn-outline-light {
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.btn-outline-light:hover {
+  color: var(--color-bg) !important;
+  background-color: var(--color-text) !important;
+}
+
+/* Override Bootstrap modal classes */
+.modal-content {
+  background-color: var(--color-card-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.modal-header {
+  border-bottom-color: var(--color-border) !important;
+  background-color: var(--color-card-bg) !important;
+}
+
+.modal-footer {
+  border-top-color: var(--color-border) !important;
+  background-color: var(--color-card-bg) !important;
+}
+
+.modal-title {
+  color: var(--color-text) !important;
+}
+
+/* Override Bootstrap dropdown classes */
+.dropdown-menu {
+  background-color: var(--color-card-bg) !important;
+  border-color: var(--color-border) !important;
+  box-shadow: 0 0.5rem 1rem var(--color-shadow) !important;
+}
+
+.dropdown-item {
+  color: var(--color-text) !important;
+}
+
+.dropdown-item:hover {
+  background-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.dropdown-divider {
+  border-top-color: var(--color-border) !important;
+}
+
+/* Override Bootstrap alert classes */
+.alert {
+  background-color: var(--color-card-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  border-color: var(--color-danger) !important;
+  color: var(--color-danger) !important;
+}
+
+.alert-success {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+  border-color: var(--color-success) !important;
+  color: var(--color-success) !important;
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  border-color: var(--color-warning) !important;
+  color: var(--color-warning) !important;
+}
+
+.alert-info {
+  background-color: rgba(13, 202, 240, 0.1) !important;
+  border-color: var(--color-info) !important;
+  color: var(--color-info) !important;
+}
+
+/* Override Bootstrap spinner classes */
+.spinner-border {
+  color: var(--color-primary) !important;
+}
+
+/* Override Bootstrap link classes */
+a {
+  color: var(--color-link) !important;
+}
+
+a:hover {
+  color: var(--color-link-hover) !important;
+}
+
+/* Override Bootstrap text utility classes */
+.text-muted {
+  color: var(--color-muted) !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.text-warning {
+  color: var(--color-warning) !important;
+}
+
+.text-info {
+  color: var(--color-info) !important;
+}
+
+/* Override Bootstrap border classes */
+.border {
+  border-color: var(--color-border) !important;
+}
+
+.border-top {
+  border-top-color: var(--color-border) !important;
+}
+
+.border-bottom {
+  border-bottom-color: var(--color-border) !important;
+}
+
+.border-start {
+  border-left-color: var(--color-border) !important;
+}
+
+.border-end {
+  border-right-color: var(--color-border) !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Code styling */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text) !important;
+}
+
+/* Global box-sizing */
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure all divs inherit theme */
+div {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* Ensure all spans inherit theme */
+span {
+  color: inherit;
+}
+
+/* Ensure all paragraphs inherit theme */
+p {
+  color: inherit;
+}
+
+/* Ensure all headings inherit theme */
+h1, h2, h3, h4, h5, h6 {
+  color: inherit;
 }

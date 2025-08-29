@@ -1,0 +1,107 @@
+/* ===============================
+   Light & Dark Theme Variables
+================================= */
+
+/* Light Theme (default) */
+:root {
+  --color-bg: #ffffff;
+  --color-text: #212529;
+  --color-primary: #0d6efd;
+  --color-secondary: #6c757d;
+  --color-success: #198754;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #0dcaf0;
+  --color-border: #dee2e6;
+  --color-card-bg: #f8f9fa;
+  --color-nav-bg: #ffffff;
+  --color-muted: #6c757d;
+  --color-link: #0d6efd;
+  --color-link-hover: #0a58ca;
+  --color-scrollbar: #adb5bd;
+  --color-scrollbar-bg: #f1f1f1;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-shadow-hover: rgba(0, 0, 0, 0.15);
+  --color-input-bg: #ffffff;
+  --color-input-border: #ced4da;
+  --color-input-focus: #86b7fe;
+  --color-button-bg: #0d6efd;
+  --color-button-text: #ffffff;
+  --color-button-hover: #0b5ed7;
+  --color-button-secondary: #6c757d;
+  --color-button-secondary-hover: #5c636a;
+}
+
+/* Dark Theme */
+body.dark {
+  --color-bg: #121212;
+  --color-text: #f8f9fa;
+  --color-primary: #90caf9;
+  --color-secondary: #b0bec5;
+  --color-success: #4caf50;
+  --color-danger: #ef5350;
+  --color-warning: #ffb300;
+  --color-info: #29b6f6;
+  --color-border: #2c2c2c;
+  --color-card-bg: #1f1f1f;
+  --color-nav-bg: #1a1a1a;
+  --color-muted: #9e9e9e;
+  --color-link: #90caf9;
+  --color-link-hover: #64b5f6;
+  --color-scrollbar: #555;
+  --color-scrollbar-bg: #222;
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-shadow-hover: rgba(0, 0, 0, 0.4);
+  --color-input-bg: #2c2c2c;
+  --color-input-border: #404040;
+  --color-input-focus: #90caf9;
+  --color-button-bg: #90caf9;
+  --color-button-text: #121212;
+  --color-button-hover: #64b5f6;
+  --color-button-secondary: #b0bec5;
+  --color-button-secondary-hover: #90a4ae;
+}
+
+/* Additional utility classes for theme support */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Ensure smooth transitions for all theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Override any remaining Bootstrap classes that might interfere */
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.text-reset {
+  color: inherit !important;
+}
+
+/* Ensure proper contrast in both themes */
+body.dark .text-dark {
+  color: var(--color-text) !important;
+}
+
+body.dark .text-light {
+  color: var(--color-text) !important;
+}
+
+body.dark .text-white {
+  color: var(--color-text) !important;
+}
+
+body:not(.dark) .text-dark {
+  color: var(--color-text) !important;
+}
+
+body:not(.dark) .text-light {
+  color: var(--color-text) !important;
+}
+
+body:not(.dark) .text-white {
+  color: var(--color-text) !important;
+}
