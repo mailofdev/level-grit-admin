@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles/themes/variables.css";
+import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 
 import MainLayout from "./layouts/MainLayout";
-import Invitations from "./features/invitations/Invitations";
-import InvitationDetails from "./features/invitations/InvitationDetails";
 import NotFound from "./features/errors/NotFound";
 import Dashboard from "./features/dashboard/Dashboard";
 import LoginForm from "./features/auth/LoginForm";
 import RegisterForm from "./features/auth/RegisterForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
 import Users from "./features/users/Users";
+import Messages from "./features/users/Messages";
+import AdjustPlan from "./features/users/AdjustPlan";
+import Clients from "./features/users/Clients";
 import UserDetails from "./features/users/UserDetails";
-import Templates from "./features/templates/Templates";
-import TemplateDetails from "./features/templates/TemplatesDetails";
 
 function ProtectedLayout({ children, config }) {
   return (
@@ -44,7 +44,7 @@ function App() {
               </ProtectedLayout>
             }
           />
-          <Route
+            <Route
             path="/users"
             element={
               <ProtectedLayout>
@@ -69,58 +69,29 @@ function App() {
             }
           />
           <Route
-            path="/invitations"
+            path="/clients"
             element={
               <ProtectedLayout>
-                <Invitations />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="/invitations/new"
-            element={
-              <ProtectedLayout>
-                <InvitationDetails />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="/invitations/:id"
-            element={
-              <ProtectedLayout>
-                <InvitationDetails />
+                <Clients />
               </ProtectedLayout>
             }
           />
             <Route
-            path="/templates"
+            path="/messages"
             element={
               <ProtectedLayout>
-                <Templates />
+                <Messages />
               </ProtectedLayout>
             }
           />
-
-          <Route
-            path="/templates/:id"
+            <Route
+            path="/adjust-plan"
             element={
               <ProtectedLayout>
-                <TemplateDetails />
+                <AdjustPlan />
               </ProtectedLayout>
             }
           />
-
-          <Route
-            path="/templates/new"
-            element={
-              <ProtectedLayout>
-                <TemplateDetails />
-              </ProtectedLayout>
-            }
-          />
-
-
-          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

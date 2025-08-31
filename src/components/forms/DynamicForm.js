@@ -181,7 +181,7 @@ const DynamicForm = ({
         </div>
       )}
 
-      {errorList.length > 0 && (
+      {/* {errorList.length > 0 && (
         <div
           className="alert alert-danger"
           id="formErrorSummary"
@@ -197,7 +197,7 @@ const DynamicForm = ({
               ))}
           </ul>
         </div>
-      )}
+      )} */}
 
       <div className="row">
         {memoizedSchema.map((field, idx) => {
@@ -533,8 +533,8 @@ const DynamicForm = ({
           }
 
           return (
-            <div
-              className={`mb-3 ${twoRowForm ? "col-md-6" : "col-md-12"} col-12`}
+            <div style={{marginBottom: '5px'}}
+              className={`${twoRowForm ? "col-md-6" : "col-md-12"} col-12`}
               key={idx}
             >
               {field.type !== "checkbox" && field.type !== "radio" && (
@@ -561,7 +561,7 @@ const DynamicForm = ({
 
       {(mode === "view" || mode === "edit" || mode === "add") && (
         <div
-          className={`d-flex gap-2 ${
+          className={`d-flex gap-2 mt-2 ${
             singleButtonInCenter
               ? "justify-content-center"
               : "justify-content-end"

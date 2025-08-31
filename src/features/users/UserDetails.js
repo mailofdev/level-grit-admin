@@ -35,8 +35,8 @@ const UserDetails = () => {
       name: "role",
       label: "Role",
       options: [
-        { value: "user", label: "User" },
-        { value: "admin", label: "Admin" }
+        { value: "admin", label: "Admin" },
+        { value: "trainer", label: "Trainer" }
       ]
     }
   ];

@@ -77,12 +77,12 @@ const LoginForm = () => {
         />
 
         <div className="text-center mt-3">
-          {/* <p className="mb-1">
+          <p className="mb-1">
             Don&apos;t have an account?{" "}
             <Link to="/register" className="text-decoration-none">
               Register
             </Link>
-          </p> */}
+          </p> 
           <p className="mb-0">
             <Link to="/reset-password" className="text-decoration-none">
               Forgot password?

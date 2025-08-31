@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
-
+// import {registerUser} from "../../api/authAPI";
+import logo from "../../assets/images/logo.png";
 const RegisterForm = () => {
   const navigate = useNavigate();
 
@@ -16,10 +17,6 @@ const RegisterForm = () => {
       { value: "male", label: "Male" },
       { value: "female", label: "Female" },
       { value: "other", label: "Other" }
-    ]},
-    { type: "select", name: "role", label: "Role", required: true, options: [
-      { value: "user", label: "User" },
-      { value: "admin", label: "Admin" }
     ]}
   ];
 
@@ -28,11 +25,13 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (data) => {
+    const formData = { ...data, role: "trainer" };
+    console.log("Form submitted:", formData);
     setErrorMessage("");
     setLoading(true);
     try {
       // Example API call
-      // await registerAPI(data);
+      // await registerUser(formData);
       alert("✅ Registration successful!");
       navigate("/login");
     } catch (error) {
@@ -50,7 +49,14 @@ const RegisterForm = () => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: "#FDF4DC", borderRadius: "10px" }}>
       <div className="card p-4 shadow-sm" style={{ maxWidth: "500px", width: "100%" }}>
-        <h4 className="mb-3 text-center">Register</h4>
+           <div className="text-center">
+          <img
+            src={logo}
+            alt="Level Grit Logo"
+            style={{ height: "100px", width: "100px" }}
+          />
+        </div>
+        <h6 className="mb-3 text-center text-danger fw-bold">7 days free trial</h6>
 
         {errorMessage && (
           <div className="alert alert-danger py-2">{errorMessage}</div>
@@ -64,10 +70,10 @@ const RegisterForm = () => {
           onCancel={handleCancel}
           actionButtonName={loading ? "Registering..." : "Register"}
           singleButtonInCenter={true}
-          twoRowForm={true}
+          twoRowForm={false}
         />
 
-        <div className="text-center mt-3">
+        <div className="text-center mt-3 d-flex justify-content-between">
           <p className="mb-1">
             Already have an account?{" "}
             <Link to="/login" className="text-decoration-none">Login</Link>
