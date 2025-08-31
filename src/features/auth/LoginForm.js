@@ -28,8 +28,8 @@ const LoginForm = () => {
       // sessionStorage.setItem("access_token", encrypted);
       // navigate("/dashboard", { replace: true });
       if (
-        data.email === "ankitjpatil28@gmail.com" &&
-        data.password === "111222"
+        data.email === "admin@gmail.com" &&
+        data.password === "test123"
       ) {
         // optional: set a dummy token/session
         sessionStorage.setItem("access_token", "dummy-static-token");
