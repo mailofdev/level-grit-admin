@@ -15,6 +15,7 @@ import Messages from "./features/users/Messages";
 import AdjustPlan from "./features/users/AdjustPlan";
 import Clients from "./features/users/Clients";
 import UserDetails from "./features/users/UserDetails";
+import RegisterClientForm from "./features/auth/RegisterClientForm";
 
 function ProtectedLayout({ children, config }) {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/register-client" element={<RegisterClientForm />} />
           <Route path="/reset-password" element={<ResetPasswordForm />} />
 
           {/* Protected routes */}

@@ -6,7 +6,7 @@ const routes = [
     showIn: ['sidebar', 'topbar'],
   },
   {
-    label: 'Add clients',
+    label: 'View clients',
     href: '/clients',
     icon: 'bi-people-fill', // Multiple clients
     showIn: ['sidebar', 'topbar'],

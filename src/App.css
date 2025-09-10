@@ -1,6 +1,9 @@
 @import './styles/overrides/overrides.css';
 @import './styles/themes/variables.css';
 
+.cursor-not-allowed {
+  cursor:not-allowed !important;
+}
 section {
   /* scroll-margin-top: 80px; 
   padding: 100px 0;  */

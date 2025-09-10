@@ -1,6 +1,7 @@
 // src/features/users/ClientList.js
 import React, { useState } from "react";
-import { FaCircle } from "react-icons/fa6";
+import { FaCircle, FaPlus } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 export default function ClientList({ clients, selectedClient, onSelect }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,9 +13,21 @@ export default function ClientList({ clients, selectedClient, onSelect }) {
   const currentClients = clients.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(clients.length / clientsPerPage);
 
+
+  const navigate = useNavigate();
+
+  const handleAddClient = () => {
+      navigate('/register-client', { state: { selectedClient } });
+  };
   return (
     <div className="card shadow-sm p-3 h-100">
-      <h5 className="fw-bold mb-3">Clients</h5>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h5 className="fw-bold mb-0 mx-2">Clients</h5>
+        <button className="btn btn-primary" onClick={handleAddClient}>
+          <FaPlus />
+        </button>
+      </div>
+
       <p className="small">
         <span className="text-success">{clients.filter(c => c.status === "on-track").length} on track</span>,{" "}
         <span className="text-danger">{clients.filter(c => c.status === "attention").length} need attention</span>

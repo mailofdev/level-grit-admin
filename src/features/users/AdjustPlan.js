@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Heading from "../../components/navigation/Heading";
 
 export default function AdjustPlan() {
   const navigate = useNavigate();
@@ -20,7 +21,8 @@ export default function AdjustPlan() {
       protein: "",
       fats: "",
       carbs: "",
-      instructions: "",
+      calories: "",
+      meal: "",
     }))
   );
   const [showPreview, setShowPreview] = useState(false);
@@ -45,24 +47,16 @@ export default function AdjustPlan() {
       acc.protein += Number(meal.protein) || 0;
       acc.fats += Number(meal.fats) || 0;
       acc.carbs += Number(meal.carbs) || 0;
+      acc.calories += Number(meal.calories) || 0;
       return acc;
     },
-    { protein: 0, fats: 0, carbs: 0 }
+    { protein: 0, fats: 0, carbs: 0, calories: 0 }
   );
 
   return (
     <div className="container py-4">
       {/* Header */}
-       <div className="d-flex align-items-center mb-4">
-             <button
-               className="btn btn-outline-secondary btn-sm me-2"
-               onClick={() => navigate(-1)}
-             >
-               <FaArrowLeft className="me-1" /> Back
-             </button>
-             <h4 className="mb-0">Adjust Plan</h4>
-           </div>
-
+      <Heading pageName="Adjust Plan" sticky={true} />
       {/* Meals Form */}
       <Card className="shadow-sm border-0 rounded-4 p-4">
         <Form>
@@ -72,7 +66,7 @@ export default function AdjustPlan() {
                 <Accordion.Header>🍽️ Meal {index + 1}</Accordion.Header>
                 <Accordion.Body>
                   <Row className="mb-3">
-                    <Col md={6}>
+                    <Col md={4}>
                       <Form.Group>
                         <Form.Label>Meal Name</Form.Label>
                         <Form.Control
@@ -121,15 +115,27 @@ export default function AdjustPlan() {
                         />
                       </Form.Group>
                     </Col>
+                    <Col md={2}>
+                      <Form.Group>
+                        <Form.Label>Calories (kcal)</Form.Label>
+                        <Form.Control
+                          type="number"
+                          value={meal.calories}
+                          onChange={(e) =>
+                            handleChange(index, "calories", e.target.value)
+                          }
+                        />
+                      </Form.Group>
+                    </Col>
                   </Row>
                   <Form.Group>
-                    <Form.Label>Instructions</Form.Label>
+                    <Form.Label>Meal</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
-                      value={meal.instructions}
+                      value={meal.meal}
                       onChange={(e) =>
-                        handleChange(index, "instructions", e.target.value)
+                        handleChange(index, "meal", e.target.value)
                       }
                       placeholder="e.g., Eat with salad and lemon water"
                     />
@@ -177,7 +183,8 @@ export default function AdjustPlan() {
                 <th>Protein (g)</th>
                 <th>Fats (g)</th>
                 <th>Carbs (g)</th>
-                <th>Instructions</th>
+                <th>Calories (kcal)</th>
+                <th>Meal</th>
               </tr>
             </thead>
             <tbody>
@@ -188,7 +195,8 @@ export default function AdjustPlan() {
                   <td>{meal.protein}</td>
                   <td>{meal.fats}</td>
                   <td>{meal.carbs}</td>
-                  <td>{meal.instructions}</td>
+                  <td>{meal.calories}</td>
+                  <td>{meal.meal}</td>
                 </tr>
               ))}
               <tr className="fw-bold table-light">
@@ -196,6 +204,7 @@ export default function AdjustPlan() {
                 <td>{totals.protein}</td>
                 <td>{totals.fats}</td>
                 <td>{totals.carbs}</td>
+                <td>{totals.calories}</td>
                 <td>-</td>
               </tr>
             </tbody>

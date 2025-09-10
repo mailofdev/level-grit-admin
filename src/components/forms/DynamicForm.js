@@ -528,7 +528,21 @@ const DynamicForm = ({
                 </div>
               );
               break;
-            default:
+            
+              case "disabledInput":
+  fieldEl = (
+    <input
+      type="text"
+      className="form-control bg-light text-dark cursor-not-allowed"
+      id={field.name}
+      name={field.name}
+      value={field.value || ""}
+      disabled
+    />
+  );
+  break;
+
+              default:
               fieldEl = null;
           }
 

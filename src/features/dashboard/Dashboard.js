@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+
+  const navigate = useNavigate();
+
+  const handleAddClient = () => {
+    navigate('/clients'); // route to Clients page
+  };
+
   return (
     <div className="container py-4">
       {/* Header */}
@@ -11,7 +19,7 @@ const Dashboard = () => {
 
       {/* Stats Section */}
       <div className="row mb-4">
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <div className="card text-center shadow-sm">
             <div className="card-body">
               <h6 className="card-title">👥 Total Clients</h6>
@@ -19,7 +27,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-3">
+        <div className="col-md-6 mb-3">
           <div className="card text-center shadow-sm">
             <div className="card-body">
               <h6 className="card-title">🏋️ Active Plans</h6>
@@ -27,7 +35,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-3">
+        {/* <div className="col-md-3 mb-3">
           <div className="card text-center shadow-sm">
             <div className="card-body">
               <h6 className="card-title">💳 Pending Payments</h6>
@@ -42,7 +50,7 @@ const Dashboard = () => {
               <p className="display-6 fw-bold text-warning">₹18,500</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Notifications & Quick Actions */}
@@ -66,12 +74,12 @@ const Dashboard = () => {
           <div className="card shadow-sm h-100">
             <div className="card-body text-center">
               <h5 className="card-title mb-3">⚡ Quick Actions</h5>
-              <button className="btn btn-primary me-2">
+              <button className="btn btn-primary me-2" onClick={handleAddClient}>
                 ➕ Add Client
               </button>
-              <button className="btn btn-success">
+              {/* <button className="btn btn-success">
                 ➕ Create Plan
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
