@@ -4,12 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
 // import {registerUser} from "../../api/authAPI";
 import logo from "../../assets/images/logo.png";
+import { registerUser } from "../../api/authAPI";
 const RegisterForm = () => {
   const navigate = useNavigate();
 
   const schema = [
-    { type: "input", name: "firstName", label: "First Name", required: true, minLength: 3 },
-    { type: "input", name: "lastName", label: "Last Name", required: true, minLength: 3 },
+    { type: "input", name: "fullName", label: "Full Name", required: true, },
     { type: "email", name: "email", label: "Email", required: true },
     { type: "password", name: "password", label: "Password", required: true, minLength: 6 },
     { type: "input", name: "phoneNumber", label: "Phone Number", required: true },
@@ -25,13 +25,13 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (data) => {
-    const formData = { ...data, role: "trainer" };
+    const formData = { ...data, role: 1 };
     console.log("Form submitted:", formData);
     setErrorMessage("");
     setLoading(true);
     try {
       // Example API call
-      // await registerUser(formData);
+      await registerUser(formData);
       alert("✅ Registration successful!");
       navigate("/login");
     } catch (error) {

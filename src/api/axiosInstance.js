@@ -3,7 +3,7 @@ import axios from "axios";
 import { decryptToken } from "../utils/crypto";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "https://localhost:7240",
   timeout: 10000,
 });
 

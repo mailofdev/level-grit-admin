@@ -8,6 +8,7 @@ import DynamicForm from "../../components/forms/DynamicForm";
 import routes from "../../components/navigation/Routes";
 import DisplayImage from "../../components/display/DisplayImage";
 import logo from "../../assets/images/logo.png";
+import { loginUser } from "../../api/authAPI";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,25 +21,20 @@ const LoginForm = () => {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = async (data) => {
-    setErrorMessage("");
-    try {
-      // const result = await dispatch(loginThunk(data)).unwrap();
-      // const encrypted = encryptToken(result.accessToken);
-      // sessionStorage.setItem("access_token", encrypted);
-      // navigate("/dashboard", { replace: true });
-      if (
-        data.email === "admin@gmail.com" &&
-        data.password === "test123"
-      ) {
-        // optional: set a dummy token/session
-        sessionStorage.setItem("access_token", "dummy-static-token");
-        navigate("/dashboard", { replace: true });
-      }
-    } catch (error) {
-      setErrorMessage(error || "Login failed. Please try again.");
-    }
-  };
+const handleSubmit = async (data) => {
+  setErrorMessage("");
+  try {
+    const result = await loginUser(formData); // Assign the result here
+    const encrypted = encryptToken(result.token);
+    sessionStorage.setItem("access_token", encrypted);
+    navigate("/dashboard", { replace: true });
+  } catch (error) {
+    const message = error?.message || String(error) || "Login failed. Please try again.";
+    setErrorMessage(message);
+  }
+};
+
+
 
   const handleCancel = () => {
     setFormData({});
