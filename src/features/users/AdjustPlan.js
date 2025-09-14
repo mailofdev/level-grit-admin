@@ -36,7 +36,6 @@ export default function AdjustPlan() {
 
   // ✅ Save handler
   const handleSave = () => {
-    console.log("Saved meals:", meals);
     alert("Plan saved successfully ✅ (check console for data)");
     navigate(-1);
   };

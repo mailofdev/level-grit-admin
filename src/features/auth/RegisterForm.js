@@ -26,7 +26,6 @@ const RegisterForm = () => {
 
   const handleSubmit = async (data) => {
     const formData = { ...data, role: 1 };
-    console.log("Form submitted:", formData);
     setErrorMessage("");
     setLoading(true);
     try {
