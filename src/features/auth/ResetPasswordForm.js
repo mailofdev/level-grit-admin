@@ -1,7 +1,7 @@
 // auth/components/ResetPasswordForm.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo2.png";
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ const ResetPasswordForm = () => {
                   <img
                     src={logo}
                     alt="Level Grit Logo"
-                    style={{ height: "100px", width: "100px" }}
+                 style={{ height: "150px", width: "150px" }}
                   />
                 </div>
         <h4 className="mb-3 text-center">Reset Password</h4>

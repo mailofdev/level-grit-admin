@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
 // import {registerUser} from "../../api/authAPI";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo2.png";
 import { registerUser } from "../../api/authAPI";
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const RegisterForm = () => {
           <img
             src={logo}
             alt="Level Grit Logo"
-            style={{ height: "100px", width: "100px" }}
+              style={{ height: "150px", width: "150px" }}
           />
         </div>
         <h6 className="mb-3 text-center text-danger fw-bold">7 days free trial</h6>

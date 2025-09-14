@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
-import logo from "../../assets/images/logo.png";
 import Heading from "../../components/navigation/Heading";
 import { registerUser } from "../../api/authAPI";
 
@@ -11,18 +10,7 @@ const RegisterClientForm = () => {
   const { selectedClient } = location.state || {};
 
   const schema = [
-  //   {
-  //   type: "disabledInput",
-  //   name: "trainerName",
-  //   label: "Trainer Name",
-  //   value: selectedClient?.name || ""
-  // },
-    {
-      type: "input",
-      name: "fullName",
-      label: "Full Name",
-      required: true,
-    },
+    { type: "input", name: "fullName", label: "Full Name", required: true },
     { type: "email", name: "email", label: "Email", required: true },
     {
       type: "password",
@@ -50,27 +38,30 @@ const RegisterClientForm = () => {
     },
   ];
 
-
-const [formData, setFormData] = useState(() => ({
-  // trainerName: selectedClient?.name || ""
-}));
-
-  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [modalData, setModalData] = useState({
+    show: false,
+    type: "",
+    message: "",
+  });
 
   const handleSubmit = async (data) => {
     const formData = { ...data, role: 0 };
-    setErrorMessage("");
     setLoading(true);
     try {
-      // Example API call
       await registerUser(formData);
-      alert("✅ Registration successful!");
-      navigate(-1);
+      setModalData({
+        show: true,
+        type: "success",
+        message: "✅ Registration successful!",
+      });
     } catch (error) {
-      setErrorMessage(
-        error.message || "Registration failed. Please try again."
-      );
+      setModalData({
+        show: true,
+        type: "danger",
+        message: error.message || "❌ Registration failed. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -78,7 +69,14 @@ const [formData, setFormData] = useState(() => ({
 
   const handleCancel = () => {
     setFormData({});
-    setErrorMessage("");
+    setModalData({ show: false, type: "", message: "" });
+  };
+
+  const closeModal = () => {
+    setModalData({ show: false, type: "", message: "" });
+    if (modalData.type === "success") {
+      navigate(-1);
+    }
   };
 
   return (
@@ -92,9 +90,6 @@ const [formData, setFormData] = useState(() => ({
       >
         <Heading pageName="Register Client" sticky={true} />
         <br />
-        {errorMessage && (
-          <div className="alert alert-danger py-2">{errorMessage}</div>
-        )}
         <DynamicForm
           schema={schema}
           formData={formData}
@@ -106,6 +101,44 @@ const [formData, setFormData] = useState(() => ({
           twoRowForm={false}
         />
       </div>
+
+      {/* Bootstrap Modal */}
+      {modalData.show && (
+        <div
+          className="modal fade show"
+          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+          tabIndex="-1"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className={`modal-header bg-${modalData.type} text-white`}>
+                <h5 className="modal-title">
+                  {modalData.type === "success"
+                    ? "Success"
+                    : "Error"}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={closeModal}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>{modalData.message}</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className={`btn btn-${modalData.type}`}
+                  onClick={closeModal}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

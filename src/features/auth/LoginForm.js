@@ -7,8 +7,7 @@ import { encryptToken } from "../../utils/crypto";
 import DynamicForm from "../../components/forms/DynamicForm";
 import routes from "../../components/navigation/Routes";
 import DisplayImage from "../../components/display/DisplayImage";
-import logo from "../../assets/images/logo.png";
-import { loginUser } from "../../api/authAPI";
+import logo from "../../assets/images/logo2.png";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,9 +23,9 @@ const LoginForm = () => {
 const handleSubmit = async (data) => {
   setErrorMessage("");
   try {
-    const result = await loginUser(formData); // Assign the result here
-    const encrypted = encryptToken(result.token);
-    sessionStorage.setItem("access_token", encrypted);
+    const result = await dispatch(loginThunk(formData));
+    const encryptedUserData = encryptToken(result?.payload?.userInfo ? JSON.stringify(result.payload.userInfo) : "");
+    sessionStorage.setItem("user", JSON.stringify(encryptedUserData));
     navigate("/dashboard", { replace: true });
   } catch (error) {
     const message = error?.message || String(error) || "Login failed. Please try again.";
@@ -54,7 +53,7 @@ const handleSubmit = async (data) => {
           <img
             src={logo}
             alt="Level Grit Logo"
-            style={{ height: "100px", width: "100px" }}
+            style={{ height: "150px", width: "150px" }}
           />
         </div>
         <h4 className="mb-3 text-center">Login</h4>

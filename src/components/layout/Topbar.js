@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../features/auth/authSlice";
+import { logout, selectAuth, selectUser } from "../../features/auth/authSlice";
 import BrandLogo from "../topbar/BrandLogo";
 import NavMenu from "../topbar/NavMenu";
 import SearchBar from "../topbar/SearchBar";
@@ -8,6 +8,24 @@ import UserMenu from "../topbar/UserMenu";
 import ThemeSwitch from "../display/ThemeSwitch";
 import LogoutModal from "../topbar/LogoutModal";
 import ProfileModal from "../topbar/ProfileModal";
+import { decryptToken } from "../../utils/crypto";
+
+const getDecryptedUser = () => {
+  const encryptedUserData = sessionStorage.getItem("user");
+
+  if (!encryptedUserData) {
+    return null;
+  }
+
+  try {
+    const parsedEncryptedData = JSON.parse(encryptedUserData);
+    const decrypted = decryptToken(parsedEncryptedData);
+    return decrypted ? JSON.parse(decrypted) : null;
+  } catch (error) {
+    console.error("Failed to decrypt user data:", error);
+    return null;
+  }
+};
 
 const Topbar = ({
   showSearch = true,
@@ -17,7 +35,9 @@ const Topbar = ({
   showIcons = true,
 }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+ const userInfo = useSelector(selectUser);
+   const decryptedUser = getDecryptedUser();
+  const user = userInfo || decryptedUser || {};
 
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -112,6 +132,7 @@ const Topbar = ({
       )}
       {showProfileModal && (
         <ProfileModal
+          user={user}
           show={showProfileModal}
           onClose={() => setShowProfileModal(false)}
         />

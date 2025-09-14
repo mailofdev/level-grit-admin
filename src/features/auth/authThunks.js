@@ -1,14 +1,27 @@
 // src/features/auth/authThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserById, loginUser, registerUser } from "../../api/authAPI";
+import { encryptToken } from "../../utils/crypto";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      return await loginUser(credentials);
+      const result = await loginUser(credentials);
+      
+      const encryptedToken = encryptToken(result.token);
+      sessionStorage.setItem("access_token", encryptedToken);
+    
+      return {
+        userInfo: result,
+        encryptedToken: encryptedToken
+      };
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.message || 
+        "Login failed"
+      );
     }
   }
 );
