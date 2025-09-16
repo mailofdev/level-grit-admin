@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
 import Heading from "../../components/navigation/Heading";
 import { registerUser } from "../../api/authAPI";
+import { Container } from "react-bootstrap";
 
 const RegisterClientForm = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const RegisterClientForm = () => {
 
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [modalData, setModalData] = useState({
+  const [alertData, setAlertData] = useState({
     show: false,
     type: "",
     message: "",
@@ -51,17 +52,9 @@ const RegisterClientForm = () => {
     setLoading(true);
     try {
       await registerUser(formData);
-      setModalData({
-        show: true,
-        type: "success",
-        message: "✅ Registration successful!",
-      });
+      showAlert("success", "✅ Registration successful!");
     } catch (error) {
-      setModalData({
-        show: true,
-        type: "danger",
-        message: error.message || "❌ Registration failed. Please try again.",
-      });
+      showAlert("danger", error.message || "❌ Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -69,27 +62,26 @@ const RegisterClientForm = () => {
 
   const handleCancel = () => {
     setFormData({});
-    setModalData({ show: false, type: "", message: "" });
+    setAlertData({ show: false, type: "", message: "" });
   };
 
-  const closeModal = () => {
-    setModalData({ show: false, type: "", message: "" });
-    if (modalData.type === "success") {
-      navigate(-1);
-    }
+  const showAlert = (type, message) => {
+    setAlertData({ show: true, type, message });
+    setTimeout(() => {
+      setAlertData({ show: false, type: "", message: "" });
+      if (type === "success") {
+        navigate(-1);
+      }
+    }, 3000);
   };
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center vh-100"
-      style={{ borderRadius: "10px" }}
-    >
-      <div
-        className="card p-4 shadow-sm"
-        style={{ maxWidth: "500px", width: "100%" }}
-      >
+    <>
+ <div className="container-fluid px-2 px-md-4">
+      <div className="m-2 p-2 bg-white rounded shadow-sm">
         <Heading pageName="Register Client" sticky={true} />
         <br />
+<div style={{ marginTop: "20px" }}></div>
         <DynamicForm
           schema={schema}
           formData={formData}
@@ -102,44 +94,13 @@ const RegisterClientForm = () => {
         />
       </div>
 
-      {/* Bootstrap Modal */}
-      {modalData.show && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className={`modal-header bg-${modalData.type} text-white`}>
-                <h5 className="modal-title">
-                  {modalData.type === "success"
-                    ? "Success"
-                    : "Error"}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  onClick={closeModal}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>{modalData.message}</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className={`btn btn-${modalData.type}`}
-                  onClick={closeModal}
-                >
-                  OK
-                </button>
-              </div>
-            </div>
-          </div>
+      {alertData.show && (
+        <div className={`alert alert-${alertData.type} top-0 end-0 m-3`} role="alert">
+          {alertData.message}
         </div>
       )}
-    </div>
+</div>
+    </>
   );
 };
 

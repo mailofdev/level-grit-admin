@@ -6,7 +6,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleAddClient = () => {
-    navigate('/clients'); // route to Clients page
+    navigate('/register-client'); // route to Clients page
   };
 
   return (
@@ -57,7 +57,7 @@ const Dashboard = () => {
       <div className="row">
         {/* Notifications */}
         <div className="col-md-6 mb-3">
-          <div className="card shadow-sm h-100">
+          <div className="card shadow-sm rounded-4 rounded-4 h-100">
             <div className="card-body">
               <h5 className="card-title mb-3">🔔 Notifications</h5>
               <ul className="list-group list-group-flush">
@@ -71,7 +71,7 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="col-md-6 mb-3">
-          <div className="card shadow-sm h-100">
+          <div className="card shadow-sm rounded-4 rounded-4 h-100">
             <div className="card-body text-center">
               <h5 className="card-title mb-3">⚡ Quick Actions</h5>
               <button className="btn btn-primary me-2" onClick={handleAddClient}>

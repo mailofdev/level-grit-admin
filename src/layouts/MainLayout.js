@@ -41,7 +41,7 @@ const MainLayout = ({ children, config }) => {
           {cfg.showSidebar && (
             <Sidebar showIcons={true} />
           )}
-          <main className={cfg.showSidebar ? "col-md-10 ms-sm-auto px-4" : "col-12 px-4"}>
+          <main className={cfg.showSidebar ? "col-md-10 ms-sm-auto px-4" : "col-12 px-2"}>
             {children}
           </main>
         </div>

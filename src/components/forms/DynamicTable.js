@@ -196,7 +196,7 @@ const DynamicTable = ({ columns = [], data = [], formSchema = [], onRowSelect, o
   }, [search, data.length]);
 
   return (
-    <div className="border-1 border-black card shadow-sm pt-2 pb-2">
+    <div className="border-1 border-black card shadow-sm rounded-4 rounded-4 pt-2 pb-2">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="d-flex justify-content-between align-items-center mb-2 gap-2 ms-2 me-2">
       <div>

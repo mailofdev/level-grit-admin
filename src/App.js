@@ -16,6 +16,8 @@ import AdjustPlan from "./features/users/AdjustPlan";
 import Clients from "./features/users/Clients";
 import UserDetails from "./features/users/UserDetails";
 import RegisterClientForm from "./features/auth/RegisterClientForm";
+import AllClients from "./features/users/AllClients";
+import ClientDetails from "./features/users/ClientDetails";
 
 function ProtectedLayout({ children, config }) {
   return (
@@ -71,13 +73,23 @@ function App() {
             }
           />
           <Route
-            path="/clients"
+            path="/AllClients"
             element={
               <ProtectedLayout>
-                <Clients />
+                <AllClients />
               </ProtectedLayout>
             }
           />
+          <Route
+            path="/client-details/:id"
+            element={
+              <ProtectedLayout>
+                <ClientDetails />
+              </ProtectedLayout>
+            }
+          />
+
+
             <Route
             path="/messages"
             element={

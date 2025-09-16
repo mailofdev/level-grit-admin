@@ -47,7 +47,7 @@ export default function Messages() {
             key={msg.id}
             className={`d-flex mb-3 ${msg.sender === "me" ? "justify-content-end" : "justify-content-start"}`}
           >
-            <div className={`p-2 rounded-3 ${msg.sender === "me" ? "bg-primary text-white" : "bg-white border"}`} style={{ maxWidth: "75%" }}>
+            <div className={`p-2 rounded-3 ${msg.sender === "me" ? "bg-primary white-text" : "bg-white border"}`} style={{ maxWidth: "75%" }}>
               {msg.text}
             </div>
           </div>

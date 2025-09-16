@@ -9,14 +9,14 @@ import {
   Card,
   Accordion,
 } from "react-bootstrap";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaMinus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Heading from "../../components/navigation/Heading";
 
 export default function AdjustPlan() {
   const navigate = useNavigate();
   const [meals, setMeals] = useState(
-    Array.from({ length: 6 }, () => ({
+    Array.from({ length: 4 }, () => ({
       name: "",
       protein: "",
       fats: "",
@@ -34,9 +34,25 @@ export default function AdjustPlan() {
     setMeals(updatedMeals);
   };
 
+  // ✅ Add a new meal
+  const handleAddMeal = () => {
+    setMeals([
+      ...meals,
+      { name: "", protein: "", fats: "", carbs: "", calories: "", meal: "" },
+    ]);
+  };
+
+  // ✅ Remove last meal
+  const handleRemoveMeal = () => {
+    if (meals.length > 1) {
+      setMeals(meals.slice(0, -1));
+    }
+  };
+
   // ✅ Save handler
   const handleSave = () => {
     alert("Plan saved successfully ✅ (check console for data)");
+    console.log(meals);
     navigate(-1);
   };
 
@@ -56,6 +72,17 @@ export default function AdjustPlan() {
     <div className="container py-4">
       {/* Header */}
       <Heading pageName="Adjust Plan" sticky={true} />
+
+      {/* Add/Remove Buttons */}
+      <div className="d-flex justify-content-end gap-2 my-3">
+        <Button variant="outline-primary" onClick={handleAddMeal}>
+          <FaPlus /> Add Meal
+        </Button>
+        <Button variant="outline-danger" onClick={handleRemoveMeal}>
+          <FaMinus /> Remove Meal
+        </Button>
+      </div>
+
       {/* Meals Form */}
       <Card className="shadow-sm border-0 rounded-4 p-4">
         <Form>

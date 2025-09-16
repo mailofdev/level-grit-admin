@@ -14,7 +14,12 @@ export default function Heading({ path, pageName, sticky }) {
   };
 
   return (
-    <div className={`d-flex align-items-center p-3 bg-white border-bottom ${sticky ? "position-sticky top-0 shadow-sm" : ""}`}>
+    <div 
+    // className={`d-flex align-items-center p-3 bg-white 
+    // border-bottom ${sticky ? "position-sticky top-0 shadow-sm" : ""}`}
+     className="shadow-sm p-3 bg-light position-sticky mb-2 d-flex align-items-center card flex-row"
+        style={{ top: "60px", zIndex: 500 }}
+    >
       <button className="btn btn-outline-secondary btn-sm me-3" onClick={handleBack}>
         <FaArrowLeft />
       </button>

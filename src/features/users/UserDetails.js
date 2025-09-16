@@ -100,7 +100,7 @@ const UserDetails = () => {
   return (
     <div className="container py-4">
       <div className="fw-bold mb-4">{getPageTitle()}</div>
-      <div className="card shadow-sm">
+      <div className="card shadow-sm rounded-4">
         <div className="card-body">
           <DynamicForm
             schema={filteredSchema}

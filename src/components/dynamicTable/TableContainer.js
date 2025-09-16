@@ -143,7 +143,7 @@ const handleDeleteTop = () => {
   }, [search, data.length]);
 
   return (
-    <div className="border-1 border-black card shadow-sm pt-2 pb-2">
+    <div className="border-1 border-black card shadow-sm rounded-4 rounded-4 rounded-4 rounded-4 rounded-4 pt-2 pb-2">
       <TableToolbar
         search={search}
         setSearch={setSearch}

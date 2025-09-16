@@ -20,7 +20,7 @@ export default function ClientList({ clients, selectedClient, onSelect }) {
       navigate('/register-client', { state: { selectedClient } });
   };
   return (
-    <div className="card shadow-sm p-3 h-100">
+    <div className="card shadow-sm rounded-4 p-3 h-100">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h5 className="fw-bold mb-0 mx-2">Clients</h5>
         <button className="btn btn-primary" onClick={handleAddClient}>
