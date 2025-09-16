@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const Loader = ({
-  size = "100px",
-  color = "#222222",
+  size = "120px",
+  color = "#FF5733",  // Bold gym color (orange-red)
   fullScreen = false,
   text = "Loading...",
 }) => {
@@ -21,8 +21,8 @@ const Loader = ({
       left: 0;
       width: 100%;
       height: 100vh;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(3px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
       z-index: 9999;
     }
     .spinner {
@@ -39,41 +39,40 @@ const Loader = ({
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 4px solid transparent;
+      border: 5px solid transparent;
     }
     .spinner:before {
       border-top-color: ${color};
-      animation: spin 2s linear infinite;
+      animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     }
     .spinner:after {
-      border-bottom-color: ${color}aa;
-      animation: spinReverse 2s linear infinite;
+      border-right-color: ${color}aa;
+      animation: spinReverse 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     }
     .loader-text {
-      margin-top: 12px;
-      font-size: 20px;
-      font-weight: 600;
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: bold;
       color: ${color};
-      letter-spacing: 1px;
-      animation: pulse 0.5s infinite;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      animation: pulse 0.7s infinite;
     }
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     @keyframes spinReverse {
-      to {
-        transform: rotate(-360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
+      from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
     }
   `;
 

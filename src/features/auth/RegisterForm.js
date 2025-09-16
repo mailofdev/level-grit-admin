@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
 // import {registerUser} from "../../api/authAPI";
-import logo from "../../assets/images/logo2.png";
+import logo from "../../assets/images/logo3.jpeg";
 import { registerUser } from "../../api/authAPI";
+import Loader from "../../components/display/Loader";
 const RegisterForm = () => {
   const navigate = useNavigate();
 
@@ -22,21 +23,22 @@ const RegisterForm = () => {
 
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+const [isLoading, setIsLoading] = useState(false); 
 
   const handleSubmit = async (data) => {
     const formData = { ...data, role: 1 };
     setErrorMessage("");
-    setLoading(true);
+        setIsLoading(true); 
     try {
       // Example API call
       await registerUser(formData);
       alert("✅ Registration successful!");
+       setIsLoading(false);
       navigate("/login");
     } catch (error) {
       setErrorMessage(error.message || "Registration failed. Please try again.");
     } finally {
-      setLoading(false);
+       setIsLoading(false);
     }
   };
 
@@ -48,6 +50,7 @@ const RegisterForm = () => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: "#FDF4DC", borderRadius: "10px" }}>
       <div className="card p-4 shadow-sm" style={{ maxWidth: "500px", width: "100%" }}>
+        {isLoading && <Loader fullScreen={true} text="Logging in..." color="#FF5733" />} 
            <div className="text-center">
           <img
             src={logo}
@@ -67,7 +70,7 @@ const RegisterForm = () => {
           onChange={setFormData}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          actionButtonName={loading ? "Registering..." : "Register"}
+          actionButtonName={isLoading ? "Registering..." : "Register"}
           singleButtonInCenter={true}
           twoRowForm={false}
         />

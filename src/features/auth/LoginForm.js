@@ -1,13 +1,14 @@
-// src/features/auth/components/LoginForm.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "./authThunks";
 import { encryptToken } from "../../utils/crypto";
 import DynamicForm from "../../components/forms/DynamicForm";
-import routes from "../../components/navigation/Routes";
-import DisplayImage from "../../components/display/DisplayImage";
-import logo from "../../assets/images/logo2.png";
+// import routes from "../../components/navigation/Routes";
+// import DisplayImage from "../../components/display/DisplayImage";
+import logo from "../../assets/images/logo3.jpeg";
+import Loader from "../../components/display/Loader";
+
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,21 +20,25 @@ const LoginForm = () => {
 
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); 
 
-const handleSubmit = async (data) => {
-  setErrorMessage("");
-  try {
-    const result = await dispatch(loginThunk(formData));
-    const encryptedUserData = encryptToken(result?.payload?.userInfo ? JSON.stringify(result.payload.userInfo) : "");
-    sessionStorage.setItem("user", JSON.stringify(encryptedUserData));
-    navigate("/dashboard", { replace: true });
-  } catch (error) {
-    const message = error?.message || String(error) || "Login failed. Please try again.";
-    setErrorMessage(message);
-  }
-};
-
-
+  const handleSubmit = async (data) => {
+    setErrorMessage("");
+    setIsLoading(true);  // Show loader
+    try {
+      const result = await dispatch(loginThunk(formData));
+      const encryptedUserData = encryptToken(
+        result?.payload?.userInfo ? JSON.stringify(result.payload.userInfo) : ""
+      );
+      sessionStorage.setItem("user", JSON.stringify(encryptedUserData));
+      setIsLoading(false); // Hide loader before navigating
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      setIsLoading(false); // Hide loader on error
+      const message = error?.message || String(error) || "Login failed. Please try again.";
+      setErrorMessage(message);
+    }
+  };
 
   const handleCancel = () => {
     setFormData({});
@@ -45,6 +50,7 @@ const handleSubmit = async (data) => {
       className="d-flex justify-content-center align-items-center vh-100"
       style={{ backgroundColor: "#FDF4DC", borderRadius: "10px" }}
     >
+      {isLoading && <Loader fullScreen={true} text="Logging in..." color="#FF5733" />} 
       <div
         className="card p-4 shadow-sm"
         style={{ maxWidth: "400px", width: "100%" }}

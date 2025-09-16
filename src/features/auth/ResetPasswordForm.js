@@ -1,7 +1,7 @@
 // auth/components/ResetPasswordForm.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/images/logo2.png";
+import logo from "../../assets/images/logo3.jpeg";
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);

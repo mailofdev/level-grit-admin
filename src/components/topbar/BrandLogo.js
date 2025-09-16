@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from '../../assets/images/logo2.png';  
+import logo from '../../assets/images/logo3.jpeg';  
 const BrandLogo = () => (
   <Link to="/dashboard" className="navbar-brand fw-bold d-flex align-items-center">
     <img 

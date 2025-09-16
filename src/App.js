@@ -13,7 +13,6 @@ import ResetPasswordForm from "./features/auth/ResetPasswordForm";
 import Users from "./features/users/Users";
 import Messages from "./features/users/Messages";
 import AdjustPlan from "./features/users/AdjustPlan";
-import Clients from "./features/users/Clients";
 import UserDetails from "./features/users/UserDetails";
 import RegisterClientForm from "./features/auth/RegisterClientForm";
 import AllClients from "./features/users/AllClients";

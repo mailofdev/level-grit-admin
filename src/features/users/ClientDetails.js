@@ -20,7 +20,7 @@ function MacroAnalysis({ macros }) {
   return (
     <div className="card shadow-sm border-0 mt-2">
       <div className="card-body rounded-4 shadow-sm">
-        <h5 className="fw-bold mb-3 text-secondary">Macro Analysis</h5>
+        <h5 className="fw-bold mb-3">Macro Analysis</h5>
         <div className="table-responsive">
           <table className="table table-striped align-middle text-center mb-0">
             <thead className="table-light">
@@ -79,7 +79,7 @@ export default function ClientDetails() {
             style={{ height: "550px", width: "850px" }}
           /> */}
       {/* Client Info */}
-      <div className="card shadow-sm rounded-4 p-3 p-md-4 mb-3 mt-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+      <div className="card shadow-sm rounded p-3 p-md-4 mb-3 mt-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
         <div className="mb-3 mb-md-0">
           <h4 className="fw-bold text-dark">{client.fullName}</h4>
           <p className="mb-1 text-muted small">
@@ -127,7 +127,7 @@ export default function ClientDetails() {
       {/* Meal Plan */}
       <div className="card shadow-sm my-3">
         <div className="card-body">
-          <h5 className="fw-bold text-secondary mb-3">Today's Meal status</h5>
+          <h5 className="fw-bold  mb-3">Today's meal status</h5>
           <div className="row g-3">
             {client.meals?.map((meal, idx) => (
               <div key={idx} className="col-12 col-sm-6 col-lg-4">
