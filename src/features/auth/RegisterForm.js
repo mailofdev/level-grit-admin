@@ -1,4 +1,3 @@
-// auth/components/RegisterForm.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DynamicForm from "../../components/forms/DynamicForm";
@@ -48,10 +47,26 @@ const [isLoading, setIsLoading] = useState(false);
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: "#FDF4DC", borderRadius: "10px" }}>
-      <div className="card p-4 shadow-sm" style={{ maxWidth: "500px", width: "100%" }}>
-        {isLoading && <Loader fullScreen={true} text="Logging in..." color="#FF5733" />} 
-           <div className="text-center">
+        <div
+      className="d-flex justify-content-center align-items-center vh-100"
+      style={{
+        background: "linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%)",
+        padding: "20px"
+      }}
+    >
+       {isLoading && <Loader fullScreen={true} text="Registering..." color="#43a047" />}
+        <div
+        className="card p-4 shadow-lg"
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          borderRadius: "15px",
+          border: "none"
+        }}
+      >
+       
+        
+        <div className="text-center">
           <img
             src={logo}
             alt="Level Grit Logo"

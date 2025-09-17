@@ -1,10 +1,11 @@
 import React from "react";
 import { ProgressBar } from "react-bootstrap";
-import { FaSadCry, FaFire, FaAccessibleIcon, FaPen } from "react-icons/fa";
+import { FaSadCry, FaFire, FaPen, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import Heading from "../../components/navigation/Heading";
-import logo from "../../assets/images/ss5.png";
+import { IoTimeOutline } from "react-icons/io5";
 import { FaMessage } from "react-icons/fa6";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
 function MacroAnalysis({ macros }) {
   if (!macros) return null;
 
@@ -18,9 +19,9 @@ function MacroAnalysis({ macros }) {
   };
 
   return (
-    <div className="card shadow-sm border-0 mt-2">
-      <div className="card-body rounded-4 shadow-sm">
-        <h5 className="fw-bold mb-3">Macro Analysis</h5>
+    <div className="card shadow-sm border-0 mt-3 rounded-4">
+      <div className="card-body p-4">
+        <h5 className="fw-bold mb-4 text-start">📊 Macro Analysis</h5>
         <div className="table-responsive">
           <table className="table table-striped align-middle text-center mb-0">
             <thead className="table-light">
@@ -29,7 +30,7 @@ function MacroAnalysis({ macros }) {
                 <th>Target</th>
                 <th>Consumed</th>
                 <th>Remaining</th>
-                <th style={{ width: "30%" }}>Progress</th>
+                <th>Progress</th>
               </tr>
             </thead>
             <tbody>
@@ -49,6 +50,7 @@ function MacroAnalysis({ macros }) {
                       <ProgressBar
                         now={percent}
                         variant={colors[key] || "secondary"}
+                        animated
                       />
                     </td>
                   </tr>
@@ -68,44 +70,37 @@ export default function ClientDetails() {
   const client = location.state?.client;
 
   if (!client)
-    return <p className="text-muted mt-4">Select a client from the list to view details.</p>;
+    return <p className="text-muted mt-4 text-center">Select a client to view details.</p>;
 
   return (
-    <div className="container-fluid px-2 px-md-4 mt-2">
-      <Heading pageName="View Client" sticky={true} />
-   {/* <img
-            src={logo}
-            alt="Level Grit Logo"
-            style={{ height: "550px", width: "850px" }}
-          /> */}
-      {/* Client Info */}
-      <div className="card shadow-sm rounded p-3 p-md-4 mb-3 mt-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-        <div className="mb-3 mb-md-0">
-          <h4 className="fw-bold text-dark">{client.fullName}</h4>
-          <p className="mb-1 text-muted small">
-            Goal: <span className="fw-semibold">{client.goal || "N/A"}</span> • Start: {client.startDate || "N/A"}
-          </p>
-          <span
-            className={`badge px-3 py-2 ${
-              client.status === "attention" ? "bg-danger" : "bg-success"
-            }`}
-          >
-            {client.status === "attention" ? "Need Attention" : "On Track"}
-          </span>
-        </div>
+    <div className="container-fluid px-3 px-md-5 py-3" style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
+      <Heading pageName="Client Overview" sticky={true} />
 
-        <div className="text-md-end">
-          <div className="d-flex align-items-center justify-content-md-end mb-2">
-            <span className={`fw-bold ${client.streak === "Missed meal" ? "text-danger" : "text-success"}`}>
-              {client.streak}
+      {/* Client Info Card */}
+      <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
+        <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+          <div>
+            <h4 className="fw-bold">{client.fullName}</h4>
+            <p className="mb-1 text-muted small">
+              Goal: <span className="fw-semibold">{client.goal}</span> • Start: {client.startDate}
+            </p>
+            <span className={`badge px-3 py-2 ${client.status === "attention" ? "bg-danger" : "bg-success"}`}>
+              {client.status === "attention" ? "Need Attention" : "On Track"}
             </span>
-            {client.streak === "Missed meal" ? (
-              <FaSadCry className="text-danger ms-1" />
-            ) : (
-              <FaFire className="text-danger ms-1" />
-            )}
           </div>
-          <div className="d-flex flex-wrap gap-2 justify-content-md-end">
+
+          <div className="text-md-end mt-3 mt-md-0">
+            <div className="d-flex align-items-center justify-content-md-end mb-3">
+              <span className={`fw-bold ${client.streak === "Missed meal" ? "text-danger" : "text-success"}`}>
+                {client.streak}
+              </span>
+              {client.streak === "Missed meal" ? (
+                <FaSadCry className="text-danger ms-2" />
+              ) : (
+                <FaFire className="text-success ms-2" />
+              )}
+            </div>
+            <div className="d-flex flex-wrap gap-2 justify-content-md-end">
             <button
               className="bg-white btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
               onClick={() => navigate("/messages")}
@@ -120,34 +115,38 @@ export default function ClientDetails() {
             >
               <FaPen className="me-1" /> Adjust Plan
             </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Meal Plan */}
-      <div className="card shadow-sm my-3">
-        <div className="card-body">
-          <h5 className="fw-bold  mb-3">Today's meal status</h5>
+      {/* Meal Plan Section */}
+      <div className="card shadow-sm rounded-4 mb-3 border-0">
+        <div className="card-body p-4">
+          <h5 className="fw-bold mb-4 text-start">🍽 Today's Meal Status</h5>
           <div className="row g-3">
-            {client.meals?.map((meal, idx) => (
+            {client.meals.map((meal, idx) => (
               <div key={idx} className="col-12 col-sm-6 col-lg-4">
                 <div
-                  className={`card h-100 shadow-sm rounded-3 border-1 ${
-                    meal.done === true
+                  className={`card h-100 rounded-3 shadow-sm text-start ${
+                    meal.done
                       ? "bg-light-green br-light-green text-white"
-                      : "bg-light-orange br-light-orange text-white"
+                      : "bg-light-gray br-light-gray text-white"
                   }`}
                 >
-                  <div className="card-body text-center p-3">
-                    <h6 className="fw-bold text-dark">{meal.name}</h6>
-                    <p className="small text-muted mb-1">
+                  { meal.done ? <IoCheckmarkCircleOutline className="position-absolute top-0 end-0 m-2" color="green" /> : 
+                  <IoTimeOutline className="position-absolute top-0 end-0 m-2" color="gray" />}
+                  <div className="card-body p-3">
+                    <h6 className="fw-bold mb-2">{meal.name}</h6>
+                    <small className="text-muted">
                       {meal.uploadTime
                         ? new Date(meal.uploadTime).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })
                         : "Pending"}
-                    </p>
+                    </small>
+                    {/* <p className="mt-2 small">{meal.details}</p> */}
                   </div>
                 </div>
               </div>
@@ -156,7 +155,7 @@ export default function ClientDetails() {
         </div>
       </div>
 
-      {/* Macro Analysis */}
+      {/* Macro Analysis Section */}
       <MacroAnalysis macros={client.macros} />
     </div>
   );

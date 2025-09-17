@@ -1,19 +1,17 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { decryptToken } from "../../utils/crypto";
-import logo from "../../assets/images/ss5.png";
-// Decrypt user data from session storage
+
+// ✅ Decrypt user function
 const getDecryptedUser = () => {
   const encryptedUserData = sessionStorage.getItem("user");
-  if (!encryptedUserData) {
-    return null;
-  }
+  if (!encryptedUserData) return null;
   try {
-    const parsedEncryptedData = JSON.parse(encryptedUserData);
-    const decrypted = decryptToken(parsedEncryptedData);
+    const parsed = JSON.parse(encryptedUserData);
+    const decrypted = decryptToken(parsed);
     return decrypted ? JSON.parse(decrypted) : null;
   } catch (error) {
-    console.error("Failed to decrypt user data:", error);
+    console.error("Error decrypting user data:", error);
     return null;
   }
 };
@@ -119,11 +117,8 @@ export default function AllClients() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const clientsPerPage = 12;
-
-  // ✅ Generate clients dynamically
   const clients = useMemo(() => generateClients(20), []);
 
-  // Pagination logic
   const indexOfLast = currentPage * clientsPerPage;
   const indexOfFirst = indexOfLast - clientsPerPage;
   const currentClients = clients.slice(indexOfFirst, indexOfLast);
@@ -138,31 +133,17 @@ export default function AllClients() {
   };
 
   return (
-    <div className="container-fluid p-2">
-      {/* Inner Header - Sticky below Dashboard header */}
-      <div
-        className="shadow-sm p-3 mt-2 bg-light position-sticky"
-        style={{ top: "60px", zIndex: 500 }}
-      >
-        {/* First Row */}
-        <div className="d-flex justify-content-between align-items-center mb-1">
+    <div className="container-fluid p-3" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      {/* Sticky Header */}
+      <div className="shadow-sm p-3 bg-white rounded-3 mb-3 sticky-top" style={{ top: "0", zIndex: 1000 }}>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
           <div>
-            <strong>Welcome, {user.fullName}</strong>{" "}
-            <small>Clients: {clients.length}</small>
+            <strong className="fs-5">Welcome, {user.fullName}</strong>
+            <div className="text-muted small">Clients: {clients.length}</div>
           </div>
-        </div>
-
-        {/* Second Row */}
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="small">
-            <span className="text-success">
-              {clients.filter((c) => c.status === "on-track").length} on track
-            </span>
-            ,{" "}
-            <span className="text-danger">
-              {clients.filter((c) => c.status === "attention").length} need
-              attention
-            </span>
+          <div className="small mb-2 mb-md-0">
+            <span className="text-success">{clients.filter(c => c.status === "on-track").length} on track</span>,{" "}
+            <span className="text-warning">{clients.filter(c => c.status === "attention").length} need attention</span>
           </div>
           <button className="btn btn-primary btn-sm" onClick={handleAddClient}>
             Add Client
@@ -170,78 +151,73 @@ export default function AllClients() {
         </div>
       </div>
 
-      {/* <img
-            src={logo}
-            alt="Level Grit Logo"
-            style={{ height: "500px", width: "850px" }}
-          /> */}
-      {/* Scrollable content */}
-      <div
-        style={{
-          marginTop: "30px",
-          // height: "calc(100vh - 120px)",
-          // overflowY: "auto",
-        }}
-      >
-        {/* Web view – cards layout */}
-        <div className="row g-3">
-          {currentClients.map((client) => (
-            <div key={client.id} className="col-md-4">
-              <div
-                className={`card h-100 shadow-sm ${
-                  client.status === "on-track"
-                    ? "bg-light-green br-light-green text-white"
-                    : "bg-light-orange br-light-orange text-white"
-                }`}
-                onClick={() => handleClientClick(client)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="card-body">
-                  <h5 className="card-title">{client.fullName}</h5>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile/Tablet view – list layout */}
-        {/* <div className="d-md-none list-group">
-          {currentClients.map((client) => (
-            <button
-              key={client.id}
-              className="list-group-item list-group-item-action"
+      {/* Grid Layout for Desktop/Tablets */}
+      <div className="row g-3 d-none d-md-flex">
+        {currentClients.map(client => (
+          <div key={client.id} className="col-12 col-sm-6 col-md-4">
+            <div
+              className={`card h-100 shadow-sm rounded-3 ${
+                client.status === "on-track"
+                ? "bg-light-green br-light-green text-white"
+                : "bg-light-orange br-light-orange text-white"
+              }`}
+              style={{ cursor: "pointer" }}
               onClick={() => handleClientClick(client)}
             >
-              <div className="d-flex align-items-center mb-1">
-                <h6 className="mb-0">{client.fullName}</h6>
+              <div className="card-body">
+                <h5 className="card-title mb-2">{client.fullName}</h5>
+                <p className="mb-1 small"><strong>Goal:</strong> {client.goal}</p>
+                <p className="mb-1 small"><strong>Start:</strong> {client.startDate}</p>
+                <p className="mb-1 small"><strong>Streak:</strong> {client.streak}</p>
               </div>
-              <small>Email: {client.email}</small>
-              <br />
-              <small>Phone: {client.phone}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* List Layout for Mobile */}
+      <div className="d-md-none mt-3">
+        <div className="list-group">
+          {currentClients.map(client => (
+            <button
+              key={client.id}
+              className={`list-group-item list-group-item-action ${
+                  client.status === "on-track"
+                ? "bg-light-green br-light-green text-white"
+                : "bg-light-orange br-light-orange text-white"
+              }`}
+              onClick={() => handleClientClick(client)}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <h6 className="mb-0">{client.fullName}</h6>
+                <small>{client.streak}</small>
+              </div>
+              <small><strong>Goal:</strong> {client.goal}</small><br />
+              <small><strong>Start:</strong> {client.startDate}</small><br />
             </button>
           ))}
-        </div> */}
-
-        {/* Pagination Controls */}
-        <div className="d-flex justify-content-between align-items-center my-3">
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-          <span className="small">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
         </div>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          &laquo; Prev
+        </button>
+        <span className="small text-muted">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Next &raquo;
+        </button>
       </div>
     </div>
   );

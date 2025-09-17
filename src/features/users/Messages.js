@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane } from "react-icons/fa";
 import { Card, Form, InputGroup, Button } from "react-bootstrap";
 import Heading from "../../components/navigation/Heading";
 
@@ -22,32 +22,27 @@ export default function Messages() {
     setNewMessage("");
   };
 
-  // Scroll to the bottom when a new message is added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-       <div className="container py-4">
-      {/* Header */}
-      {/* <div className="d-flex align-items-center mb-4">
-        <button
-          className="btn btn-outline-secondary btn-sm me-3"
-          onClick={() => navigate(-1)}
-        >
-          <FaArrowLeft />
-        </button>
-        <h5 className="mb-0">Chat with Alex</h5>
-      </div> */}
- <Heading pageName="Chat" sticky={true} />
-      {/* Chat messages */}
-      <div className="flex-grow-1 overflow-auto p-3 bg-light" style={{ flexBasis: 0 }}>
+    <div className="container mt-3 d-flex flex-column vh-100">
+      <Heading pageName="Chat" sticky={true} />
+
+      {/* Chat area */}
+      <div className="flex-grow-1 overflow-auto p-3 my-2 shadow-md rounded" style={{ backgroundColor: "#f1f3f5" }}>
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`d-flex mb-3 ${msg.sender === "me" ? "justify-content-end" : "justify-content-start"}`}
           >
-            <div className={`p-2 rounded-3 ${msg.sender === "me" ? "bg-primary white-text" : "bg-white border"}`} style={{ maxWidth: "75%" }}>
+            <div
+              className={`p-3 rounded-3 shadow-sm ${
+                msg.sender === "me" ? "bg-primary white-text" : "bg-white border"
+              }`}
+              style={{ maxWidth: "75%", wordBreak: "break-word" }}
+            >
               {msg.text}
             </div>
           </div>
@@ -55,16 +50,17 @@ export default function Messages() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input area */}
-      <Card className="border-0 rounded-0">
+      {/* Input area – sticky to bottom */}
+      <Card className="border-0 shadow-sm rounded sticky-bottom my-3 bg-light">
         <Form onSubmit={handleSubmit}>
-          <InputGroup className="p-3">
+          <InputGroup className="p-3 ">
             <Form.Control
               placeholder="Type a message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              className="border-0"
             />
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" className="rounded-circle px-3">
               <FaPaperPlane />
             </Button>
           </InputGroup>
