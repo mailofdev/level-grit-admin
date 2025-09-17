@@ -1,6 +1,6 @@
 import React from "react";
 import { ProgressBar } from "react-bootstrap";
-import { FaSadCry, FaFire, FaPen, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaSadCry, FaFire, FaPen } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import Heading from "../../components/navigation/Heading";
 import { IoTimeOutline } from "react-icons/io5";

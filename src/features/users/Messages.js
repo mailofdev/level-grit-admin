@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaPaperPlane } from "react-icons/fa";
 import { Card, Form, InputGroup, Button } from "react-bootstrap";
 import Heading from "../../components/navigation/Heading";
 
 export default function Messages() {
-  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello! How are you?", sender: "other" },
     { id: 2, text: "I'm good, thanks! How about you?", sender: "me" },
