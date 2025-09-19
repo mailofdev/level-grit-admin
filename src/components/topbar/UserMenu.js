@@ -12,10 +12,10 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
           aria-expanded="false"
         >
           <div
-            className="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2"
+            className="rounded-circle bg-gray d-flex justify-content-center align-items-center me-2"
             style={{ width: "30px", height: "30px" }}
           >
-            {getRoleIcon(user?.role)}
+            {getRoleIcon(user?.role, 'emoji')}
           </div>
           <span className="text-white">{user?.fullName || "User"}</span>
         </button>
