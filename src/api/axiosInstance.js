@@ -3,7 +3,8 @@ import axios from "axios";
 import { decryptToken } from "../utils/crypto";
 
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:7240",
+  // baseURL: "https://localhost:7240",
+  baseURL: "https://1a81c84fcb58.ngrok-free.app",
   timeout: 10000,
 });
 
