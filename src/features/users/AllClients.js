@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { decryptToken } from "../../utils/crypto";
+import { GetClientsForTrainer } from "../../api/authAPI";
 
 // ✅ Decrypt user function
 const getDecryptedUser = () => {
@@ -16,100 +17,6 @@ const getDecryptedUser = () => {
   }
 };
 
-// ✅ Meal template
-const mealTemplate = [
-  {
-    name: "Meal 1 (Pre-Workout)",
-    details: "1/2 scoop whey + 30 gm oats + 100 ml milk",
-    done: true,
-    uploadTime: "2024-01-15T08:00:00Z",
-  },
-  {
-    name: "Meal 2 (Breakfast)",
-    details: "2 bananas + peanut butter",
-    done: true,
-    uploadTime: "2024-01-15T09:00:00Z",
-  },
-  {
-    name: "Meal 3 (Lunch)",
-    details: "100 gm paneer + 3 phulka + sabji",
-    done: true,
-    uploadTime: "2024-01-15T12:00:00Z",
-  },
-  {
-    name: "Meal 4 (Evening Snack)",
-    details: "100 gm curd + 1 bowl salad",
-    done: false,
-  },
-  {
-    name: "Meal 5 (Dinner)",
-    details: "100 gm paneer + 3 phulka OR 1 bowl brown rice + salad",
-    done: false,
-  },
-  {
-    name: "Meal 6 (Before Bed)",
-    details: "100 gm curd",
-    done: false,
-  },
-];
-
-// ✅ Generate random clients
-function generateClients(count) {
-  const names = [
-    "Alex",
-    "Sarah",
-    "Mike",
-    "Emma",
-    "John",
-    "Sophia",
-    "David",
-    "Olivia",
-  ];
-  const streaks = [
-    "5-day streak",
-    "8-day streak",
-    "12-day streak",
-    "Missed meal",
-  ];
-  const statuses = ["on-track", "attention"];
-
-  return Array.from({ length: count }, (_, i) => {
-    const name = `${names[i % names.length]} ${
-      ["Smith", "Johnson", "Chen", "Davis"][i % 4]
-    }`;
-    const calorieTarget = 2200 + Math.floor(Math.random() * 600);
-    const proteinTarget = 150 + Math.floor(Math.random() * 80);
-    const carbsTarget = 200 + Math.floor(Math.random() * 150);
-    const fatTarget = 60 + Math.floor(Math.random() * 30);
-    const consumedCalories = Math.floor(calorieTarget * Math.random());
-    const consumedProtein = Math.floor(proteinTarget * Math.random());
-    const consumedCarbs = Math.floor(carbsTarget * Math.random());
-    const consumedFat = Math.floor(fatTarget * Math.random());
-    const meals = mealTemplate.map((meal) => ({
-      ...meal,
-      done: Math.random() > 0.5,
-    }));
-
-    return {
-      id: i + 1,
-      fullName: name,
-      email: `${name.split(" ").join("").toLowerCase()}@example.com`,
-      phone: `+91 ${Math.floor(9000000000 + Math.random() * 1000000000)}`,
-      status: statuses[Math.floor(Math.random() * statuses.length)],
-      streak: streaks[Math.floor(Math.random() * streaks.length)],
-      goal: i % 2 === 0 ? "Weight loss" : "Muscle gain",
-      startDate: `Jan ${10 + i}, 2024`,
-      meals,
-      macros: {
-        calories: { target: calorieTarget, consumed: consumedCalories },
-        protein: { target: proteinTarget, consumed: consumedProtein },
-        carbs: { target: carbsTarget, consumed: consumedCarbs },
-        fat: { target: fatTarget, consumed: consumedFat },
-      },
-    };
-  });
-}
-
 export default function AllClients() {
   const decryptedUser = getDecryptedUser();
   const user = decryptedUser || {};
@@ -117,15 +24,31 @@ export default function AllClients() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const clientsPerPage = 12;
-  const clients = useMemo(() => generateClients(20), []);
+  const [clients, setClients] = useState([]); // ✅ state for API data
 
+  // 🔹 Call API on mount
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const data = await GetClientsForTrainer();
+        console.log("📌 Clients from API:", data); 
+        setClients(data); 
+      } catch (error) {
+        console.error("❌ Error fetching clients:", error);
+      }
+    };
+
+    fetchClients();
+  }, []);
+
+  // 🔹 Pagination logic
   const indexOfLast = currentPage * clientsPerPage;
   const indexOfFirst = indexOfLast - clientsPerPage;
   const currentClients = clients.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(clients.length / clientsPerPage);
 
   const handleClientClick = (client) => {
-    navigate(`/client-details/${client.id}`, { state: { client } });
+    navigate(`/client-details/${client.clientId}`, { state: { client } });
   };
 
   const handleAddClient = () => {
@@ -151,10 +74,10 @@ export default function AllClients() {
         </div>
       </div>
 
-      {/* Grid Layout for Desktop/Tablets */}
+      {/* Grid Layout */}
       <div className="row g-3 d-none d-md-flex">
         {currentClients.map(client => (
-          <div key={client.id} className="col-12 col-sm-6 col-md-4">
+          <div key={client.clientId} className="col-12 col-sm-6 col-md-4">
             <div
               className={`card h-100 shadow-sm rounded-3 ${
                 client.status === "on-track"
@@ -166,9 +89,9 @@ export default function AllClients() {
             >
               <div className="card-body">
                 <h5 className="card-title mb-2">{client.fullName}</h5>
-                <p className="mb-1 small"><strong>Goal:</strong> {client.goal}</p>
-                <p className="mb-1 small"><strong>Start:</strong> {client.startDate}</p>
-                <p className="mb-1 small"><strong>Streak:</strong> {client.streak}</p>
+                <p className="mb-1 small"><strong>Email:</strong> {client.email}</p>
+                <p className="mb-1 small"><strong>Gender:</strong> {client.gender}</p>
+                <p className="mb-1 small"><strong>Phone Number:</strong> {client.phoneNumber}</p>
               </div>
             </div>
           </div>
@@ -192,8 +115,9 @@ export default function AllClients() {
                 <h6 className="mb-0">{client.fullName}</h6>
                 <small>{client.streak}</small>
               </div>
-              <small><strong>Goal:</strong> {client.goal}</small><br />
-              <small><strong>Start:</strong> {client.startDate}</small><br />
+                <p className="mb-1 small"><strong>Email:</strong> {client.email}</p>
+                <p className="mb-1 small"><strong>Gender:</strong> {client.gender}</p>
+                <p className="mb-1 small"><strong>Phone Number:</strong> {client.phoneNumber}</p>
             </button>
           ))}
         </div>

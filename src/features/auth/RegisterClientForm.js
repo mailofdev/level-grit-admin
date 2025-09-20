@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import { 
-  // useLocation,
-   useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";   // ✅ PrimeReact Toast
 import DynamicForm from "../../components/forms/DynamicForm";
 import Heading from "../../components/navigation/Heading";
-import { registerUser } from "../../api/authAPI";
+import { RegisterClient } from "../../api/authAPI";
 import Loader from "../../components/display/Loader";
+
 const RegisterClientForm = () => {
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const { selectedClient } = location.state || {};
+  const toast = useRef(null);  // ✅ Toast ref
 
   const schema = [
     { type: "input", name: "fullName", label: "Full Name", required: true },
@@ -27,6 +26,7 @@ const RegisterClientForm = () => {
       label: "Phone Number",
       required: true,
     },
+    { type: "date", name: "dateOfBirth", label: "Date of Birth" },
     {
       type: "select",
       name: "gender",
@@ -42,21 +42,35 @@ const RegisterClientForm = () => {
 
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [alertData, setAlertData] = useState({
-    show: false,
-    type: "",
-    message: "",
-  });
 
   const handleSubmit = async (data) => {
-    const formData = { ...data, role: 0 };
+    const clientData = { ...data, role: 0 };
     setLoading(true);
+
     try {
-      await registerUser(formData);
-      setLoading(false);
-      showAlert("success", "✅ Registration successful!");
+      await RegisterClient(clientData);
+
+      // ✅ Success Toast
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Registration successful!",
+        life: 3000,
+      });
+
+      setFormData({}); // reset form after success
+
+      setTimeout(() => navigate(-1), 2500); // redirect after toast
     } catch (error) {
-      showAlert("danger", error.message || "❌ Registration failed. Please try again.");
+      // ❌ Error Toast
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail:
+          error?.response?.data?.message ||
+          "Registration failed. Please try again.",
+        life: 4000,
+      });
     } finally {
       setLoading(false);
     }
@@ -64,46 +78,40 @@ const RegisterClientForm = () => {
 
   const handleCancel = () => {
     setFormData({});
-    setAlertData({ show: false, type: "", message: "" });
-  };
-
-  const showAlert = (type, message) => {
-    setAlertData({ show: true, type, message });
-    setTimeout(() => {
-      setAlertData({ show: false, type: "", message: "" });
-      if (type === "success") {
-        navigate(-1);
-      }
-    }, 3000);
   };
 
   return (
-    <>
- <div className="container-fluid px-2 px-md-4">
-    {loading && <Loader fullScreen={true} text="Logging in..." color="#FF5733" />} 
-      <div className="m-2 p-2 bg-white rounded shadow-sm">
+    <div className="container-fluid px-2 px-md-4">
+      {loading && (
+        <Loader
+          fullScreen={true}
+          text="Registering client..."
+          color="#28a745"
+        />
+      )}
+
+      {/* ✅ PrimeReact Toast */}
+      <Toast ref={toast} position="top-right" />
+
+         <div className="m-2 p-2 bg-white rounded shadow-sm">
         <Heading pageName="Register Client" sticky={true} />
         <br />
 <div style={{ marginTop: "20px" }}></div>
-        <DynamicForm
-          schema={schema}
-          formData={formData}
-          onChange={setFormData}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          actionButtonName={loading ? "Registering client..." : "Register client"}
-          singleButtonInCenter={true}
-          twoRowForm={false}
-        />
-      </div>
 
-      {alertData.show && (
-        <div className={`alert alert-${alertData.type} top-0 end-0 m-3`} role="alert">
-          {alertData.message}
-        </div>
-      )}
-</div>
-    </>
+          <DynamicForm
+            schema={schema}
+            formData={formData}
+            onChange={setFormData}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            actionButtonName={
+              loading ? "Registering client..." : "Register client"
+            }
+            singleButtonInCenter={true}
+            twoRowForm={false}
+          />
+      </div>
+    </div>
   );
 };
 
