@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { decryptToken } from "../../utils/crypto";
 import { GetClientsForTrainer } from "../../api/authAPI";
-
+import Loader from "../../components/display/Loader";
 // ✅ Decrypt user function
 const getDecryptedUser = () => {
   const encryptedUserData = sessionStorage.getItem("user");
@@ -24,17 +24,24 @@ export default function AllClients() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const clientsPerPage = 12;
-  const [clients, setClients] = useState([]); // ✅ state for API data
+  const [clients, setClients] = useState([]); 
+  const [loading, setLoading] = useState(true); // ✅ loading state
 
-  // 🔹 Call API on mount
+  const didFetch = useRef(false);
   useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
     const fetchClients = async () => {
       try {
+        setLoading(true); // show loader
         const data = await GetClientsForTrainer();
-        console.log("📌 Clients from API:", data); 
-        setClients(data); 
+        console.log("📌 Clients from API:", data);
+        setClients(data);
       } catch (error) {
         console.error("❌ Error fetching clients:", error);
+      } finally {
+        setLoading(false); // hide loader
       }
     };
 
@@ -54,6 +61,15 @@ export default function AllClients() {
   const handleAddClient = () => {
     navigate("/register-client");
   };
+
+  // ✅ Loader UI
+  if (loading) {
+    return (
+     <>
+     <Loader fullScreen={true} text="Loading clients..." color="#007bff" />
+     </>
+    );
+  }
 
   return (
     <div className="container-fluid p-3" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
