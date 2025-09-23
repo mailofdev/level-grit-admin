@@ -17,7 +17,7 @@ import UserDetails from "./features/users/UserDetails";
 import RegisterClientForm from "./features/auth/RegisterClientForm";
 import AllClients from "./features/users/AllClients";
 import ClientDetails from "./features/users/ClientDetails";
-
+import LandingPage from "./features/landing/LandingPage";
 function ProtectedLayout({ children, config }) {
   return (
     <ProtectedRoute>
@@ -34,10 +34,11 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/index.html" element={<Navigate to="/" replace />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />     
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/register-client" element={<RegisterClientForm />} />
           <Route path="/reset-password" element={<ResetPasswordForm />} />
+
 
           {/* Protected routes */}
           <Route
@@ -81,7 +82,7 @@ function App() {
             }
           />
           <Route
-            path="/client-details/:id"
+            path="/client-details/:clientId"
             element={
               <ProtectedLayout>
                 <ClientDetails />

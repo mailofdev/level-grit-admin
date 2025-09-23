@@ -125,7 +125,7 @@ export default function ClientDetails() {
         <div className="card-body p-4">
           <h5 className="fw-bold mb-4 text-start">🍽 Today's Meal Status</h5>
           <div className="row g-3">
-            {client.meals.map((meal, idx) => (
+            {client.meals?.map((meal, idx) => (
               <div key={idx} className="col-12 col-sm-6 col-lg-4">
                 <div
                   className={`card h-100 rounded-3 shadow-sm text-start ${

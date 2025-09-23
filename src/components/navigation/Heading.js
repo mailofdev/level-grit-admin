@@ -15,7 +15,7 @@ export default function Heading({ path, pageName, sticky = true, rightContent })
       className={`d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom ${
         sticky ? "position-sticky top-0 shadow-sm" : ""
       }`}
-      style={{ zIndex: 1050 }}
+      // style={{ zIndex: 1050 }}
     >
       {/* Left: Back button */}
       <button
