@@ -108,16 +108,27 @@ const DynamicForm = ({
    * Handlers
    * ----------------------------*/
   const handleChange = (e, name, type) => {
-    let value = type === "checkbox" ? e.target.checked : e.target.value;
-    const newFormData = { ...formData, [name]: value };
+  let value;
 
-    if (onChange) onChange(newFormData);
+  if (type === "checkbox") {
+    value = e.target.checked;
+  } else if (type === "number") {
+    // convert to number (empty string stays empty)
+    value = e.target.value === "" ? "" : Number(e.target.value);
+  } else {
+    value = e.target.value;
+  }
 
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    const field = memoizedSchema.find((f) => f.name === name);
-    const error = validateField(field, value, newFormData);
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
+  const newFormData = { ...formData, [name]: value };
+
+  if (onChange) onChange(newFormData);
+
+  setTouched((prev) => ({ ...prev, [name]: true }));
+
+  const field = memoizedSchema.find((f) => f.name === name);
+  const error = validateField(field, value, newFormData);
+  setErrors((prev) => ({ ...prev, [name]: error }));
+};
 
   const handleBlur = (name) => {
     setTouched((prev) => ({ ...prev, [name]: true }));

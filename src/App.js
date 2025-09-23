@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -34,6 +34,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/register-client" element={<RegisterClientForm />} />
           <Route path="/reset-password" element={<ResetPasswordForm />} />

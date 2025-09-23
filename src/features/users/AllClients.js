@@ -34,9 +34,8 @@ export default function AllClients() {
 
     const fetchClients = async () => {
       try {
-        setLoading(true); // show loader
+        setLoading(true);
         const data = await GetClientsForTrainer();
-        console.log("📌 Clients from API:", data);
         setClients(data);
       } catch (error) {
         console.error("❌ Error fetching clients:", error);
@@ -119,7 +118,7 @@ export default function AllClients() {
         <div className="list-group">
           {currentClients.map(client => (
             <button
-              key={client.id}
+              key={client.clientId}
               className={`list-group-item list-group-item-action ${
                   client.status === "on-track"
                 ? "bg-light-green br-light-green text-white"

@@ -2,29 +2,39 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
-export default function Heading({ path, pageName, sticky }) {
+export default function Heading({ path, pageName, sticky = true, rightContent }) {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (path) {
-      navigate(path);
-    } else {
-      navigate(-1);
-    }
+    if (path) navigate(path);
+    else navigate(-1);
   };
 
   return (
-    <div 
-    // className={`d-flex align-items-center p-3 bg-white 
-    // border-bottom ${sticky ? "position-sticky top-0 shadow-sm" : ""}`}
-     className="shadow-sm p-3 bg-light position-sticky mb-2 d-flex align-items-center card flex-row"
-        style={{ top: "60px", zIndex: 500 }}
+    <div
+      className={`d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom ${
+        sticky ? "position-sticky top-0 shadow-sm" : ""
+      }`}
+      style={{ zIndex: 1050 }}
     >
-      <button className="btn btn-outline-secondary btn-sm me-3" onClick={handleBack}>
+      {/* Left: Back button */}
+      <button
+        className="btn btn-light btn-sm rounded-circle shadow-sm"
+        onClick={handleBack}
+        style={{ width: "38px", height: "38px", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
         <FaArrowLeft />
       </button>
-      <h5 className="mb-0 flex-grow-1 text-center">{pageName}</h5>
-      <div style={{ width: "38px" }}>{/* Empty space to balance layout */}</div>
+
+      {/* Center: Title */}
+      <h5 className="mb-0 fw-bold text-truncate text-center flex-grow-1">
+        {pageName}
+      </h5>
+
+      {/* Right: Optional content (icon/button) */}
+      <div style={{ width: "38px", textAlign: "right" }}>
+        {rightContent || null}
+      </div>
     </div>
   );
 }

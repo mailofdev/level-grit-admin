@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";   // ✅ PrimeReact Toast
+import { Toast } from "primereact/toast";
 import DynamicForm from "../../components/forms/DynamicForm";
 import Heading from "../../components/navigation/Heading";
 import { RegisterClient } from "../../api/authAPI";
@@ -8,7 +8,7 @@ import Loader from "../../components/display/Loader";
 
 const RegisterClientForm = () => {
   const navigate = useNavigate();
-  const toast = useRef(null);  // ✅ Toast ref
+  const toast = useRef(null);
 
   const schema = [
     { type: "input", name: "fullName", label: "Full Name", required: true },
@@ -27,6 +27,19 @@ const RegisterClientForm = () => {
       required: true,
     },
     { type: "date", name: "dateOfBirth", label: "Date of Birth" },
+    { type: "number", name: "height", label: "Height" },
+    { type: "number", name: "weight", label: "Weight" },
+    { type: "number", name: "targetWeight", label: "Target Weight" },
+    {
+      type: "select",
+      name: "goal",
+      label: "Goal",
+      required: true,
+      options: [
+        { value: 0, label: "Weight Gain" },
+        { value: 1, label: "Weight Loss" },
+      ],
+    },
     {
       type: "select",
       name: "gender",
@@ -49,20 +62,15 @@ const RegisterClientForm = () => {
 
     try {
       await RegisterClient(clientData);
-
-      // ✅ Success Toast
       toast.current.show({
         severity: "success",
         summary: "Success",
         detail: "Registration successful!",
         life: 3000,
       });
-
-      setFormData({}); // reset form after success
-
-      setTimeout(() => navigate(-1), 2500); // redirect after toast
+      setFormData({});
+      setTimeout(() => navigate(-1), 1000);
     } catch (error) {
-      // ❌ Error Toast
       toast.current.show({
         severity: "error",
         summary: "Error",
@@ -76,12 +84,10 @@ const RegisterClientForm = () => {
     }
   };
 
-  const handleCancel = () => {
-    setFormData({});
-  };
+  const handleCancel = () => setFormData({});
 
   return (
-    <div className="container-fluid px-2 px-md-4">
+    <div className="container px-2 px-md-4">
       {loading && (
         <Loader
           fullScreen={true}
@@ -89,15 +95,10 @@ const RegisterClientForm = () => {
           color="#28a745"
         />
       )}
-
-      {/* ✅ PrimeReact Toast */}
       <Toast ref={toast} position="top-right" />
-
-         <div className="m-2 p-2 bg-white rounded shadow-sm">
+      <div className="bg-white rounded shadow-sm">
         <Heading pageName="Register Client" sticky={true} />
-        <br />
-<div style={{ marginTop: "20px" }}></div>
-
+        <div className="p-3">
           <DynamicForm
             schema={schema}
             formData={formData}
@@ -110,6 +111,7 @@ const RegisterClientForm = () => {
             singleButtonInCenter={true}
             twoRowForm={false}
           />
+        </div>
       </div>
     </div>
   );
