@@ -73,10 +73,13 @@ export default function ClientDetails() {
     return <p className="text-muted mt-4 text-center">Select a client to view details.</p>;
 
   return (
-    <div className="container-fluid px-3 px-md-5 py-3" style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
+    <div className="container">
       <Heading pageName="Client Overview" sticky={true} />
-
+   <div  className="d-flex flex-column" style={{  height: 'calc(100vh - 160px)',
+          // overflow: 'hidden'
+          }}>
       {/* Client Info Card */}
+      <div className="lex-grow-1 overflow-auto p-3 rounded shadow-sm">
       <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
         <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
           <div>
@@ -157,6 +160,8 @@ export default function ClientDetails() {
 
       {/* Macro Analysis Section */}
       <MacroAnalysis macros={client.macros} />
+</div>
+      </div>
     </div>
   );
 }

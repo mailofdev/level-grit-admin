@@ -12,11 +12,7 @@ export default function Heading({ path, pageName, sticky = true, rightContent })
 
   return (
     <div
-      className={`d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom ${
-        sticky ? "position-sticky top-0 shadow-sm" : ""
-      }`}
-      // style={{ zIndex: 1050 }}
-    >
+      className="d-flex align-items-center justify-content-between p-3 my-2 rounded bg-light-blue shadow-sm">
       {/* Left: Back button */}
       <button
         className="btn btn-light btn-sm rounded-circle shadow-sm"

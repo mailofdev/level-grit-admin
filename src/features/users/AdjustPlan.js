@@ -64,129 +64,153 @@ export default function AdjustPlan() {
   );
 
   return (
-    <div className="container py-4">
+    <div className="container">
       <Heading pageName="Adjust Plan" sticky={true} />
-
-      <div className="d-flex justify-content-end gap-2 my-3 flex-wrap">
-        <Button variant="outline-primary" onClick={handleAddMeal} className="rounded-pill">
-          <FaPlus /> Add Meal
-        </Button>
-        <Button variant="outline-danger" onClick={handleRemoveMeal} className="rounded-pill">
-          <FaMinus /> Remove Meal
-        </Button>
-      </div>
-
-      <Card className="shadow-sm border-0 rounded-4 p-4 bg-white">
-        <Form>
-          <Accordion alwaysOpen>
-            {meals.map((meal, index) => (
-              <Accordion.Item eventKey={index.toString()} key={index}>
-                <Accordion.Header>🍽️ Meal {index + 1}</Accordion.Header>
-                <Accordion.Body>
-                  <Row className="mb-3 gx-3 gy-3">
-                    <Col md={4} xs={12}>
-                      <Form.Group>
-                        <Form.Label>Meal Name</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={meal.name}
-                          onChange={(e) =>
-                            handleChange(index, "name", e.target.value)
-                          }
-                          placeholder="e.g., Pre-Workout"
-                          className="rounded-pill"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={2} xs={6}>
-                      <Form.Group>
-                        <Form.Label>Protein (g)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={meal.protein}
-                          onChange={(e) =>
-                            handleChange(index, "protein", e.target.value)
-                          }
-                          className="rounded-pill"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={2} xs={6}>
-                      <Form.Group>
-                        <Form.Label>Fats (g)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={meal.fats}
-                          onChange={(e) =>
-                            handleChange(index, "fats", e.target.value)
-                          }
-                          className="rounded-pill"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={2} xs={6}>
-                      <Form.Group>
-                        <Form.Label>Carbs (g)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={meal.carbs}
-                          onChange={(e) =>
-                            handleChange(index, "carbs", e.target.value)
-                          }
-                          className="rounded-pill"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={2} xs={6}>
-                      <Form.Group>
-                        <Form.Label>Calories (kcal)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={meal.calories}
-                          onChange={(e) =>
-                            handleChange(index, "calories", e.target.value)
-                          }
-                          className="rounded-pill"
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Meal Instructions</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={2}
-                      value={meal.meal}
-                      onChange={(e) =>
-                        handleChange(index, "meal", e.target.value)
-                      }
-                      placeholder="e.g., Eat with salad and lemon water"
-                      className="rounded-3"
-                    />
-                  </Form.Group>
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-
-          <div className="d-flex justify-content-end gap-3 mt-4 flex-wrap">
-            <Button variant="outline-secondary" onClick={() => navigate(-1)} className="rounded-pill px-4">
-              Cancel
+      <div
+        className="d-flex flex-column"
+        style={{
+          height: "calc(100vh - 160px)",
+          // overflow: 'hidden'
+        }}
+      >
+        <div className="flex-grow-1 overflow-auto p-3 rounded shadow-sm">
+          <div className="d-flex justify-content-end gap-2 my-3 flex-wrap">
+            <Button
+              variant="outline-primary"
+              onClick={handleAddMeal}
+              className="rounded-pill"
+            >
+              <FaPlus /> Add Meal
             </Button>
             <Button
-              variant="info"
-              className="text-white rounded-pill px-4"
-              onClick={() => setShowPreview(true)}
+              variant="outline-danger"
+              onClick={handleRemoveMeal}
+              className="rounded-pill"
             >
-              Preview
-            </Button>
-            <Button variant="success" onClick={handleSave} className="rounded-pill px-4">
-              Save Plan
+              <FaMinus /> Remove Meal
             </Button>
           </div>
-        </Form>
-      </Card>
 
+          <Card className="shadow-sm border-0 rounded-4 p-4 bg-white">
+            <Form>
+              <Accordion alwaysOpen>
+                {meals.map((meal, index) => (
+                  <Accordion.Item eventKey={index.toString()} key={index}>
+                    <Accordion.Header>🍽️ Meal {index + 1}</Accordion.Header>
+                    <Accordion.Body>
+                      <Row className="mb-3 gx-3 gy-3">
+                        <Col md={4} xs={12}>
+                          <Form.Group>
+                            <Form.Label>Meal Name</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={meal.name}
+                              onChange={(e) =>
+                                handleChange(index, "name", e.target.value)
+                              }
+                              placeholder="e.g., Pre-Workout"
+                              className="rounded-pill"
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={2} xs={6}>
+                          <Form.Group>
+                            <Form.Label>Protein (g)</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={meal.protein}
+                              onChange={(e) =>
+                                handleChange(index, "protein", e.target.value)
+                              }
+                              className="rounded-pill"
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={2} xs={6}>
+                          <Form.Group>
+                            <Form.Label>Fats (g)</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={meal.fats}
+                              onChange={(e) =>
+                                handleChange(index, "fats", e.target.value)
+                              }
+                              className="rounded-pill"
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={2} xs={6}>
+                          <Form.Group>
+                            <Form.Label>Carbs (g)</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={meal.carbs}
+                              onChange={(e) =>
+                                handleChange(index, "carbs", e.target.value)
+                              }
+                              className="rounded-pill"
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={2} xs={6}>
+                          <Form.Group>
+                            <Form.Label>Calories (kcal)</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={meal.calories}
+                              onChange={(e) =>
+                                handleChange(index, "calories", e.target.value)
+                              }
+                              className="rounded-pill"
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Meal Instructions</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={2}
+                          value={meal.meal}
+                          onChange={(e) =>
+                            handleChange(index, "meal", e.target.value)
+                          }
+                          placeholder="e.g., Eat with salad and lemon water"
+                          className="rounded-3"
+                        />
+                      </Form.Group>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+
+              <div className="d-flex justify-content-end gap-3 mt-4 flex-wrap">
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => navigate(-1)}
+                  className="rounded-pill px-4"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="info"
+                  className="text-white rounded-pill px-4"
+                  onClick={() => setShowPreview(true)}
+                >
+                  Preview
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={handleSave}
+                  className="rounded-pill px-4"
+                >
+                  Save Plan
+                </Button>
+              </div>
+            </Form>
+          </Card>
+        </div>
+      </div>
       {/* Preview Modal */}
       <Modal
         show={showPreview}
@@ -234,7 +258,11 @@ export default function AdjustPlan() {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPreview(false)} className="rounded-pill">
+          <Button
+            variant="secondary"
+            onClick={() => setShowPreview(false)}
+            className="rounded-pill"
+          >
             Close
           </Button>
         </Modal.Footer>

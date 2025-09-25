@@ -2,6 +2,9 @@
 @import './styles/themes/variables.css';
 
 
+.bg-light-blue {
+   background-color: #e7eefd !important;
+}
 .white-text{
   color: white !important;
 }
