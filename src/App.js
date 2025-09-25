@@ -32,7 +32,7 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/index.html" element={<Navigate to="/" replace />} />     
           <Route path="/register" element={<RegisterForm />} />
