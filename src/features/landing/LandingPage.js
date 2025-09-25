@@ -251,7 +251,7 @@ const LandingPage = () => {
           <div className="row align-items-center">
             <div className="col-md-6">
               <div className="d-flex align-items-center">
-                <span className="fw-bold fs-4 me-4">CoachPro</span>
+                <span className="fw-bold fs-4 me-4">LevelGrit</span>
                 <span className="text-muted">© 2025 All rights reserved.</span>
               </div>
             </div>
