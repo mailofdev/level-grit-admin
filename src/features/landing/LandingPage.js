@@ -7,6 +7,9 @@ const LandingPage = () => {
   const handleSignInNavigation = () => {
     navigate('login')
   }
+  const handleSignUpNavigation = () => {
+    navigate('register')
+  }
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -58,8 +61,8 @@ const LandingPage = () => {
                   long-term client success.
                 </p>
                 <div className="cta-section">
-                  <button className="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow-lg hover-lift mb-3">
-                    👉 Get Started Free
+                  <button onClick={handleSignUpNavigation} className="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow-lg hover-lift mb-3">
+                    👉 Get Started
                   </button>
                   <div className="micro-tagline text-muted small">
                     "Your clients stay consistent. You stay focused. AI just helps."
@@ -234,7 +237,7 @@ const LandingPage = () => {
             <div className="col-lg-8">
               <h2 className="display-5 fw-bold mb-4">Ready to Empower Your Coaching?</h2>
               <p className="lead mb-5">Join thousands of coaches who are already transforming their practice and their clients' lives.</p>
-              <button className="btn btn-light btn-lg px-5 py-3 fw-semibold rounded-pill shadow-lg hover-lift">
+              <button onClick={handleSignUpNavigation} className="btn btn-light btn-lg px-5 py-3 fw-semibold rounded-pill shadow-lg hover-lift">
                 👉 Empower Your Coaching Today
               </button>
               <div className="mt-4">
