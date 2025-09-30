@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
-export default function Heading({ path, pageName, sticky = true, rightContent }) {
+export default function Heading({ path, pageName, sticky = true, rightContent = [] }) {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -11,25 +12,56 @@ export default function Heading({ path, pageName, sticky = true, rightContent })
   };
 
   return (
-    <div
-      className="d-flex align-items-center justify-content-between p-3 my-2 rounded bg-light-blue shadow-sm">
+    <div className="d-flex align-items-center p-3 my-2 rounded bg-light-blue shadow-sm position-relative">
+      
       {/* Left: Back button */}
-      <button
-        className="btn btn-light btn-sm rounded-circle shadow-sm"
-        onClick={handleBack}
-        style={{ width: "38px", height: "38px", display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <FaArrowLeft />
-      </button>
+      <div className="d-flex align-items-center">
+        <button
+          className="btn btn-light btn-sm rounded-circle shadow-sm"
+          onClick={handleBack}
+          style={{
+            width: "38px",
+            height: "38px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <FaArrowLeft />
+        </button>
+      </div>
 
       {/* Center: Title */}
-      <h5 className="mb-0 fw-bold text-truncate text-center flex-grow-1">
-        {pageName}
-      </h5>
+      <div className="position-absolute start-50 translate-middle-x text-center">
+        <h5 className="mb-0 fw-bold text-truncate">{pageName}</h5>
+      </div>
 
-      {/* Right: Optional content (icon/button) */}
-      <div style={{ width: "38px", textAlign: "right" }}>
-        {rightContent || null}
+      {/* Right: Dynamic buttons with tooltip */}
+      <div className="ms-auto d-flex align-items-center gap-2">
+        {rightContent.map((btn, idx) => (
+          <OverlayTrigger
+            key={idx}
+            placement="bottom"
+            overlay={<Tooltip id={`tooltip-${idx}`}>{btn.label}</Tooltip>}
+          >
+            <span>
+              <button
+                className={`btn btn-sm rounded-circle ${btn.variant || "btn-primary"}`}
+                onClick={btn.onClick}
+                disabled={btn.disabled}
+                style={{
+                  width: "38px",
+                  height: "38px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {btn.icon}
+              </button>
+            </span>
+          </OverlayTrigger>
+        ))}
       </div>
     </div>
   );
