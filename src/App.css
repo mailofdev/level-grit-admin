@@ -2,6 +2,13 @@
 @import './styles/themes/variables.css';
 
 
+.a {
+  text-decoration: none !important;
+  color: unset !important;
+}
+.p-tieredmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
+    text-decoration: none !important;
+}
 .p-button {
   background: unset !important;
   border: unset !important;
@@ -12,7 +19,7 @@
   font-family: 'Poppins', sans-serif !important;
 }
 .p-tieredmenu.p-tieredmenu-overlay{
-  background-color: unset !important;
+   background-color: #f8f9fa !important;
 }
 .form-control:disabled,
 .disabled-page,

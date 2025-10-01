@@ -71,7 +71,12 @@ function MacroAnalysis({ macros }) {
 export default function ClientDetails() {
   const navigate = useNavigate();
   const location = useLocation();
-  const client = location.state?.client;
+  const trainerId = "12345"; // 👉 you can get this from auth, Redux, or props
+
+const client = {
+  ...location.state?.client,
+  trainerId,  // ✅ new field added
+};
 
   if (!client)
     return (
@@ -82,7 +87,7 @@ export default function ClientDetails() {
 
   return (
     <div className="container">
-      <Heading pageName="Client Overview" sticky={true} />
+       <Heading pageName={`${client.fullName}'s information`} sticky={true} />
       <div
         className="d-flex flex-column"
         style={{
@@ -129,12 +134,16 @@ export default function ClientDetails() {
                   )}
                 </div>
                 <div className="d-flex flex-wrap gap-2 justify-content-md-end">
-                  <button
-                    className="bg-white btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
-                    onClick={() => navigate("/messages")}
-                  >
-                    <FaMessage className="me-1" /> Message
-                  </button>
+       <button
+  className="bg-white btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
+  onClick={() =>
+    navigate(`/messages/${client.clientId}`, {
+      state: { client },
+    })
+  }
+>
+  <FaMessage className="me-1" /> Message
+</button>
 
                 
         <SplitButton 

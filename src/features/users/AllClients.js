@@ -71,7 +71,7 @@ export default function AllClients() {
   }
 
   return (
-    <div className="container-fluid p-3" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <div className="container p-3" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       {/* Sticky Header */}
       <div className="shadow-sm p-3 bg-white rounded-3 mb-3 sticky-top" style={{ top: "0", zIndex: 1000 }}>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
@@ -94,11 +94,12 @@ export default function AllClients() {
         {currentClients.map(client => (
           <div key={client.clientId} className="col-12 col-sm-6 col-md-4">
             <div
-              className={`card h-100 shadow-sm rounded-3 ${
-                client.status === "on-track"
-                ? "bg-light-green br-light-green text-white"
-                : "bg-light-orange br-light-orange text-white"
-              }`}
+              // className={`card h-100 shadow-sm rounded-3 ${
+              //   client.status === "on-track"
+              //   ? "bg-light-green br-light-green text-white"
+              //   : "bg-light-orange br-light-orange text-white"
+              // }`}
+               className="card h-100 shadow-sm rounded-3"
               style={{ cursor: "pointer" }}
               onClick={() => handleClientClick(client)}
             >

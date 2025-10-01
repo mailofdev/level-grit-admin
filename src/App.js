@@ -10,7 +10,6 @@ import Dashboard from "./features/dashboard/Dashboard";
 import LoginForm from "./features/auth/LoginForm";
 import RegisterForm from "./features/auth/RegisterForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
-import Users from "./features/users/Users";
 import Messages from "./features/users/Messages";
 import AdjustPlan from "./features/adjustPlan/AdjustPlan";
 import UserDetails from "./features/users/UserDetails";
@@ -49,22 +48,6 @@ function App() {
               </ProtectedLayout>
             }
           />
-            <Route
-            path="/users"
-            element={
-              <ProtectedLayout>
-                <Users />
-              </ProtectedLayout>
-            }
-          />
-           <Route
-            path="/users/new"
-            element={
-              <ProtectedLayout>
-                <UserDetails />
-              </ProtectedLayout>
-            }
-          />
           <Route
             path="/users/:id"
             element={
@@ -92,7 +75,7 @@ function App() {
 
 
             <Route
-            path="/messages"
+            path="/messages/:clientId"
             element={
               <ProtectedLayout>
                 <Messages />
