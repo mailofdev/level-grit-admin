@@ -46,17 +46,18 @@ export default function Heading({ path, pageName, sticky = true, rightContent = 
           >
             <span>
               <button
-                className={`btn btn-sm rounded-circle ${btn.variant || "btn-primary"}`}
+                className={`btn btn-sm ${btn.variant || "btn-primary"}`}
                 onClick={btn.onClick}
                 disabled={btn.disabled}
                 style={{
-                  width: "38px",
-                  height: "38px",
+                  // width: "38px",
+                  // height: "38px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
+                 {btn.label && <span className="me-1">{btn.label}</span>}
                 {btn.icon}
               </button>
             </span>

@@ -279,14 +279,14 @@ useEffect(() => {
 
 const rightButtons = [
   {
-    label: "Add Meal",
+    label: "Add",
     icon: <FaPlus />,
     variant: "btn-outline-primary",
     onClick: handleAddMeal,
     disabled:  isView || isSaving || isDeleting,
   },
   {
-    label: "Save Plan",
+    label: "Save",
     icon: isSaving ? (
       <Spinner as="span" animation="border" size="sm" />
     ) : (
@@ -296,19 +296,19 @@ const rightButtons = [
     onClick: handleSave,
     disabled:  isView || isSaving || isDeleting || !hasUnsavedChanges,
   },
+  // {
+  //   label: "Preview",
+  //   icon: isLoadingPreview ? (
+  //     <Spinner as="span" animation="border" size="sm" />
+  //   ) : (
+  //     <FaEye />
+  //   ),
+  //   variant: "btn-info text-white",
+  //   onClick: handlePreview,
+  //   disabled: isLoadingPreview || isSaving || isDeleting,
+  // },
   {
-    label: "Preview",
-    icon: isLoadingPreview ? (
-      <Spinner as="span" animation="border" size="sm" />
-    ) : (
-      <FaEye />
-    ),
-    variant: "btn-info text-white",
-    onClick: handlePreview,
-    disabled: isLoadingPreview || isSaving || isDeleting,
-  },
-  {
-    label: `Delete Selected (${selectedMealIds.length})`,
+    label: `Delete (${selectedMealIds.length})`,
     icon: isDeleting ? (
       <Spinner as="span" animation="border" size="sm" />
     ) : (

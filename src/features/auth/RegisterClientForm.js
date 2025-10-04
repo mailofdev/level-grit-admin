@@ -27,17 +27,17 @@ const RegisterClientForm = () => {
       required: true,
     },
     { type: "date", name: "dateOfBirth", label: "Date of Birth" },
-    { type: "number", name: "height", label: "Height" },
-    { type: "number", name: "weight", label: "Weight" },
-    { type: "number", name: "targetWeight", label: "Target Weight" },
+    { type: "number", name: "height", label: "Height (cm)" },
+    { type: "number", name: "weight", label: "Weight (kg)" },
+    { type: "number", name: "targetWeight", label: "Target Weight (kg)" },
     {
       type: "select",
       name: "goal",
       label: "Goal",
       required: true,
       options: [
-        { value: 0, label: "Weight Gain" },
-        { value: 1, label: "Weight Loss" },
+        { value: 0, label: "Muscle Gain" },
+        { value: 1, label: "Fat Loss" },
       ],
     },
     {

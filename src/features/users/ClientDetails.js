@@ -152,7 +152,7 @@ const client = {...location.state?.client};
   }} 
   model={[
     {
-      label: "Add/Edit",
+      label: "Add",
       icon: "pi pi-pencil",
       command: () =>
         navigate(`/adjust-plan/${client.clientId}`, {
@@ -160,7 +160,7 @@ const client = {...location.state?.client};
         }),
     },
     {
-      label: "View",
+      label: "Preview",
       icon: "pi pi-eye",
       command: () =>
         navigate(`/adjust-plan/${client.clientId}`, {

@@ -11,6 +11,7 @@
   "axios": "^1.11.0",
   "bootstrap": "^5.3.7",
   "crypto-js": "^4.2.0",
+  "emoji-picker-react": "^4.14.0",
   "firebase": "^12.3.0",
   "framer-motion": "^12.23.18",
   "gh-pages": "^6.3.0",
