@@ -8,8 +8,7 @@ import { sendMessage, subscribeToMessages } from "../../config/chatService";
 export default function Messages() {
   const location = useLocation();
   const client = location.state?.client;
-
-  const trainerId = client?.trainerId; // from client object
+  const trainerId = client?.trainerId;
   const clientId = client?.clientId;
 
   const [messages, setMessages] = useState([]);

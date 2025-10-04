@@ -71,12 +71,9 @@ function MacroAnalysis({ macros }) {
 export default function ClientDetails() {
   const navigate = useNavigate();
   const location = useLocation();
-  const trainerId = "12345"; // 👉 you can get this from auth, Redux, or props
 
-const client = {
-  ...location.state?.client,
-  trainerId,  // ✅ new field added
-};
+
+const client = {...location.state?.client};
 
   if (!client)
     return (
