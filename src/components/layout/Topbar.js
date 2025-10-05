@@ -8,24 +8,7 @@ import UserMenu from "../topbar/UserMenu";
 import ThemeSwitch from "../display/ThemeSwitch";
 import LogoutModal from "../topbar/LogoutModal";
 import ProfileModal from "../topbar/ProfileModal";
-import { decryptToken } from "../../utils/crypto";
-
-const getDecryptedUser = () => {
-  const encryptedUserData = sessionStorage.getItem("user");
-
-  if (!encryptedUserData) {
-    return null;
-  }
-
-  try {
-    const parsedEncryptedData = JSON.parse(encryptedUserData);
-    const decrypted = decryptToken(parsedEncryptedData);
-    return decrypted ? JSON.parse(decrypted) : null;
-  } catch (error) {
-    console.error("Failed to decrypt user data:", error);
-    return null;
-  }
-};
+import { getDecryptedUser } from "../common/CommonFunctions";
 
 const Topbar = ({
   showSearch = true,
@@ -35,9 +18,8 @@ const Topbar = ({
   showIcons = true,
 }) => {
   const dispatch = useDispatch();
- const userInfo = useSelector(selectUser);
-   const decryptedUser = getDecryptedUser();
-  const user = userInfo || decryptedUser || {};
+  const user = getDecryptedUser();
+
 
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);

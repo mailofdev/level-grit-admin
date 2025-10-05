@@ -8,23 +8,28 @@ export const loginThunk = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const result = await loginUser(credentials);
-      
-      const encryptedToken = encryptToken(result.token);
-      sessionStorage.setItem("access_token", encryptedToken);
-    
-      return {
-        userInfo: result,
-        encryptedToken: encryptedToken
+
+      // Combine all auth info
+      const authData = {
+        accessToken: result.token,
+        userInfo: result
       };
+
+      // Encrypt and store in sessionStorage
+      const encryptedAuth = encryptToken(JSON.stringify(authData));
+      sessionStorage.setItem("auth_data", encryptedAuth);
+
+      return authData;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || 
-        error.message || 
+        error.response?.data?.message ||
+        error.message ||
         "Login failed"
       );
     }
   }
 );
+
 
 export const registerThunk = createAsyncThunk(
   "auth/register",

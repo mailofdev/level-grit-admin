@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   user: null,
-  token: sessionStorage.getItem("access_token") || null,
+  token: sessionStorage.getItem("auth_data") || null,
   loading: false,
   error: null,
 };
@@ -33,7 +33,7 @@ const authSlice = createSlice({
       state.token = null;
       state.error = null;
       state.loading = false;
-      sessionStorage.removeItem("access_token");
+      sessionStorage.removeItem("auth_data");
       sessionStorage.clear();
       localStorage.clear();
     },

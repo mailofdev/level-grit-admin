@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "./authThunks";
-import { encryptToken } from "../../utils/crypto";
 import DynamicForm from "../../components/forms/DynamicForm";
 import logo from "../../assets/images/logo3.jpeg";
 import Loader from "../../components/display/Loader";
@@ -20,23 +19,18 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (data) => {
-    setErrorMessage("");
-    setIsLoading(true);
-    try {
-      const result = await dispatch(loginThunk(formData));
-      const encryptedUserData = encryptToken(
-        result?.payload?.userInfo ? JSON.stringify(result.payload.userInfo) : ""
-      );
-      sessionStorage.setItem("user", JSON.stringify(encryptedUserData));
-      setIsLoading(false);
-      navigate("/dashboard", { replace: true });
-    } catch (error) {
-      setIsLoading(false);
-      const message = error?.message || String(error) || "Login failed. Please try again.";
-      setErrorMessage(message);
-    }
-  };
+const handleSubmit = async (data) => {
+  setErrorMessage("");
+  setIsLoading(true);
+  try {
+    const result = await dispatch(loginThunk(formData)).unwrap();
+    setIsLoading(false);
+    navigate("/dashboard", { replace: true });
+  } catch (error) {
+    setIsLoading(false);
+    setErrorMessage(error || "Login failed. Please try again.");
+  }
+};
 
   const handleCancel = () => {
     setFormData({});

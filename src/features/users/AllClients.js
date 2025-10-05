@@ -1,26 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { decryptToken } from "../../utils/crypto";
 import { GetClientsForTrainer } from "../../api/authAPI";
 import Loader from "../../components/display/Loader";
-
-// ✅ Decrypt user function
-const getDecryptedUser = () => {
-  const encryptedUserData = sessionStorage.getItem("user");
-  if (!encryptedUserData) return null;
-  try {
-    const parsed = JSON.parse(encryptedUserData);
-    const decrypted = decryptToken(parsed);
-    return decrypted ? JSON.parse(decrypted) : null;
-  } catch (error) {
-    console.error("Error decrypting user data:", error);
-    return null;
-  }
-};
+import { getDecryptedUser } from "../../components/common/CommonFunctions";
 
 export default function AllClients() {
-  const decryptedUser = getDecryptedUser();
-  const user = decryptedUser || {};
+  const user = getDecryptedUser();
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);

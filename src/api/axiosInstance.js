@@ -9,10 +9,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const encrypted = sessionStorage.getItem("access_token");
+  const encrypted = sessionStorage.getItem("auth_data");
   if (encrypted) {
-    const token = decryptToken(encrypted);
-    config.headers.Authorization = `Bearer ${token}`;
+    const decrypted = decryptToken(encrypted);
+    const authData = JSON.parse(decrypted || "{}");
+    if (authData?.accessToken) {
+      config.headers.Authorization = `Bearer ${authData.accessToken}`;
+    }
   }
   return config;
 });

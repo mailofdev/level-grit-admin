@@ -1,5 +1,5 @@
 import { FaUser, FaDumbbell, FaShieldAlt } from "react-icons/fa";
-
+import { decryptToken } from "../../utils/crypto";
 const ROLE_MAPPINGS = {
   Trainer: {
     icon: <FaDumbbell size={20} className="text-white" />,
@@ -40,3 +40,17 @@ const getRoleIcon = (role, type = 'icon') => {
 };
 
 export default getRoleIcon;
+
+export const getDecryptedUser = () => {
+  const encryptedAuth = sessionStorage.getItem("auth_data");
+  if (!encryptedAuth) return null;
+
+  try {
+    const decrypted = decryptToken(encryptedAuth);
+    const parsed = JSON.parse(decrypted);
+    return parsed?.userInfo || null;
+  } catch (error) {
+    console.error("Failed to decrypt auth_data:", error);
+    return null;
+  }
+};
