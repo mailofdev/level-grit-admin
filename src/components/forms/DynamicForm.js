@@ -31,33 +31,37 @@ const validateField = (field, value, formData) => {
     }
   }
   if (field.type === "number" && value !== undefined && value !== null) {
-  const num = Number(value);
-  if (isNaN(num)) return `${field.label} must be a number.`;
-  if (field.min !== undefined && num < field.min) {
-    return `${field.label} must be at least ${field.min}.`;
+    const num = Number(value);
+    if (isNaN(num)) return `${field.label} must be a number.`;
+    if (field.min !== undefined && num < field.min) {
+      return `${field.label} must be at least ${field.min}.`;
+    }
+    if (field.max !== undefined && num > field.max) {
+      return `${field.label} must be at most ${field.max}.`;
+    }
   }
-  if (field.max !== undefined && num > field.max) {
-    return `${field.label} must be at most ${field.max}.`;
-  }
-}
 
-if (field.type === "json" && value) {
-  try {
-    JSON.parse(value);
-  } catch {
-    return `${field.label} must be valid JSON.`;
+  if (field.type === "json" && value) {
+    try {
+      JSON.parse(value);
+    } catch {
+      return `${field.label} must be valid JSON.`;
+    }
   }
-}
 
-if ((field.type === "file" || field.type === "multiFile") && value) {
-  if (field.required && (!value || value.length === 0)) {
-    return `${field.label} is required.`;
+  if ((field.type === "file" || field.type === "multiFile") && value) {
+    if (field.required && (!value || value.length === 0)) {
+      return `${field.label} is required.`;
+    }
   }
-}
 
-if (field.type === "tags" && field.required && (!value || value.length === 0)) {
-  return `${field.label} must have at least one tag.`;
-}
+  if (
+    field.type === "tags" &&
+    field.required &&
+    (!value || value.length === 0)
+  ) {
+    return `${field.label} must have at least one tag.`;
+  }
 
   if (field.validate && typeof field.validate === "function") {
     const customError = field.validate(value, formData);
@@ -108,27 +112,27 @@ const DynamicForm = ({
    * Handlers
    * ----------------------------*/
   const handleChange = (e, name, type) => {
-  let value;
+    let value;
 
-  if (type === "checkbox") {
-    value = e.target.checked;
-  } else if (type === "number") {
-    // convert to number (empty string stays empty)
-    value = e.target.value === "" ? "" : Number(e.target.value);
-  } else {
-    value = e.target.value;
-  }
+    if (type === "checkbox") {
+      value = e.target.checked;
+    } else if (type === "number") {
+      // convert to number (empty string stays empty)
+      value = e.target.value === "" ? "" : Number(e.target.value);
+    } else {
+      value = e.target.value;
+    }
 
-  const newFormData = { ...formData, [name]: value };
+    const newFormData = { ...formData, [name]: value };
 
-  if (onChange) onChange(newFormData);
+    if (onChange) onChange(newFormData);
 
-  setTouched((prev) => ({ ...prev, [name]: true }));
+    setTouched((prev) => ({ ...prev, [name]: true }));
 
-  const field = memoizedSchema.find((f) => f.name === name);
-  const error = validateField(field, value, newFormData);
-  setErrors((prev) => ({ ...prev, [name]: error }));
-};
+    const field = memoizedSchema.find((f) => f.name === name);
+    const error = validateField(field, value, newFormData);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
 
   const handleBlur = (name) => {
     setTouched((prev) => ({ ...prev, [name]: true }));
@@ -539,26 +543,27 @@ const DynamicForm = ({
                 </div>
               );
               break;
-            
-              case "disabledInput":
-  fieldEl = (
-    <input
-      type="text"
-      className="form-control bg-light text-dark cursor-not-allowed"
-      id={field.name}
-      name={field.name}
-      value={field.value || ""}
-      disabled
-    />
-  );
-  break;
 
-              default:
+            case "disabledInput":
+              fieldEl = (
+                <input
+                  type="text"
+                  className="form-control bg-light text-dark cursor-not-allowed"
+                  id={field.name}
+                  name={field.name}
+                  value={field.value || ""}
+                  disabled
+                />
+              );
+              break;
+
+            default:
               fieldEl = null;
           }
 
           return (
-            <div style={{marginBottom: '5px'}}
+            <div
+              style={{ marginBottom: "5px" }}
               className={`${twoRowForm ? "col-md-6" : "col-md-12"} col-12`}
               key={idx}
             >
