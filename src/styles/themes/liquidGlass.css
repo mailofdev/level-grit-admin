@@ -5,7 +5,14 @@
   position: relative;
 }
 
-.liquid-bg::before {
+.register-liquid-bg {
+  background: radial-gradient(circle at 30% 30%, #e0f7fa, #e0f7fa, #e8f5e9);
+  overflow: hidden;
+  position: relative;
+}
+
+.liquid-bg::before,
+.register-liquid-bg::before {
   content: "";
   position: absolute;
   top: -10%;
@@ -32,23 +39,52 @@
   }
 }
 
+/* ====== Glass Register Card ====== */
+.glass-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.05)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(0, 255, 200, 0.25),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 50px rgba(0, 255, 200, 0.4),
+    inset 0 0 25px rgba(255, 255, 255, 0.1);
+}
+
 /* ====== Frosted Input Fields ====== */
-.form-control {
+.form-control,
+.form-select {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 12px;
-  color: #fff;
+  color: #222;
   padding: 10px 14px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
-.form-control:focus {
+.form-control:focus,
+.form-select:focus {
   border-color: #00ffcc;
   box-shadow: 0 0 12px rgba(0, 255, 200, 0.4);
   background: rgba(255, 255, 255, 0.25);
-  color: #fff;
   outline: none;
+}
+
+/* ====== Input Labels ====== */
+.form-label {
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 0.4px;
 }
 
 /* ====== Neon Liquid Button ====== */
@@ -62,10 +98,47 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+  box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
 }
 
 .liquid-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+  box-shadow: 0 0 25px rgba(0, 255, 200, 0.6);
+}
+
+/* ====== Toast Custom Style ====== */
+.p-toast-message {
+  background: rgba(0, 0, 0, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.p-toast-message-text {
+  color: #ffffff !important;
+}
+
+/* ====== Link Styles ====== */
+a {
+  text-decoration: none !important;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #00b894 !important;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 480px) {
+  .glass-card {
+    padding: 2rem !important;
+    border-radius: 18px;
+  }
+  .form-label {
+    font-size: 0.9rem;
+  }
+  .liquid-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
 }

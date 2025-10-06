@@ -2,6 +2,20 @@
 @import './styles/themes/variables.css';
 
 
+.custom-toast-content {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.p-toast-message {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.p-toast-message-text {
+  color: #ffffff !important;
+}
+
 .a {
   text-decoration: none !important;
   color: unset !important;
