@@ -2,6 +2,32 @@
 @import './styles/themes/variables.css';
 
 
+.modal-content {
+  animation: popIn 0.4s ease-in-out;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+.disabled-label {
+  color: #6c757d !important;
+}
+
+.bg-danger-custom .accordion-button:not(.collapsed) {
+  pointer-events: none !important;
+  opacity: 0.7 !important;
+  background-color: #f8f9fa !important;
+}
+
 .custom-toast-content {
   color: #ffffff !important;
   font-weight: 500;

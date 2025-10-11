@@ -12,11 +12,11 @@ import RegisterForm from "./features/auth/RegisterForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
 import Messages from "./features/users/Messages";
 import AdjustPlan from "./features/adjustPlan/AdjustPlan";
-import UserDetails from "./features/users/UserDetails";
 import RegisterClientForm from "./features/auth/RegisterClientForm";
 import AllClients from "./features/users/AllClients";
 import ClientDetails from "./features/users/ClientDetails";
 import LandingPage from "./features/landing/LandingPage";
+import AdminDashboard from "./features/dashboard/AdminDashboard";
 function ProtectedLayout({ children, config }) {
   return (
     <ProtectedRoute>
@@ -45,14 +45,6 @@ function App() {
             element={
               <ProtectedLayout config={{ showTopbar: true, showSidebar: false, showFooter: false }}>
                 <Dashboard />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="/users/:id"
-            element={
-              <ProtectedLayout>
-                <UserDetails />
               </ProtectedLayout>
             }
           />
@@ -90,6 +82,15 @@ function App() {
               </ProtectedLayout>
             }
           />
+           <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedLayout>
+                <AdminDashboard />
+              </ProtectedLayout>
+            }
+          />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
