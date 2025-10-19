@@ -51,92 +51,121 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 position-relative theme-transition">
+    <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
       {isLoading && <Loader fullScreen={true} text="Logging in..." color="var(--color-primary)" />}
 
-      {/* Login Card */}
-      <div className="card border-0 shadow-lg p-4 theme-transition" style={{ maxWidth: "400px", width: "100%" }}>
+      {/* Enhanced Login Card */}
+      <div className="card content-wrapper card-health p-5" style={{ maxWidth: "450px", width: "100%" }}>
         <div className="text-center mb-4">
-          <img
-            src={logo}
-            alt="Gym Logo"
-            className="rounded-circle border border-2"
-            style={{
-              height: "90px",
-              width: "90px",
-              borderColor: "var(--color-border)",
-            }}
-          />
+          <div className="position-relative d-inline-block">
+            <img
+              src={logo}
+              alt="Health App Logo"
+              className="rounded-circle border border-3 shadow-sm hover-scale"
+              style={{
+                height: "100px",
+                width: "100px",
+                borderColor: "var(--color-primary)",
+                objectFit: "cover"
+              }}
+            />
+            <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
+          </div>
+          <h3 className="fw-bold text-primary mt-3 mb-1">Welcome Back</h3>
+          <p className="text-muted small">Sign in to your health journey</p>
         </div>
 
         {errorMessage && (
-          <div className="alert alert-danger text-center py-2 mb-3">
+          <div className="alert alert-danger text-center py-3 mb-4 smooth-transition">
+            <i className="fas fa-exclamation-triangle me-2"></i>
             {errorMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="needs-validation">
           {/* Email Field */}
-          <div className="mb-3">
-            <label className="form-label">Email</label>
+          <div className="mb-4">
+            <label className="form-label fw-semibold">
+              <i className="fas fa-envelope text-primary me-2"></i>Email Address
+            </label>
             <input
               type="email"
-              className="form-control"
-              placeholder="Enter your email"
+              className="form-control form-control-lg smooth-transition"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
           {/* Password Field */}
-          <div className="mb-3 position-relative">
-            <label className="form-label">Password</label>
+          <div className="mb-4 position-relative">
+            <label className="form-label fw-semibold">
+              <i className="fas fa-lock text-primary me-2"></i>Password
+            </label>
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control pe-5"
+                className="form-control form-control-lg pe-5 smooth-transition"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              <span
+              <button
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="position-absolute top-50 end-0 translate-middle-y me-3"
-                style={{ cursor: "pointer", color: "var(--color-muted)" }}
+                className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-3 p-0 text-muted"
+                style={{ border: "none", background: "none" }}
               >
                 {showPassword ? (
                   <EyeClosed size={20} />
                 ) : (
                   <Eye size={20} />
                 )}
-              </span>
+              </button>
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mt-2 hover-scale">
-            Login
+          <button 
+            type="submit" 
+            className="btn btn-primary btn-lg w-100 mt-3 smooth-transition"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                Signing In...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-sign-in-alt me-2"></i>
+                Sign In
+              </>
+            )}
           </button>
         </form>
 
         {/* Links */}
-        <div className="text-center mt-3 small">
-          <p className="text-muted">
+        <div className="text-center mt-4">
+          <p className="text-muted mb-2">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-decoration-none fw-bold theme-transition"
+              className="text-decoration-none fw-bold smooth-transition"
               style={{ color: "var(--color-primary)" }}
             >
-              Register
+              Create Account
             </Link>
           </p>
           <p className="mb-0">
             <Link
               to="/reset-password"
-              className="text-decoration-none fw-bold theme-transition"
+              className="text-decoration-none fw-semibold smooth-transition"
               style={{ color: "var(--color-link)" }}
             >
-              Forgot password?
+              <i className="fas fa-key me-1"></i>
+              Forgot your password?
             </Link>
           </p>
         </div>

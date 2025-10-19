@@ -5,7 +5,7 @@ import { registerUser } from "../../api/authAPI";
 import { loginThunk } from "./authThunks";
 import logo from "../../assets/images/logo3.jpeg";
 import Loader from "../../components/display/Loader";
-import "../../styles/themes/liquidGlass.css";
+// Removed liquid glass import - using new health theme
 import { Eye, EyeClosed } from "lucide-react";
 import { Toast } from "primereact/toast";
 
@@ -138,149 +138,161 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 register-liquid-bg position-relative">
+    <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
       <Toast ref={toast} />
-      {isLoading && <Loader fullScreen={true} text="Registering..." color="#00ffb0" />}
+      {isLoading && <Loader fullScreen={true} text="Creating your account..." color="var(--color-primary)" />}
 
-      {/* Glass Register Card */}
-      <div
-        className="glass-card p-5 shadow-lg"
-        style={{
-          maxWidth: "420px",
-          width: "100%",
-          borderRadius: "25px",
-          background:
-            "linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
-          boxShadow:
-            "0 0 40px rgba(0,255,200,0.25), inset 0 0 20px rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      {/* Enhanced Register Card */}
+      <div className="card content-wrapper card-health p-5" style={{ maxWidth: "500px", width: "100%" }}>
         <div className="text-center mb-4">
-          <img
-            src={logo}
-            alt="Logo"
-            style={{
-              height: "90px",
-              width: "90px",
-              borderRadius: "50%",
-              border: "2px solid rgba(255,255,255,0.4)",
-              boxShadow: "0 0 25px rgba(0,255,150,0.6)",
-            }}
-          />
+          <div className="position-relative d-inline-block">
+            <img
+              src={logo}
+              alt="Health App Logo"
+              className="rounded-circle border border-3 shadow-sm hover-scale"
+              style={{
+                height: "100px",
+                width: "100px",
+                borderColor: "var(--color-primary)",
+                objectFit: "cover"
+              }}
+            />
+            <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
+          </div>
+          <h3 className="fw-bold text-primary mt-3 mb-1">Join Our Community</h3>
+          <p className="text-muted small">Start your health transformation journey</p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          {/* Full Name */}
-          <div className="mb-3">
-            <label className="form-label text-white">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              className="form-control"
-              placeholder="Enter your full name"
-              value={fullName}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Phone Number */}
-          <div className="mb-3">
-            <label className="form-label text-white">Phone Number</label>
-            <input
-              type="tel"
-              name="phoneNumber"
-              className="form-control"
-              placeholder="Enter 10-digit number"
-              value={phoneNumber}
-              onChange={handleChange}
-              maxLength="10"
-            />
-          </div>
-
-          {/* Gender */}
-          <div className="mb-3">
-            <label className="form-label text-white">Gender</label>
-            <select
-              name="gender"
-              className="form-select"
-              value={gender}
-              onChange={handleChange}
-            >
-              <option value="">Select gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          {/* Email */}
-          <div className="mb-3">
-            <label className="form-label text-white">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              placeholder="Enter your email"
-              value={email}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-3 position-relative">
-            <label className="form-label text-white">Password</label>
-            <div className="position-relative">
+        <form onSubmit={handleSubmit} className="needs-validation">
+          <div className="row g-3">
+            {/* Full Name */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-user text-primary me-2"></i>Full Name
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                className="form-control pe-5"
-                placeholder="Enter your password"
-                value={password}
+                type="text"
+                name="fullName"
+                className="form-control form-control-lg smooth-transition"
+                placeholder="Enter your full name"
+                value={fullName}
                 onChange={handleChange}
+                required
               />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "12px",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                  color: "rgba(255,255,255,0.8)",
-                }}
+            </div>
+
+            {/* Phone Number */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-phone text-primary me-2"></i>Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                className="form-control form-control-lg smooth-transition"
+                placeholder="Enter 10-digit phone number"
+                value={phoneNumber}
+                onChange={handleChange}
+                maxLength="10"
+                required
+              />
+            </div>
+
+            {/* Gender */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-venus-mars text-primary me-2"></i>Gender
+              </label>
+              <select
+                name="gender"
+                className="form-select form-select-lg smooth-transition"
+                value={gender}
+                onChange={handleChange}
+                required
               >
-                {showPassword ? (
-                  <EyeClosed size={20} color="#333" />
-                ) : (
-                  <Eye size={20} color="#333" />
-                )}
-              </span>
+                <option value="">Select your gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            {/* Email */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-envelope text-primary me-2"></i>Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                className="form-control form-control-lg smooth-transition"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-lock text-primary me-2"></i>Password
+              </label>
+              <div className="position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="form-control form-control-lg pe-5 smooth-transition"
+                  placeholder="Create a strong password"
+                  value={password}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-3 p-0 text-muted"
+                  style={{ border: "none", background: "none" }}
+                >
+                  {showPassword ? (
+                    <EyeClosed size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
-          <button type="submit" className="liquid-btn w-100 mt-2">
-            Register
+          <button 
+            type="submit" 
+            className="btn btn-primary btn-lg w-100 mt-4 smooth-transition"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                Creating Account...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-user-plus me-2"></i>
+                Create Account
+              </>
+            )}
           </button>
         </form>
 
         {/* Links */}
-        <div className="text-center mt-3" style={{ fontSize: "0.9rem" }}>
-          <p style={{ color: "rgba(255,255,255,0.85)" }}>
+        <div className="text-center mt-4">
+          <p className="text-muted mb-0">
             Already have an account?{" "}
             <Link
               to="/login"
-              style={{
-                color: "#00ffd5",
-                fontWeight: "800",
-                textDecoration: "none",
-                transition: "all 0.3s ease",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#00b894")}
-              onMouseOut={(e) => (e.target.style.color = "#00ffd5")}
+              className="text-decoration-none fw-bold smooth-transition"
+              style={{ color: "var(--color-primary)" }}
             >
-              Login
+              Sign In
             </Link>
           </p>
         </div>

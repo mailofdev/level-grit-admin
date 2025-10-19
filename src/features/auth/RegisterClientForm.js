@@ -89,189 +89,240 @@ const RegisterClientForm = () => {
     });
 
   return (
-    <div className="container py-4">
-      {loading && <Loader fullScreen text="Registering client..." color="#28a745" />}
+    <div className="page-container auth-page-enter">
+      {loading && <Loader fullScreen text="Registering client..." color="var(--color-primary)" />}
       <Toast ref={toast} position="top-right" />
 
       <Heading pageName="Register Client" sticky={true} />
 
-      <Card className="shadow-lg border-0 mt-3" style={{ borderRadius: "1rem" }}>
-        <Card.Body className="p-4">
-          <div className="text-center mb-4">
-            <h4 className="fw-bold text-success">
-              <FaBullseye className="me-2" /> Client Registration
-            </h4>
-            <p className="text-muted mb-0">
-              Fill in the details below to register a new client
-            </p>
-          </div>
+      <div className="container-fluid">
+        <div className="row justify-content-center">
+          <div className="col-12 col-lg-10 col-xl-8">
+            <div className="card content-wrapper card-health p-4">
+              <div className="text-center mb-4">
+                <div className="position-relative d-inline-block mb-3">
+                  <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
+                       style={{ width: "80px", height: "80px" }}>
+                    <FaBullseye size={40} className="text-white" />
+                  </div>
+                  <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
+                </div>
+                <h3 className="fw-bold text-primary mb-2">Client Registration</h3>
+                <p className="text-muted">
+                  Add a new client to your health management system
+                </p>
+              </div>
 
-          <Form onSubmit={handleSubmit}>
-            <Row className="gy-3">
-              <Col md={6}>
-                <FloatingLabel label="Full Name">
-                  <Form.Control
-                    type="text"
-                    name="fullName"
-                    placeholder="Full Name"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                  />
-                </FloatingLabel>
-              </Col>
+              <Form onSubmit={handleSubmit} className="needs-validation">
+                <Row className="gy-4">
+                  {/* Personal Information Section */}
+                  <Col xs={12}>
+                    <div className="card card-stats p-3 mb-3">
+                      <h5 className="fw-semibold text-primary mb-3">
+                        <i className="fas fa-user me-2"></i>Personal Information
+                      </h5>
+                      <Row className="gy-3">
+                        <Col md={6}>
+                          <FloatingLabel label="Full Name" className="smooth-transition">
+                            <Form.Control
+                              type="text"
+                              name="fullName"
+                              placeholder="Full Name"
+                              value={formData.fullName}
+                              onChange={handleChange}
+                              required
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
 
-              <Col md={6}>
-                <FloatingLabel label="Email">
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </FloatingLabel>
-              </Col>
+                        <Col md={6}>
+                          <FloatingLabel label="Email Address" className="smooth-transition">
+                            <Form.Control
+                              type="email"
+                              name="email"
+                              placeholder="Email Address"
+                              value={formData.email}
+                              onChange={handleChange}
+                              required
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
 
-              {/* Password field with eye toggle */}
-              <Col md={6}>
-                <FloatingLabel label="Password" className="position-relative">
-                  <Form.Control
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    minLength={6}
-                    style={{ paddingRight: "2.5rem" }}
-                  />
+                        <Col md={6}>
+                          <FloatingLabel label="Phone Number" className="smooth-transition">
+                            <Form.Control
+                              type="tel"
+                              name="phoneNumber"
+                              placeholder="Phone Number"
+                              value={formData.phoneNumber}
+                              onChange={handleChange}
+                              required
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={6}>
+                          <FloatingLabel label="Gender" className="smooth-transition">
+                            <Form.Select
+                              name="gender"
+                              value={formData.gender}
+                              onChange={handleChange}
+                              required
+                              className="smooth-transition"
+                            >
+                              <option value="">Select gender</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
+                              <option value="other">Other</option>
+                            </Form.Select>
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={6}>
+                          <FloatingLabel label="Date of Birth" className="smooth-transition">
+                            <Form.Control
+                              type="date"
+                              name="dateOfBirth"
+                              value={formData.dateOfBirth}
+                              onChange={handleChange}
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={6}>
+                          <FloatingLabel label="Password" className="position-relative smooth-transition">
+                            <Form.Control
+                              type={showPassword ? "text" : "password"}
+                              name="password"
+                              placeholder="Password"
+                              value={formData.password}
+                              onChange={handleChange}
+                              required
+                              minLength={6}
+                              style={{ paddingRight: "2.5rem" }}
+                              className="smooth-transition"
+                            />
+                            <Button
+                              variant="link"
+                              type="button"
+                              className="position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-muted"
+                              onClick={() => setShowPassword(!showPassword)}
+                              tabIndex={-1}
+                            >
+                              {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </Button>
+                          </FloatingLabel>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Col>
+
+                  {/* Health Information Section */}
+                  <Col xs={12}>
+                    <div className="card card-info p-3 mb-3">
+                      <h5 className="fw-semibold text-info mb-3">
+                        <i className="fas fa-heartbeat me-2"></i>Health Information
+                      </h5>
+                      <Row className="gy-3">
+                        <Col md={4}>
+                          <FloatingLabel label="Height (cm)" className="smooth-transition">
+                            <Form.Control
+                              type="number"
+                              name="height"
+                              placeholder="Height"
+                              value={formData.height}
+                              onChange={handleChange}
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={4}>
+                          <FloatingLabel label="Current Weight (kg)" className="smooth-transition">
+                            <Form.Control
+                              type="number"
+                              name="weight"
+                              placeholder="Current Weight"
+                              value={formData.weight}
+                              onChange={handleChange}
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={4}>
+                          <FloatingLabel label="Target Weight (kg)" className="smooth-transition">
+                            <Form.Control
+                              type="number"
+                              name="targetWeight"
+                              placeholder="Target Weight"
+                              value={formData.targetWeight}
+                              onChange={handleChange}
+                              className="smooth-transition"
+                            />
+                          </FloatingLabel>
+                        </Col>
+
+                        <Col md={6}>
+                          <FloatingLabel label="Fitness Goal" className="smooth-transition">
+                            <Form.Select
+                              name="goal"
+                              value={formData.goal}
+                              onChange={handleChange}
+                              required
+                              className="smooth-transition"
+                            >
+                              <option value="">Select fitness goal</option>
+                              <option value={0}>Muscle Gain</option>
+                              <option value={1}>Fat Loss</option>
+                            </Form.Select>
+                          </FloatingLabel>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Col>
+                </Row>
+
+                <div className="text-center mt-4">
                   <Button
-                    variant="link"
-                    type="button"
-                    className="position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-secondary"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="px-5 fw-bold smooth-transition me-3"
+                    disabled={loading}
                   >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Registering...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-user-plus me-2"></i>
+                        Register Client
+                      </>
+                    )}
                   </Button>
-                </FloatingLabel>
-              </Col>
-
-              <Col md={6}>
-                <FloatingLabel label="Phone Number">
-                  <Form.Control
-                    type="text"
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    required
-                  />
-                </FloatingLabel>
-              </Col>
-
-              <Col md={6}>
-                <FloatingLabel label="Date of Birth">
-                  <Form.Control
-                    type="date"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </Col>
-
-              <Col md={6}>
-                <FloatingLabel label="Height (cm)">
-                  <Form.Control
-                    type="number"
-                    name="height"
-                    placeholder="Height"
-                    value={formData.height}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </Col>
-
-              <Col md={4}>
-                <FloatingLabel label="Weight (kg)">
-                  <Form.Control
-                    type="number"
-                    name="weight"
-                    placeholder="Weight"
-                    value={formData.weight}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </Col>
-
-              <Col md={4}>
-                <FloatingLabel label="Target Weight (kg)">
-                  <Form.Control
-                    type="number"
-                    name="targetWeight"
-                    placeholder="Target Weight"
-                    value={formData.targetWeight}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </Col>
-
-              <Col md={4}>
-                <FloatingLabel label="Goal">
-                  <Form.Select
-                    name="goal"
-                    value={formData.goal}
-                    onChange={handleChange}
-                    required
+                  <Button
+                    variant="outline-secondary"
+                    size="lg"
+                    className="px-4 smooth-transition"
+                    type="button"
+                    onClick={handleCancel}
                   >
-                    <option value="">Select goal</option>
-                    <option value={0}>Muscle Gain</option>
-                    <option value={1}>Fat Loss</option>
-                  </Form.Select>
-                </FloatingLabel>
-              </Col>
-
-              <Col md={6}>
-                <FloatingLabel label="Gender">
-                  <Form.Select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </Form.Select>
-                </FloatingLabel>
-              </Col>
-            </Row>
-
-            <div className="text-center mt-4">
-              <Button
-                type="submit"
-                variant="success"
-                className="px-5 fw-bold"
-                disabled={loading}
-              >
-                {loading ? "Registering..." : "Register Client"}
-              </Button>
-              <Button
-                variant="outline-secondary"
-                className="ms-3 px-4"
-                type="button"
-                onClick={handleCancel}
-              >
-                Reset
-              </Button>
+                    <i className="fas fa-undo me-2"></i>
+                    Reset Form
+                  </Button>
+                </div>
+              </Form>
             </div>
-          </Form>
-        </Card.Body>
-      </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
