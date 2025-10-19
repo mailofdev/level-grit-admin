@@ -123,7 +123,7 @@ function App() {
             }
           />
           <Route
-            path="/progress/:clientId"
+            path="/progress"
             element={
               <ProtectedLayout>
                 <ProgressTracker />

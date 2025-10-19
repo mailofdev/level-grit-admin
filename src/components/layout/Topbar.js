@@ -30,7 +30,7 @@ const Topbar = ({
   const handleLogoutClick = () => setShowLogoutModal(true);
   const handleLogoutConfirm = () => {
     dispatch(logout());
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   // Close menu if clicked outside
