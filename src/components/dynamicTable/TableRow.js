@@ -105,8 +105,7 @@ const TableRow = React.memo(
     return (
       <>
         <tr
-          className={isSelected ? "table-active" : ""}
-          style={isSelected ? { backgroundColor: "gold" } : {}}
+          className={`${isSelected ? "table-active bg-warning" : ""} hover-lift smooth-transition`}
           tabIndex={0}
           aria-selected={isSelected}
           onClick={(e) => onRowClick(row, rowIdx, e)}
@@ -120,7 +119,7 @@ const TableRow = React.memo(
               {actions.map((action, aidx) => (
                 <button
                   key={aidx}
-                  className={`btn btn-sm me-1 ${
+                  className={`btn btn-sm me-1 smooth-transition ${
                     action.className || "btn-outline-secondary"
                   }`}
                   onClick={(e) => {
@@ -140,8 +139,8 @@ const TableRow = React.memo(
         {/* Modal */}
         {modalData && (
           <div
-            className="modal fade show"
-            style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+            className="modal fade show d-block"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
           >
             <div className="modal-dialog modal-lg">
               <div className="modal-content">

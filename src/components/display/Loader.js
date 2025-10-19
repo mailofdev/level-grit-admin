@@ -8,14 +8,14 @@ const Loader = ({
   text = "Loading...",
 }) => {
   const loaderStyles = `
-    .loader-container {
+    .custom-loader-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.3s ease-in-out;
     }
-    .loader-container.fullscreen {
+    .custom-loader-container.fullscreen {
       position: fixed;
       top: 0;
       left: 0;
@@ -25,13 +25,13 @@ const Loader = ({
       backdrop-filter: blur(4px);
       z-index: 9999;
     }
-    .spinner {
+    .custom-spinner {
       position: relative;
       width: ${size};
       height: ${size};
     }
-    .spinner:before,
-    .spinner:after {
+    .custom-spinner:before,
+    .custom-spinner:after {
       content: "";
       position: absolute;
       top: 0;
@@ -41,15 +41,15 @@ const Loader = ({
       border-radius: 50%;
       border: 5px solid transparent;
     }
-    .spinner:before {
+    .custom-spinner:before {
       border-top-color: ${color};
       animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     }
-    .spinner:after {
+    .custom-spinner:after {
       border-right-color: ${color}aa;
       animation: spinReverse 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     }
-    .loader-text {
+    .custom-loader-text {
       margin-top: 15px;
       font-size: 22px;
       font-weight: bold;
@@ -79,9 +79,9 @@ const Loader = ({
   return (
     <>
       <style>{loaderStyles}</style>
-      <div className={`loader-container ${fullScreen ? "fullscreen" : ""}`}>
-        <div className="spinner"></div>
-        {text && <p className="loader-text">{text}</p>}
+      <div className={`card content-wrapper text-center p-4 ${fullScreen ? "position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" : ""}`}>
+        <div className="custom-spinner"></div>
+        {text && <p className="custom-loader-text mt-3">{text}</p>}
       </div>
     </>
   );

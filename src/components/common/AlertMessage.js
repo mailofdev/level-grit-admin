@@ -41,7 +41,7 @@ const AlertMessage = ({
       style={{ zIndex: 1080 }}
     >
       <div
-        className={`alert ${alertTypeMap[type]} alert-dismissible fade show shadow`}
+        className={`card content-wrapper alert ${alertTypeMap[type]} alert-dismissible fade show shadow smooth-transition`}
         role="alert"
       >
         <div className="d-flex flex-column flex-md-row align-items-md-center">

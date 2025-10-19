@@ -214,7 +214,7 @@ const DynamicForm = ({
         </div>
       )} */}
 
-      <div className="row">
+      <div className="row g-3">
         {memoizedSchema.map((field, idx) => {
           const disabled = isViewMode || field.disabled;
           const hasError = errors[field.name] || memoizedErrors[field.name];
@@ -548,11 +548,12 @@ const DynamicForm = ({
               fieldEl = (
                 <input
                   type="text"
-                  className="form-control bg-light text-dark cursor-not-allowed"
+                  className="form-control bg-light text-dark"
                   id={field.name}
                   name={field.name}
                   value={field.value || ""}
                   disabled
+                  style={{ cursor: "not-allowed" }}
                 />
               );
               break;
@@ -563,7 +564,6 @@ const DynamicForm = ({
 
           return (
             <div
-              style={{ marginBottom: "5px" }}
               className={`${twoRowForm ? "col-md-6" : "col-md-12"} col-12`}
               key={idx}
             >

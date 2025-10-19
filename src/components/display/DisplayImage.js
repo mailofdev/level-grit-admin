@@ -17,9 +17,9 @@ const DisplayImage = React.memo(({ src, alt, width = "100%", height = "auto", st
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="card content-wrapper text-center p-3">
       {/* {loading && (
-        <div style={{ padding: "10px" }}>
+        <div className="p-3">
           <span className="spinner-border text-primary" role="status" />
         </div>
       )} */}
@@ -29,18 +29,16 @@ const DisplayImage = React.memo(({ src, alt, width = "100%", height = "auto", st
         onLoad={handleLoad}
         onError={handleError}
         loading="lazy"
+        className="img-fluid rounded shadow-sm hover-scale"
         style={{
           width,
           height,
           objectFit: "cover",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          // display: loading ? "none" : "block",
           ...style, // merge any overrides from parent
         }}
       />
       {/* {!loading && (
-        <p style={{ color: "#555", marginTop: "5px" }}>{alt}</p>
+        <p className="text-muted mt-2">{alt}</p>
       )} */}
     </div>
   );
