@@ -11,9 +11,9 @@ const LandingPage = () => {
     navigate('register')
   }
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-vh-100 theme-transition">
       {/* Navigation */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 fixed-top">
+      <nav className="navbar navbar-expand-lg navbar-light shadow-sm py-3 fixed-top theme-transition">
         <div className="container">
           <a className="navbar-brand fw-bold text-primary fs-3" href="#">
             LevelGrit
@@ -38,7 +38,7 @@ const LandingPage = () => {
                 <a className="nav-link" href="#testimonials">Testimonials</a>
               </li>
               <li className="nav-item">
-                <button className="btn btn-outline-primary ms-2" onClick={handleSignInNavigation}>Sign In</button>
+                <button className="btn btn-outline-primary ms-2 hover-scale" onClick={handleSignInNavigation}>Sign In</button>
               </li>
             </ul>
           </div>
@@ -46,12 +46,12 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-section bg-gradient-to-r from-blue-50 to-indigo-100 py-5" style={{marginTop: '80px'}}>
-        <div className="container py-5 rounded">
+      <section className="py-5 theme-transition" style={{marginTop: '80px'}}>
+        <div className="container py-5">
           <div className="row align-items-center min-vh-75">
             <div className="col-lg-6">
               <div className="hero-content">
-                <h1 className="display-4 fw-bold text-dark mb-4 animate__animated animate__fadeInUp">
+                <h1 className="display-4 fw-bold mb-4">
                   Coach Smarter. <br />
                   <span className="text-primary">Motivate Better.</span>
                 </h1>
@@ -73,7 +73,7 @@ const LandingPage = () => {
             <div className="col-lg-6">
               <div className="hero-image text-center">
                 <div className="position-relative">
-                  <div className="hero-placeholder bg-gradient-to-br from-primary to-info rounded-4 shadow-lg p-5" style={{height: '400px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+                  <div className="card border-0 shadow-lg p-5 theme-transition" style={{height: '400px', background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))'}}>
                     <div className="d-flex align-items-center justify-content-center h-100">
                       <div className="text-white">
                         <FaChartBar size={80} className="mb-3 opacity-75" />
@@ -84,12 +84,12 @@ const LandingPage = () => {
                   </div>
                   {/* Floating elements */}
                   <div className="position-absolute top-0 start-0 translate-middle">
-                    <div className="bg-success text-white rounded-circle p-3 shadow animate-pulse">
+                    <div className="bg-success text-white rounded-circle p-3 shadow hover-scale">
                       <FaCheck size={20} />
                     </div>
                   </div>
                   <div className="position-absolute bottom-0 end-0 translate-middle">
-                    <div className="bg-warning text-white rounded-circle p-3 shadow animate-pulse">
+                    <div className="bg-warning text-white rounded-circle p-3 shadow hover-scale">
                       <FaHeart size={20} />
                     </div>
                   </div>
@@ -101,17 +101,17 @@ const LandingPage = () => {
       </section>
 
       {/* Value Section */}
-      <section id="features" className="py-5 bg-light">
-        <div className="container py-5 rounded">
+      <section id="features" className="py-5">
+        <div className="container py-5">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold text-dark mb-4">Why Coaches Love Us</h2>
+            <h2 className="display-5 fw-bold mb-4">Why Coaches Love Us</h2>
             <p className="lead text-muted">Powerful tools designed specifically for certified fitness professionals</p>
           </div>
           <div className="row g-4">
             <div className="col-md-4">
-              <div className="card h-100 border-0 shadow-sm hover-card">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
-                  <div className="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
                     <FaComments size={32} />
                   </div>
                   <h4 className="fw-bold mb-3">💬 Engage Clients Daily</h4>
@@ -120,9 +120,9 @@ const LandingPage = () => {
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card h-100 border-0 shadow-sm hover-card">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
-                  <div className="feature-icon bg-success bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                  <div className="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
                     <FaChartBar size={32} />
                   </div>
                   <h4 className="fw-bold mb-3">📊 Track Progress Effortlessly</h4>
@@ -131,9 +131,9 @@ const LandingPage = () => {
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card h-100 border-0 shadow-sm hover-card">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
-                  <div className="feature-icon bg-warning bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                  <div className="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
                     <FaRocket size={32} />
                   </div>
                   <h4 className="fw-bold mb-3">🚀 Save Time, Coach More</h4>
@@ -146,47 +146,53 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-5 bg-white">
-        <div className="container py-5 rounded">
+      <section id="how-it-works" className="py-5">
+        <div className="container py-5">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold text-dark mb-4">How It Works</h2>
+            <h2 className="display-5 fw-bold mb-4">How It Works</h2>
             <p className="lead text-muted">Three simple steps to transform your coaching practice</p>
           </div>
           <div className="row g-5 align-items-center">
             <div className="col-lg-4">
-              <div className="step-card text-center shadow rounded p-2">
-                <div className="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px', fontSize: '2rem', fontWeight: 'bold'}}>
-                  1
+              <div className="card text-center shadow-sm hover-shadow theme-transition">
+                <div className="card-body p-4">
+                  <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4 fs-2 fw-bold" style={{width: '80px', height: '80px'}}>
+                    1
+                  </div>
+                  <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
+                    <FaUserPlus size={40} className="text-primary" />
+                  </div>
+                  <h4 className="fw-bold mb-3">Onboard Clients Easily</h4>
+                  <p className="text-muted">No messy spreadsheets, just simple client profiles. Get your clients set up in minutes, not hours.</p>
                 </div>
-                <div className="step-icon bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
-                  <FaUserPlus size={40} className="text-primary" />
-                </div>
-                <h4 className="fw-bold mb-3">Onboard Clients Easily</h4>
-                <p className="text-muted">No messy spreadsheets, just simple client profiles. Get your clients set up in minutes, not hours.</p>
               </div>
             </div>
             <div className="col-lg-4">
-              <div className="step-card text-center shadow rounded p-2">
-                <div className="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px', fontSize: '2rem', fontWeight: 'bold'}}>
-                  2
+              <div className="card text-center shadow-sm hover-shadow theme-transition">
+                <div className="card-body p-4">
+                  <div className="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4 fs-2 fw-bold" style={{width: '80px', height: '80px'}}>
+                    2
+                  </div>
+                  <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
+                    <FaEye size={40} className="text-success" />
+                  </div>
+                  <h4 className="fw-bold mb-3">Monitor & Motivate</h4>
+                  <p className="text-muted">Daily check-ins, chats, and progress snapshots. Stay connected with your clients every step of the way.</p>
                 </div>
-                <div className="step-icon bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
-                  <FaEye size={40} className="text-success" />
-                </div>
-                <h4 className="fw-bold mb-3">Monitor & Motivate</h4>
-                <p className="text-muted">Daily check-ins, chats, and progress snapshots. Stay connected with your clients every step of the way.</p>
               </div>
             </div>
             <div className="col-lg-4">
-              <div className="step-card text-center shadow rounded p-2">
-                <div className="step-number bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px', fontSize: '2rem', fontWeight: 'bold'}}>
-                  3
+              <div className="card text-center shadow-sm hover-shadow theme-transition">
+                <div className="card-body p-4">
+                  <div className="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4 fs-2 fw-bold" style={{width: '80px', height: '80px'}}>
+                    3
+                  </div>
+                  <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
+                    <FaHeart size={40} className="text-warning" />
+                  </div>
+                  <h4 className="fw-bold mb-3">Grow Your Impact</h4>
+                  <p className="text-muted">Deliver results at scale while building deeper relationships. Transform lives, not just bodies.</p>
                 </div>
-                <div className="step-icon bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '100px', height: '100px'}}>
-                  <FaHeart size={40} className="text-warning" />
-                </div>
-                <h4 className="fw-bold mb-3">Grow Your Impact</h4>
-                <p className="text-muted">Deliver results at scale while building deeper relationships. Transform lives, not just bodies.</p>
               </div>
             </div>
           </div>
@@ -194,15 +200,15 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-5 bg-light">
-        <div className="container py-5 rounded">
+      <section id="testimonials" className="py-5">
+        <div className="container py-5">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold text-dark mb-4">What Coaches Are Saying</h2>
+            <h2 className="display-5 fw-bold mb-4">What Coaches Are Saying</h2>
             <p className="lead text-muted">Real feedback from certified professionals</p>
           </div>
           <div className="row justify-content-center">
             <div className="col-lg-8">
-              <div className="card border-0 shadow-lg">
+              <div className="card border-0 shadow-lg hover-shadow theme-transition">
                 <div className="card-body p-5">
                   <div className="text-center mb-4">
                     <div className="d-flex justify-content-center mb-3">
@@ -214,7 +220,7 @@ const LandingPage = () => {
                       <p className="mb-4">"This tool cut my admin time in half — now I coach more people and they love the daily check-ins. My clients are more engaged than ever, and I can focus on what I do best: coaching."</p>
                     </blockquote>
                     <div className="d-flex align-items-center justify-content-center">
-                      <div className="testimonial-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '60px', height: '60px', fontSize: '1.5rem', fontWeight: 'bold'}}>
+                      <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 fs-4 fw-bold" style={{width: '60px', height: '60px'}}>
                         J
                       </div>
                       <div className="text-start">
@@ -269,73 +275,6 @@ const LandingPage = () => {
         </div>
       </footer>
 
-      <style jsx>{`
-        .hero-section {
-          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-        
-        .hover-card {
-          transition: all 0.3s ease;
-        }
-        
-        .hover-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
-        }
-        
-        .hover-lift {
-          transition: all 0.3s ease;
-        }
-        
-        .hover-lift:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-        }
-        
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.7;
-          }
-        }
-        
-        .step-card {
-          transition: all 0.3s ease;
-        }
-        
-        .step-card:hover {
-          transform: translateY(-5px);
-        }
-        
-        .min-vh-75 {
-          min-height: 75vh;
-        }
-        
-        .testimonial-avatar {
-          flex-shrink: 0;
-        }
-        
-        .navbar-brand {
-          font-size: 1.8rem !important;
-        }
-      `}</style>
-
-      {/* Bootstrap CSS */}
-      <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-        rel="stylesheet" 
-      />
-      
-      {/* Bootstrap JS */}
-      <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-      ></script>
     </div>
   );
 };

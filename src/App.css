@@ -1,7 +1,7 @@
 @import './styles/overrides/overrides.css';
 @import './styles/themes/variables.css';
 
-
+/* Global animations and transitions */
 .modal-content {
   animation: popIn 0.4s ease-in-out;
 }
@@ -17,185 +17,93 @@
   }
 }
 
-
-.disabled-label {
-  color: #6c757d !important;
-}
-
-.bg-danger-custom .accordion-button:not(.collapsed) {
-  pointer-events: none !important;
-  opacity: 0.7 !important;
-  background-color: #f8f9fa !important;
-}
-
-.custom-toast-content {
-  color: #ffffff !important;
-  font-weight: 500;
-}
-
-.p-toast-message {
-  background: rgba(0, 0, 0, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.p-toast-message-text {
-  color: #ffffff !important;
-}
-
-.a {
-  text-decoration: none !important;
-  color: unset !important;
-}
-.p-tieredmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
-    text-decoration: none !important;
-}
-.p-button {
-  background: unset !important;
-  border: unset !important;
-  color: unset !important;
-}
-.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
-  color: black !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-.p-tieredmenu.p-tieredmenu-overlay{
-   background-color: #f8f9fa !important;
-}
-.form-control:disabled,
-.disabled-page,
-.accordion-button:disabled {
-  pointer-events: none !important;
-  opacity: 0.7 !important;
-  background-color: #f8f9fa !important;
-}
-
-
-.bg-gradient {
-  background: linear-gradient(135deg, #007bff, #6610f2) !important;
+/* Utility classes for theme support */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 .hover-scale:hover {
-  transform: scale(1.05) !important;
-  transition: transform 0.3s ease !important;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-8px) !important;
-  transition: transform 0.3s ease !important;
+  transform: translateY(-8px);
+  transition: transform 0.3s ease;
 }
-
-
-.bg-light-blue {
-   background-color: #e7eefd !important;
-}
-.white-text{
-  color: white !important;
-}
-.br-light-green-2{
-  border: 2px solid #3ce479 !important;
-}
-.bg-button{
-  background-color: #37d399 !important;
-}
-.bg-gray{
-  background-color: #f7f8f8 !important;
-}
-.br-light-orange{
-  border: 2px solid #fde997 !important;
-}
-.bg-light-orange{
-  background-color: #fffbeb !important;
-}
-
-.br-light-gray-dotted{
-  border: 2px solid #bababb !important;
-border-style: dotted !important;
-}
-
-.br-light-gray{
-  border: 2px solid #bababb !important;
-}
-.bg-light-gray{
-  background-color: #f9fafb !important;
-}
-.br-light-green{
-  border: 2px solid #bdf7d1 !important;
-}
-.bg-light-green{
-  background-color: #f1fdf4 !important;
-}
-.card-body{
-  background-color: unset !important;
-}
-.cursor-not-allowed {
-  cursor:not-allowed !important;
-}
-section {
-  /* scroll-margin-top: 80px; 
-  padding: 100px 0;  */
-}
-.form-label {
-    margin-bottom: 1px !important;
-}
-.br-16{
-  border-top-left-radius: 16px !important;
-  border-top-right-radius: 16px !important;
-  border-bottom-left-radius: 16px !important;
-  border-bottom-right-radius: 16px !important;
-}
-.br-8{
-  border-top-left-radius: 8px !important;
-  border-top-right-radius: 8px !important;
-  border-bottom-left-radius: 8px !important;
-  border-bottom-right-radius: 8px !important;
-}
-.br-4{
-  border-top-left-radius: 4px !important;
-  border-top-right-radius: 4px !important;
-  border-bottom-left-radius: 4px !important;
-  border-bottom-right-radius: 4px !important;
-}
-input.form-control:focus,
-textarea.form-control:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  border-color: #86b7fe;
-}
-
 
 .hover-shadow:hover {
   transform: translateY(-1px);
-  /* box-shadow: 0 0.5rem 0.25rem rgba(0, 0, 0, 0.1) !important; */
-  /* transition: all 0.5s ease-in-out; */
-}
-
-.transition-all {
-  /* transition: all 0.5s ease-in-out; */
-}
-
-
-.card:hover {
-  /* transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem var(--color-shadow-hover);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); */
-}
-.progress {
-  /* background-color: #eee;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem; */
 }
 
-
-.pointer{
-  cursor: pointer !important;
+/* Card hover effects */
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0.5rem 1rem var(--color-shadow-hover);
 }
+
+/* Form focus states */
+input.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: 0 0 0 0.2rem var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Disabled states */
+.form-control:disabled,
+.accordion-button:disabled {
+  pointer-events: none;
+  opacity: 0.7;
+  background-color: var(--color-card-bg);
+}
+
+/* PrimeReact overrides for theme consistency */
+.p-tieredmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
+  text-decoration: none;
+}
+
+.p-button {
+  background: unset;
+  border: unset;
+  color: unset;
+}
+
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text {
+  color: var(--color-text);
+  font-family: 'Poppins', sans-serif;
+}
+
+.p-tieredmenu.p-tieredmenu-overlay {
+  background-color: var(--color-card-bg);
+}
+
+.p-toast-message {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+}
+
+.p-toast-message-text {
+  color: var(--color-text);
+}
+
+.custom-toast-content {
+  color: var(--color-text);
+  font-weight: 500;
+}
+/* App component styles */
 .App {
   text-align: center;
 }
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
   animation: App-logo-spin infinite 20s linear;
 }
+
 .App-header {
   background-color: var(--color-card-bg);
   min-height: 100vh;
@@ -206,6 +114,7 @@ textarea.form-control:focus {
   font-size: calc(10px + 2vmin);
   color: var(--color-text);
 }
+
 .App-link {
   color: var(--color-link);
 }

@@ -1,76 +1,92 @@
 /* =========================================
-   Bootstrap and Component Class Overrides
+   Bootstrap Theme Overrides
 =========================================== */
 
-/* Global */
+/* Global Bootstrap overrides for theme consistency */
 body {
-  background-color: var(--color-bg) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Navbar */
+/* Navbar overrides */
 .navbar {
-  background-color: var(--color-nav-bg) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-nav-bg);
+  color: var(--color-text);
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Cards */
+/* Card overrides */
 .card {
   background-color: var(--color-card-bg);
   border-color: var(--color-border);
   color: var(--color-text);
 }
 
-/* Forms */
+/* Form overrides */
 .form-control {
-  background-color: var(--color-bg);
+  background-color: var(--color-input-bg);
   color: var(--color-text);
-  border-color: var(--color-border);
-}
-.form-control:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: var(--color-input-border);
 }
 
-/* Buttons */
-.btn-primary {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
+.form-control:focus {
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 0.2rem var(--color-primary);
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
 }
-.btn[class*="btn-"]:hover,
-.btn[class*="btn-"]:focus,
-.btn[class*="btn-"].active {
-  /* background-color: var(--color-bg) !important; */
-  border-color: var(--color-border) !important;
-  color: var(--color-bg) !important;
+
+.form-label {
+  color: var(--color-text);
+}
+
+/* Button overrides */
+.btn-primary {
+  background-color: var(--color-button-bg);
+  border-color: var(--color-button-bg);
+  color: var(--color-button-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+  color: var(--color-button-text);
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  border-color: var(--color-secondary);
+  background-color: var(--color-button-secondary);
+  border-color: var(--color-button-secondary);
   color: #fff;
 }
+
+.btn-secondary:hover {
+  background-color: var(--color-button-secondary-hover);
+  border-color: var(--color-button-secondary-hover);
+  color: #fff;
+}
+
 .btn-outline-primary {
   color: var(--color-primary);
   border-color: var(--color-primary);
 }
+
 .btn-outline-primary:hover {
   background-color: var(--color-primary);
   color: #fff;
 }
+
 .btn-outline-secondary {
   color: var(--color-secondary);
   border-color: var(--color-secondary);
 }
+
 .btn-outline-secondary:hover {
   background-color: var(--color-secondary);
   color: #fff;
 }
 
-/* Tables */
+/* Table overrides */
 .table,
 .table th,
 .table td {
@@ -79,45 +95,48 @@ body {
   border-color: var(--color-border);
 }
 
-/* Alerts */
+/* Alert overrides */
 .alert-primary {
   background-color: var(--color-primary);
   color: #fff;
-  border-color: var(--color-border);
+  border-color: var(--color-primary);
 }
+
 .alert-secondary {
   background-color: var(--color-secondary);
   color: #fff;
-  border-color: var(--color-border);
+  border-color: var(--color-secondary);
 }
 
-/* Links */
+/* Link overrides */
 a {
   color: var(--color-link);
 }
+
 a:hover {
   color: var(--color-link-hover);
 }
 
-/* Scrollbar */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: var(--color-scrollbar);
   border-radius: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background-color: var(--color-scrollbar-bg);
 }
 
-/* Muted Text */
+/* Text utility overrides */
 .text-muted {
-  color: var(--color-muted) !important;
+  color: var(--color-muted);
 }
 
-
-/* modal */
-.modal-dialog-centered{
-  background: transparent !important;
+/* Modal overrides */
+.modal-dialog-centered {
+  background: transparent;
 }

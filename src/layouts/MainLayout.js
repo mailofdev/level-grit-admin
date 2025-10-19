@@ -3,6 +3,7 @@ import layoutConfig from '../config/layout';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import Footer from '../components/layout/Footer';
+import ThemeSwitch from '../components/display/ThemeSwitch';
 // import { useAuth } from '../features/auth/hooks/useAuth';
 
 const MainLayout = ({ children, config }) => {
@@ -18,13 +19,13 @@ const MainLayout = ({ children, config }) => {
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100 theme-transition">
       {cfg.showTopbar && (
         <Topbar 
           showSearch={false} 
           showNavMenu={true} 
           showUserMenu={true} 
-          showThemeToggle={false} 
+          showThemeToggle={true} 
           showIcons={true} 
           // user={
           //   user ? { 

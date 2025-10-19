@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 
 import MainLayout from "./layouts/MainLayout";
@@ -27,9 +28,10 @@ function ProtectedLayout({ children, config }) {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
+    <ThemeProvider>
+      <Router>
+        <AuthProvider>
+          <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginForm />} />
@@ -92,9 +94,10 @@ function App() {
           />
 
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

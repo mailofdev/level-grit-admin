@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { loginThunk } from "./authThunks";
 import logo from "../../assets/images/logo3.jpeg";
 import Loader from "../../components/display/Loader";
-import "../../styles/themes/liquidGlass.css";
 import { Eye, EyeClosed } from "lucide-react";
 
 const LoginForm = () => {
@@ -52,49 +51,26 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 liquid-bg position-relative">
-      {isLoading && <Loader fullScreen={true} text="Logging in..." color="#00ffb0" />}
+    <div className="d-flex justify-content-center align-items-center vh-100 position-relative theme-transition">
+      {isLoading && <Loader fullScreen={true} text="Logging in..." color="var(--color-primary)" />}
 
-      {/* Glass Login Card */}
-      <div
-        className="glass-card p-5 shadow-lg"
-        style={{
-          maxWidth: "400px",
-          width: "100%",
-          borderRadius: "25px",
-          background:
-            "linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
-          boxShadow:
-            "0 0 40px rgba(0,255,200,0.25), inset 0 0 20px rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      {/* Login Card */}
+      <div className="card border-0 shadow-lg p-4 theme-transition" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="text-center mb-4">
           <img
             src={logo}
             alt="Gym Logo"
+            className="rounded-circle border border-2"
             style={{
               height: "90px",
               width: "90px",
-              borderRadius: "50%",
-              border: "2px solid rgba(255,255,255,0.4)",
-              boxShadow: "0 0 25px rgba(0,255,150,0.6)",
+              borderColor: "var(--color-border)",
             }}
           />
         </div>
 
         {errorMessage && (
-          <div
-            className="alert alert-info text-danger bg-light text-center py-2"
-            style={{
-              fontSize: "0.9rem",
-              borderRadius: "10px",
-              backgroundColor: "rgba(255, 0, 0, 0.1)",
-              color: "#ff5252",
-              border: "1px solid rgba(255,0,0,0.3)",
-            }}
-          >
+          <div className="alert alert-danger text-center py-2 mb-3">
             {errorMessage}
           </div>
         )}
@@ -102,7 +78,7 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
           <div className="mb-3">
-            <label className="form-label text-white">Email</label>
+            <label className="form-label">Email</label>
             <input
               type="email"
               className="form-control"
@@ -114,7 +90,7 @@ const LoginForm = () => {
 
           {/* Password Field */}
           <div className="mb-3 position-relative">
-            <label className="form-label text-white">Password</label>
+            <label className="form-label">Password</label>
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -125,60 +101,40 @@ const LoginForm = () => {
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "12px",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                  color: "rgba(255,255,255,0.8)",
-                }}
+                className="position-absolute top-50 end-0 translate-middle-y me-3"
+                style={{ cursor: "pointer", color: "var(--color-muted)" }}
               >
                 {showPassword ? (
-                  <EyeClosed size={20} color="#333" />
+                  <EyeClosed size={20} />
                 ) : (
-                  <Eye size={20} color="#333" />
+                  <Eye size={20} />
                 )}
               </span>
             </div>
           </div>
 
-          <button type="submit" className="liquid-btn w-100 mt-2">
+          <button type="submit" className="btn btn-primary w-100 mt-2 hover-scale">
             Login
           </button>
         </form>
 
         {/* Links */}
-        <div className="text-center mt-3" style={{ fontSize: "0.9rem" }}>
-          <p style={{ color: "rgba(255,255,255,0.85)" }}>
-            Don’t have an account?{" "}
+        <div className="text-center mt-3 small">
+          <p className="text-muted">
+            Don't have an account?{" "}
             <Link
               to="/register"
-              style={{
-                color: "#00ffd5",
-                fontWeight: "800",
-                textDecoration: "none",
-                // textShadow: "0 0 8px rgba(0,255,200,0.8)",
-                transition: "all 0.3s ease",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#00b894")}
-              onMouseOut={(e) => (e.target.style.color = "#00ffd5")}
+              className="text-decoration-none fw-bold theme-transition"
+              style={{ color: "var(--color-primary)" }}
             >
               Register
             </Link>
           </p>
-          <p>
+          <p className="mb-0">
             <Link
               to="/reset-password"
-              style={{
-                color: "#fff",
-                textDecoration: "none",
-                fontWeight: "800",
-                // textShadow: "0 0 8px rgba(0,200,255,0.6)",
-                transition: "all 0.3s ease",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#fff")}
-              onMouseOut={(e) => (e.target.style.color = "#fff")}
+              className="text-decoration-none fw-bold theme-transition"
+              style={{ color: "var(--color-link)" }}
             >
               Forgot password?
             </Link>

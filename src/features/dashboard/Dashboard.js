@@ -31,67 +31,58 @@ console.log("Authenticated User:", user?.role);
   ];
 
   return (
-    <div
-      className="container-fluid py-5"
-      style={{
-        background: "linear-gradient(135deg, #f8f9fa 0%, #eaf4ff 100%)",
-        minHeight: "100vh",
-      }}
-    >
-      {/* {user?.role} */}
+    <div className="container-fluid py-4 theme-transition">
       {/* Header */}
-      <div className="text-center mb-5">
-        <h2 className="fw-bold text-dark d-flex justify-content-center align-items-center gap-2">
-          <FaDumbbell className="text-primary" />
-          Trainer Dashboard
-        </h2>
-        <p className="text-muted">
-          Stay in control of your clients’ fitness progress and performance
-        </p>
+      <div className="text-center mb-4">
+        <div className="card border-0 shadow-sm mb-4">
+          <div className="card-body py-4">
+            <h2 className="fw-bold d-flex justify-content-center align-items-center gap-2 mb-2">
+              <FaDumbbell className="text-primary" />
+              Trainer Dashboard
+            </h2>
+            <p className="text-muted mb-0">
+              Stay in control of your clients' fitness progress and performance
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Stats Overview */}
-      <div className="row g-4 mb-4">
+      <div className="row g-3 mb-4">
         {[
           {
             title: "Total Clients",
             value: 25,
-            color: "#007bff",
+            color: "primary",
             icon: <FaUsers />,
           },
           {
             title: "On Track",
             value: 18,
-            color: "#28a745",
+            color: "success",
             icon: <FaCheckCircle />,
           },
           {
             title: "Off Track",
             value: 7,
-            color: "#dc3545",
+            color: "danger",
             icon: <FaTimesCircle />,
           },
           {
             title: "Active Plans",
             value: 12,
-            color: "#17a2b8",
+            color: "info",
             icon: <FaRunning />,
           },
         ].map((stat, idx) => (
-          <div className="col-md-3 col-sm-6" key={idx}>
-            <div
-              className="card shadow-sm rounded-4 border-0 h-100"
-              style={{ backgroundColor: "#fff" }}
-            >
+          <div className="col-lg-3 col-md-6 col-sm-6" key={idx}>
+            <div className="card border-0 shadow-sm h-100 hover-shadow theme-transition">
               <div className="card-body text-center">
-                <div
-                  className="fs-3 mb-2"
-                  style={{ color: stat.color }}
-                >
+                <div className={`fs-3 mb-2 text-${stat.color}`}>
                   {stat.icon}
                 </div>
                 <h6 className="text-muted">{stat.title}</h6>
-                <h3 className="fw-bold" style={{ color: stat.color }}>
+                <h3 className={`fw-bold text-${stat.color}`}>
                   {stat.value}
                 </h3>
               </div>
@@ -101,13 +92,13 @@ console.log("Authenticated User:", user?.role);
       </div>
 
       {/* Main Section */}
-      <div className="row g-4">
+      <div className="row g-3">
         {/* Left Side: Notifications & Quick Actions */}
         <div className="col-lg-4">
           {/* Notifications */}
-          <div className="card shadow-sm rounded-4 border-0 mb-4">
+          <div className="card border-0 shadow-sm mb-3 hover-shadow theme-transition">
             <div className="card-body">
-              <h5 className="card-title text-dark mb-3 d-flex align-items-center gap-2">
+              <h5 className="card-title mb-3 d-flex align-items-center gap-2">
                 <FaBell className="text-warning" /> Notifications
               </h5>
               <ul className="list-group list-group-flush small">
@@ -128,22 +119,22 @@ console.log("Authenticated User:", user?.role);
           </div>
 
           {/* Quick Actions */}
-          <div className="card shadow-sm rounded-4 border-0 text-center">
+          <div className="card border-0 shadow-sm text-center hover-shadow theme-transition">
             <div className="card-body">
-              <h5 className="card-title text-dark mb-4">
+              <h5 className="card-title mb-4">
                 ⚡ Quick Actions
               </h5>
-              <div className="d-flex flex-column gap-3">
+              <div className="d-flex flex-column gap-2">
                 <button
-                  className="btn btn-primary rounded-pill py-2 shadow-sm"
+                  className="btn btn-primary rounded-pill py-2 shadow-sm hover-scale"
                   onClick={handleAddClient}
                 >
                   <FaUserPlus className="me-2" /> Add New Client
                 </button>
-                <button className="btn btn-outline-success rounded-pill py-2">
+                <button className="btn btn-outline-success rounded-pill py-2 hover-scale">
                   <FaClipboardList className="me-2" /> View Reports
                 </button>
-                <button className="btn btn-outline-danger rounded-pill py-2">
+                <button className="btn btn-outline-info rounded-pill py-2 hover-scale">
                   <FaChartLine className="me-2" /> Track Performance
                 </button>
               </div>
@@ -153,9 +144,9 @@ console.log("Authenticated User:", user?.role);
 
         {/* Right Side: Client Summary + Progress */}
         <div className="col-lg-8">
-          <div className="card shadow-sm rounded-4 border-0 mb-4">
+          <div className="card border-0 shadow-sm mb-3 hover-shadow theme-transition">
             <div className="card-body">
-              <h5 className="card-title text-dark mb-3">👥 Recent Clients</h5>
+              <h5 className="card-title mb-3">👥 Recent Clients</h5>
               <div className="table-responsive">
                 <table className="table align-middle">
                   <thead>
@@ -163,7 +154,7 @@ console.log("Authenticated User:", user?.role);
                       <th>Name</th>
                       <th>Plan</th>
                       <th>Status</th>
-                      <th>Progress</th>
+                      <th className="w-25">Progress</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -182,7 +173,7 @@ console.log("Authenticated User:", user?.role);
                             </span>
                           )}
                         </td>
-                        <td style={{ width: "30%" }}>
+                        <td>
                           <div className="progress" style={{ height: "8px" }}>
                             <div
                               className={`progress-bar ${
@@ -205,7 +196,7 @@ console.log("Authenticated User:", user?.role);
                 </table>
               </div>
               <div className="text-end mt-3">
-                <button className="btn btn-outline-primary btn-sm rounded-pill">
+                <button className="btn btn-outline-primary btn-sm rounded-pill hover-scale">
                   View All Clients →
                 </button>
               </div>
@@ -213,26 +204,26 @@ console.log("Authenticated User:", user?.role);
           </div>
 
           {/* Performance Section */}
-          <div className="card shadow-sm rounded-4 border-0">
+          <div className="card border-0 shadow-sm hover-shadow theme-transition">
             <div className="card-body">
-              <h5 className="card-title text-dark mb-4">
+              <h5 className="card-title mb-4">
                 <FaChartLine className="text-info me-2" />
                 Performance Overview
               </h5>
               <div className="row text-center">
                 <div className="col-md-4 mb-3">
                   <FaWeight className="text-success fs-3 mb-2" />
-                  <h6 className="fw-bold text-dark">Average Weight Loss</h6>
+                  <h6 className="fw-bold">Average Weight Loss</h6>
                   <p className="text-muted mb-0">2.3 kg / week</p>
                 </div>
                 <div className="col-md-4 mb-3">
                   <FaRunning className="text-primary fs-3 mb-2" />
-                  <h6 className="fw-bold text-dark">Workout Adherence</h6>
+                  <h6 className="fw-bold">Workout Adherence</h6>
                   <p className="text-muted mb-0">89%</p>
                 </div>
                 <div className="col-md-4 mb-3">
                   <FaClipboardList className="text-warning fs-3 mb-2" />
-                  <h6 className="fw-bold text-dark">Diet Adherence</h6>
+                  <h6 className="fw-bold">Diet Adherence</h6>
                   <p className="text-muted mb-0">76%</p>
                 </div>
               </div>
