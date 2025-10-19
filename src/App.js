@@ -18,6 +18,12 @@ import AllClients from "./features/users/AllClients";
 import ClientDetails from "./features/users/ClientDetails";
 import LandingPage from "./features/landing/LandingPage";
 import AdminDashboard from "./features/dashboard/AdminDashboard";
+import { TermsAndConditions, PrivacyPolicy, ContactUs, CancellationPolicy } from "./features/static";
+import { TrainerDashboard } from "./features/trainer";
+import { MealPlanManager } from "./features/mealPlans";
+import { ClientMessaging } from "./features/messaging";
+import { ProgressTracker } from "./features/progress";
+import { SubscriptionManager } from "./features/subscription";
 function ProtectedLayout({ children, config }) {
   return (
     <ProtectedRoute>
@@ -39,6 +45,12 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/register-client" element={<RegisterClientForm />} />
           <Route path="/reset-password" element={<ResetPasswordForm />} />
+          
+          {/* Static Pages */}
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
 
 
           {/* Protected routes */}
@@ -46,7 +58,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedLayout config={{ showTopbar: true, showSidebar: false, showFooter: false }}>
-                <Dashboard />
+                <TrainerDashboard />
               </ProtectedLayout>
             }
           />
@@ -89,6 +101,40 @@ function App() {
             element={
               <ProtectedLayout>
                 <AdminDashboard />
+              </ProtectedLayout>
+            }
+          />
+
+          {/* Trainer Features */}
+          <Route
+            path="/meal-plans"
+            element={
+              <ProtectedLayout>
+                <MealPlanManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/messages/:clientId"
+            element={
+              <ProtectedLayout>
+                <ClientMessaging />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/progress/:clientId"
+            element={
+              <ProtectedLayout>
+                <ProgressTracker />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/subscription"
+            element={
+              <ProtectedLayout>
+                <SubscriptionManager />
               </ProtectedLayout>
             }
           />

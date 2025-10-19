@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaComments, FaChartBar, FaRocket, FaUserPlus, FaEye, FaHeart, FaStar, FaCheck } from 'react-icons/fa';
+import { FaComments, FaChartBar, FaRocket, FaUserPlus, FaEye, FaHeart, FaStar, FaCheck, FaShieldAlt, FaMobile, FaClock, FaUsers, FaUtensils, FaDumbbell, FaBell } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -29,16 +29,19 @@ const LandingPage = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link" href="#features">Features</a>
+                <a className="nav-link smooth-transition" href="#features">Features</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#how-it-works">How It Works</a>
+                <a className="nav-link smooth-transition" href="#how-it-works">How It Works</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#testimonials">Testimonials</a>
+                <a className="nav-link smooth-transition" href="#pricing">Pricing</a>
               </li>
               <li className="nav-item">
-                <button className="btn btn-outline-primary ms-2 hover-scale" onClick={handleSignInNavigation}>Sign In</button>
+                <a className="nav-link smooth-transition" href="#testimonials">Testimonials</a>
+              </li>
+              <li className="nav-item">
+                <button className="btn btn-outline-primary ms-2 hover-scale smooth-transition" onClick={handleSignInNavigation}>Sign In</button>
               </li>
             </ul>
           </div>
@@ -52,20 +55,20 @@ const LandingPage = () => {
             <div className="col-lg-6">
               <div className="hero-content">
                 <h1 className="display-4 fw-bold mb-4">
-                  Coach Smarter. <br />
-                  <span className="text-primary">Motivate Better.</span>
+                  Transform Your <br />
+                  <span className="text-primary">Training Business</span>
                 </h1>
                 <p className="lead text-muted mb-4 fs-5">
-                  We don't replace you with AI — we empower certified coaches with tools that make 
-                  tracking, engaging, and motivating clients effortless. Turn daily check-ins into 
-                  long-term client success.
+                  The all-in-one platform for fitness trainers. Manage clients, create meal plans, 
+                  track progress, and communicate seamlessly. Scale your practice while delivering 
+                  personalized results to every client.
                 </p>
                 <div className="cta-section">
                   <button onClick={handleSignUpNavigation} className="btn btn-primary btn px-5 py-3 fw-semibold rounded-pill shadow-lg hover-lift mb-3">
                     👉 Get Started
                   </button>
                   <div className="micro-tagline text-muted small">
-                    "Your clients stay consistent. You stay focused. AI just helps."
+                    "Join 10,000+ trainers already growing their business with Level Grit"
                   </div>
                 </div>
               </div>
@@ -100,44 +103,77 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Value Section */}
+      {/* Features Section */}
       <section id="features" className="py-5">
         <div className="container py-5">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold mb-4">Why Coaches Love Us</h2>
-            <p className="lead text-muted">Powerful tools designed specifically for certified fitness professionals</p>
+            <h2 className="display-5 fw-bold mb-4">Everything You Need to Succeed</h2>
+            <p className="lead text-muted">Comprehensive tools designed specifically for fitness professionals</p>
           </div>
           <div className="row g-4">
-            <div className="col-md-4">
+            <div className="col-md-6 col-lg-4">
               <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
                   <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
-                    <FaComments size={32} />
+                    <FaUsers size={32} />
                   </div>
-                  <h4 className="fw-bold mb-3">💬 Engage Clients Daily</h4>
-                  <p className="text-muted">Chat, motivate, and inspire consistency without juggling multiple apps. Keep your clients connected and accountable.</p>
+                  <h4 className="fw-bold mb-3">Client Management</h4>
+                  <p className="text-muted">Organize client profiles, track progress, and manage subscriptions all in one place.</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-6 col-lg-4">
               <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
                   <div className="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
-                    <FaChartBar size={32} />
+                    <FaUtensils size={32} />
                   </div>
-                  <h4 className="fw-bold mb-3">📊 Track Progress Effortlessly</h4>
-                  <p className="text-muted">Macro tracking, meal snapshots, and fitness logs in one clear view. Data visualization that makes sense.</p>
+                  <h4 className="fw-bold mb-3">Meal Planning</h4>
+                  <p className="text-muted">Create personalized meal plans with detailed macros, calories, and nutritional information.</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
+                <div className="card-body text-center p-4">
+                  <div className="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                    <FaChartBar size={32} />
+                  </div>
+                  <h4 className="fw-bold mb-3">Progress Tracking</h4>
+                  <p className="text-muted">Monitor client progress with detailed analytics, photos, and measurement tracking.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
               <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
                 <div className="card-body text-center p-4">
                   <div className="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
-                    <FaRocket size={32} />
+                    <FaComments size={32} />
                   </div>
-                  <h4 className="fw-bold mb-3">🚀 Save Time, Coach More</h4>
-                  <p className="text-muted">AI handles the data grunt work so you can focus on personal coaching. Scale your impact without burning out.</p>
+                  <h4 className="fw-bold mb-3">Client Communication</h4>
+                  <p className="text-muted">Built-in messaging system to stay connected with clients and provide real-time support.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
+                <div className="card-body text-center p-4">
+                  <div className="bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                    <FaDumbbell size={32} />
+                  </div>
+                  <h4 className="fw-bold mb-3">Workout Plans</h4>
+                  <p className="text-muted">Design and share custom workout routines with detailed instructions and progress tracking.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
+                <div className="card-body text-center p-4">
+                  <div className="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style={{width: '80px', height: '80px'}}>
+                    <FaShieldAlt size={32} />
+                  </div>
+                  <h4 className="fw-bold mb-3">Secure & Compliant</h4>
+                  <p className="text-muted">HIPAA-compliant platform with enterprise-grade security to protect client data.</p>
                 </div>
               </div>
             </div>
@@ -195,6 +231,92 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-5 bg-light">
+        <div className="container py-5">
+          <div className="text-center mb-5">
+            <h2 className="display-5 fw-bold mb-4">Simple, Transparent Pricing</h2>
+            <p className="lead text-muted">Choose the plan that fits your practice</p>
+          </div>
+          <div className="row justify-content-center g-4">
+            <div className="col-lg-4 col-md-6">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
+                <div className="card-body text-center p-4">
+                  <h4 className="fw-bold text-primary mb-3">Starter</h4>
+                  <div className="mb-4">
+                    <span className="display-4 fw-bold text-primary">$29</span>
+                    <span className="text-muted">/month</span>
+                  </div>
+                  <ul className="list-unstyled text-start mb-4">
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Up to 10 clients</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Basic meal planning</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Progress tracking</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Client messaging</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Email support</li>
+                  </ul>
+                  <button className="btn btn-outline-primary w-100 smooth-transition" onClick={handleSignUpNavigation}>
+                    Get Started
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6">
+              <div className="card h-100 border-primary shadow-lg hover-shadow theme-transition position-relative">
+                <div className="position-absolute top-0 start-50 translate-middle">
+                  <span className="badge bg-primary px-3 py-2">Most Popular</span>
+                </div>
+                <div className="card-body text-center p-4">
+                  <h4 className="fw-bold text-primary mb-3">Professional</h4>
+                  <div className="mb-4">
+                    <span className="display-4 fw-bold text-primary">$59</span>
+                    <span className="text-muted">/month</span>
+                  </div>
+                  <ul className="list-unstyled text-start mb-4">
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Up to 50 clients</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Advanced meal planning</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Detailed analytics</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Video messaging</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Priority support</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Custom branding</li>
+                  </ul>
+                  <button className="btn btn-primary w-100 smooth-transition" onClick={handleSignUpNavigation}>
+                    Start Free Trial
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6">
+              <div className="card h-100 border-0 shadow-sm hover-shadow theme-transition">
+                <div className="card-body text-center p-4">
+                  <h4 className="fw-bold text-primary mb-3">Enterprise</h4>
+                  <div className="mb-4">
+                    <span className="display-4 fw-bold text-primary">$99</span>
+                    <span className="text-muted">/month</span>
+                  </div>
+                  <ul className="list-unstyled text-start mb-4">
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Unlimited clients</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />White-label solution</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />API access</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Team management</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />24/7 phone support</li>
+                    <li className="mb-2"><FaCheck className="text-success me-2" />Custom integrations</li>
+                  </ul>
+                  <button className="btn btn-outline-primary w-100 smooth-transition" onClick={handleSignUpNavigation}>
+                    Contact Sales
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="text-center mt-5">
+            <p className="text-muted">
+              <FaShieldAlt className="me-2" />
+              All plans include 14-day free trial • No setup fees • Cancel anytime
+            </p>
           </div>
         </div>
       </section>
@@ -266,9 +388,10 @@ const LandingPage = () => {
             </div>
             <div className="col-md-6">
               <div className="text-md-end">
-                <a href="#" className="text-white text-decoration-none me-4">Privacy</a>
-                <a href="#" className="text-white text-decoration-none me-4">Terms</a>
-                <a href="#" className="text-white text-decoration-none">Support</a>
+                <a href="/privacy-policy" className="text-white text-decoration-none me-4 smooth-transition">Privacy Policy</a>
+                <a href="/terms-conditions" className="text-white text-decoration-none me-4 smooth-transition">Terms & Conditions</a>
+                <a href="/contact" className="text-white text-decoration-none me-4 smooth-transition">Contact</a>
+                <a href="/cancellation-policy" className="text-white text-decoration-none smooth-transition">Cancellation Policy</a>
               </div>
             </div>
           </div>
