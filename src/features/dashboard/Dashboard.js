@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import RazorpayPayment from "../payments/RazorpayPayment";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -33,6 +34,10 @@ console.log("Authenticated User:", user?.role);
   return (
     <div className="container-fluid py-4 theme-transition">
       {/* Header */}
+        {/* <div>
+      <h2>Level Grit Payment</h2>
+      <RazorpayPayment />
+    </div> */}
       <div className="text-center mb-4">
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-body py-4">

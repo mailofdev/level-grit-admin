@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Badge, Alert, Modal, Table, ProgressBar } from 'react-bootstrap';
-import { FaChartLine, FaWeight, FaRuler, FaCamera, FaPlus, FaEdit, FaTrash, FaCalendar, FaTrophy, FaTrendingUp, FaTrendingDown } from 'react-icons/fa';
+import { FaChartLine, FaWeight, FaRuler, FaCamera, FaPlus, FaEdit, FaTrash, FaCalendar, FaTrophy, FaTrendingUp, FaTrendingDown, FaTree, FaTerminal } from 'react-icons/fa';
 
 const ProgressTracker = ({ clientId, clientName }) => {
   const [progressData, setProgressData] = useState([]);
@@ -156,8 +156,8 @@ const ProgressTracker = ({ clientId, clientName }) => {
 
   const getTrendIcon = (trend) => {
     switch (trend) {
-      case 'up': return <FaTrendingUp className="text-success" />;
-      case 'down': return <FaTrendingDown className="text-danger" />;
+      case 'up': return <FaTree className="text-success" />;
+      case 'down': return <FaTerminal className="text-danger" />;
       default: return <FaChartLine className="text-muted" />;
     }
   };
