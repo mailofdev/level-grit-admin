@@ -20,6 +20,17 @@ export const GetClientsForTrainer = async () => {
   return data;
 };
 
+export const GetProfileData = async () => {
+  const { data } = await axiosInstance.get("api/Auth/Profile");
+  return data;
+};
+
+export const UpdateProfileData = async (userData) => {
+  const { data } = await axiosInstance.post("api/Auth/UpdateProfile", userData);
+  return data;
+};
+
+
 export const deleteUserById = async (id) => {
   return axiosInstance.delete(`/users/${id}`);
 };

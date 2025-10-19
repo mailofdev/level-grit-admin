@@ -1,6 +1,6 @@
 // src/features/auth/authThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserById, loginUser, registerUser } from "../../api/authAPI";
+import { getUserById, loginUser, registerUser, UpdateProfileData, ChangePassword } from "../../api/authAPI";
 import { encryptToken } from "../../utils/crypto";
 
 export const loginThunk = createAsyncThunk(
@@ -53,6 +53,20 @@ export const getCurrentUserThunk = createAsyncThunk(
       return await getUserById(userId);
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to fetch user");
+    }
+  }
+);
+
+export const updateProfileThunk = createAsyncThunk(
+  "auth/updateProfile",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const result = await UpdateProfileData(userData);
+      return result;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update profile"
+      );
     }
   }
 );

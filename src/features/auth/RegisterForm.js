@@ -159,21 +159,21 @@ const RegisterForm = () => {
             />
             <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
           </div>
-          <h3 className="fw-bold text-primary mt-3 mb-1">Join Our Community</h3>
-          <p className="text-muted small">Start your health transformation journey</p>
+          {/* <h3 className="fw-bold text-primary mt-3 mb-1">Join Our Community</h3>
+          <p className="text-muted small">Start your health transformation journey</p> */}
         </div>
 
         <form onSubmit={handleSubmit} className="needs-validation">
-          <div className="row g-3">
+          <div className="row g-2">
             {/* Full Name */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-user text-primary me-2"></i>Full Name
+                <i className="fas fa-user me-2"></i>Full Name
               </label>
               <input
                 type="text"
                 name="fullName"
-                className="form-control form-control-lg smooth-transition"
+                className="form-control form-control smooth-transition"
                 placeholder="Enter your full name"
                 value={fullName}
                 onChange={handleChange}
@@ -184,12 +184,12 @@ const RegisterForm = () => {
             {/* Phone Number */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-phone text-primary me-2"></i>Phone Number
+                <i className="fas fa-phone muted-label me-2"></i>Phone Number
               </label>
               <input
                 type="tel"
                 name="phoneNumber"
-                className="form-control form-control-lg smooth-transition"
+                className="form-control .form-control smooth-transition"
                 placeholder="Enter 10-digit phone number"
                 value={phoneNumber}
                 onChange={handleChange}
@@ -201,11 +201,11 @@ const RegisterForm = () => {
             {/* Gender */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-venus-mars text-primary me-2"></i>Gender
+                <i className="fas fa-venus-mars muted-label me-2"></i>Gender
               </label>
               <select
                 name="gender"
-                className="form-select form-select-lg smooth-transition"
+                className="form-select form-select smooth-transition"
                 value={gender}
                 onChange={handleChange}
                 required
@@ -220,12 +220,12 @@ const RegisterForm = () => {
             {/* Email */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-envelope text-primary me-2"></i>Email Address
+                <i className="fas fa-envelope muted-label me-2"></i>Email Address
               </label>
               <input
                 type="email"
                 name="email"
-                className="form-control form-control-lg smooth-transition"
+                className="form-control .form-control smooth-transition"
                 placeholder="Enter your email address"
                 value={email}
                 onChange={handleChange}
@@ -236,13 +236,13 @@ const RegisterForm = () => {
             {/* Password */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-lock text-primary me-2"></i>Password
+                <i className="fas fa-lock muted-label me-2"></i>Password
               </label>
               <div className="position-relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  className="form-control form-control-lg pe-5 smooth-transition"
+                  className="form-control .form-control pe-5 smooth-transition"
                   placeholder="Create a strong password"
                   value={password}
                   onChange={handleChange}
@@ -266,7 +266,7 @@ const RegisterForm = () => {
 
           <button 
             type="submit" 
-            className="btn btn-primary btn-lg w-100 mt-4 smooth-transition"
+            className="btn btn-primary btn w-100 mt-4 smooth-transition"
             disabled={isLoading}
           >
             {isLoading ? (

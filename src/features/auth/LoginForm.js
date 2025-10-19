@@ -71,8 +71,8 @@ const LoginForm = () => {
             />
             <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
           </div>
-          <h3 className="fw-bold text-primary mt-3 mb-1">Welcome Back</h3>
-          <p className="text-muted small">Sign in to your health journey</p>
+          {/* <h3 className="fw-bold text-primary mt-3 mb-1">Welcome Back</h3>
+          <p className="text-muted small">Sign in to your health journey</p> */}
         </div>
 
         {errorMessage && (
@@ -84,13 +84,13 @@ const LoginForm = () => {
 
         <form onSubmit={handleSubmit} className="needs-validation">
           {/* Email Field */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label className="form-label fw-semibold">
               <i className="fas fa-envelope text-primary me-2"></i>Email Address
             </label>
             <input
               type="email"
-              className="form-control form-control-lg smooth-transition"
+              className="form-control .form-control smooth-transition"
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -99,14 +99,14 @@ const LoginForm = () => {
           </div>
 
           {/* Password Field */}
-          <div className="mb-4 position-relative">
+          <div className="mb-2 position-relative">
             <label className="form-label fw-semibold">
               <i className="fas fa-lock text-primary me-2"></i>Password
             </label>
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control form-control-lg pe-5 smooth-transition"
+                className="form-control .form-control pe-5 smooth-transition"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -129,7 +129,7 @@ const LoginForm = () => {
 
           <button 
             type="submit" 
-            className="btn btn-primary btn-lg w-100 mt-3 smooth-transition"
+            className="btn btn-primary btn w-100 mt-3 smooth-transition"
             disabled={isLoading}
           >
             {isLoading ? (

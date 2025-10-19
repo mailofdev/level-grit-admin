@@ -93,9 +93,8 @@ const RegisterClientForm = () => {
       {loading && <Loader fullScreen text="Registering client..." color="var(--color-primary)" />}
       <Toast ref={toast} position="top-right" />
 
-      <Heading pageName="Register Client" sticky={true} />
-
-      <div className="container-fluid">
+      <div className="container">
+          <Heading pageName="Register Client" sticky={true} />
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-8">
             <div className="card content-wrapper card-health p-4">

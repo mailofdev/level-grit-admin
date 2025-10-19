@@ -16,6 +16,7 @@ export default function Heading({
       className={`d-flex align-items-center p-3 my-2 rounded bg-light-blue shadow-sm position-relative ${
         sticky ? "sticky-top" : ""
       }`}
+      style={{zIndex:10}}
     >
       {/* Left: Back Button */}
       {showBackButton && (

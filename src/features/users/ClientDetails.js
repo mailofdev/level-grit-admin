@@ -252,7 +252,7 @@ console.table(client);
                 </div>
                 <div className="d-flex flex-wrap gap-2 justify-content-md-end">
                   <button
-                    className="bg-white btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
+                    className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
                     onClick={() =>
                       navigate(`/messages/${client.clientId}`, {
                         state: { client },
@@ -265,7 +265,7 @@ console.table(client);
                   <SplitButton
                     label="Plan"
                     icon="pi pi-plus"
-                    className="bg-button btn-sm border-0 rounded-3 shadow-sm"
+                    className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
                     style={{
                       color: "white",
                     }}

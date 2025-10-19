@@ -1,9 +1,10 @@
-import routes from "../navigation/Routes";
+import { getRoutes } from "../navigation/Routes";
 import { Link } from "react-router-dom";
 
-const Sidebar = ({showIcons}) => {
-  const handleRouteClick = (item) => { 
-  };
+const Sidebar = ({ showIcons }) => {
+  const routes = getRoutes(); // ✅ generate routes dynamically
+
+  const handleRouteClick = (item) => {};
 
   return (
     <nav
@@ -18,10 +19,14 @@ const Sidebar = ({showIcons}) => {
               <li className="nav-item" key={idx}>
                 <Link
                   to={item.href}
-                  className={`nav-link d-flex align-items-center px-3 py-2  ${item.danger ? "text-danger" : ""}`}
+                  className={`nav-link d-flex align-items-center px-3 py-2 ${
+                    item.danger ? "text-danger" : ""
+                  }`}
                   onClick={() => handleRouteClick(item)}
                 >
-                  {showIcons && item.icon && <i className={`bi ${item.icon} me-2`}></i>}
+                  {showIcons && item.icon && (
+                    <i className={`bi ${item.icon} me-2`}></i>
+                  )}
                   {item.label}
                 </Link>
               </li>
@@ -29,7 +34,6 @@ const Sidebar = ({showIcons}) => {
         </ul>
       </div>
 
-      {/* Sidebar styling */}
       <style jsx="true">{`
         .sidebar {
           width: 250px;

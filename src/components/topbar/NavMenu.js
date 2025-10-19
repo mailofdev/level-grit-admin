@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import routes from "../navigation/Routes";
+import { getRoutes } from "../navigation/Routes"; // ✅ named import
 
 const NavMenu = ({ showIcons = true, onRouteClick }) => {
   const location = useLocation();
+  const routes = getRoutes(); // ✅ call function to get current routes
 
   return (
     <ul className="navbar-nav mx-auto mb-2 mb-lg-0">

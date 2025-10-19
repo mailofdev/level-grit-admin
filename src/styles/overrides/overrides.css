@@ -59,7 +59,7 @@ body {
 
 .card:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-4px) scale(1.02);
+  /* transform: translateY(-4px) scale(1.02); */
   border-color: var(--color-primary);
 }
 
@@ -122,7 +122,7 @@ body {
 }
 
 .form-label {
-  color: var(--color-text);
+  color: var(--color-muted);
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
@@ -175,7 +175,7 @@ body {
 
 .btn-primary:hover {
   background: linear-gradient(135deg, var(--color-button-hover), #1e7e34);
-  transform: translateY(-2px) scale(1.05);
+  /* transform: translateY(-2px) scale(1.05); */
   box-shadow: var(--shadow-lg);
 }
 
@@ -187,7 +187,7 @@ body {
 
 .btn-secondary:hover {
   background: linear-gradient(135deg, var(--color-button-secondary-hover), #495057);
-  transform: translateY(-2px) scale(1.05);
+  /* transform: translateY(-2px) scale(1.05); */
   box-shadow: var(--shadow-lg);
 }
 
@@ -201,7 +201,7 @@ body {
 .btn-outline-primary:hover {
   background: linear-gradient(135deg, var(--color-primary), var(--color-success));
   color: #fff;
-  transform: translateY(-2px) scale(1.05);
+  /* transform: translateY(-2px) scale(1.05); */
   box-shadow: var(--shadow-lg);
   border-color: transparent;
 }
@@ -215,7 +215,7 @@ body {
 .btn-outline-secondary:hover {
   background: linear-gradient(135deg, var(--color-secondary), #5a6268);
   color: #fff;
-  transform: translateY(-2px) scale(1.05);
+  /* transform: translateY(-2px) scale(1.05); */
   box-shadow: var(--shadow-lg);
   border-color: transparent;
 }
@@ -387,12 +387,12 @@ a:hover {
 
 /* Hover Effects */
 .hover-lift:hover {
-  transform: translateY(-4px);
+  /* transform: translateY(-4px); */
   box-shadow: var(--shadow-lg);
 }
 
 .hover-scale:hover {
-  transform: scale(1.05);
+  /* transform: scale(1.05); */
 }
 
 .hover-glow:hover {
@@ -405,7 +405,7 @@ a:hover {
 }
 
 .card-hover:hover {
-  transform: translateY(-4px) scale(1.02);
+  /* transform: translateY(-4px) scale(1.02); */
   box-shadow: var(--shadow-lg);
 }
 
