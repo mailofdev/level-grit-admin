@@ -5,6 +5,7 @@ import EmojiPicker from "emoji-picker-react";
 import Heading from "../../components/navigation/Heading";
 import { useLocation } from "react-router-dom";
 import { sendMessage, subscribeToMessages } from "../../config/chatService";
+import Loader from "../../components/display/Loader"; 
 
 export default function Messages() {
   const location = useLocation();
@@ -13,17 +14,25 @@ export default function Messages() {
   const clientId = client?.clientId;
 
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ loader state
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef(null);
   const emojiPickerRef = useRef(null);
 
+  // 🔹 Subscribe to messages
   useEffect(() => {
     if (!trainerId || !clientId) return;
-    const unsubscribe = subscribeToMessages(trainerId, clientId, setMessages);
+
+    const unsubscribe = subscribeToMessages(trainerId, clientId, (msgs) => {
+      setMessages(msgs);
+      setLoading(false); // ✅ hide loader once data is fetched
+    });
+
     return () => unsubscribe();
   }, [trainerId, clientId]);
 
+  // 🔹 Send message
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -31,20 +40,28 @@ export default function Messages() {
     setNewMessage("");
   };
 
+  // 🔹 Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 🔹 Emoji
   const onEmojiClick = (emojiData) => {
     setNewMessage((prev) => prev + emojiData.emoji);
   };
 
+  // 🔹 No client selected
   if (!client) {
     return (
       <p className="text-muted mt-4 text-center">
         Select a client to view messages.
       </p>
     );
+  }
+
+  // 🔹 Loader while fetching messages
+  if (loading) {
+    return <Loader fullScreen text="Fetching Messages..." color="#0d6efd" />;
   }
 
   return (

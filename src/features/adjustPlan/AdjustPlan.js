@@ -8,9 +8,9 @@ import {
   Accordion,
   Badge,
   Modal,
-  Spinner
+  Spinner,
 } from "react-bootstrap";
-import { FaPlus, FaTrash, FaSave, FaArrowLeft } from "react-icons/fa";
+import { FaTrash, FaSave } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
@@ -30,36 +30,28 @@ export default function AdjustPlan() {
   const isView = location.state?.isView;
   const toast = useRef(null);
 
-  // State management
   const [meals, setMeals] = useState([]);
   const [assignedDate, setAssignedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  
-  // New state for save confirmation modal
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [mealToDelete, setMealToDelete] = useState(null);
-  
-  // Loading states
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-
-  // Validation flag
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
-  // isView true or false
   const [activeKeys, setActiveKeys] = useState([]);
-  
+
+  // ✅ Compute if assigned date is today
+  const isToday = assignedDate === new Date().toISOString().split("T")[0];
+
   useEffect(() => {
     if (isView) {
       setActiveKeys(meals.map((_, idx) => idx.toString()));
     }
   }, [meals, isView]);
 
-  // Initial meal template
   const emptyMeal = {
     mealName: "",
     protein: "",
@@ -69,14 +61,12 @@ export default function AdjustPlan() {
     instructions: "",
   };
 
-  // Fetch meal plan when client or date changes
   useEffect(() => {
     if (!client?.clientId) {
       showToast("error", "Error", "No client selected. Redirecting...");
       setTimeout(() => navigate(-1), 2000);
       return;
     }
-
     if (assignedDate) {
       fetchMealPlan();
     }
@@ -114,7 +104,18 @@ export default function AdjustPlan() {
     setHasUnsavedChanges(true);
   };
 
+  const handleDateChange = (e) => {
+    const newDate = e.target.value;
+    const today = new Date().toISOString().split("T")[0];
+    setAssignedDate(newDate);
+
+    if (newDate !== today) {
+      showToast("warn", "Read-only Mode", "You can only edit today's plan.");
+    }
+  };
+
   const handleAddMeal = () => {
+    if (!isToday) return;
     setMeals([...meals, { ...emptyMeal }]);
     setHasUnsavedChanges(true);
   };
@@ -126,10 +127,7 @@ export default function AdjustPlan() {
 
   const confirmDeleteMeal = async () => {
     if (mealToDelete === null) return;
-    
     const meal = meals[mealToDelete];
-    
-    // If meal exists in DB, call delete API
     if (meal?.id) {
       setIsDeleting(true);
       try {
@@ -153,7 +151,6 @@ export default function AdjustPlan() {
         setMealToDelete(null);
       }
     } else {
-      // For unsaved meals, remove immediately
       setMeals(meals.filter((_, i) => i !== mealToDelete));
       setHasUnsavedChanges(true);
       setShowDeleteConfirmModal(false);
@@ -162,6 +159,7 @@ export default function AdjustPlan() {
     }
   };
 
+  // ✅ Updated validation (all fields required)
   const validateMeals = () => {
     const errors = [];
 
@@ -171,17 +169,15 @@ export default function AdjustPlan() {
 
     meals.forEach((meal, idx) => {
       if (!meal.mealName?.trim()) {
-        errors.push(`Meal ${idx + 1}: Name is required.`);
+        errors.push(`Meal ${idx + 1}: Meal Name is required.`);
       }
-      
-      const hasNutrient = meal.protein || meal.fats || meal.carbs || meal.calories;
-      if (!hasNutrient) {
-        errors.push(`Meal ${idx + 1}: At least one nutrient value is required.`);
+      if (!meal.instructions?.trim()) {
+        errors.push(`Meal ${idx + 1}: Instructions are required.`);
       }
 
       ["protein", "fats", "carbs", "calories"].forEach((field) => {
         const value = meal[field];
-        if (value && (isNaN(value) || Number(value) < 0)) {
+        if (!value || isNaN(value) || Number(value) <= 0) {
           errors.push(`Meal ${idx + 1}: ${field} must be a positive number.`);
         }
       });
@@ -191,8 +187,12 @@ export default function AdjustPlan() {
   };
 
   const handleSave = async () => {
+    if (!isToday) {
+      showToast("warn", "Read-only Mode", "You can only save today's plan.");
+      return;
+    }
+
     const errors = validateMeals();
-    
     if (errors.length > 0) {
       showToast("error", "Validation Error", errors.join(" "));
       return;
@@ -220,11 +220,8 @@ export default function AdjustPlan() {
   };
 
   const handleBack = () => {
-    if (hasUnsavedChanges) {
-      setShowSaveConfirmModal(true);
-    } else {
-      navigate(-1);
-    }
+    if (hasUnsavedChanges) setShowSaveConfirmModal(true);
+    else navigate(-1);
   };
 
   const handleSaveAndGoBack = async () => {
@@ -238,14 +235,12 @@ export default function AdjustPlan() {
     navigate(-1);
   };
 
-  // Enhanced button configuration
   const rightButtons = [
     {
       label: "Add",
-      icon: "",
-    variant: "btn-outline-primary",
+      variant: "btn-outline-primary",
       onClick: handleAddMeal,
-      disabled: isView || isSaving || isDeleting,
+      disabled: isView || isSaving || isDeleting || !isToday,
     },
     {
       label: "Save",
@@ -256,86 +251,76 @@ export default function AdjustPlan() {
       ),
       variant: "btn-success",
       onClick: handleSave,
-      disabled: isView || isSaving || isDeleting || !hasUnsavedChanges,
+      disabled: isView || isSaving || isDeleting || !hasUnsavedChanges || !isToday,
     },
   ];
 
-// ---- Inside your parent component ----
-const headingProps = {
-  pageName: "Adjust Plan",
-  onBack: handleBack,
-  rightContent: isView ? (
-    <div className="fw-semibold text-muted">
-      <div className="text-end">
-      <div className="">{client?.fullName || "N/A"}</div>
-      <small className="text-muted">{new Date(assignedDate).toLocaleDateString("en-IN", {
+  const headingProps = {
+    // pageName: `Plan for ${client?.fullName || 'N/A'}`,
+    pageName: "Plan",
+    onBack: handleBack,
+    rightContent: isView ? (
+      <div className="fw-semibold text-muted text-end">
+        <div>{client?.fullName || "N/A"}</div>
+        <small className="text-muted">
+          {new Date(assignedDate).toLocaleDateString("en-IN", {
             day: "2-digit",
             month: "short",
             year: "numeric",
-          })}</small>
-    </div>
-    </div>
-  ) : (
-    rightButtons
-  ),
-};
- 
+          })}
+        </small>
+      </div>
+    ) : (
+      rightButtons
+    ),
+  };
 
   return (
     <div className="container">
       <Toast ref={toast} />
-     <Heading  {...headingProps}/>
-      <div 
-        className="d-flex flex-column"
-        style={{
-          height: "calc(100vh - 160px)",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          className="flex-grow-1 overflow-auto"
-          style={{ paddingBottom: "20px" }}
-        >
+      <Heading {...headingProps} />
+      <div className="d-flex flex-column" style={{ height: "calc(100vh - 160px)", overflow: "hidden" }}>
+        <div className="flex-grow-1 overflow-auto" style={{ paddingBottom: "20px" }}>
           {isLoading ? (
             <Loader fullScreen={true} text="Loading meal plan" color="#43a047" />
           ) : (
             <Card className="shadow-sm border-0 rounded-4 p-4 bg-white">
-              {!isView ? (
-              <Row className="align-items-end mb-4">
-                <Col md={4} xs={12}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      📅 Date
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={assignedDate}
-                      onChange={(e) => setAssignedDate(e.target.value)}
-                      className="rounded-3 shadow-sm"
-                      disabled={isView}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={8} className="text-end">
-                  <Badge bg="info" className="fs-6 p-2 px-3 rounded-pill shadow-sm">
-                    👤 Client: <strong>{client?.fullName || "N/A"}</strong>
-                  </Badge>
-                  {hasUnsavedChanges && (
-                    <Badge bg="warning" className="fs-6 p-2 px-3 ms-2 rounded-pill shadow-sm">
-                      ⚠️ Unsaved Changes
-                    </Badge>
-                  )}
-                </Col>
-              </Row>
-            ) : null}
+              {!isView && (
+                // <Row className="align-items-end mb-4">
+                //   <Col md={4} xs={12}>
+                //     <Form.Group>
+                //       <Form.Label className="fw-semibold">📅 Date</Form.Label>
+                //       <Form.Control
+                //         type="date"
+                //         value={assignedDate}
+                //         onChange={handleDateChange}
+                //         className="rounded-3 shadow-sm"
+                //         disabled={isView}
+                //       />
+                //     </Form.Group>
+                //   </Col>
+                //   <Col md={8} className="text-end">
+                //     <Badge bg="info" className="fs-6 p-2 px-3 rounded-pill shadow-sm">
+                //       👤 Client: <strong>{client?.fullName || "N/A"}</strong>
+                //     </Badge>
+                //     {!isToday && (
+                //       <Badge bg="secondary" className="fs-6 p-2 px-3 ms-2 rounded-pill shadow-sm">
+                //         🔒 Read-only
+                //       </Badge>
+                //     )}
+                //     {hasUnsavedChanges && (
+                //       <Badge bg="warning" className="fs-6 p-2 px-3 ms-2 rounded-pill shadow-sm">
+                //         ⚠️ Unsaved Changes
+                //       </Badge>
+                //     )}
+                //   </Col>
+                // </Row>
+                <></>
+              )}
+
+              {/* Accordion */}
               <Form>
-          <Accordion
-  className={!isView ? "" : "bg-danger-custom"}
-activeKey={isView ? activeKeys : undefined}
-  alwaysOpen
->
-
-
+                <Accordion activeKey={isView ? activeKeys : undefined} alwaysOpen>
                   {meals.map((meal, index) => (
                     <Accordion.Item
                       eventKey={index.toString()}
@@ -347,25 +332,23 @@ activeKey={isView ? activeKeys : undefined}
                           <div>
                             🍽️ <strong>Meal {index + 1}</strong>
                             {meal.mealName && (
-                              <span className="ms-2 text-muted">
-                                - {meal.mealName}
-                              </span>
+                              <span className="ms-2 text-muted">- {meal.mealName}</span>
                             )}
                           </div>
-                          {!isView && (
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveMeal(index);
-                            }}
-                            className="me-4 rounded-circle"
-                            style={{ width: "36px", height: "36px" }}
-                            disabled={isView || isSaving || isDeleting}
-                          >
-                            <FaTrash />
-                          </Button>
+                          {!isView && isToday && (
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveMeal(index);
+                              }}
+                              className="me-4 rounded-circle"
+                              style={{ width: "36px", height: "36px" }}
+                              disabled={isSaving || isDeleting}
+                            >
+                              <FaTrash />
+                            </Button>
                           )}
                         </div>
                       </Accordion.Header>
@@ -373,9 +356,7 @@ activeKey={isView ? activeKeys : undefined}
                         <Row className="mb-3 gx-3 gy-3">
                           <Col md={4} xs={12}>
                             <Form.Group>
-                              <Form.Label className={!isView ? "" : "disabled-label fw-semibold"}>
-                                Meal Name <span className="text-danger">{!isView && "*"}</span>
-                              </Form.Label>
+                              <Form.Label>Meal Name *</Form.Label>
                               <Form.Control
                                 type="text"
                                 value={meal.mealName}
@@ -384,18 +365,16 @@ activeKey={isView ? activeKeys : undefined}
                                 }
                                 placeholder="e.g., Pre-Workout"
                                 className="rounded-3 shadow-sm"
-                                disabled={isView}
-                                required
+                                disabled={isView || !isToday}
                               />
                             </Form.Group>
                           </Col>
+
                           {["protein", "fats", "carbs", "calories"].map((nutrient) => (
                             <Col md={2} xs={6} key={nutrient}>
                               <Form.Group>
-                                <Form.Label  
-                                  className={!isView ? "" : "disabled-label text-capitalize fw-semibold"}
-                                >
-                                  {nutrient} ({nutrient === "calories" ? "kcal" : "g"})
+                                <Form.Label className="text-capitalize">
+                                  {nutrient} ({nutrient === "calories" ? "kcal" : "g"}) *
                                 </Form.Label>
                                 <Form.Control
                                   type="number"
@@ -406,14 +385,14 @@ activeKey={isView ? activeKeys : undefined}
                                   className="rounded-3 shadow-sm"
                                   min="0"
                                   step="0.1"
-                                  disabled={isView}
+                                  disabled={isView || !isToday}
                                 />
                               </Form.Group>
                             </Col>
                           ))}
                         </Row>
                         <Form.Group className="mb-3">
-                          <Form.Label className={!isView ? "" : "disabled-label fw-semibold"}>📝 Meal Instructions</Form.Label>
+                          <Form.Label>📝 Meal Instructions *</Form.Label>
                           <Form.Control
                             as="textarea"
                             rows={3}
@@ -423,7 +402,7 @@ activeKey={isView ? activeKeys : undefined}
                             }
                             placeholder="e.g., Eat with salad and lemon water"
                             className="rounded-3 shadow-sm"
-                            disabled={isView}
+                            disabled={isView || !isToday}
                           />
                         </Form.Group>
                       </Accordion.Body>
