@@ -139,7 +139,7 @@ const ProfileModal = ({ show, onClose }) => {
           </div>
 
           {/* Avatar */}
-          <div className="text-center py-4 position-relative" style={{ background: "linear-gradient(90deg, #36d198, #07976a)", color: "#fff" }}>
+          <div className="text-center py-2 position-relative" style={{ background: "linear-gradient(90deg, #36d198, #07976a)", color: "#fff" }}>
             {/* <div className="rounded-circle mx-auto shadow d-flex align-items-center justify-content-center" style={{ width: "110px", height: "110px", background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.4)", fontSize: "48px" }}>
               <FaUser />
             </div> */}
@@ -184,7 +184,7 @@ const ProfileModal = ({ show, onClose }) => {
                 <ProfileField icon={FaDumbbell} label="Target Weight (kg)" name="targetWeight" value={formData.targetWeight} isEditing={isEditing} onChange={handleChange} type="number" />
                 {/* Goal */}
                 <div className="col-md-6">
-                  <div className="shadow-sm rounded p-3 bg-white d-flex align-items-center border">
+                  <div className="shadow-sm rounded py-2 px-3 bg-white d-flex align-items-center border">
                     <FaDumbbell className="text-primary me-3 fs-5" />
                     <div className="w-100">
                       <small className="text-muted">Goal</small>
@@ -238,7 +238,7 @@ const ProfileModal = ({ show, onClose }) => {
 // ProfileField component
 const ProfileField = ({ icon: Icon, label, name, value, isEditing, onChange, type = "text", options = [], disabled = false }) => (
   <div className="col-md-6">
-    <div className="shadow-sm rounded p-3 bg-white d-flex align-items-center border">
+    <div className="shadow-sm rounded py-2 px-3 bg-white d-flex align-items-center border">
       <Icon className="text-primary me-3 fs-5" />
       <div className="w-100">
         <small className="text-muted">{label}</small>
