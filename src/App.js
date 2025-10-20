@@ -55,7 +55,7 @@ function App() {
 
           {/* Protected routes */}
           <Route
-            path="/dashboard"
+            path="/trainer-dashboard"
             element={
               <ProtectedLayout config={{ showTopbar: true, showSidebar: false, showFooter: false }}>
                 <TrainerDashboard />

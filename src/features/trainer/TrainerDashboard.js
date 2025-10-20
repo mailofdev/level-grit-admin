@@ -1,330 +1,167 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, ProgressBar, Alert } from 'react-bootstrap';
-import { FaUsers, FaUtensils, FaChartLine, FaComments, FaPlus, FaEye, FaEdit, FaBell, FaDumbbell, FaHeartbeat } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  ProgressBar,
+  Badge,
+} from "react-bootstrap";
+import {
+  FaUsers,
+  FaChartLine,
+  FaExclamationTriangle,
+  FaDumbbell,
+  FaHeartbeat,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { getDecryptedUser } from "../../components/common/CommonFunctions";
 
 const TrainerDashboard = () => {
+  const user = getDecryptedUser();
   const navigate = useNavigate();
   const [stats, setStats] = useState({
-    totalClients: 0,
-    activeClients: 0,
-    mealPlans: 0,
-    unreadMessages: 0
+    totalClients: 30,
+    onTrackClients: 22,
+    needAttention: 8,
+    muscleGain: 18,
+    weightLoss: 12,
   });
 
-  const [recentClients, setRecentClients] = useState([]);
-  const [upcomingTasks, setUpcomingTasks] = useState([]);
-
-  // Mock data - replace with actual API calls
   useEffect(() => {
-    setStats({
-      totalClients: 24,
-      activeClients: 18,
-      mealPlans: 45,
-      unreadMessages: 7
-    });
-
-    setRecentClients([
-      { id: 1, name: 'Sarah Johnson', lastActive: '2 hours ago', progress: 85, status: 'active' },
-      { id: 2, name: 'Mike Chen', lastActive: '1 day ago', progress: 72, status: 'active' },
-      { id: 3, name: 'Emily Davis', lastActive: '3 days ago', progress: 90, status: 'active' },
-      { id: 4, name: 'David Wilson', lastActive: '1 week ago', progress: 45, status: 'inactive' }
-    ]);
-
-    setUpcomingTasks([
-      { id: 1, type: 'meal_plan', client: 'Sarah Johnson', due: 'Today', priority: 'high' },
-      { id: 2, type: 'check_in', client: 'Mike Chen', due: 'Tomorrow', priority: 'medium' },
-      { id: 3, type: 'progress_review', client: 'Emily Davis', due: 'In 2 days', priority: 'low' }
-    ]);
+    // Simulate API later
   }, []);
 
-  const getTaskIcon = (type) => {
-    switch (type) {
-      case 'meal_plan': return <FaUtensils className="text-success" />;
-      case 'check_in': return <FaComments className="text-primary" />;
-      case 'progress_review': return <FaChartLine className="text-info" />;
-      default: return <FaBell className="text-warning" />;
-    }
-  };
+  const cards = [
+    {
+      title: "Total Clients",
+      value: stats.totalClients,
+      icon: <FaUsers />,
+      gradient: "linear-gradient(135deg, #e3f2fd, #bbdefb)",
+      textColor: "#0d6efd",
+    },
+    {
+      title: "On Track Clients",
+      value: stats.onTrackClients,
+      icon: <FaChartLine />,
+      gradient: "linear-gradient(135deg, #e8f5e9, #c8e6c9)",
+      textColor: "#198754",
+    },
+    {
+      title: "Need Attention",
+      value: stats.needAttention,
+      icon: <FaExclamationTriangle />,
+      gradient: "linear-gradient(135deg, #fff8e1, #ffecb3)",
+      textColor: "#ffc107",
+    },
+    {
+      title: "Goal: Muscle Gain",
+      value: stats.muscleGain,
+      icon: <FaDumbbell />,
+      gradient: "linear-gradient(135deg, #e0f7fa, #b2ebf2)",
+      textColor: "#0dcaf0",
+    },
+    {
+      title: "Goal: Weight Loss",
+      value: stats.weightLoss,
+      icon: <FaHeartbeat />,
+      gradient: "linear-gradient(135deg, #ffebee, #ffcdd2)",
+      textColor: "#dc3545",
+    },
+  ];
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return 'danger';
-      case 'medium': return 'warning';
-      case 'low': return 'success';
-      default: return 'secondary';
-    }
-  };
+  const progress = Math.round((stats.onTrackClients / stats.totalClients) * 100);
 
   return (
-    <div className="page-container">
-      <Container fluid className="py-4">
+    <div className="trainer-dashboard bg-light min-vh-100 py-4">
+      <Container>
         {/* Header */}
         <Row className="mb-4">
           <Col>
-            <div className="d-flex justify-content-between align-items-center">
-              <div>
-                <h1 className="fw-bold text-primary mb-1">Trainer Dashboard</h1>
-                <p className="text-muted mb-0">Welcome back! Here's what's happening with your clients.</p>
-              </div>
-              <div>
-                <Button 
-                  variant="primary" 
-                  className="me-2 smooth-transition"
-                  onClick={() => navigate('/register-client')}
-                >
-                  <FaPlus className="me-2" />
-                  Add New Client
-                </Button>
-                <Button 
-                  variant="outline-primary" 
-                  className="smooth-transition"
-                  onClick={() => navigate('/AllClients')}
-                >
-                  <FaUsers className="me-2" />
-                  View All Clients
-                </Button>
-              </div>
-            </div>
+            <h2 className="fw-bold text-secondary mb-1">{user?.fullName}'s Dashboard</h2>
+            <p className="text-muted mb-0">
+              Quick overview of your clients and their goals
+            </p>
+          </Col>
+          <Col xs="auto">
+            <Button
+              variant="primary"
+              className="shadow-sm"
+              onClick={() => navigate("/register-client")}
+            >
+              + Add Client
+            </Button>
           </Col>
         </Row>
 
         {/* Stats Cards */}
-        <Row className="g-4 mb-4">
-          <Col lg={3} md={6}>
-            <Card className="card-stats h-100 hover-shadow smooth-transition">
-              <Card.Body className="p-4">
-                <div className="d-flex align-items-center">
-                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '60px', height: '60px'}}>
-                    <FaUsers size={24} />
-                  </div>
-                  <div>
-                    <h3 className="fw-bold text-primary mb-1">{stats.totalClients}</h3>
-                    <p className="text-muted mb-0">Total Clients</p>
-                    <small className="text-success">
-                      <FaChartLine className="me-1" />
-                      +12% this month
-                    </small>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={3} md={6}>
-            <Card className="card-health h-100 hover-shadow smooth-transition">
-              <Card.Body className="p-4">
-                <div className="d-flex align-items-center">
-                  <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '60px', height: '60px'}}>
-                    <FaHeartbeat size={24} />
-                  </div>
-                  <div>
-                    <h3 className="fw-bold text-success mb-1">{stats.activeClients}</h3>
-                    <p className="text-muted mb-0">Active Clients</p>
-                    <small className="text-success">
-                      <FaChartLine className="me-1" />
-                      {Math.round((stats.activeClients / stats.totalClients) * 100)}% engagement
-                    </small>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={3} md={6}>
-            <Card className="card-info h-100 hover-shadow smooth-transition">
-              <Card.Body className="p-4">
-                <div className="d-flex align-items-center">
-                  <div className="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '60px', height: '60px'}}>
-                    <FaUtensils size={24} />
-                  </div>
-                  <div>
-                    <h3 className="fw-bold text-info mb-1">{stats.mealPlans}</h3>
-                    <p className="text-muted mb-0">Active Meal Plans</p>
-                    <small className="text-info">
-                      <FaChartLine className="me-1" />
-                      +5 this week
-                    </small>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={3} md={6}>
-            <Card className="card-stats h-100 hover-shadow smooth-transition">
-              <Card.Body className="p-4">
-                <div className="d-flex align-items-center">
-                  <div className="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '60px', height: '60px'}}>
-                    <FaComments size={24} />
-                  </div>
-                  <div>
-                    <h3 className="fw-bold text-warning mb-1">{stats.unreadMessages}</h3>
-                    <p className="text-muted mb-0">Unread Messages</p>
-                    <small className="text-warning">
-                      <FaBell className="me-1" />
-                      Needs attention
-                    </small>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
         <Row className="g-4">
-          {/* Recent Clients */}
-          <Col lg={8}>
-            <Card className="content-wrapper hover-shadow smooth-transition">
-              <Card.Header className="bg-transparent border-0 p-4">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h4 className="fw-bold text-primary mb-0">
-                    <FaUsers className="me-2" />
-                    Recent Client Activity
-                  </h4>
-                  <Button 
-                    variant="outline-primary" 
-                    size="sm"
-                    onClick={() => navigate('/AllClients')}
-                  >
-                    View All
-                  </Button>
-                </div>
-              </Card.Header>
-              <Card.Body className="p-4 pt-0">
-                {recentClients.map((client) => (
-                  <div key={client.id} className="d-flex align-items-center justify-content-between p-3 border-bottom hover-lift smooth-transition">
-                    <div className="d-flex align-items-center">
-                      <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style={{width: '50px', height: '50px'}}>
-                        {client.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div>
-                        <h6 className="fw-bold mb-1">{client.name}</h6>
-                        <p className="text-muted small mb-1">Last active: {client.lastActive}</p>
-                        <div className="d-flex align-items-center">
-                          <ProgressBar 
-                            now={client.progress} 
-                            variant="success" 
-                            className="me-2" 
-                            style={{width: '100px', height: '6px'}}
-                          />
-                          <small className="text-muted">{client.progress}% progress</small>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <Badge bg={client.status === 'active' ? 'success' : 'secondary'} className="me-2">
-                        {client.status}
-                      </Badge>
-                      <Button 
-                        variant="outline-primary" 
-                        size="sm"
-                        onClick={() => navigate(`/client-details/${client.id}`)}
-                      >
-                        <FaEye />
-                      </Button>
-                    </div>
+          {cards.map((card, i) => (
+            <Col lg={4} md={6} key={i}>
+              <Card
+                className="border-0 shadow-sm h-100"
+                style={{
+                  background: card.gradient,
+                  borderRadius: "1rem",
+                  color: card.textColor,
+                }}
+              >
+                <Card.Body className="d-flex align-items-center justify-content-between p-4">
+                  <div>
+                    <h6 className="fw-semibold mb-1">{card.title}</h6>
+                    <h2 className="fw-bold mb-0">{card.value}</h2>
                   </div>
-                ))}
-              </Card.Body>
-            </Card>
-          </Col>
-
-          {/* Upcoming Tasks */}
-          <Col lg={4}>
-            <Card className="content-wrapper hover-shadow smooth-transition">
-              <Card.Header className="bg-transparent border-0 p-4">
-                <h4 className="fw-bold text-primary mb-0">
-                  <FaBell className="me-2" />
-                  Upcoming Tasks
-                </h4>
-              </Card.Header>
-              <Card.Body className="p-4 pt-0">
-                {upcomingTasks.map((task) => (
-                  <div key={task.id} className="d-flex align-items-center p-3 border-bottom hover-lift smooth-transition">
-                    <div className="me-3">
-                      {getTaskIcon(task.type)}
-                    </div>
-                    <div className="flex-grow-1">
-                      <h6 className="fw-bold mb-1">{task.client}</h6>
-                      <p className="text-muted small mb-1">
-                        {task.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      </p>
-                      <small className="text-muted">Due: {task.due}</small>
-                    </div>
-                    <Badge bg={getPriorityColor(task.priority)}>
-                      {task.priority}
-                    </Badge>
+                  <div
+                    className="d-flex align-items-center justify-content-center rounded-circle"
+                    style={{
+                      width: 55,
+                      height: 55,
+                      background: "rgba(255,255,255,0.6)",
+                      fontSize: "1.5rem",
+                      color: card.textColor,
+                    }}
+                  >
+                    {card.icon}
                   </div>
-                ))}
-                
-                <div className="text-center mt-3">
-                  <Button variant="outline-primary" size="sm">
-                    View All Tasks
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="content-wrapper hover-shadow smooth-transition mt-4">
-              <Card.Header className="bg-transparent border-0 p-4">
-                <h4 className="fw-bold text-primary mb-0">Quick Actions</h4>
-              </Card.Header>
-              <Card.Body className="p-4 pt-0">
-                <div className="d-grid gap-2">
-                  <Button 
-                    variant="outline-success" 
-                    className="smooth-transition"
-                    onClick={() => navigate('/register-client')}
-                  >
-                    <FaPlus className="me-2" />
-                    Add New Client
-                  </Button>
-                  <Button 
-                    variant="outline-info" 
-                    className="smooth-transition"
-                  >
-                    <FaUtensils className="me-2" />
-                    Create Meal Plan
-                  </Button>
-                  <Button 
-                    variant="outline-warning" 
-                    className="smooth-transition"
-                  >
-                    <FaDumbbell className="me-2" />
-                    Design Workout
-                  </Button>
-                  <Button 
-                    variant="outline-primary" 
-                    className="smooth-transition"
-                  >
-                    <FaComments className="me-2" />
-                    Send Message
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
 
-        {/* Recent Activity Alert */}
-        {stats.unreadMessages > 0 && (
-          <Row className="mt-4">
-            <Col>
-              <Alert variant="info" className="d-flex align-items-center">
-                <FaBell className="me-3" />
-                <div className="flex-grow-1">
-                  <strong>You have {stats.unreadMessages} unread messages</strong>
-                  <p className="mb-0">Check your client communications to stay updated.</p>
-                </div>
-                <Button variant="outline-info" size="sm">
-                  View Messages
-                </Button>
-              </Alert>
-            </Col>
+        {/* Progress Section */}
+        <Card className="border-0 shadow-sm mt-5 p-4">
+          <h5 className="fw-bold text-primary mb-3">Overall Progress</h5>
+          <p className="text-muted mb-2">
+            {progress}% of your clients are on track with their goals.
+          </p>
+          <ProgressBar now={progress} variant="success" animated />
+        </Card>
+
+        {/* Need Attention List */}
+        <Card className="border-0 shadow-sm mt-4 p-4">
+          <h5 className="fw-bold text-danger mb-3">Clients Needing Attention</h5>
+          <Row className="g-3">
+            {["Rohit Sharma", "Sarah Johnson", "Mark Patel"].map((client, idx) => (
+              <Col md={4} key={idx}>
+                <Card className="border-0 shadow-sm p-3 h-100">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 className="fw-bold mb-1">{client}</h6>
+                      <Badge bg="warning" text="dark">
+                        Missed Check-in
+                      </Badge>
+                    </div>
+                    <Button variant="outline-primary" size="sm">
+                      View
+                    </Button>
+                  </div>
+                </Card>
+              </Col>
+            ))}
           </Row>
-        )}
+        </Card>
       </Container>
     </div>
   );

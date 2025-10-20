@@ -290,7 +290,6 @@ const RegisterClientForm = () => {
                   <Button
                     type="submit"
                     variant="primary"
-                    size="lg"
                     className="px-5 fw-bold smooth-transition me-3"
                     disabled={loading}
                   >
@@ -308,7 +307,6 @@ const RegisterClientForm = () => {
                   </Button>
                   <Button
                     variant="outline-secondary"
-                    size="lg"
                     className="px-4 smooth-transition"
                     type="button"
                     onClick={handleCancel}

@@ -11,7 +11,7 @@ export const getRoutes = () => {
       ? [
           {
             label: "Dashboard",
-            href: "/dashboard",
+            href: "/trainer-dashboard",
             icon: "bi-speedometer2",
             showIn: ["sidebar", "topbar"],
           },
