@@ -74,7 +74,7 @@ const TrainerDashboard = () => {
   const progress = Math.round((stats.onTrackClients / stats.totalClients) * 100);
 
   return (
-    <div className="trainer-dashboard bg-light min-vh-100 py-4">
+    <div className="trainer-dashboard min-vh-100 py-4">
       <Container>
         {/* Header */}
         <Row className="mb-4">
