@@ -5,8 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import store from './redux/store';
-import { ThemeProvider } from './contexts/ThemeContext';
+import store, { persistor } from './redux/store';
 import ErrorFallback from './components/common/ErrorFallback';
 
 // Import CSS files
@@ -68,9 +67,7 @@ root.render(
       onError={handleGlobalError}
     >
       <Provider store={store}>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
+        <App />
       </Provider>
     </ErrorBoundary>
   </React.StrictMode>

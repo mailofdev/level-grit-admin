@@ -1,14 +1,14 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
+import { PersistGate } from 'redux-persist/integration/react';
 import './styles/themes/variables.css';
 import './App.css';
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/navigation/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
 import Loader from './components/display/Loader';
 import ErrorFallback from './components/common/ErrorFallback';
+import { persistor } from './redux/store';
 
 // Lazy load components for better performance
 const LandingPage = lazy(() => import('./features/landing/LandingPage'));
@@ -77,11 +77,10 @@ function App() {
         // Here you could send error to monitoring service like Sentry
       }}
     >
-      <ThemeProvider>
+      <PersistGate loading={<LoadingFallback />} persistor={persistor}>
         <Router>
-          <AuthProvider>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginForm />} />
@@ -198,11 +197,10 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
-          </AuthProvider>
-        </Router>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
+          </Router>
+        </PersistGate>
+      </ErrorBoundary>
+    );
+  }
 
 export default App;
