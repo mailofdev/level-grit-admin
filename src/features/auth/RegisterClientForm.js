@@ -96,9 +96,9 @@ const RegisterClientForm = () => {
       <div className="container">
           <Heading pageName="Register Client" sticky={true} />
         <div className="row justify-content-center">
-          <div className="col-12 col-lg-10 col-xl-8">
+          <div className="col-12">
             <div className="card content-wrapper card-health p-4">
-              <div className="text-center mb-4">
+              {/* <div className="text-center mb-4">
                 <div className="position-relative d-inline-block mb-3">
                   <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
                        style={{ width: "80px", height: "80px" }}>
@@ -110,7 +110,7 @@ const RegisterClientForm = () => {
                 <p className="text-muted">
                   Add a new client to your health management system
                 </p>
-              </div>
+              </div> */}
 
               <Form onSubmit={handleSubmit} className="needs-validation">
                 <Row className="gy-4">
