@@ -42,7 +42,7 @@ const LoginForm = () => {
     setIsLoading(true);
     try {
       await dispatch(loginThunk({ email, password })).unwrap();
-      navigate("/dashboard", { replace: true });
+      navigate("/trainer-dashboard", { replace: true });
     } catch (error) {
       setErrorMessage(error || "Invalid credentials. Please try again.");
     } finally {
