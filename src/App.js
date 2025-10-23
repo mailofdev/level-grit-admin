@@ -84,7 +84,7 @@ function App() {
             path="/messages/:clientId"
             element={
               <ProtectedLayout>
-                <Messages />
+              <Messages isTrainer={true} />
               </ProtectedLayout>
             }
           />

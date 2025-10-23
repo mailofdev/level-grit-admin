@@ -5,68 +5,71 @@ import EmojiPicker from "emoji-picker-react";
 import Heading from "../../components/navigation/Heading";
 import { useLocation } from "react-router-dom";
 import { sendMessage, subscribeToMessages } from "../../config/chatService";
-import Loader from "../../components/display/Loader"; 
+import Loader from "../../components/display/Loader";
 
-export default function Messages() {
+export default function Messages({ isTrainer = false }) {
   const location = useLocation();
   const client = location.state?.client;
-  const trainerId = client?.trainerId;
-  const clientId = client?.clientId;
+  const trainer = location.state?.trainer;
+
+  // Trainer & Client IDs depend on who is logged in
+  const trainerId = isTrainer ? client?.trainerId : trainer?.trainerId;
+  const clientId = isTrainer ? client?.clientId : client?.clientId;
 
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ loader state
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
-  const emojiPickerRef = useRef(null);
 
-  // 🔹 Subscribe to messages
+  // Fetch messages
   useEffect(() => {
     if (!trainerId || !clientId) return;
-
     const unsubscribe = subscribeToMessages(trainerId, clientId, (msgs) => {
       setMessages(msgs);
-      setLoading(false); // ✅ hide loader once data is fetched
+      setLoading(false);
     });
-
     return () => unsubscribe();
   }, [trainerId, clientId]);
 
-  // 🔹 Send message
+  // Send message
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-    await sendMessage(trainerId, clientId, trainerId, newMessage.trim());
+    const senderId = isTrainer ? trainerId : clientId;
+    await sendMessage(trainerId, clientId, senderId, newMessage.trim());
     setNewMessage("");
   };
 
-  // 🔹 Auto-scroll
+  // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔹 Emoji
   const onEmojiClick = (emojiData) => {
     setNewMessage((prev) => prev + emojiData.emoji);
   };
 
-  // 🔹 No client selected
-  if (!client) {
-    return (
-      <p className="text-muted mt-4 text-center">
-        Select a client to view messages.
-      </p>
-    );
-  }
+  const chatName = isTrainer
+    ? `Chat with ${client?.fullName || "Client"}`
+    : `Chat with ${trainer?.fullName || "Trainer"}`;
 
-  // 🔹 Loader while fetching messages
+  // Loader
   if (loading) {
     return <Loader fullScreen text="Fetching Messages..." color="#0d6efd" />;
   }
 
+  if ((!client && isTrainer) || (!trainer && !isTrainer)) {
+    return (
+      <p className="text-muted mt-4 text-center">
+        Select {isTrainer ? "a client" : "a trainer"} to view messages.
+      </p>
+    );
+  }
+
   return (
     <div className="container py-3">
-      <Heading pageName={`Chat with ${client.fullName}`} sticky={true} />
+      <Heading pageName={chatName} sticky={true} />
 
       <Card
         className="border-0 shadow-lg d-flex flex-column"
@@ -76,63 +79,61 @@ export default function Messages() {
           overflow: "hidden",
         }}
       >
-        {/* Chat Background */}
+        {/* Chat Messages */}
         <div
-          className="flex-grow-1 overflow-auto p-3 rounded shadow-sm"
+          className="flex-grow-1 overflow-auto p-3"
           style={{
             background:
               "linear-gradient(180deg, #e0f7fa 0%, #ffffff 60%, #e8f5e9 100%)",
           }}
         >
-          {messages.length === 0 && (
+          {messages.length === 0 ? (
             <div className="text-center text-muted mt-5">
               <p>No messages yet. Start the conversation! 💬</p>
             </div>
-          )}
-
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`d-flex mb-2 ${
-                msg.senderId === trainerId
-                  ? "justify-content-end"
-                  : "justify-content-start"
-              }`}
-            >
-              <div
-                className="p-3 rounded-4 shadow-sm"
-                style={{
-                  maxWidth: "70%",
-                  wordBreak: "break-word",
-                  backgroundColor:
-                    msg.senderId === trainerId ? "#d1f7c4" : "#ffffff",
-                  borderRadius:
-                    msg.senderId === trainerId
-                      ? "20px 20px 0 20px"
-                      : "20px 20px 20px 0",
-                }}
-              >
-                <div style={{ fontSize: "0.95rem" }}>{msg.text}</div>
+          ) : (
+            messages.map((msg) => {
+              const isSender = msg.senderId === (isTrainer ? trainerId : clientId);
+              return (
                 <div
-                  className="text-end text-muted"
-                  style={{ fontSize: "0.75rem", marginTop: "4px" }}
+                  key={msg.id}
+                  className={`d-flex mb-2 ${
+                    isSender ? "justify-content-end" : "justify-content-start"
+                  }`}
                 >
-                  {msg.timestamp?.toDate().toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  <div
+                    className="p-3 rounded-4 shadow-sm"
+                    style={{
+                      maxWidth: "70%",
+                      wordBreak: "break-word",
+                      backgroundColor: isSender ? "#d1f7c4" : "#ffffff",
+                      borderRadius: isSender
+                        ? "20px 20px 0 20px"
+                        : "20px 20px 20px 0",
+                    }}
+                  >
+                    <div style={{ fontSize: "0.95rem" }}>{msg.text}</div>
+                    <div
+                      className="text-end text-muted"
+                      style={{ fontSize: "0.75rem", marginTop: "4px" }}
+                    >
+                      {msg.timestamp?.toDate().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Section */}
+        {/* Message Input */}
         <div className="bg-light p-3 position-relative border-top">
           {showEmojiPicker && (
             <div
-              ref={emojiPickerRef}
               className="position-absolute"
               style={{
                 bottom: "70px",

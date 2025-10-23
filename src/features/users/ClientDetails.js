@@ -18,7 +18,7 @@ export default function ClientDetails() {
   const location = useLocation();
 
   const client = { ...location.state?.client };
-console.table(client);
+
   if (!client)
     return (
       <p className="text-muted mt-4 text-center">
