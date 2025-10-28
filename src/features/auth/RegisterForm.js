@@ -20,7 +20,7 @@ const RegisterForm = () => {
     gender: "",
     email: "",
     password: "",
-    role: 1, 
+    role: 1,
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -109,7 +109,7 @@ const RegisterForm = () => {
           await dispatch(
             loginThunk({ email: formData.email, password: formData.password })
           ).unwrap();
-          navigate("/dashboard", { replace: true });
+          navigate("/trainer-dashboard", { replace: true });
         } catch (loginError) {
           toast.current.show({
             severity: "error",
@@ -140,10 +140,19 @@ const RegisterForm = () => {
   return (
     <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
       <Toast ref={toast} />
-      {isLoading && <Loader fullScreen={true} text="Creating your account..." color="var(--color-primary)" />}
+      {isLoading && (
+        <Loader
+          fullScreen={true}
+          text="Creating your account..."
+          color="var(--color-primary)"
+        />
+      )}
 
       {/* Enhanced Register Card */}
-      <div className="card content-wrapper card-health p-5" style={{ maxWidth: "500px", width: "100%" }}>
+      <div
+        className="card content-wrapper card-health p-5"
+        style={{ maxWidth: "500px", width: "100%" }}
+      >
         <div className="text-center mb-4">
           <div className="position-relative d-inline-block">
             <img
@@ -154,7 +163,7 @@ const RegisterForm = () => {
                 height: "100px",
                 width: "100px",
                 borderColor: "var(--color-primary)",
-                objectFit: "cover"
+                objectFit: "cover",
               }}
             />
             <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
@@ -220,7 +229,8 @@ const RegisterForm = () => {
             {/* Email */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                <i className="fas fa-envelope muted-label me-2"></i>Email Address
+                <i className="fas fa-envelope muted-label me-2"></i>Email
+                Address
               </label>
               <input
                 type="email"
@@ -234,7 +244,7 @@ const RegisterForm = () => {
             </div>
 
             {/* Password */}
-            <div className="col-12">
+            {/* <div className="col-12">
               <label className="form-label fw-semibold">
                 <i className="fas fa-lock muted-label me-2"></i>Password
               </label>
@@ -261,17 +271,47 @@ const RegisterForm = () => {
                   )}
                 </button>
               </div>
+            </div> */}
+            <div className="mb-2">
+              <label className="form-label fw-semibold">
+                <i className="fas fa-lock text-primary me-2"></i>Password
+              </label>
+
+              <div className="position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="form-control  pe-5 smooth-transition"
+                  placeholder="Create a strong password"
+                  value={password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "40px" }} // ensure text doesn't overlap icon
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
+                  style={{ right: "10px" }} // 👈 ensures button stays inside right end
+                >
+                  {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary btn w-100 mt-4 smooth-transition"
             disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                ></span>
                 Creating Account...
               </>
             ) : (

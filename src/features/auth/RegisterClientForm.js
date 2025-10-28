@@ -22,6 +22,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { Eye, EyeClosed } from "lucide-react";
 
 const RegisterClientForm = () => {
   const navigate = useNavigate();
@@ -193,28 +194,29 @@ const RegisterClientForm = () => {
                         </Col>
 
                         <Col md={6}>
-                          <FloatingLabel label="Password" className="position-relative smooth-transition">
-                            <Form.Control
-                              type={showPassword ? "text" : "password"}
-                              name="password"
-                              placeholder="Password"
-                              value={formData.password}
-                              onChange={handleChange}
-                              required
-                              minLength={6}
-                              style={{ paddingRight: "2.5rem" }}
-                              className="smooth-transition"
-                            />
-                            <Button
-                              variant="link"
-                              type="button"
-                              className="position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-muted"
-                              onClick={() => setShowPassword(!showPassword)}
-                              tabIndex={-1}
-                            >
-                              {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </Button>
-                          </FloatingLabel>
+            <FloatingLabel label="Password" className="position-relative smooth-transition">
+
+               <Form.Control
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="password"
+                 value={formData.password}
+                onChange={handleChange}
+                required
+                className="form-control w-100 pe-5"
+                style={{ paddingRight: "40px" }} // ensure text doesn't overlap icon
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
+                style={{ right: "10px" }} // 👈 ensures button stays inside right end
+              >
+                {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+              </button>
+
+           </FloatingLabel>
                         </Col>
                       </Row>
                     </div>

@@ -52,10 +52,19 @@ const LoginForm = () => {
 
   return (
     <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
-      {isLoading && <Loader fullScreen={true} text="Logging in..." color="var(--color-primary)" />}
+      {isLoading && (
+        <Loader
+          fullScreen={true}
+          text="Logging in..."
+          color="var(--color-primary)"
+        />
+      )}
 
       {/* Enhanced Login Card */}
-      <div className="card content-wrapper card-health p-5" style={{ maxWidth: "450px", width: "100%" }}>
+      <div
+        className="card content-wrapper card-health p-5"
+        style={{ maxWidth: "450px", width: "100%" }}
+      >
         <div className="text-center mb-4">
           <div className="position-relative d-inline-block">
             <img
@@ -66,7 +75,7 @@ const LoginForm = () => {
                 height: "100px",
                 width: "100px",
                 borderColor: "var(--color-primary)",
-                objectFit: "cover"
+                objectFit: "cover",
               }}
             />
             <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
@@ -99,42 +108,44 @@ const LoginForm = () => {
           </div>
 
           {/* Password Field */}
-          <div className="mb-2 position-relative">
+          <div className="mb-2">
             <label className="form-label fw-semibold">
               <i className="fas fa-lock text-primary me-2"></i>Password
             </label>
+
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control .form-control pe-5 smooth-transition"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="form-control w-100 pe-5"
+                style={{ paddingRight: "40px" }} // ensure text doesn't overlap icon
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-3 p-0 text-muted"
-                style={{ border: "none", background: "none" }}
+                className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
+                style={{ right: "10px" }} // 👈 ensures button stays inside right end
               >
-                {showPassword ? (
-                  <EyeClosed size={20} />
-                ) : (
-                  <Eye size={20} />
-                )}
+                {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary btn w-100 mt-3 smooth-transition"
             disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                ></span>
                 Signing In...
               </>
             ) : (
