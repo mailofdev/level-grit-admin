@@ -10,7 +10,7 @@ import {
   Modal,
   Spinner,
 } from "react-bootstrap";
-import { FaTrash, FaSave } from "react-icons/fa";
+import { FaTrash, FaSave, FaCalendar } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
@@ -28,14 +28,16 @@ export default function AdjustPlan() {
   const location = useLocation();
   const client = location.state?.client;
   const isView = location.state?.isView;
+  const initialDate = location.state?.initialDate;
   const toast = useRef(null);
 
   const [meals, setMeals] = useState([]);
   const [assignedDate, setAssignedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    initialDate || new Date().toISOString().split("T")[0]
   );
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [mealToDelete, setMealToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -43,7 +45,6 @@ export default function AdjustPlan() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeKeys, setActiveKeys] = useState([]);
 
-  // ✅ Compute if assigned date is today
   const isToday = assignedDate === new Date().toISOString().split("T")[0];
 
   useEffect(() => {
@@ -104,12 +105,20 @@ export default function AdjustPlan() {
     setHasUnsavedChanges(true);
   };
 
-  const handleDateChange = (e) => {
-    const newDate = e.target.value;
+  const handleDateChangeRequest = () => {
+    if (hasUnsavedChanges) {
+      showToast("warn", "Unsaved Changes", "Please save or discard changes before changing the date.");
+      return;
+    }
+    setShowDatePickerModal(true);
+  };
+
+  const handleDateChange = (newDate) => {
     const today = new Date().toISOString().split("T")[0];
     setAssignedDate(newDate);
+    setShowDatePickerModal(false);
 
-    if (newDate !== today) {
+    if (newDate !== today && !isView) {
       showToast("warn", "Read-only Mode", "You can only edit today's plan.");
     }
   };
@@ -159,7 +168,6 @@ export default function AdjustPlan() {
     }
   };
 
-  // ✅ Updated validation (all fields required)
   const validateMeals = () => {
     const errors = [];
 
@@ -256,7 +264,6 @@ export default function AdjustPlan() {
   ];
 
   const headingProps = {
-    // pageName: `Plan for ${client?.fullName || 'N/A'}`,
     pageName: "Plan",
     onBack: handleBack,
     rightContent: isView ? (
@@ -285,38 +292,49 @@ export default function AdjustPlan() {
             <Loader fullScreen={true} text="Loading meal plan" color="#43a047" />
           ) : (
             <Card className="shadow-sm border-0 rounded-4 p-4 bg-white">
-              {!isView && (
-                // <Row className="align-items-end mb-4">
-                //   <Col md={4} xs={12}>
-                //     <Form.Group>
-                //       <Form.Label className="fw-semibold">📅 Date</Form.Label>
-                //       <Form.Control
-                //         type="date"
-                //         value={assignedDate}
-                //         onChange={handleDateChange}
-                //         className="rounded-3 shadow-sm"
-                //         disabled={isView}
-                //       />
-                //     </Form.Group>
-                //   </Col>
-                //   <Col md={8} className="text-end">
-                //     <Badge bg="info" className="fs-6 p-2 px-3 rounded-pill shadow-sm">
-                //       👤 Client: <strong>{client?.fullName || "N/A"}</strong>
-                //     </Badge>
-                //     {!isToday && (
-                //       <Badge bg="secondary" className="fs-6 p-2 px-3 ms-2 rounded-pill shadow-sm">
-                //         🔒 Read-only
-                //       </Badge>
-                //     )}
-                //     {hasUnsavedChanges && (
-                //       <Badge bg="warning" className="fs-6 p-2 px-3 ms-2 rounded-pill shadow-sm">
-                //         ⚠️ Unsaved Changes
-                //       </Badge>
-                //     )}
-                //   </Col>
-                // </Row>
-                <></>
-              )}
+              {/* Date Header Bar */}
+              <div className="d-flex align-items-center justify-content-between mb-4 p-3 bg-light rounded-3">
+                <div className="d-flex align-items-center">
+                  <FaCalendar className="me-2 text-primary" />
+                  <div>
+                    <div className="fw-bold">
+                      {new Date(assignedDate).toLocaleDateString("en-IN", {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </div>
+                    <small className="text-muted">
+                      Client: <strong>{client?.fullName || "N/A"}</strong>
+                    </small>
+                  </div>
+                </div>
+                
+                <div className="d-flex align-items-center gap-2">
+                  {!isToday && (
+                    <Badge bg="secondary" className="fs-6 p-2 px-3 rounded-pill">
+                      🔒 Read-only
+                    </Badge>
+                  )}
+                  {hasUnsavedChanges && (
+                    <Badge bg="warning" className="fs-6 p-2 px-3 rounded-pill">
+                      ⚠️ Unsaved
+                    </Badge>
+                  )}
+                  {!isView && (
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={handleDateChangeRequest}
+                      className="rounded-pill"
+                      disabled={isSaving || isDeleting}
+                    >
+                      <FaCalendar className="me-1" /> Change Date
+                    </Button>
+                  )}
+                </div>
+              </div>
 
               {/* Accordion */}
               <Form>
@@ -414,6 +432,27 @@ export default function AdjustPlan() {
           )}
         </div>
       </div>
+
+      {/* Date Picker Modal */}
+      <Modal
+        show={showDatePickerModal}
+        onHide={() => setShowDatePickerModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>📅 Select Date</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Control
+              type="date"
+              value={assignedDate}
+              onChange={(e) => handleDateChange(e.target.value)}
+              className="rounded-3"
+            />
+          </Form.Group>
+        </Modal.Body>
+      </Modal>
 
       {/* Save Confirmation Modal */}
       <Modal 

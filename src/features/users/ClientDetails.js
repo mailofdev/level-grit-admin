@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { ProgressBar } from "react-bootstrap";
-
 import { useNavigate, useLocation } from "react-router-dom";
 import Heading from "../../components/navigation/Heading";
 import {
@@ -12,12 +11,29 @@ import {
 } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { SplitButton } from "primereact/splitbutton";
+import { Dialog } from "primereact/dialog";
+import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
+import { Modal } from "react-bootstrap";
+import { FaWhatsapp, FaInstagram, FaDownload } from "react-icons/fa";
+import html2canvas from 'html2canvas';
 
 export default function ClientDetails() {
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useRef(null);
 
   const client = { ...location.state?.client };
+
+  // Date picker state
+  const [showDateDialog, setShowDateDialog] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [actionType, setActionType] = useState(null); // 'add' or 'preview'
+
+  const [showShareModal, setShowShareModal] = useState(false);
+const [isGenerating, setIsGenerating] = useState(false);
+const shareCardRef = useRef(null);
 
   if (!client)
     return (
@@ -105,7 +121,7 @@ export default function ClientDetails() {
       calories: { value: totals.calories, target: 2500 },
       protein: { value: totals.protein, target: 200 },
       carbs: { value: totals.carbs, target: 300 },
-      fat: { value: totals.fat, target: 80 }, // you can adjust target
+      fat: { value: totals.fat, target: 80 },
     },
     streakProgress: { current: 12, goal: 20 },
     meals,
@@ -126,8 +142,44 @@ export default function ClientDetails() {
       goal: 8,
     },
   };
+
   const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
   const remainingMeals = dashboardData.meals.length - completedMeals;
+
+  // Handle plan actions
+  const handlePlanAction = (type) => {
+    setActionType(type);
+    setShowDateDialog(true);
+  };
+
+  const handleConfirmDate = () => {
+    if (!selectedDate) {
+      toast.current?.show({
+        severity: "warn",
+        summary: "Date Required",
+        detail: "Please select a date",
+        life: 3000,
+      });
+      return;
+    }
+
+    const formattedDate = selectedDate.toISOString().split("T")[0];
+    const isView = actionType === "preview";
+
+    navigate(`/adjust-plan/${client.clientId}`, {
+      state: {
+        client,
+        isView,
+        initialDate: formattedDate,
+      },
+    });
+
+    setShowDateDialog(false);
+  };
+
+  const today = new Date();
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 365); // Allow planning up to 1 year ahead
 
   const CircularProgress = ({
     value,
@@ -202,14 +254,95 @@ export default function ClientDetails() {
     }
   };
 
+
+
+
+// Replace your handleShare function with this:
+const generateProgressImage = async () => {
+  if (!shareCardRef.current) return null;
+  
+  setIsGenerating(true);
+  
+  try {
+    const canvas = await html2canvas(shareCardRef.current, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      logging: false,
+      useCORS: true
+    });
+    
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    setIsGenerating(false);
+    return blob;
+  } catch (error) {
+    console.error('Error generating image:', error);
+    setIsGenerating(false);
+    return null;
+  }
+};
+
+const handleSharePlatform = async (platform) => {
+  const imageBlob = await generateProgressImage();
+  if (!imageBlob) return;
+
+  const file = new File([imageBlob], 'fitness-progress.png', { type: 'image/png' });
+  const shareText = `💪 I'm on a ${dashboardData.user.streak}-day fitness streak!\n🔥 ${completedMeals}/${dashboardData.meals.length} meals completed today!\n✨ Keep pushing! #FitnessJourney #HealthyLiving`;
+
+  if (platform === 'native' && navigator.share) {
+    try {
+      await navigator.share({
+        title: 'My Fitness Progress',
+        text: shareText,
+        files: [file]
+      });
+    } catch (error) {
+      console.log('Share cancelled or failed:', error);
+    }
+  } else if (platform === 'whatsapp') {
+    const url = URL.createObjectURL(imageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'fitness-progress.png';
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+  } else if (platform === 'instagram') {
+    const url = URL.createObjectURL(imageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'fitness-progress.png';
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Image Downloaded!',
+      detail: 'Open Instagram app and upload from your gallery.',
+      life: 5000
+    });
+  } else if (platform === 'download') {
+    const url = URL.createObjectURL(imageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'fitness-progress.png';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+  
+  setShowShareModal(false);
+};
+
+
   return (
     <div className="container">
+      <Toast ref={toast} />
       <Heading pageName={`${client.fullName}'s information`} sticky={true} />
       <div
         className="d-flex flex-column"
         style={{
           height: "calc(100vh - 160px)",
-          // overflow: 'hidden'
         }}
       >
         {/* Client Info Card */}
@@ -273,18 +406,12 @@ export default function ClientDetails() {
                       {
                         label: "Add",
                         icon: "pi pi-pencil",
-                        command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: false },
-                          }),
+                        command: () => handlePlanAction("add"),
                       },
                       {
                         label: "Preview",
                         icon: "pi pi-eye",
-                        command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: true },
-                          }),
+                        command: () => handlePlanAction("preview"),
                       },
                     ]}
                   />
@@ -295,7 +422,7 @@ export default function ClientDetails() {
 
           <div className="row mb-2 bg-gray">
             <div className="col-lg-8 mb-3">
-              <div className="card rounded-4  shadow-sm h-100">
+              <div className="card rounded-4 shadow-sm h-100">
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-2">
                     <h5 className="card-title mb-0 fw-bold">Today's Macros</h5>
@@ -326,7 +453,7 @@ export default function ClientDetails() {
 
             {/* Macros and Streak */}
             <div className="col-lg-4 mb-3">
-              <div className="card rounded-4  shadow-sm h-100">
+              <div className="card rounded-4 shadow-sm h-100">
                 <div className="card-body text-center d-flex flex-column">
                   <div className="mb-3">
                     <FaFire className="text-warning fs-2 mb-2" />
@@ -352,13 +479,14 @@ export default function ClientDetails() {
                         }}
                       ></div>
                     </div>
-                    <button
-                      onClick={handleShare}
-                      className="btn btn-outline-primary btn-sm"
-                    >
-                      <FaShareAlt className="me-2" />
-                      Share Progress
-                    </button>
+                  <button
+  onClick={() => setShowShareModal(true)}
+  className="btn btn-outline-primary btn-sm"
+>
+  <FaShareAlt className="me-2" />
+  Share Progress
+</button>
+
                   </div>
                 </div>
               </div>
@@ -395,10 +523,7 @@ export default function ClientDetails() {
                         cursor: meal.completed ? "default" : "default",
                         pointerEvents: meal.completed ? "none" : "none",
                       }}
-                      // onClick={handleMealClick}
                     >
-                      {/* Checkmark */}
-                      {/* {meal.completed && ( */}
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <h6 className="fw-semibold mb-1">{meal.name}</h6>
                         {meal.completed ? (
@@ -407,7 +532,6 @@ export default function ClientDetails() {
                           <FaCamera className="text-secondary fs-5" />
                         )}
                       </div>
-                      {/* )} */}
 
                       {/* Meal Image / Upload */}
                       <div
@@ -438,6 +562,290 @@ export default function ClientDetails() {
           </div>
         </div>
       </div>
+
+      {/* Date Picker Dialog */}
+      <Dialog
+        header={
+          <div className="d-flex align-items-center">
+            <i
+              className={`pi ${
+                actionType === "preview" ? "pi-eye" : "pi-pencil"
+              } me-2`}
+            ></i>
+            <span>
+              {actionType === "preview" ? "Preview" : "Add/Edit"} Meal Plan
+            </span>
+          </div>
+        }
+        visible={showDateDialog}
+        style={{ width: "90vw", maxWidth: "450px" }}
+        onHide={() => setShowDateDialog(false)}
+        footer={
+          <div>
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              onClick={() => setShowDateDialog(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="Continue"
+              icon="pi pi-check"
+              onClick={handleConfirmDate}
+              autoFocus
+            />
+          </div>
+        }
+      >
+        <div className="p-3">
+          <div className="mb-3">
+            <strong>Client:</strong> {client?.fullName || "N/A"}
+          </div>
+
+          <div className="mb-3">
+            <label className="fw-semibold mb-2 d-block">📅 Select Date</label>
+            <Calendar
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.value)}
+              dateFormat="dd M yy"
+              showIcon
+              minDate={actionType === "add" ? today : null}
+              maxDate={maxDate}
+              inline
+              className="w-100"
+            />
+          </div>
+
+          {actionType === "add" &&
+            selectedDate &&
+            selectedDate.toDateString() !== today.toDateString() && (
+              <div className="alert alert-info p-2 small mb-0">
+                <i className="pi pi-info-circle me-2"></i>
+                You can only edit today's plan. Future dates will be read-only.
+              </div>
+            )}
+
+          {actionType === "preview" && (
+            <div className="alert alert-secondary p-2 small mb-0">
+              <i className="pi pi-eye me-2"></i>
+              Opening in preview mode (read-only)
+            </div>
+          )}
+        </div>
+      </Dialog>
+      <Modal
+  show={showShareModal}
+  onHide={() => setShowShareModal(false)}
+  centered
+  size="lg"
+>
+  <Modal.Header closeButton className="border-0">
+    <Modal.Title>📊 Share Your Progress</Modal.Title>
+  </Modal.Header>
+  <Modal.Body className="p-4">
+    {/* Progress Card Preview */}
+    <div className="mb-4 d-flex justify-content-center">
+      <div 
+        ref={shareCardRef}
+        style={{
+          width: '400px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+          borderRadius: '20px',
+          padding: '32px',
+          color: 'white',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+        }}
+      >
+        {/* Header */}
+        <div className="text-center mb-4">
+          <div style={{ fontSize: '48px', marginBottom: '8px' }}>💪</div>
+          <h2 className="fw-bold mb-1" style={{ fontSize: '28px' }}>
+            {client.fullName}
+          </h2>
+          <p style={{ fontSize: '14px', opacity: 0.9 }}>
+            {new Date().toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric', 
+              year: 'numeric' 
+            })}
+          </p>
+        </div>
+
+        {/* Streak Banner */}
+        <div 
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '24px'
+          }}
+        >
+          <div className="d-flex align-items-center justify-content-center gap-3 mb-3">
+            <span style={{ fontSize: '48px' }}>🔥</span>
+            <div>
+              <div style={{ fontSize: '36px', fontWeight: 'bold' }}>
+                {dashboardData.user.streak} Days
+              </div>
+              <div style={{ fontSize: '14px', opacity: 0.9 }}>Fitness Streak</div>
+            </div>
+          </div>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.3)',
+            borderRadius: '8px',
+            height: '8px',
+            overflow: 'hidden'
+          }}>
+            <div 
+              style={{
+                background: 'white',
+                height: '100%',
+                width: `${(dashboardData.streakProgress.current / dashboardData.streakProgress.goal) * 100}%`,
+                borderRadius: '8px',
+                transition: 'width 0.3s ease'
+              }}
+            />
+          </div>
+          <div className="text-center mt-2" style={{ fontSize: '14px', opacity: 0.9 }}>
+            Goal: {dashboardData.streakProgress.goal} days
+          </div>
+        </div>
+
+        {/* Macros Grid */}
+        <div className="row g-3 mb-4">
+          {Object.entries(dashboardData.macros).map(([key, value]) => {
+            const percentage = Math.round((value.value / value.target) * 100);
+            return (
+              <div key={key} className="col-6">
+                <div 
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    textAlign: 'center'
+                  }}
+                >
+                  <div className="mb-2">
+                    <div 
+                      className="position-relative d-inline-block"
+                      style={{ width: '60px', height: '60px' }}
+                    >
+                      <svg width="60" height="60" style={{ transform: 'rotate(-90deg)' }}>
+                        <circle
+                          cx="30"
+                          cy="30"
+                          r="25"
+                          fill="none"
+                          stroke="rgba(255,255,255,0.3)"
+                          strokeWidth="5"
+                        />
+                        <circle
+                          cx="30"
+                          cy="30"
+                          r="25"
+                          fill="none"
+                          stroke="white"
+                          strokeWidth="5"
+                          strokeDasharray={`${(percentage / 100) * (2 * Math.PI * 25)} ${2 * Math.PI * 25}`}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div 
+                        className="position-absolute top-50 start-50 translate-middle"
+                        style={{ fontSize: '14px', fontWeight: 'bold' }}
+                      >
+                        {percentage}%
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-capitalize fw-semibold" style={{ fontSize: '14px' }}>
+                    {key}
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.8 }}>
+                    {value.value}/{value.target}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Meals Completed */}
+        <div 
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            padding: '20px',
+            textAlign: 'center'
+          }}
+        >
+          <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '4px' }}>
+            {completedMeals}/{dashboardData.meals.length}
+          </div>
+          <div style={{ fontSize: '14px', opacity: 0.9 }}>
+            Meals Completed Today
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-4" style={{ fontSize: '12px', opacity: 0.7 }}>
+          #FitnessJourney #HealthyLiving #ConsistencyIsKey
+        </div>
+      </div>
+    </div>
+
+    {/* Share Options */}
+   <div className="d-flex flex-wrap align-items-center gap-2 justify-content-center mt-3">
+      {/* Native Share */}
+      {navigator.share && (
+        <button
+          onClick={() => handleSharePlatform("native")}
+          disabled={isGenerating}
+          className="btn btn-primary rounded-pill d-flex align-items-center gap-2 shadow-sm px-3 py-2"
+        >
+          <FaShareAlt className="fs-5" />
+          <span>{isGenerating ? "Generating..." : "Share via..."}</span>
+        </button>
+      )}
+
+      {/* WhatsApp */}
+      <button
+        onClick={() => handleSharePlatform("whatsapp")}
+        disabled={isGenerating}
+        className="btn btn-success rounded-pill d-flex align-items-center gap-2 shadow-sm px-3 py-2"
+      >
+        <FaWhatsapp className="fs-5" />
+        <span>Share on WhatsApp</span>
+      </button>
+
+      {/* Instagram */}
+      <button
+        onClick={() => handleSharePlatform("instagram")}
+        disabled={isGenerating}
+        className="btn rounded-pill d-flex align-items-center gap-2 shadow-sm px-3 py-2 text-black border-0"
+        style={{
+          background: 'linear-gradient(135deg, #667eea 10%, #764ba2 70%, #f093fb 100%)',
+        }}
+      >
+        <FaInstagram className="fs-5" />
+        <span>Download for Instagram</span>
+      </button>
+
+      {/* Download */}
+      <button
+        onClick={() => handleSharePlatform("download")}
+        disabled={isGenerating}
+        className="btn btn-dark rounded-pill d-flex align-items-center gap-2 shadow-sm px-3 py-2"
+      >
+        <FaDownload className="fs-5" />
+        <span>Download Image</span>
+      </button>
+    </div>
+  </Modal.Body>
+</Modal>
+
     </div>
   );
 }
