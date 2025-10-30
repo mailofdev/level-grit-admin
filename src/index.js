@@ -12,6 +12,19 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "./contexts/ThemeContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('SW registered:', registration);
+      })
+      .catch((error) => {
+        console.log('SW registration failed:', error);
+      });
+  });
+}
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
