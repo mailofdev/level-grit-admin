@@ -30,6 +30,11 @@ body {
   min-height: 100vh;
 }
 
+/* Slightly larger base font on small screens for readability */
+@media (max-width: 576px) {
+  body { font-size: 16.5px; }
+}
+
 /* Apply theme to root div */
 #root {
   background: var(--health-gradient);

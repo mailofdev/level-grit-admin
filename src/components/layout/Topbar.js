@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import BrandLogo from "../topbar/BrandLogo";
 import NavMenu from "../topbar/NavMenu";
@@ -10,6 +10,7 @@ import LogoutModal from "../topbar/LogoutModal";
 import ProfileModal from "../topbar/ProfileModal";
 import { logout } from "../../features/auth/authSlice";
 import { getDecryptedUser } from "../common/CommonFunctions";
+import { getRoutes } from "../navigation/Routes";
 
 const Topbar = ({
   showSearch = true,
@@ -20,6 +21,10 @@ const Topbar = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const routes = getRoutes();
+  const homeHref = routes?.[0]?.href || "/";
+  const isHome = location.pathname === homeHref;
   const user = getDecryptedUser();
 
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -55,15 +60,16 @@ const Topbar = ({
       <div className="container-fluid">
         {/* Left: Back (mobile) + Logo */}
         <div className="d-flex align-items-center gap-2">
-          <button
-            type="button"
-            aria-label="Back"
-            className="btn btn-outline-secondary btn-sm d-lg-none"
-            onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/"))}
-            style={{ borderRadius: "9999px" }}
-          >
-            <i className="bi bi-arrow-left"></i>
-          </button>
+          {!isHome && (
+            <button
+              type="button"
+              aria-label="Back"
+              className="back-btn d-lg-none"
+              onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(homeHref))}
+            >
+              <i className="bi bi-arrow-left"></i>
+            </button>
+          )}
           <BrandLogo />
         </div>
 

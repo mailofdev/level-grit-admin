@@ -21,6 +21,7 @@ const MainLayout = ({ children, config }) => {
 
   return (
     <div className="d-flex flex-column min-vh-100 theme-transition">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       {cfg.showTopbar && (
         <Topbar 
           showSearch={false} 
@@ -45,7 +46,7 @@ const MainLayout = ({ children, config }) => {
               <Sidebar showIcons={true} />
             </div>
           )}
-          <main className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-2 px-md-4" : "col-12 px-2 px-md-4"}>
+          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-2 px-md-4" : "col-12 px-2 px-md-4"}>
             {children}
           </main>
         </div>

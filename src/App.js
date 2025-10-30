@@ -4,6 +4,7 @@ import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
+import ScrollToTop from "./components/navigation/ScrollToTop";
 
 import MainLayout from "./layouts/MainLayout";
 import NotFound from "./features/errors/NotFound";
@@ -36,6 +37,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <ScrollToTop />
         <AuthProvider>
           <Routes>
           {/* Public routes */}
