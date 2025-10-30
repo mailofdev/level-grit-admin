@@ -9,7 +9,7 @@ const Sidebar = ({ showIcons }) => {
   return (
     <nav
       id="sidebarMenu"
-      className="collapse d-lg-block bg-light sidebar p-0 shadow min-vh-100"
+      className="bg-light sidebar p-0 shadow min-vh-100 h-100"
     >
       <div className="position-sticky top-0 pt-3">
         <ul className="nav flex-column">
@@ -58,9 +58,7 @@ const Sidebar = ({ showIcons }) => {
         }
 
         @media (max-width: 991.98px) {
-          .sidebar {
-            width: 100%;
-          }
+          .sidebar { display: none; }
         }
       `}</style>
     </nav>
