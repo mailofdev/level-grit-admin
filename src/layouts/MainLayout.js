@@ -39,14 +39,14 @@ const MainLayout = ({ children, config }) => {
           onProfile={handleProfile}
         />
       )}
-      <div className="container-fluid flex-grow-1 pt-5 pt-lg-4 pb-5 pb-lg-0">
+      <div className="container-fluid flex-grow-1 pt-lg-4 pb-5 pb-lg-0">
         <div className="row g-0">
           {cfg.showSidebar && (
             <div className="d-none d-lg-block col-lg-2 col-xl-2">
               <Sidebar showIcons={true} />
             </div>
           )}
-          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-2 px-md-4" : "col-12 px-2 px-md-4"}>
+          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-2 px-md-4" : "col-12 px-md-4"}>
             {children}
           </main>
         </div>

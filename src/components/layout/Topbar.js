@@ -61,14 +61,15 @@ const Topbar = ({
         {/* Left: Back (mobile) + Logo */}
         <div className="d-flex align-items-center gap-2">
           {!isHome && (
-            <button
-              type="button"
-              aria-label="Back"
-              className="back-btn d-lg-none"
-              onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(homeHref))}
-            >
-              <i className="bi bi-arrow-left"></i>
-            </button>
+            // <button
+            //   type="button"
+            //   aria-label="Back"
+            //   className="back-btn d-lg-none"
+            //   onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(homeHref))}
+            // >
+            //   <i className="bi bi-arrow-left"></i>
+            // </button>
+            <></>
           )}
           <BrandLogo />
         </div>

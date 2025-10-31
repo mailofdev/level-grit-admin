@@ -24,7 +24,7 @@ const MobileBottomNav = () => {
   return (
     <nav className="mobile-bottom-nav d-lg-none" aria-label="Primary">
       <div className="mobile-bottom-nav__container">
-        <ul className="mobile-bottom-nav__list">
+        <ul className="mobile-bottom-nav__list d-flex justify-content-evenly">
           {finalRoutes
             .map((item, idx) => {
               const active = location.pathname === item.href;
@@ -44,14 +44,14 @@ const MobileBottomNav = () => {
             })}
         </ul>
       </div>
-      <button
+      {/* <button
         type="button"
         className="fab-primary"
         aria-label="Primary action"
         onClick={() => navigate(fabTarget)}
       >
         <i className="bi bi-plus-lg"></i>
-      </button>
+      </button> */}
     </nav>
   );
 };
