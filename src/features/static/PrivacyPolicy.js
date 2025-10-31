@@ -1,21 +1,15 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-
+import Heading from '../../components/navigation/Heading';
 const PrivacyPolicy = () => {
   return (
-    <div className="page-container">
-      <Container className="py-5">
+    <div className="container">
+      <Heading pageName="Privacy Policy" />
+       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+        <div className="flex-grow-1 overflow-auto">
         <Row className="justify-content-center">
-          <Col lg={10} xl={8}>
+          <Col >
             <Card className="content-wrapper card-health">
-              <Card.Header className="text-center py-4">
-                <h1 className="fw-bold text-primary mb-3">
-                  <i className="fas fa-shield-alt me-3"></i>
-                  Privacy Policy
-                </h1>
-                <p className="text-muted mb-0">Last updated: {new Date().toLocaleDateString()}</p>
-              </Card.Header>
-              
               <Card.Body className="p-4">
                 <div className="mb-4">
                   <h2 className="h4 fw-bold text-primary mb-3">1. Introduction</h2>
@@ -174,7 +168,8 @@ const PrivacyPolicy = () => {
             </Card>
           </Col>
         </Row>
-      </Container>
+        </div>
+        </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import Loader from "../../components/display/Loader";
 // Removed liquid glass import - using new health theme
 import { Eye, EyeClosed } from "lucide-react";
 import { Toast } from "primereact/toast";
-
+import Heading from "../../components/navigation/Heading";
 const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -153,7 +153,8 @@ const RegisterForm = () => {
         className="card content-wrapper card-health p-5"
         style={{ maxWidth: "500px", width: "100%" }}
       >
-        <div className="text-center mb-4">
+          <Heading pageName="Create Account" />
+        <div className="text-center my-4">
           <div className="position-relative d-inline-block">
             <img
               src={logo}

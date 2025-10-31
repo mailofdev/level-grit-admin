@@ -5,7 +5,7 @@ import { loginThunk } from "./authThunks";
 import logo from "../../assets/images/logo3.jpeg";
 import Loader from "../../components/display/Loader";
 import { Eye, EyeClosed } from "lucide-react";
-
+import Heading from "../../components/navigation/Heading";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -50,6 +50,10 @@ const LoginForm = () => {
     }
   };
 
+    const handleBack = () => {
+navigate('/')
+  };
+
   return (
     <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
       {isLoading && (
@@ -65,7 +69,8 @@ const LoginForm = () => {
         className="card content-wrapper card-health p-5"
         style={{ maxWidth: "450px", width: "100%" }}
       >
-        <div className="text-center mb-4">
+          <Heading pageName="Sign in" onBack={handleBack} />
+        <div className="text-center my-4">
           <div className="position-relative d-inline-block">
             <img
               src={logo}

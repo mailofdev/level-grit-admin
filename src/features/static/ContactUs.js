@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
-
+import Heading from '../../components/navigation/Heading';
 const ContactUs = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -38,19 +38,13 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="page-container">
-      <Container className="py-5">
+    <div className="container">
+         <Heading pageName="Contact Us" />
+          <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+           <div className="flex-grow-1 overflow-auto">
         <Row className="justify-content-center">
-          <Col lg={10} xl={8}>
+          <Col>
             <Card className="content-wrapper card-health">
-              <Card.Header className="text-center py-4">
-                <h1 className="fw-bold text-primary mb-3">
-                  <i className="fas fa-envelope me-3"></i>
-                  Contact Us
-                </h1>
-                <p className="text-muted mb-0">Get in touch with our support team</p>
-              </Card.Header>
-              
               <Card.Body className="p-4">
                 <Row className="g-4">
                   {/* Contact Form */}
@@ -309,7 +303,8 @@ const ContactUs = () => {
             </Card>
           </Col>
         </Row>
-      </Container>
+         </div>
+        </div>
     </div>
   );
 };
