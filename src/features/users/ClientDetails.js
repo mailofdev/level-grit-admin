@@ -29,10 +29,11 @@ export default function ClientDetails() {
   // Date picker state
   const [showDateDialog, setShowDateDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [actionType, setActionType] = useState(null); // 'add' or 'preview'
+  const [actionType, setActionType] = useState(null);
 
   const [showShareModal, setShowShareModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState('gradient');
   const shareCardRef = useRef(null);
 
   if (!client)
@@ -103,7 +104,6 @@ export default function ClientDetails() {
     },
   ];
 
-  // Calculate totals dynamically
   const totals = meals.reduce(
     (acc, meal) => {
       acc.calories += meal.calories;
@@ -146,7 +146,6 @@ export default function ClientDetails() {
   const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
   const remainingMeals = dashboardData.meals.length - completedMeals;
 
-  // Handle plan actions
   const handlePlanAction = (type) => {
     setActionType(type);
     setShowDateDialog(true);
@@ -179,7 +178,7 @@ export default function ClientDetails() {
 
   const today = new Date();
   const maxDate = new Date();
-  maxDate.setDate(maxDate.getDate() + 365); // Allow planning up to 1 year ahead
+  maxDate.setDate(maxDate.getDate() + 365);
 
   const CircularProgress = ({
     value,
@@ -239,25 +238,64 @@ export default function ClientDetails() {
     );
   };
 
+  const themes = {
+    gradient: {
+      name: 'Aurora',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+      icon: '🌈'
+    },
+    sunset: {
+      name: 'Sunset',
+      background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      icon: '🌅'
+    },
+    ocean: {
+      name: 'Ocean',
+      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
+      icon: '🌊'
+    },
+    forest: {
+      name: 'Forest',
+      background: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+      icon: '🌲'
+    },
+    fire: {
+      name: 'Fire',
+      background: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
+      icon: '🔥'
+    }
+  };
+
   const generateProgressImage = async () => {
     if (!shareCardRef.current) return null;
     
     setIsGenerating(true);
     
     try {
+      await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const canvas = await html2canvas(shareCardRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
+        scale: 3,
+        backgroundColor: null,
         logging: false,
-        useCORS: true
+        useCORS: true,
+        allowTaint: true,
+        imageTimeout: 0,
       });
       
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
       setIsGenerating(false);
       return blob;
     } catch (error) {
       console.error('Error generating image:', error);
       setIsGenerating(false);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to generate image. Please try again.',
+        life: 3000
+      });
       return null;
     }
   };
@@ -277,57 +315,139 @@ export default function ClientDetails() {
           files: [file]
         });
       } catch (error) {
-        console.log('Share cancelled or failed:', error);
+        if (error.name !== 'AbortError') {
+          console.error('Share failed:', error);
+        }
       }
     } else if (platform === 'whatsapp') {
+      // Download image first
       const url = URL.createObjectURL(imageBlob);
       const link = document.createElement('a');
       link.href = url;
       link.download = 'fitness-progress.png';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
       
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-      window.open(whatsappUrl, '_blank');
+      // Detect mobile vs desktop
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      setTimeout(() => {
+        if (isMobile) {
+          // Try to open WhatsApp app directly with deep link
+          const whatsappDeepLink = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
+          window.location.href = whatsappDeepLink;
+          
+          // Fallback to WhatsApp Web if app doesn't open (after 2 seconds)
+          setTimeout(() => {
+            const whatsappWebUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappWebUrl, '_blank');
+          }, 2000);
+        } else {
+          // Desktop: Open WhatsApp Web
+          const whatsappWebUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+          window.open(whatsappWebUrl, '_blank');
+        }
+        
+        toast.current?.show({
+          severity: 'success',
+          summary: '📸 Image Downloaded!',
+          detail: 'Upload the image to your WhatsApp Status from your gallery.',
+          life: 5000
+        });
+      }, 500);
     } else if (platform === 'instagram') {
+      // Download image
       const url = URL.createObjectURL(imageBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'fitness-progress.png';
+      link.download = 'fitness-progress-story.png';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
       
-      toast.current?.show({
-        severity: 'success',
-        summary: 'Image Downloaded!',
-        detail: 'Open Instagram app and upload from your gallery.',
-        life: 5000
-      });
+      // Detect if mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      
+      setTimeout(() => {
+        if (isAndroid) {
+          // Try Instagram intent for Android
+          const instagramIntent = 'instagram://story-camera';
+          window.location.href = instagramIntent;
+          
+          // Fallback to Instagram app homepage
+          setTimeout(() => {
+            window.location.href = 'instagram://';
+          }, 1500);
+          
+          // Final fallback to Play Store
+          setTimeout(() => {
+            window.open('https://play.google.com/store/apps/details?id=com.instagram.android', '_blank');
+          }, 3000);
+        } else if (isIOS) {
+          // Try Instagram deep link for iOS
+          window.location.href = 'instagram://story-camera';
+          
+          // Fallback to Instagram app
+          setTimeout(() => {
+            window.location.href = 'instagram://';
+          }, 1500);
+          
+          // Final fallback to App Store
+          setTimeout(() => {
+            window.open('https://apps.apple.com/app/instagram/id389801252', '_blank');
+          }, 3000);
+        } else {
+          // Desktop: Open Instagram web
+          window.open('https://www.instagram.com/', '_blank');
+        }
+        
+        toast.current?.show({
+          severity: 'success',
+          summary: '📸 Image Downloaded!',
+          detail: isMobile 
+            ? 'Opening Instagram... Create a Story and select the image from your gallery.' 
+            : 'Open Instagram app on your phone, create a Story, and select the downloaded image.',
+          life: 6000
+        });
+      }, 500);
     } else if (platform === 'download') {
       const url = URL.createObjectURL(imageBlob);
       const link = document.createElement('a');
       link.href = url;
       link.download = 'fitness-progress.png';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      
+      toast.current?.show({
+        severity: 'success',
+        summary: '✅ Downloaded!',
+        detail: 'Image saved to your downloads folder.',
+        life: 3000
+      });
     }
     
     setShowShareModal(false);
   };
 
   const getGoalText = (goalValue) => {
-  switch (goalValue) {
-    case "0":
-    case 0:
-      return "🏋️ Muscle Gain & Strength Building";
-    case "1":
-    case 1:
-      return "🔥 Fat Loss & Body Toning";
-    default:
-      return "🎯 No goal set";
-  }
-};
-
+    switch (goalValue) {
+      case "0":
+      case 0:
+        return "🏋️ Muscle Gain & Strength Building";
+      case "1":
+      case 1:
+        return "🔥 Fat Loss & Body Toning";
+      default:
+        return "🎯 No goal set";
+    }
+  };
 
   return (
     <div className="container-fluid px-2 px-md-3">
@@ -339,107 +459,89 @@ export default function ClientDetails() {
           height: "calc(100vh - 140px)",
         }}
       >
-        {/* Client Info Card */}
         <div className="flex-grow-1 overflow-auto pb-3">
           <div className="px-2 px-md-3">
-            {/* Mobile-Optimized Client Card */}
-        <div className="card border-0 rounded-4 shadow-sm overflow-hidden mb-3 mt-2">
-  {/* Card Header - Gradient background */}
-  <div className="bg-gradient p-3 d-flex justify-content-between align-items-center" 
-       style={{ background: "linear-gradient(135deg, #4e73df, #1cc88a)" }}>
-    <div className="d-flex align-items-center gap-3">
-      {/* Client initials avatar */}
-      {/* <div className="bg-white text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center"
-           style={{ width: "45px", height: "45px", fontSize: "1.1rem" }}>
-        {client.fullName.charAt(0).toUpperCase()}
-      </div> */}
-      <div>
-        <h5 className="text-white mb-0 fw-semibold">{client.fullName}</h5>
-      </div>
-    </div>
+            <div className="card border-0 rounded-4 shadow-sm overflow-hidden mb-3 mt-2">
+              <div className="bg-gradient p-3 d-flex justify-content-between align-items-center" 
+                   style={{ background: "linear-gradient(135deg, #4e73df, #1cc88a)" }}>
+                <div className="d-flex align-items-center gap-3">
+                  <div>
+                    <h5 className="text-white mb-0 fw-semibold">{client.fullName}</h5>
+                  </div>
+                </div>
+                <span
+                  className={`badge px-3 py-2 fs-6 rounded-pill ${
+                    client.status === "attention" ? "bg-danger" : "bg-success"
+                  }`}
+                >
+                  {client.status === "attention" ? "⚠️ Need Attention" : "✅ On Track"}
+                </span>
+              </div>
 
-    {/* Status Badge */}
-    <span
-      className={`badge px-3 py-2 fs-6 rounded-pill ${
-        client.status === "attention" ? "bg-danger" : "bg-success"
-      }`}
-    >
-      {client.status === "attention" ? "⚠️ Need Attention" : "✅ On Track"}
-    </span>
-  </div>
+              <div className="card-body p-3 p-md-4">
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                  <div className="flex-grow-1">
+                    <p className="mb-2 text-muted small">
+                      <strong>Goal:</strong> {getGoalText(client.goal)}
+                    </p>
+                    <p className="mb-2 text-muted small">
+                      <strong>Start:</strong> {client.startDate}
+                    </p>
+                  </div>
+                  <div className="text-md-end">
+                    <div className="d-flex align-items-center gap-2">
+                      <span
+                        className={`fw-bold fs-6 ${
+                          client.streak === "Missed meal" ? "text-danger" : "text-success"
+                        }`}
+                      >
+                        {client.streak}
+                      </span>
+                      {client.streak === "Missed meal" ? (
+                        <FaSadCry className="text-danger fs-5" />
+                      ) : (
+                        <FaFire className="text-success fs-5" />
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-  {/* Card Body */}
-  <div className="card-body p-3 p-md-4">
-    <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-      {/* Info Section */}
-      <div className="flex-grow-1">
-        <p className="mb-2 text-muted small">
-          <strong>Goal:</strong> {getGoalText(client.goal)}
-        </p>
-        <p className="mb-2 text-muted small">
-          <strong>Start:</strong> {client.startDate}
-        </p>
-      </div>
+                <hr className="my-3" />
 
-      {/* Streak Section */}
-      <div className="text-md-end">
-        <div className="d-flex align-items-center gap-2">
-          <span
-            className={`fw-bold fs-6 ${
-              client.streak === "Missed meal" ? "text-danger" : "text-success"
-            }`}
-          >
-            {client.streak}
-          </span>
-          {client.streak === "Missed meal" ? (
-            <FaSadCry className="text-danger fs-5" />
-          ) : (
-            <FaFire className="text-success fs-5" />
-          )}
-        </div>
-      </div>
-    </div>
+                <div className="d-flex flex-column flex-sm-row gap-2">
+                  <button
+                    className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
+                    onClick={() =>
+                      navigate(`/messages/${client.clientId}`, {
+                        state: { client },
+                      })
+                    }
+                  >
+                    <FaMessage /> Message
+                  </button>
 
-    <hr className="my-3" />
+                  <SplitButton
+                    label="Plan"
+                    icon="pi pi-plus"
+                    className="flex-grow-1 rounded-3 shadow-sm"
+                    model={[
+                      {
+                        label: "Add",
+                        icon: "pi pi-pencil",
+                        command: () => handlePlanAction("add"),
+                      },
+                      {
+                        label: "Preview",
+                        icon: "pi pi-eye",
+                        command: () => handlePlanAction("preview"),
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
 
-    {/* Action Buttons */}
-    <div className="d-flex flex-column flex-sm-row gap-2">
-      <button
-        className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
-        onClick={() =>
-          navigate(`/messages/${client.clientId}`, {
-            state: { client },
-          })
-        }
-      >
-        <FaMessage /> Message
-      </button>
-
-      <SplitButton
-        label="Plan"
-        icon="pi pi-plus"
-        className="flex-grow-1 rounded-3 shadow-sm"
-        model={[
-          {
-            label: "Add",
-            icon: "pi pi-pencil",
-            command: () => handlePlanAction("add"),
-          },
-          {
-            label: "Preview",
-            icon: "pi pi-eye",
-            command: () => handlePlanAction("preview"),
-          },
-        ]}
-      />
-    </div>
-  </div>
-</div>
-
-
-            {/* Macros and Streak Section - Stack on Mobile */}
             <div className="row g-2 g-md-3 mb-3">
-              {/* Macros Card */}
               <div className="col-12 col-lg-8">
                 <div className="card rounded-4 shadow-sm h-100">
                   <div className="card-body p-3">
@@ -468,7 +570,6 @@ export default function ClientDetails() {
                 </div>
               </div>
 
-              {/* Streak Progress Card */}
               <div className="col-12 col-lg-4">
                 <div className="card rounded-4 shadow-sm h-100">
                   <div className="card-body p-3 text-center d-flex flex-column">
@@ -510,10 +611,8 @@ export default function ClientDetails() {
               </div>
             </div>
 
-            {/* Meal Plan Section */}
             <div className="card rounded-4 shadow-sm mb-3">
               <div className="card-body p-3">
-                {/* Header */}
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                   <h6 className="fw-bold mb-0">Today's Meals</h6>
                   <div className="d-flex gap-3">
@@ -526,7 +625,6 @@ export default function ClientDetails() {
                   </div>
                 </div>
 
-                {/* Meals Grid - Responsive */}
                 <div className="row g-2 g-md-3">
                   {dashboardData.meals.map((meal, idx) => (
                     <div key={idx} className="col-12 col-sm-6 col-lg-4">
@@ -546,7 +644,6 @@ export default function ClientDetails() {
                           )}
                         </div>
 
-                        {/* Meal Image */}
                         {meal.image && (
                           <div
                             className="rounded-3 overflow-hidden mb-2"
@@ -560,7 +657,6 @@ export default function ClientDetails() {
                           </div>
                         )}
 
-                        {/* Meal Info */}
                         <div className="mt-2">
                           <p className="mb-1 small fw-semibold">
                             {meal.calories} kcal
@@ -579,7 +675,6 @@ export default function ClientDetails() {
         </div>
       </div>
 
-      {/* Date Picker Dialog - Mobile Optimized */}
       <Dialog
         header={
           <div className="d-flex align-items-center">
@@ -654,225 +749,352 @@ export default function ClientDetails() {
         </div>
       </Dialog>
 
-      {/* Share Modal - Mobile Optimized */}
+      {/* Enhanced Share Modal */}
       <Modal
         show={showShareModal}
         onHide={() => setShowShareModal(false)}
         centered
-        fullscreen="md-down"
-        size="lg"
+        size="xl"
+        className="share-progress-modal"
       >
-        <Modal.Header closeButton className="border-0">
-          <Modal.Title className="fs-5">📊 Share Your Progress</Modal.Title>
+        <Modal.Header closeButton className="border-0 pb-0">
+          <Modal.Title className="d-flex align-items-center gap-2">
+            <div className="bg-gradient rounded-3 p-2" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+              <span style={{fontSize: '24px'}}>📊</span>
+            </div>
+            <div>
+              <div className="fs-5 fw-bold">Share Your Progress</div>
+              <small className="text-muted fw-normal">Choose a theme and share your achievement</small>
+            </div>
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-2 p-md-4">
-          {/* Progress Card Preview - Responsive */}
-          <div className="mb-3 mb-md-4 d-flex justify-content-center">
-            <div 
-              ref={shareCardRef}
-              className="w-100"
-              style={{
-                maxWidth: '400px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-                borderRadius: '20px',
-                padding: '24px',
-                color: 'white',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-              }}
-            >
-              {/* Header */}
-              <div className="text-center mb-3">
-                <div style={{ fontSize: '40px', marginBottom: '8px' }}>💪</div>
-                <h3 className="fw-bold mb-1" style={{ fontSize: '24px' }}>
-                  {client.fullName}
-                </h3>
-                <p style={{ fontSize: '13px', opacity: 0.9 }}>
-                  {new Date().toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    year: 'numeric' 
-                  })}
-                </p>
-              </div>
-
-              {/* Streak Banner */}
-              <div 
-                style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  marginBottom: '20px'
-                }}
-              >
-                <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
-                  <span style={{ fontSize: '36px' }}>🔥</span>
-                  <div>
-                    <div style={{ fontSize: '28px', fontWeight: 'bold' }}>
-                      {dashboardData.user.streak} Days
-                    </div>
-                    <div style={{ fontSize: '13px', opacity: 0.9 }}>Fitness Streak</div>
+        <Modal.Body className="p-3 p-md-4">
+          <div className="row g-3 g-md-4">
+            {/* Preview Section */}
+            <div className="col-12 col-lg-6">
+              <div className="bg-light rounded-4 p-3 p-md-4" style={{border: '2px dashed #dee2e6'}}>
+                {/* Theme Selector */}
+                <div className="mb-3">
+                  <label className="fw-semibold mb-2 d-block small">🎨 Choose Theme</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {Object.entries(themes).map(([key, theme]) => (
+                      <button
+                        key={key}
+                        onClick={() => setSelectedTheme(key)}
+                        className={`btn btn-sm ${selectedTheme === key ? 'btn-primary' : 'btn-outline-secondary'}`}
+                        style={{
+                          borderRadius: '10px',
+                          padding: '6px 12px',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                        }}
+                      >
+                        <span className="me-1">{theme.icon}</span>
+                        {theme.name}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.3)',
-                  borderRadius: '8px',
-                  height: '8px',
-                  overflow: 'hidden'
-                }}>
-                  <div 
-                    style={{
-                      background: 'white',
-                      height: '100%',
-                      width: `${(dashboardData.streakProgress.current / dashboardData.streakProgress.goal) * 100}%`,
-                      borderRadius: '8px',
-                      transition: 'width 0.3s ease'
-                    }}
-                  />
-                </div>
-                <div className="text-center mt-2" style={{ fontSize: '13px', opacity: 0.9 }}>
-                  Goal: {dashboardData.streakProgress.goal} days
-                </div>
-              </div>
 
-              {/* Macros Grid */}
-              <div className="row g-2 mb-3">
-                {Object.entries(dashboardData.macros).map(([key, value]) => {
-                  const percentage = Math.round((value.value / value.target) * 100);
-                  return (
-                    <div key={key} className="col-6">
+                {/* Progress Card Preview */}
+                <div className="d-flex justify-content-center">
+                  <div 
+                    ref={shareCardRef}
+                    style={{
+                      width: '100%',
+                      maxWidth: '350px',
+                      aspectRatio: '9/16',
+                      background: themes[selectedTheme].background,
+                      borderRadius: '20px',
+                      padding: '28px 20px',
+                      color: 'white',
+                      boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    {/* Header */}
+                    <div>
+                      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                        <div style={{ fontSize: '42px', marginBottom: '10px' }}>💪</div>
+                        <h3 style={{ margin: 0, fontSize: '26px', fontWeight: '800', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
+                          {client.fullName}
+                        </h3>
+                        <p style={{ margin: '6px 0 0 0', fontSize: '13px', opacity: 0.9 }}>
+                          {new Date().toLocaleDateString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          })}
+                        </p>
+                      </div>
+
+                      {/* Streak Banner */}
                       <div 
                         style={{
                           background: 'rgba(255, 255, 255, 0.2)',
                           backdropFilter: 'blur(10px)',
-                          borderRadius: '16px',
-                          padding: '12px',
-                          textAlign: 'center'
+                          borderRadius: '18px',
+                          padding: '20px',
+                          marginBottom: '16px',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
                         }}
                       >
-                        <div className="mb-2">
-                          <div 
-                            className="position-relative d-inline-block"
-                            style={{ width: '50px', height: '50px' }}
-                          >
-                            <svg width="50" height="50" style={{ transform: 'rotate(-90deg)' }}>
-                              <circle
-                                cx="25"
-                                cy="25"
-                                r="20"
-                                fill="none"
-                                stroke="rgba(255,255,255,0.3)"
-                                strokeWidth="4"
-                              />
-                              <circle
-                                cx="25"
-                                cy="25"
-                                r="20"
-                                fill="none"
-                                stroke="white"
-                                strokeWidth="4"
-                                strokeDasharray={`${(percentage / 100) * (2 * Math.PI * 20)} ${2 * Math.PI * 20}`}
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                            <div 
-                              className="position-absolute top-50 start-50 translate-middle"
-                              style={{ fontSize: '11px', fontWeight: 'bold' }}
-                            >
-                              {percentage}%
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '14px' }}>
+                          <FaFire style={{fontSize: '40px'}} />
+                          <div>
+                            <div style={{ fontSize: '32px', fontWeight: '900', lineHeight: 1 }}>
+                              {dashboardData.user.streak}
                             </div>
+                            <div style={{ fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>Day Streak</div>
                           </div>
                         </div>
-                        <div className="text-capitalize fw-semibold" style={{ fontSize: '13px' }}>
-                          {key}
+                        <div style={{
+                          background: 'rgba(255, 255, 255, 0.3)',
+                          borderRadius: '8px',
+                          height: '7px',
+                          overflow: 'hidden',
+                          marginBottom: '8px',
+                        }}>
+                          <div 
+                            style={{
+                              background: 'white',
+                              height: '100%',
+                              width: `${(dashboardData.streakProgress.current / dashboardData.streakProgress.goal) * 100}%`,
+                              borderRadius: '8px',
+                              boxShadow: '0 0 10px rgba(255,255,255,0.5)',
+                            }}
+                          />
                         </div>
-                        <div style={{ fontSize: '11px', opacity: 0.8 }}>
-                          {value.value}/{value.target}
+                        <div style={{ textAlign: 'center', fontSize: '12px', opacity: 0.9, fontWeight: '600' }}>
+                          🎯 Goal: {dashboardData.streakProgress.goal} days
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
 
-              {/* Meals Completed */}
-              <div 
-                style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  textAlign: 'center'
-                }}
-              >
-                <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '4px' }}>
-                  {completedMeals}/{dashboardData.meals.length}
-                </div>
-                <div style={{ fontSize: '13px', opacity: 0.9 }}>
-                  Meals Completed Today
+                    {/* Stats Grid */}
+                    <div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+                        {Object.entries(dashboardData.macros).slice(0, 2).map(([key, value]) => {
+                          const percentage = Math.round((value.value / value.target) * 100);
+                          return (
+                            <div 
+                              key={key}
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: '14px',
+                                padding: '14px',
+                                textAlign: 'center',
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
+                              }}
+                            >
+                              <div className="mb-2">
+                                <div 
+                                  className="position-relative d-inline-block"
+                                  style={{ width: '46px', height: '46px' }}
+                                >
+                                  <svg width="46" height="46" style={{ transform: 'rotate(-90deg)' }}>
+                                    <circle
+                                      cx="23"
+                                      cy="23"
+                                      r="18"
+                                      fill="none"
+                                      stroke="rgba(255,255,255,0.3)"
+                                      strokeWidth="4"
+                                    />
+                                    <circle
+                                      cx="23"
+                                      cy="23"
+                                      r="18"
+                                      fill="none"
+                                      stroke="white"
+                                      strokeWidth="4"
+                                      strokeDasharray={`${(percentage / 100) * (2 * Math.PI * 18)} ${2 * Math.PI * 18}`}
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                  <div 
+                                    className="position-absolute top-50 start-50 translate-middle"
+                                    style={{ fontSize: '10px', fontWeight: 'bold' }}
+                                  >
+                                    {percentage}%
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-capitalize fw-semibold" style={{ fontSize: '12px', marginBottom: '2px' }}>
+                                {key}
+                              </div>
+                              <div style={{ fontSize: '10px', opacity: 0.8 }}>
+                                {value.value}/{value.target}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Meals Completed */}
+                      <div 
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.2)',
+                          backdropFilter: 'blur(10px)',
+                          borderRadius: '14px',
+                          padding: '16px',
+                          textAlign: 'center',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                        }}
+                      >
+                        <div style={{ fontSize: '14px', marginBottom: '6px' }}>🍽️</div>
+                        <div style={{ fontSize: '26px', fontWeight: '900', marginBottom: '2px' }}>
+                          {completedMeals}/{dashboardData.meals.length}
+                        </div>
+                        <div style={{ fontSize: '12px', opacity: 0.9, fontWeight: '600' }}>
+                          Meals Completed Today
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ textAlign: 'center', marginTop: '14px', fontSize: '11px', opacity: 0.7, fontWeight: '600' }}>
+                        #FitnessJourney #HealthyLiving
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Footer */}
-              <div className="text-center mt-3" style={{ fontSize: '11px', opacity: 0.7 }}>
-                #FitnessJourney #HealthyLiving
+            {/* Share Options Section */}
+            <div className="col-12 col-lg-6">
+              <div className="d-flex flex-column gap-3 h-100">
+                <div className="bg-light rounded-3 p-3 mb-2">
+                  <h6 className="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <span>📱</span>
+                    Share Options
+                  </h6>
+                  <p className="mb-0 small text-muted">
+                    Choose how you want to share your progress
+                  </p>
+                </div>
+
+                {/* Native Share */}
+                {navigator.share && (
+                  <button
+                    onClick={() => handleSharePlatform("native")}
+                    disabled={isGenerating}
+                    className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0 text-white"
+                    style={{
+                      minHeight: "56px",
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                      transition: 'transform 0.2s',
+                    }}
+                    onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                  >
+                    <FaShareAlt className="fs-5" />
+                    <span className="fw-semibold">{isGenerating ? "Generating..." : "Share via..."}</span>
+                  </button>
+                )}
+
+                {/* WhatsApp */}
+                <button
+                  onClick={() => handleSharePlatform("whatsapp")}
+                  disabled={isGenerating}
+                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
+                  style={{
+                    minHeight: "56px",
+                    background: '#25D366',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(37, 211, 102, 0.3)',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                >
+                  <FaWhatsapp className="fs-5" />
+                  <span className="fw-semibold">Share on WhatsApp</span>
+                </button>
+
+                {/* Instagram */}
+                <button
+                  onClick={() => handleSharePlatform("instagram")}
+                  disabled={isGenerating}
+                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
+                  style={{
+                    minHeight: "56px",
+                    background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(240, 148, 51, 0.3)',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                >
+                  <FaInstagram className="fs-5" />
+                  <span className="fw-semibold">Share on Instagram Story</span>
+                </button>
+
+                {/* Download */}
+                <button
+                  onClick={() => handleSharePlatform("download")}
+                  disabled={isGenerating}
+                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
+                  style={{
+                    minHeight: "56px",
+                    background: '#111827',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(17, 24, 39, 0.3)',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                >
+                  <FaDownload className="fs-5" />
+                  <span className="fw-semibold">Download Image</span>
+                </button>
+
+                {/* Info Alert */}
+                <div className="alert alert-info mb-0 d-flex align-items-start gap-2" style={{fontSize: '13px', lineHeight: '1.5'}}>
+                  <span style={{fontSize: '18px'}}>💡</span>
+                  <div>
+                    <strong>Tip:</strong> For Instagram, the image will be downloaded. Open Instagram, create a Story, and select the image from your gallery to share!
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Share Options - Mobile Optimized */}
-          <div className="d-flex flex-column gap-2">
-            {/* Native Share */}
-            {navigator.share && (
-              <button
-                onClick={() => handleSharePlatform("native")}
-                disabled={isGenerating}
-                className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 rounded-3"
-                style={{ minHeight: "48px" }}
-              >
-                <FaShareAlt className="fs-5" />
-                <span>{isGenerating ? "Generating..." : "Share via..."}</span>
-              </button>
-            )}
-
-            {/* WhatsApp */}
-            <button
-              onClick={() => handleSharePlatform("whatsapp")}
-              disabled={isGenerating}
-              className="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 rounded-3"
-              style={{ minHeight: "48px" }}
-            >
-              <FaWhatsapp className="fs-5" />
-              <span>Share on WhatsApp</span>
-            </button>
-
-            {/* Instagram */}
-            <button
-              onClick={() => handleSharePlatform("instagram")}
-              disabled={isGenerating}
-              className="btn w-100 d-flex align-items-center justify-content-center gap-2 rounded-3 text-white border-0"
-              style={{
-                minHeight: "48px",
-                background: 'linear-gradient(135deg, #667eea 10%, #764ba2 70%, #f093fb 100%)',
-              }}
-            >
-              <FaInstagram className="fs-5" />
-              <span>Download for Instagram</span>
-            </button>
-
-            {/* Download */}
-            <button
-              onClick={() => handleSharePlatform("download")}
-              disabled={isGenerating}
-              className="btn btn-dark w-100 d-flex align-items-center justify-content-center gap-2 rounded-3"
-              style={{ minHeight: "48px" }}
-            >
-              <FaDownload className="fs-5" />
-              <span>Download Image</span>
-            </button>
-          </div>
         </Modal.Body>
       </Modal>
+
+      <style jsx>{`
+        .share-progress-modal .modal-content {
+          border-radius: 24px !important;
+          border: none !important;
+        }
+        
+        .share-progress-modal .modal-header {
+          border-bottom: 1px solid #e5e7eb !important;
+        }
+        
+        .share-progress-modal .btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+        
+        @media (max-width: 991px) {
+          .share-progress-modal .modal-dialog {
+            max-width: 95% !important;
+            margin: 1rem auto !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
+          .share-progress-modal .modal-body {
+            padding: 1rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
