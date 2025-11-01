@@ -1,113 +1,141 @@
-import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import Heading from '../../components/navigation/Heading';
+import React from "react";
+import { Card, Col } from "react-bootstrap";
+import Heading from "../../components/navigation/Heading";
+
 const TermsAndConditions = () => {
+  const sections = [
+    {
+      title: "1. Eligibility",
+      content: [
+        "You must be 18 years or older to create an account.",
+        "Minors can use the platform under parental or guardian supervision.",
+      ],
+    },
+    {
+      title: "2. Account Responsibilities",
+      content: [
+        "You’re responsible for maintaining the confidentiality of your account credentials.",
+        "Coaches must ensure their certifications are valid and up to date.",
+        "Clients must provide honest, accurate health and nutrition details for effective guidance.",
+      ],
+    },
+    {
+      title: "3. Our Services",
+      content: [
+        "Level Grit provides tools for:",
+        "• Coaches to manage clients, track progress, and communicate effectively.",
+        "• Clients to log meals, track macros, stay consistent, and celebrate progress.",
+        "Level Grit is not a healthcare provider. All fitness or nutrition guidance is given by certified professionals, not medical practitioners.",
+      ],
+    },
+    {
+      title: "4. Payments & Subscriptions",
+      content: [
+        "Certain features may require paid subscriptions.",
+        "All pricing and billing terms are displayed clearly before purchase.",
+        "Subscriptions can be canceled anytime in the app or by contacting billing@levelgrit.com.",
+      ],
+    },
+    {
+      title: "5. Ownership & Content",
+      content: [
+        "You own the photos, data, and content you upload.",
+        "Level Grit may use anonymized data to improve app features.",
+        "Copying, reverse engineering, or reselling our platform is prohibited.",
+      ],
+    },
+    {
+      title: "6. Code of Conduct",
+      content: [
+        "You agree not to:",
+        "• Post or share offensive or false information.",
+        "• Spam, harass, or impersonate others.",
+        "• Upload copyrighted or illegal content.",
+        "We reserve the right to remove content or terminate accounts violating our guidelines.",
+      ],
+    },
+    {
+      title: "7. Disclaimers",
+      content: [
+        "Level Grit and its coaches provide guidance, not medical diagnosis.",
+        "Consult your doctor before making health or dietary changes.",
+      ],
+    },
+    {
+      title: "8. Limitation of Liability",
+      content: [
+        "While we aim to provide accurate and reliable tools, Level Grit is not liable for indirect or incidental damages resulting from the use of the app.",
+      ],
+    },
+    {
+      title: "9. Termination",
+      content: [
+        "We may suspend or terminate accounts that violate these terms, misuse the platform, or engage in fraudulent activity.",
+      ],
+    },
+    {
+      title: "10. Contact",
+      content: [
+        "For questions, concerns, or disputes, please email support@levelgrit.com.",
+      ],
+    },
+  ];
+
   return (
-    <div className="container">
-         <Heading pageName="Terms and Conditions" />
-          <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+    <div className="container py-3">
+      <Heading pageName="Terms & Conditions" />
+      <div
+        className="d-flex flex-column"
+        style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}
+      >
         <div className="flex-grow-1 overflow-auto">
           <Col>
-            <Card className="content-wrapper card-health">
+            <Card className="border-0 shadow-sm rounded-4 mb-3">
               <Card.Body className="p-4">
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">1. Acceptance of Terms</h2>
-                  <p className="text-muted">
-                    By accessing and using Level Grit Trainer Platform ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
-                  </p>
-                </div>
+                <h5 className="text-secondary mb-4">
+                  Welcome to{" "}
+                  <span className="fw-bold text-primary">Level Grit</span>, a
+                  platform that connects clients and certified fitness coaches
+                  to help you build sustainable habits and real results.
+                  <br />
+                  <br />
+                  By signing up or using the app, you agree to these Terms &
+                  Conditions.
+                </h5>
 
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">2. Description of Service</h2>
-                  <p className="text-muted">
-                    Level Grit is a comprehensive fitness training platform that provides trainers with tools to manage clients, create personalized meal plans, track progress, and communicate with clients. Our platform includes:
-                  </p>
-                  <ul className="text-muted">
-                    <li>Client registration and profile management</li>
-                    <li>Personalized meal plan creation and tracking</li>
-                    <li>Progress monitoring and reporting</li>
-                    <li>Integrated messaging system</li>
-                    <li>Subscription-based access to premium features</li>
-                  </ul>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">3. Trainer Responsibilities</h2>
-                  <p className="text-muted">
-                    As a trainer using our platform, you agree to:
-                  </p>
-                  <ul className="text-muted">
-                    <li>Provide accurate and professional fitness and nutrition advice</li>
-                    <li>Maintain client confidentiality and data privacy</li>
-                    <li>Comply with all applicable health and fitness regulations</li>
-                    <li>Use the platform in accordance with professional standards</li>
-                    <li>Maintain current certifications and qualifications</li>
-                  </ul>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">4. Client Data and Privacy</h2>
-                  <p className="text-muted">
-                    You are responsible for ensuring that all client data is collected, stored, and used in compliance with applicable privacy laws, including GDPR, CCPA, and HIPAA where applicable. You must obtain proper consent from clients before collecting their personal and health information.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">5. Subscription and Payment</h2>
-                  <p className="text-muted">
-                    Our platform operates on a subscription basis. By subscribing, you agree to:
-                  </p>
-                  <ul className="text-muted">
-                    <li>Pay all fees associated with your subscription plan</li>
-                    <li>Automatic renewal unless cancelled before the renewal date</li>
-                    <li>Price changes with 30 days notice</li>
-                    <li>No refunds for partial months or unused features</li>
-                  </ul>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">6. Intellectual Property</h2>
-                  <p className="text-muted">
-                    The Level Grit platform, including its design, functionality, and content, is protected by intellectual property laws. You may not copy, modify, or distribute any part of the platform without written permission.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">7. Limitation of Liability</h2>
-                  <p className="text-muted">
-                    Level Grit shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of the service.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">8. Termination</h2>
-                  <p className="text-muted">
-                    We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">9. Changes to Terms</h2>
-                  <p className="text-muted">
-                    We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">10. Contact Information</h2>
-                  <p className="text-muted">
-                    If you have any questions about these Terms and Conditions, please contact us at:
-                  </p>
-                  <div className="bg-light p-3 rounded">
-                    <p className="mb-1"><strong>Email:</strong> legal@levelgrit.com</p>
-                    <p className="mb-1"><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p className="mb-0"><strong>Address:</strong> 123 Fitness Street, Health City, HC 12345</p>
+                {sections.map((section, index) => (
+                  <div
+                    key={index}
+                    className="pb-3 mb-4 border-bottom border-2 border-dashed"
+                    style={{ borderColor: "#dee2e6" }}
+                  >
+                    <h2 className="h5 fw-bold text-primary mb-2">
+                      {section.title}
+                    </h2>
+                    {section.content.map((line, i) => (
+                      <p key={i} className="text-muted mb-1">
+                        {line}
+                      </p>
+                    ))}
                   </div>
+                ))}
+
+                <div className="mt-4 bg-light p-3 rounded-3 border-start border-4 border-primary">
+                  Email:
+                  <a
+                    href="mailto:support@levelgrit.com"
+                    className="text-decoration-none text-primary"
+                  >
+                    support@levelgrit.com
+                  </a>
+                  <p className="mb-0 text-muted">
+                    Thank you for being part of the Level Grit community.
+                  </p>
                 </div>
               </Card.Body>
             </Card>
           </Col>
-      </div>
+        </div>
       </div>
     </div>
   );

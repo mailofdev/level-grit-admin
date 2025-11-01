@@ -1,184 +1,115 @@
-import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import Heading from '../../components/navigation/Heading';
+import React from "react";
+import { Card, Col } from "react-bootstrap";
+import Heading from "../../components/navigation/Heading";
+
 const CancellationPolicy = () => {
+  const sections = [
+    {
+      title: "1. Subscription Cancellations",
+      content: [
+        "You can cancel your subscription anytime from within your Level Grit account settings or by emailing billing@levelgrit.com.",
+        "When canceled, your plan remains active until the end of the current billing cycle.",
+      ],
+    },
+    {
+      title: "2. Refund Eligibility",
+      content: [
+        "Refunds are available in cases such as:",
+        "• Duplicate or incorrect charges.",
+        "• Verified technical issues preventing app use.",
+        "• Coach unavailability without a suitable replacement.",
+        "Partial refunds for mid-cycle cancellations are generally not available once a billing period has started.",
+      ],
+    },
+    {
+      title: "3. Refund Process",
+      content: [
+        "Refund requests must be submitted within 7 days of the transaction.",
+        "Approved refunds are processed to your original payment method within 5–10 business days.",
+      ],
+    },
+    {
+      title: "4. Contact",
+      content: [
+        "For billing, refund, or cancellation support, email billing@levelgrit.com.",
+        "Our team will review your request and get back to you promptly.",
+      ],
+    },
+  ];
+
   return (
-    <div className="container">
-      <Heading pageName="Cancellation and Refund Policy" />
-       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+    <div className="container py-3">
+      <Heading pageName="Cancellation & Refund Policy" />
+
+      <div
+        className="d-flex flex-column"
+        style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}
+      >
         <div className="flex-grow-1 overflow-auto">
-        <Row className="justify-content-center">
           <Col>
-            <Card className="content-wrapper card-health">
-                  
-              
+            <Card className="border-0 shadow-sm rounded-4 mb-3">
               <Card.Body className="p-4">
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">1. Subscription Cancellation</h2>
-                  <p className="text-muted">
-                    You may cancel your Level Grit subscription at any time. Cancellation requests can be made through your account dashboard or by contacting our support team.
-                  </p>
-                  
-                  <div className="card card-info p-3 mb-3">
-                    <h5 className="fw-semibold text-info mb-2">
-                      <i className="fas fa-info-circle me-2"></i>How to Cancel
-                    </h5>
-                    <ul className="text-muted mb-0">
-                      <li>Log into your Level Grit account</li>
-                      <li>Navigate to Account Settings → Billing</li>
-                      <li>Click "Cancel Subscription"</li>
-                      <li>Follow the confirmation prompts</li>
-                    </ul>
+                <h5 className="text-secondary mb-4">
+                  We want your experience with{" "}
+                  <span className="fw-bold text-primary">Level Grit</span> to be
+                  smooth and fair. If something isn’t right, we’ll do our best to
+                  make it right.
+                </h5>
+
+                {sections.map((section, index) => (
+                  <div
+                    key={index}
+                    className="pb-3 mb-4 border-bottom border-2 border-dashed"
+                    style={{ borderColor: "#dee2e6" }}
+                  >
+                    <h2 className="h5 fw-bold text-primary mb-2">
+                      {section.title}
+                    </h2>
+                    {section.content.map((line, i) => (
+                      <p key={i} className="text-muted mb-1">
+                        {line}
+                      </p>
+                    ))}
                   </div>
-                </div>
+                ))}
 
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">2. Effective Date of Cancellation</h2>
-                  <p className="text-muted">
-                    Your subscription will remain active until the end of your current billing period. You will continue to have full access to all platform features until that time.
+                <div className="mt-4 bg-light p-3 rounded-3 border-start border-4 border-primary">
+                  <p className="mb-1 fw-semibold text-dark">
+                    Email: billing@levelgrit.com
                   </p>
-                  
-                  <div className="alert alert-warning">
-                    <i className="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Important:</strong> Cancellation requests made after your billing date will not prevent the next billing cycle. 
-                    You will be charged for the upcoming period and retain access until the end of that period.
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">3. Refund Policy</h2>
-                  
-                  <h5 className="fw-semibold text-secondary mb-2">Monthly Subscriptions</h5>
-                  <p className="text-muted">
-                    Monthly subscriptions are non-refundable once the billing period has begun. However, we offer a 7-day money-back guarantee for new subscribers.
-                  </p>
-
-                  <h5 className="fw-semibold text-secondary mb-2 mt-3">Annual Subscriptions</h5>
-                  <p className="text-muted">
-                    Annual subscriptions may be eligible for a prorated refund if cancelled within the first 30 days. After 30 days, no refunds will be provided for annual subscriptions.
-                  </p>
-
-                  <h5 className="fw-semibold text-secondary mb-2 mt-3">Free Trial</h5>
-                  <p className="text-muted">
-                    If you cancel during your free trial period, you will not be charged. No refund is necessary as no payment was processed.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">4. Refund Processing</h2>
-                  <p className="text-muted">
-                    Approved refunds will be processed within 5-10 business days to the original payment method used for the subscription. 
-                    Processing times may vary depending on your financial institution.
-                  </p>
-                  
-                  <div className="card card-stats p-3">
-                    <h5 className="fw-semibold text-primary mb-2">
-                      <i className="fas fa-clock me-2"></i>Refund Timeline
-                    </h5>
-                    <ul className="text-muted mb-0">
-                      <li>Credit Cards: 3-5 business days</li>
-                      <li>PayPal: 1-3 business days</li>
-                      <li>Bank Transfer: 5-10 business days</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">5. Data Retention After Cancellation</h2>
-                  <p className="text-muted">
-                    After your subscription ends, your account and data will be retained for 30 days to allow for reactivation. 
-                    During this period, you can reactivate your subscription without losing any data.
-                  </p>
-                  
-                  <div className="alert alert-info">
-                    <i className="fas fa-info-circle me-2"></i>
-                    <strong>Data Export:</strong> Before your data is permanently deleted, you can export your client information, 
-                    meal plans, and progress reports through your account dashboard.
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">6. Special Circumstances</h2>
-                  
-                  <h5 className="fw-semibold text-secondary mb-2">Technical Issues</h5>
-                  <p className="text-muted">
-                    If you experience significant technical issues that prevent you from using the platform effectively, 
-                    we may provide a full or partial refund at our discretion.
-                  </p>
-
-                  <h5 className="fw-semibold text-secondary mb-2 mt-3">Billing Errors</h5>
-                  <p className="text-muted">
-                    If you are charged incorrectly due to a billing error on our part, we will provide a full refund 
-                    and correct the error immediately.
-                  </p>
-
-                  <h5 className="fw-semibold text-secondary mb-2 mt-3">Service Interruption</h5>
-                  <p className="text-muted">
-                    In the event of extended service interruptions (more than 24 hours), we may provide account credits 
-                    or refunds proportional to the downtime.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">7. Chargeback Policy</h2>
-                  <p className="text-muted">
-                    If you initiate a chargeback or dispute with your bank or credit card company, we will immediately 
-                    suspend your account until the dispute is resolved. We encourage you to contact our support team 
-                    first to resolve any billing issues.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">8. Reactivation</h2>
-                  <p className="text-muted">
-                    You can reactivate your subscription at any time within 30 days of cancellation. 
-                    Reactivation will restore full access to your account and all previously stored data.
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">9. Contact for Refunds</h2>
-                  <p className="text-muted">
-                    To request a refund or discuss cancellation options, please contact our billing support team:
-                  </p>
-                  
-                  <div className="bg-light p-3 rounded">
-                    <p className="mb-1"><strong>Email:</strong> billing@levelgrit.com</p>
-                    <p className="mb-1"><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p className="mb-1"><strong>Hours:</strong> Monday - Friday, 9:00 AM - 6:00 PM EST</p>
-                    <p className="mb-0"><strong>Response Time:</strong> Within 24 hours</p>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h2 className="h4 fw-bold text-primary mb-3">10. Changes to This Policy</h2>
-                  <p className="text-muted">
-                    We reserve the right to modify this cancellation and refund policy at any time. 
-                    Changes will be effective immediately upon posting. Continued use of our service 
-                    after changes constitutes acceptance of the new policy.
+                  <p className="mb-0 text-muted">
+                    Our billing team typically responds within 24 hours on
+                    business days.
                   </p>
                 </div>
 
                 <div className="text-center mt-5">
-                  <div className="card card-health p-4">
+                  <div className="card border-0 shadow-sm p-4 rounded-4">
                     <h4 className="fw-bold text-primary mb-3">
-                      <i className="fas fa-heart me-2"></i>
-                      We Value Your Feedback
+                      <i className="fas fa-heart me-2"></i>We Value Your Feedback
                     </h4>
-                    <p className="text-muted mb-3">
-                      If you're considering cancelling, we'd love to hear why. Your feedback helps us improve our platform.
+                    <p className="text-muted mb-2">
+                      If you're considering cancelling, we'd love to hear why.
+                      Your feedback helps us improve our platform.
                     </p>
                     <p className="text-muted mb-0">
-                      Contact us at <strong>feedback@levelgrit.com</strong> to share your thoughts.
+                      Contact us at{" "}
+                      <a
+                        href="mailto:billing@levelgrit.com"
+                        className="text-decoration-none text-primary"
+                      >
+                        billing@levelgrit.com
+                      </a>
+                      <strong></strong> to share your
+                      thoughts.
                     </p>
                   </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
-        </Row>
-  </div>
         </div>
+      </div>
     </div>
   );
 };
