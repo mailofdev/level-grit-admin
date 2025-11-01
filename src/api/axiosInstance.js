@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
   // baseURL: "https://192.168.31.231:7240",
 
   // Most common case (HTTP, same local network)
-  baseURL: "http://192.168.31.231:7240",
+  baseURL: "https://192.168.31.231:7240",
  // 👈 include correct port here
   timeout: 10000,
 });
