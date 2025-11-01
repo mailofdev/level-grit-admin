@@ -3,12 +3,12 @@ import axios from "axios";
 import { decryptToken } from "../utils/crypto";
 
 const axiosInstance = axios.create({
-  //  baseURL: "https://localhost:7240",
+   baseURL: "https://localhost:7240",
   // If your backend runs on HTTPS (with valid local certs):
   // baseURL: "https://192.168.31.231:7240",
 
   // Most common case (HTTP, same local network)
-  baseURL: "https://192.168.31.231:7240",
+  // baseURL: "https://192.168.31.231:7240",
  // 👈 include correct port here
   timeout: 10000,
 });
