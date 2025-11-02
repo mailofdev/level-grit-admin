@@ -27,7 +27,7 @@ export default function InstallPrompt() {
   return (
     <div className="position-fixed bottom-0 end-0 p-3">
       <button onClick={handleInstallClick} className="btn btn-primary shadow-lg">
-        📲 Install LevelGrit App
+        Install App
       </button>
     </div>
   );
