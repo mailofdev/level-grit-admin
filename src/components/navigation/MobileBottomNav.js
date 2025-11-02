@@ -1,25 +1,33 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { memo, useMemo } from "react";
 import { getRoutes } from "./Routes";
 
-const MobileBottomNav = () => {
+const MobileBottomNav = memo(() => {
   const routes = getRoutes();
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (!routes || routes.length === 0) return null;
+  const finalRoutes = useMemo(() => {
+    if (!routes || routes.length === 0) return [];
+    
+    // Curate desired order by label; fallback to route order
+    const desiredOrder = ["Dashboard", "View Clients", "Messages", "Progress"];
+    const byLabel = Object.fromEntries(routes.map(r => [r.label, r]));
+    const curated = desiredOrder
+      .map(label => byLabel[label])
+      .filter(Boolean);
+    return (curated.length ? curated : routes)
+      .filter((item) => item.showIn?.includes("topbar") || item.showIn?.includes("sidebar"))
+      .slice(0, 4);
+  }, [routes]);
 
-  // Curate desired order by label; fallback to route order
-  const desiredOrder = ["Dashboard", "View Clients", "Messages", "Progress"];
-  const byLabel = Object.fromEntries(routes.map(r => [r.label, r]));
-  const curated = desiredOrder
-    .map(label => byLabel[label])
-    .filter(Boolean);
-  const finalRoutes = (curated.length ? curated : routes)
-    .filter((item) => item.showIn?.includes("topbar") || item.showIn?.includes("sidebar"))
-    .slice(0, 4);
+  if (finalRoutes.length === 0) return null;
 
   // FAB target: prefer View Clients, else Dashboard, else first route
-  const fabTarget = byLabel["View Clients"]?.href || byLabel["Dashboard"]?.href || routes?.[0]?.href || "/";
+  const fabTarget = useMemo(() => {
+    const byLabel = Object.fromEntries((routes || []).map(r => [r.label, r]));
+    return byLabel["View Clients"]?.href || byLabel["Dashboard"]?.href || routes?.[0]?.href || "/";
+  }, [routes]);
 
   return (
     <nav className="mobile-bottom-nav d-lg-none" aria-label="Primary">
@@ -54,7 +62,9 @@ const MobileBottomNav = () => {
       </button> */}
     </nav>
   );
-};
+});
+
+MobileBottomNav.displayName = 'MobileBottomNav';
 
 export default MobileBottomNav;
 

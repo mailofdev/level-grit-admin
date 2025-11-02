@@ -1,91 +1,89 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
-const Loader = ({
+/**
+ * Enhanced Loader Component with smooth animations
+ * Optimized for performance and better UX
+ */
+const Loader = React.memo(({
   size = "120px",
-  color = "#FF5733",  // Bold gym color (orange-red)
+  color = "#28a745",
   fullScreen = false,
   text = "Loading...",
 }) => {
-  const loaderStyles = `
-    .custom-loader-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease-in-out;
+  const spinnerVariants = {
+    animate: {
+      rotate: 360,
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "linear"
+      }
     }
-    .custom-loader-container.fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
+  };
+
+  const textVariants = {
+    animate: {
+      opacity: [1, 0.7, 1],
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
     }
-    .custom-spinner {
-      position: relative;
-      width: ${size};
-      height: ${size};
-    }
-    .custom-spinner:before,
-    .custom-spinner:after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 5px solid transparent;
-    }
-    .custom-spinner:before {
-      border-top-color: ${color};
-      animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    }
-    .custom-spinner:after {
-      border-right-color: ${color}aa;
-      animation: spinReverse 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    }
-    .custom-loader-text {
-      margin-top: 15px;
-      font-size: 22px;
-      font-weight: bold;
-      color: ${color};
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      animation: pulse 0.7s infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    @keyframes spinReverse {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(-360deg); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.1); }
-    }
-  `;
+  };
+
+  const containerStyle = fullScreen ? {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100vh',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(8px)',
+    zIndex: 9999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  } : {};
 
   return (
-    <>
-      <style>{loaderStyles}</style>
-      <div className={`card content-wrapper text-center p-4 ${fullScreen ? "position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" : ""}`}>
-        <div className="custom-spinner"></div>
-        {text && <p className="custom-loader-text mt-3">{text}</p>}
-      </div>
-    </>
+    <motion.div
+      className="d-flex flex-column align-items-center justify-content-center"
+      style={containerStyle}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <motion.div
+        style={{
+          width: size,
+          height: size,
+          border: `5px solid ${color}20`,
+          borderTopColor: color,
+          borderRadius: '50%',
+          position: 'relative'
+        }}
+        variants={spinnerVariants}
+        animate="animate"
+      />
+      {text && (
+        <motion.p
+          className="mt-3 fw-semibold"
+          style={{ color, fontSize: '1rem', marginTop: '1rem' }}
+          variants={textVariants}
+          animate="animate"
+        >
+          {text}
+        </motion.p>
+      )}
+    </motion.div>
   );
-};
+});
+
+Loader.displayName = 'Loader';
 
 Loader.propTypes = {
   size: PropTypes.string,

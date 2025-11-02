@@ -1,10 +1,12 @@
 import { getRoutes } from "../navigation/Routes";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { memo, useMemo } from "react";
 
-const Sidebar = ({ showIcons }) => {
-  const routes = getRoutes(); // ✅ generate routes dynamically
+const Sidebar = memo(({ showIcons }) => {
+  const location = useLocation();
+  const routes = useMemo(() => getRoutes(), []);
 
-  const handleRouteClick = (item) => {};
+  const handleRouteClick = () => {};
 
   return (
     <nav
@@ -20,9 +22,9 @@ const Sidebar = ({ showIcons }) => {
                 <Link
                   to={item.href}
                   className={`nav-link d-flex align-items-center px-3 py-2 ${
-                    item.danger ? "text-danger" : ""
-                  }`}
-                  onClick={() => handleRouteClick(item)}
+                    location.pathname === item.href ? "active" : ""
+                  } ${item.danger ? "text-danger" : ""}`}
+                  onClick={handleRouteClick}
                 >
                   {showIcons && item.icon && (
                     <i className={`bi ${item.icon} me-2`}></i>
@@ -63,6 +65,8 @@ const Sidebar = ({ showIcons }) => {
       `}</style>
     </nav>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

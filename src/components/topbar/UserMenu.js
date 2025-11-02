@@ -1,7 +1,7 @@
 import getRoleIcon from "../common/CommonFunctions";
-import React, { useState } from "react";
+import React, { useState, memo, useMemo } from "react";
 
-const UserMenu = ({ user, onProfile, onLogout }) => {
+const UserMenu = memo(({ user, onProfile, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Function to get initials from full name
@@ -22,6 +22,9 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
     };
     return colors[role?.toLowerCase()] || colors.default;
   };
+
+  const roleColor = useMemo(() => getRoleColor(user?.role), [user?.role]);
+  const initials = useMemo(() => getInitials(user?.fullName), [user?.fullName]);
 
   return (
     <ul className="navbar-nav mb-2 mb-lg-0 ms-lg-3">
@@ -46,7 +49,7 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
             style={{
               width: "42px",
               height: "42px",
-              background: getRoleColor(user?.role),
+              background: roleColor,
               color: "#fff",
               fontWeight: "700",
               fontSize: "1.3rem",
@@ -88,7 +91,7 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
           {/* Gradient header background */}
           <div
             style={{
-              background: getRoleColor(user?.role),
+              background: roleColor,
               height: "80px",
               position: "relative",
               overflow: "hidden",
@@ -126,16 +129,14 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
               style={{
                 width: "70px",
                 height: "70px",
-                background: "#ffffff",
-                color: "#4e73df",
+                background: roleColor,
+                color: "#fff",
                 fontWeight: "700",
                 fontSize: "1.4rem",
                 boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-                background: getRoleColor(user?.role),
-                color: "#fff",
               }}
             >
-              {getInitials(user?.fullName)}
+              {initials}
             </div>
             <div className="fw-bold text-dark mb-1" style={{ fontSize: "1.05rem" }}>
               {user?.fullName || "Unknown User"}
@@ -241,6 +242,8 @@ const UserMenu = ({ user, onProfile, onLogout }) => {
       </li>
     </ul>
   );
-};
+});
+
+UserMenu.displayName = 'UserMenu';
 
 export default UserMenu;

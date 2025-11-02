@@ -1033,3 +1033,178 @@ h1, h2, h3, h4, h5, h6 {
     right: 1rem !important;
   }
 }
+
+/* =========================================
+   Performance Optimizations
+=========================================== */
+
+/* Will-change for smooth animations */
+.animate-element,
+.card,
+.btn,
+.mobile-bottom-nav__link {
+  will-change: transform;
+}
+
+/* GPU acceleration for transforms */
+.card,
+.btn,
+.hover-scale,
+.hover-lift {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduce repaints */
+.sticky-top,
+.fixed-top,
+.fixed-bottom {
+  will-change: transform;
+}
+
+/* Optimize font rendering */
+body, button, input, select, textarea {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Image optimization */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reduce layout shifts */
+img[loading="lazy"] {
+  min-height: 100px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+/* Performance: Contain layout */
+.card,
+.modal-content,
+.dropdown-menu {
+  contain: layout style paint;
+}
+
+/* Optimize scrolling */
+.container-fluid,
+.container {
+  contain: layout;
+}
+
+/* Smooth scrolling with better performance */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Reduce animation on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimize table rendering */
+.table {
+  table-layout: auto;
+}
+
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Virtual scrolling optimization hints */
+.list-item,
+.table tbody tr {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 50px;
+}
+
+/* Cursor pointer utility */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* =========================================
+   Enhanced Loading States
+=========================================== */
+
+/* Skeleton loader animations */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* =========================================
+   Improved Focus States for Accessibility
+=========================================== */
+
+.btn:focus-visible,
+.form-control:focus-visible,
+.nav-link:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 1rem;
+  z-index: 10000;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* =========================================
+   Better Mobile Performance
+=========================================== */
+
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  .card:hover {
+    transform: none;
+  }
+  
+  /* Optimize repaints */
+  .card,
+  .btn {
+    will-change: auto;
+  }
+  
+  /* Better touch scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}

@@ -1,17 +1,27 @@
 import { Link } from "react-router-dom";
+import { memo, useMemo } from "react";
 import logo from '../../assets/images/logo3.jpeg'; 
-import { getRoutes } from "../navigation/Routes"; 
-const BrandLogo = () => {
-  const routes = getRoutes(); 
+import { getRoutes } from "../navigation/Routes";
+import OptimizedImage from "../common/OptimizedImage";
+
+const BrandLogo = memo(() => {
+  const routes = useMemo(() => getRoutes(), []);
+  const homePath = useMemo(() => routes?.[0]?.href || "/", [routes]);
+  
   return (
-    <Link to={routes?.[0]?.href} className="navbar-brand fw-bold d-flex align-items-center">
-      <img 
+    <Link to={homePath} className="navbar-brand fw-bold d-flex align-items-center" aria-label="Level Grit Home">
+      <OptimizedImage 
         src={logo} 
         alt="Level Grit Logo" 
-        style={{ height: "40px",width: "50px" }} 
-    />
-    {/* Level Grit */}
-  </Link>
-)
-}
+        width="50px"
+        height="40px"
+        className="rounded"
+        style={{ objectFit: 'contain' }}
+      />
+    </Link>
+  );
+});
+
+BrandLogo.displayName = 'BrandLogo';
+
 export default BrandLogo;

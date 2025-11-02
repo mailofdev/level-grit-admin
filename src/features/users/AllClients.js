@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GetClientsForTrainer } from "../../api/authAPI";
 import Loader from "../../components/display/Loader";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import AnimatedCard from "../../components/common/AnimatedCard";
+import StaggerContainer from "../../components/common/StaggerContainer";
 
 export default function AllClients() {
   const user = getDecryptedUser();
@@ -32,18 +34,22 @@ export default function AllClients() {
     fetchClients();
   }, []);
 
-  const indexOfLast = currentPage * clientsPerPage;
-  const indexOfFirst = indexOfLast - clientsPerPage;
-  const currentClients = clients.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(clients.length / clientsPerPage);
+  const { currentClients, totalPages } = useMemo(() => {
+    const indexOfLast = currentPage * clientsPerPage;
+    const indexOfFirst = indexOfLast - clientsPerPage;
+    return {
+      currentClients: clients.slice(indexOfFirst, indexOfLast),
+      totalPages: Math.ceil(clients.length / clientsPerPage)
+    };
+  }, [clients, currentPage, clientsPerPage]);
 
-  const handleClientClick = (client) => {
+  const handleClientClick = useCallback((client) => {
     navigate(`/client-details/${client.clientId}`, { state: { client } });
-  };
+  }, [navigate]);
 
-  const handleAddClient = () => {
+  const handleAddClient = useCallback(() => {
     navigate("/register-client");
-  };
+  }, [navigate]);
 
   if (loading) {
     return (
@@ -102,15 +108,17 @@ export default function AllClients() {
 
         {/* Clients Grid - Desktop */}
         <div className="card-body d-none d-md-block">
-          <div className="row g-3">
-            {currentClients.map((client) => (
-              <div
+          <StaggerContainer className="row g-3" staggerDelay={0.05}>
+            {currentClients.map((client, idx) => (
+              <StaggerContainer.Item
                 key={client.clientId}
                 className="col-12 col-sm-6 col-md-4 col-lg-3"
               >
-                <div
+                <AnimatedCard
+                  delay={idx * 0.05}
+                  hover
                   onClick={() => handleClientClick(client)}
-                  className="card border-0 h-100 hover-shadow theme-transition cursor-pointer position-relative rounded-4"
+                  className="h-100 cursor-pointer position-relative rounded-4"
                 >
                   <div
                     className="position-absolute top-0 start-0 end-0"
@@ -157,43 +165,49 @@ export default function AllClients() {
                       </p>
                     </div>
                   </div>
-                </div>
-              </div>
+                </AnimatedCard>
+              </StaggerContainer.Item>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Clients List - Mobile */}
         <div className="card-body d-md-none">
-          {currentClients.map((client) => (
-            <button
-              key={client.clientId}
-              className="w-100 border-0 mb-2 text-start card hover-shadow theme-transition rounded-4"
-              onClick={() => handleClientClick(client)}
-            >
-              <div className="card-body p-3">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h6 className="fw-bold mb-0 fs-6 text-primary-emphasis">
-                    {client.fullName}
-                  </h6>
-                  {client.streak && (
-                    <span className="badge bg-primary bg-opacity-15 text-primary px-3 py-2 rounded-pill small">
-                      {client.streak}
-                    </span>
-                  )}
-                </div>
-                <div className="d-flex flex-column gap-1">
-                  <p className="mb-0 small text-muted">{client.email}</p>
-                  <div className="d-flex gap-3 mt-1">
-                    <small className="small text-muted">{client.gender}</small>
-                    <small className="small text-muted">
-                      {client.phoneNumber}
-                    </small>
+          <StaggerContainer staggerDelay={0.05}>
+            {currentClients.map((client, idx) => (
+              <StaggerContainer.Item key={client.clientId} className="mb-2">
+                <AnimatedCard
+                  delay={idx * 0.05}
+                  hover
+                  onClick={() => handleClientClick(client)}
+                  className="w-100 text-start rounded-4"
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="card-body p-3">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h6 className="fw-bold mb-0 fs-6 text-primary-emphasis">
+                        {client.fullName}
+                      </h6>
+                      {client.streak && (
+                        <span className="badge bg-primary bg-opacity-15 text-primary px-3 py-2 rounded-pill small">
+                          {client.streak}
+                        </span>
+                      )}
+                    </div>
+                    <div className="d-flex flex-column gap-1">
+                      <p className="mb-0 small text-muted">{client.email}</p>
+                      <div className="d-flex gap-3 mt-1">
+                        <small className="small text-muted">{client.gender}</small>
+                        <small className="small text-muted">
+                          {client.phoneNumber}
+                        </small>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </button>
-          ))}
+                </AnimatedCard>
+              </StaggerContainer.Item>
+            ))}
+          </StaggerContainer>
         </div>
 
         {/* Pagination Footer */}

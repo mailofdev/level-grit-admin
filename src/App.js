@@ -1,31 +1,49 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import ScrollToTop from "./components/navigation/ScrollToTop";
-
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
-import NotFound from "./features/errors/NotFound";
-import Dashboard from "./features/dashboard/Dashboard";
-import LoginForm from "./features/auth/LoginForm";
-import RegisterForm from "./features/auth/RegisterForm";
-import ResetPasswordForm from "./features/auth/ResetPasswordForm";
-import Messages from "./features/users/Messages";
-import AdjustPlan from "./features/adjustPlan/AdjustPlan";
-import RegisterClientForm from "./features/auth/RegisterClientForm";
-import AllClients from "./features/users/AllClients";
-import ClientDetails from "./features/users/ClientDetails";
-import LandingPage from "./features/landing/LandingPage";
-import AdminDashboard from "./features/dashboard/AdminDashboard";
-import { TermsAndConditions, PrivacyPolicy, ContactUs, CancellationPolicy } from "./features/static";
-import { TrainerDashboard } from "./features/trainer";
-import { MealPlanManager } from "./features/mealPlans";
-import { ClientMessaging } from "./features/messaging";
-import { ProgressTracker } from "./features/progress";
-import { SubscriptionManager } from "./features/subscription";
 import InstallPrompt from "./InstallPrompt";
+
+// Lazy load components for better performance - reduces initial bundle size
+const LandingPage = lazy(() => import("./features/landing/LandingPage"));
+const LoginForm = lazy(() => import("./features/auth/LoginForm"));
+const RegisterForm = lazy(() => import("./features/auth/RegisterForm"));
+const ResetPasswordForm = lazy(() => import("./features/auth/ResetPasswordForm"));
+const RegisterClientForm = lazy(() => import("./features/auth/RegisterClientForm"));
+// const Dashboard = lazy(() => import("./features/dashboard/Dashboard")); // Not used in routes
+const AdminDashboard = lazy(() => import("./features/dashboard/AdminDashboard"));
+const AllClients = lazy(() => import("./features/users/AllClients"));
+const ClientDetails = lazy(() => import("./features/users/ClientDetails"));
+const Messages = lazy(() => import("./features/users/Messages"));
+const AdjustPlan = lazy(() => import("./features/adjustPlan/AdjustPlan"));
+const NotFound = lazy(() => import("./features/errors/NotFound"));
+const TermsAndConditions = lazy(() => import("./features/static/TermsAndConditions"));
+const PrivacyPolicy = lazy(() => import("./features/static/PrivacyPolicy"));
+const ContactUs = lazy(() => import("./features/static/ContactUs"));
+const CancellationPolicy = lazy(() => import("./features/static/CancellationPolicy"));
+const TrainerDashboard = lazy(() => import("./features/trainer/TrainerDashboard"));
+const MealPlanManager = lazy(() => import("./features/mealPlans/MealPlanManager"));
+const ClientMessaging = lazy(() => import("./features/messaging/ClientMessaging"));
+const ProgressTracker = lazy(() => import("./features/progress/ProgressTracker"));
+const SubscriptionManager = lazy(() => import("./features/subscription/SubscriptionManager"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="d-flex align-items-center justify-content-center min-vh-100">
+    <div className="text-center">
+      <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+        <span className="visually-hidden">Loading...</span>
+      </div>
+      <p className="text-muted">Loading...</p>
+    </div>
+  </div>
+);
 
 function ProtectedLayout({ children, config }) {
   return (
@@ -37,24 +55,26 @@ function ProtectedLayout({ children, config }) {
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <ScrollToTop />
-        <AuthProvider>
-          <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/index.html" element={<Navigate to="/" replace />} />     
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/register-client" element={<RegisterClientForm />} />
-          <Route path="/reset-password" element={<ResetPasswordForm />} />
-          
-          {/* Static Pages */}
-          <Route path="/terms-conditions" element={<TermsAndConditions />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Router>
+          <ScrollToTop />
+          <AuthProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/index.html" element={<Navigate to="/" replace />} />     
+                <Route path="/register" element={<RegisterForm />} />
+                <Route path="/register-client" element={<RegisterClientForm />} />
+                <Route path="/reset-password" element={<ResetPasswordForm />} />
+                
+                {/* Static Pages */}
+                <Route path="/terms-conditions" element={<TermsAndConditions />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/contact" element={<ContactUs />} />
+                <Route path="/cancellation-policy" element={<CancellationPolicy />} />
 
 
           {/* Protected routes */}
@@ -143,12 +163,14 @@ function App() {
             }
           />
 
-          <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-        <InstallPrompt />
-      </Router>
-    </ThemeProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </AuthProvider>
+          <InstallPrompt />
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
