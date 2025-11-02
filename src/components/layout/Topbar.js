@@ -107,7 +107,7 @@ const Topbar = ({
               </div>
             )}
 
-            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-100 w-lg-auto">
+            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3  w-lg-auto">
               {showSearch && <SearchBar />}
               {showThemeToggle && <ThemeSwitch enableThemeAlert />}
               {showUserMenu && (
