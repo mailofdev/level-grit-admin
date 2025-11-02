@@ -15,6 +15,10 @@ import {
 import { useSelector } from "react-redux";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import RazorpayPayment from "../payments/RazorpayPayment";
+import AnimatedCard from "../../components/common/AnimatedCard";
+import AnimatedButton from "../../components/common/AnimatedButton";
+import FadeIn from "../../components/common/FadeIn";
+import StaggerContainer from "../../components/common/StaggerContainer";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -49,7 +53,7 @@ console.log("Authenticated User:", user?.role);
       </div>
 
       {/* Stats Overview */}
-      <div className="row g-2 g-md-3 mb-3 mb-md-4">
+      <StaggerContainer className="row g-2 g-md-3 mb-3 mb-md-4" staggerDelay={0.1}>
         {[
           {
             title: "Total Clients",
@@ -76,8 +80,8 @@ console.log("Authenticated User:", user?.role);
             icon: <FaRunning />,
           },
         ].map((stat, idx) => (
-          <div className="col-lg-3 col-md-6 col-sm-6" key={idx}>
-            <div className="card border-0 shadow-sm h-100 hover-shadow theme-transition position-relative overflow-hidden">
+          <StaggerContainer.Item className="col-lg-3 col-md-6 col-sm-6" key={idx}>
+            <AnimatedCard delay={idx * 0.1} hover className="h-100 position-relative overflow-hidden">
               <div className="position-absolute top-0 start-0 end-0" style={{ height: '4px', background: `linear-gradient(90deg, var(--bs-${stat.color}), var(--bs-${stat.color}-subtle))` }}></div>
               <div className="card-body text-center p-3 p-md-4">
                 <div className={`fs-2 fs-md-3 mb-2 mb-md-3 text-${stat.color} d-inline-flex align-items-center justify-content-center rounded-circle p-3`} style={{ background: `rgba(var(--bs-${stat.color}-rgb), 0.1)` }}>
@@ -88,9 +92,10 @@ console.log("Authenticated User:", user?.role);
                   {stat.value}
                 </h3>
               </div>
-            </div>
-          </div>
+            </AnimatedCard>
+          </StaggerContainer.Item>
         ))}
+      </StaggerContainer>
       </div>
 
       {/* Main Section */}
@@ -98,7 +103,7 @@ console.log("Authenticated User:", user?.role);
         {/* Left Side: Notifications & Quick Actions */}
         <div className="col-lg-4">
           {/* Notifications */}
-          <div className="card border-0 shadow-sm mb-2 mb-md-3 hover-shadow theme-transition">
+          <AnimatedCard delay={0.2} className="mb-2 mb-md-3">
             <div className="card-body p-3 p-md-4">
               <h5 className="card-title mb-3 d-flex align-items-center gap-2 fw-bold fs-5">
                 <FaBell className="text-warning fs-5" /> Notifications
