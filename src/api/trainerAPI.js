@@ -10,3 +10,12 @@ export const getTrainerDashboard = async () => {
   return data;
 };
 
+/**
+ * Delete Trainer Account
+ * API Path: api/Trainer/Delete-trainer
+ */
+export const deleteTrainer = async () => {
+  const { data } = await axiosInstance.delete("api/Trainer/Delete-trainer");
+  return data;
+};
+

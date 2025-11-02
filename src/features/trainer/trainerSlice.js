@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTrainerDashboardThunk } from "./trainerThunks";
+import { getTrainerDashboardThunk, deleteTrainerThunk } from "./trainerThunks";
 
 const initialState = {
   dashboardData: null,
@@ -66,6 +66,27 @@ const trainerSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to load trainer dashboard";
         state.dashboardData = null;
+      })
+
+      // --- DELETE TRAINER THUNK ---
+      // Pending
+      .addCase(deleteTrainerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      // Fulfilled
+      .addCase(deleteTrainerThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        // Reset trainer state after successful deletion
+        state.dashboardData = null;
+      })
+
+      // Rejected
+      .addCase(deleteTrainerThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete trainer account";
       });
   },
 });

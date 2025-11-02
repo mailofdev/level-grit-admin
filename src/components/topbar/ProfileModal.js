@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   FaEnvelope,
   FaPhone,
@@ -9,11 +10,14 @@ import {
   FaBirthdayCake,
   FaWeight,
 } from "react-icons/fa";
-import { Form, Spinner } from "react-bootstrap";
+import { Form, Spinner, Alert } from "react-bootstrap";
 import getRoleIcon from "../common/CommonFunctions";
 import { GetProfileData, UpdateProfileData } from "../../api/authAPI";
+import { deleteTrainerThunk } from "../../features/trainer/trainerThunks";
+import { logout } from "../../features/auth/authSlice";
 
 const ProfileModal = ({ show, onClose }) => {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({});
   const [initialData, setInitialData] = useState({});
@@ -21,6 +25,8 @@ const ProfileModal = ({ show, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   // Fetch profile
   useEffect(() => {
@@ -117,9 +123,22 @@ const ProfileModal = ({ show, onClose }) => {
     setIsEditing(false);
   };
 
-  const handleDeleteConfirm = () => {
-    // Delete Account API call
-    setShowDeleteAlert(false);
+  const handleDeleteConfirm = async () => {
+    try {
+      setDeleting(true);
+      setDeleteError(null);
+      
+      // Call delete trainer API
+      await dispatch(deleteTrainerThunk()).unwrap();
+      
+      // On successful deletion, logout and redirect
+      dispatch(logout());
+      window.location.href = "/";
+    } catch (error) {
+      // Handle error
+      setDeleteError(error || "Failed to delete account. Please try again.");
+      setDeleting(false);
+    }
   };
 
   return (
@@ -167,9 +186,38 @@ const ProfileModal = ({ show, onClose }) => {
                 <p className="text-muted">
                   If you delete your account, <strong>all your data</strong> will be permanently removed.
                 </p>
+                
+                {deleteError && (
+                  <Alert variant="danger" className="mt-3 mb-0">
+                    {deleteError}
+                  </Alert>
+                )}
+                
                 <div className="d-flex justify-content-center gap-3 mt-4">
-                  <button className="btn btn-outline-secondary px-4" onClick={() => setShowDeleteAlert(false)}>Cancel</button>
-                  <button className="btn btn-danger px-4 fw-semibold" onClick={handleDeleteConfirm}>Yes, Delete Anyway</button>
+                  <button 
+                    className="btn btn-outline-secondary px-4" 
+                    onClick={() => {
+                      setShowDeleteAlert(false);
+                      setDeleteError(null);
+                    }}
+                    disabled={deleting}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="btn btn-danger px-4 fw-semibold d-flex align-items-center gap-2" 
+                    onClick={handleDeleteConfirm}
+                    disabled={deleting}
+                  >
+                    {deleting ? (
+                      <>
+                        <Spinner animation="border" size="sm" />
+                        Deleting...
+                      </>
+                    ) : (
+                      "Yes, Delete Anyway"
+                    )}
+                  </button>
                 </div>
               </div>
             ) : (
