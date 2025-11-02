@@ -12,24 +12,72 @@ body {
 
 /* Enhanced Navbar */
 .navbar {
-  background-color: var(--color-nav-bg) !important;
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, var(--color-nav-bg) 0%, rgba(40, 167, 69, 0.95) 100%) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .navbar-brand {
-  color: var(--color-text) !important;
+  color: #ffffff !important;
   font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
 }
 
 .navbar-nav .nav-link {
-  color: var(--color-text) !important;
-  transition: color 0.3s ease;
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  margin: 0 0.25rem;
 }
 
-.navbar-nav .nav-link:hover {
-  color: var(--color-link-hover) !important;
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
+
+.navbar-toggler {
+  border: none !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Responsive navbar improvements */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: rgba(40, 167, 69, 0.98);
+    border-radius: 12px;
+    margin-top: 1rem;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .navbar-nav .nav-link {
+    margin: 0.25rem 0;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* Enhanced Cards - Health App Style */

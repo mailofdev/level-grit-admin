@@ -11,14 +11,13 @@ const urlsToCache = [
 
 // ✅ Install event - pre-cache core assets
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[ServiceWorker] Caching app shell');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache).catch((err) => {
+          // Silently handle cache errors
+        });
       })
-      .catch((err) => console.error('Cache addAll error:', err))
   );
   // Skip waiting to activate immediately
   self.skipWaiting();
@@ -26,13 +25,11 @@ self.addEventListener('install', (event) => {
 
 // ✅ Activate event - remove old caches
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('[ServiceWorker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })

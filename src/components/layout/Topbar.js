@@ -55,25 +55,39 @@ const Topbar = ({
   return (
     <nav
       ref={navRef}
-      className="navbar navbar-expand-lg navbar-dark px-2 px-md-3 shadow-sm sticky-top fixed-top"
-      style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top))', minHeight: '56px' }}
+      className="navbar navbar-expand-lg navbar-dark px-3 px-md-4 shadow-sm sticky-top fixed-top"
+      style={{ 
+        paddingTop: 'calc(0.5rem + env(safe-area-inset-top))', 
+        minHeight: '56px',
+        background: 'linear-gradient(135deg, var(--color-nav-bg) 0%, rgba(40, 167, 69, 0.95) 100%)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        zIndex: 1030
+      }}
     >
-      <div className="container-fluid">
-        {/* Left: Back (mobile) + Logo */}
-        <div className="d-flex align-items-center gap-2">
-          {!isHome && (
-            <></>
-          )}
+      <div className="container-fluid px-2 px-md-3">
+        {/* Left: Logo */}
+        <div className="d-flex align-items-center">
           <BrandLogo />
         </div>
 
         {/* Hamburger toggle */}
         <button
-          className="navbar-toggler ms-auto bg-transparent border-0"
+          className="navbar-toggler ms-auto border-0"
           type="button"
           onClick={() => setNavbarOpen(!navbarOpen)}
           aria-label="Toggle navigation"
-          style={{ minWidth: '44px', minHeight: '44px', padding: '8px' }}
+          aria-expanded={navbarOpen}
+          style={{ 
+            minWidth: '44px', 
+            minHeight: '44px', 
+            padding: '8px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+          onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
