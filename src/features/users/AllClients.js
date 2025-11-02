@@ -75,10 +75,11 @@ export default function AllClients() {
             </div>
 
             <button
-              className="btn btn-primary px-4 py-2 fw-semibold rounded-pill hover-scale shadow-sm"
+              className="btn btn-primary px-3 px-md-4 py-2 fw-semibold rounded-pill hover-scale shadow-sm d-flex align-items-center justify-content-center gap-2"
               onClick={handleAddClient}
+              style={{ minHeight: '44px' }}
             >
-              + Add Client
+              <span>+</span> <span>Add Client</span>
             </button>
           </div>
 
@@ -206,29 +207,33 @@ export default function AllClients() {
             }}
           >
             <button
-              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all ${
+              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all d-flex align-items-center justify-content-center ${
                 currentPage === 1
                   ? "btn-outline-secondary disabled opacity-75"
                   : "btn-primary shadow-sm"
               }`}
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
+              style={{ minHeight: '44px', minWidth: '44px' }}
+              aria-label="Previous page"
             >
               ← 
             </button>
 
-            <span className="fw-semibold small px-4 py-2 bg-white border rounded-pill shadow-sm text-secondary">
+            <span className="fw-semibold small px-3 px-sm-4 py-2 bg-white border rounded-pill shadow-sm text-secondary d-flex align-items-center" style={{ minHeight: '44px' }}>
               Page {currentPage} of {totalPages}
             </span>
 
             <button
-              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all ${
+              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all d-flex align-items-center justify-content-center ${
                 currentPage === totalPages
                   ? "btn-outline-secondary disabled opacity-75"
                   : "btn-primary shadow-sm"
               }`}
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
+              style={{ minHeight: '44px', minWidth: '44px' }}
+              aria-label="Next page"
             >
                →
             </button>

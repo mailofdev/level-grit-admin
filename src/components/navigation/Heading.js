@@ -13,23 +13,31 @@ export default function Heading({
 
   return (
     <div
-      className={`d-flex align-items-center p-3 my-2 rounded bg-light-blue shadow-sm position-relative ${
+      className={`d-flex align-items-center p-2 p-md-3 my-2 rounded shadow-sm position-relative ${
         sticky ? "sticky-top" : ""
       }`}
-      style={{zIndex:10, background: "linear-gradient(135deg, #e8f5e9, #c8e6c9)"}} 
+      style={{
+        zIndex: 10, 
+        background: "linear-gradient(135deg, rgba(232, 245, 233, 0.95), rgba(200, 230, 201, 0.95))",
+        backdropFilter: 'blur(10px)',
+        minHeight: '56px'
+      }} 
     >
       {/* Left: Back Button */}
       {showBackButton && (
         <div className="d-flex align-items-center">
           <button
-            className="btn btn-light btn-sm rounded-circle shadow-sm"
+            className="btn btn-light rounded-circle shadow-sm border-0"
             onClick={onBack || handleDefaultBack}
+            aria-label="Go back"
             style={{
-              width: "38px",
-              height: "38px",
+              width: "44px",
+              height: "44px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              minWidth: "44px",
+              minHeight: "44px",
             }}
           >
             <FaArrowLeft />
@@ -38,8 +46,8 @@ export default function Heading({
       )}
 
       {/* Center: Title */}
-      <div className="position-absolute start-50 translate-middle-x text-center">
-        <h5 className="mb-0 fw-bold text-truncate">{pageName}</h5>
+      <div className="position-absolute start-50 translate-middle-x text-center w-50 px-2">
+        <h5 className="mb-0 fw-bold text-truncate fs-6 fs-md-5">{pageName}</h5>
       </div>
 
       {/* Right: Dynamic Buttons or JSX */}
@@ -53,17 +61,19 @@ export default function Heading({
               >
                 <span>
                   <button
-                    className={`btn btn-sm ${btn.variant || "btn-primary"}`}
+                    className={`btn ${btn.size || 'btn-sm'} ${btn.variant || "btn-primary"} rounded-pill fw-semibold`}
                     onClick={btn.onClick}
                     disabled={btn.disabled}
                     style={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      minHeight: '44px',
+                      gap: '0.5rem'
                     }}
                   >
-                    {btn.icon && <span className="me-1">{btn.icon}</span>}
-                    {btn.label}
+                    {btn.icon && <span>{btn.icon}</span>}
+                    {btn.label && <span className="d-none d-sm-inline">{btn.label}</span>}
                   </button>
                 </span>
               </OverlayTrigger>
