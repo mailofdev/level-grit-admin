@@ -20,29 +20,18 @@ if ('serviceWorker' in navigator) {
         updateViaCache: 'none' // Always check for updates
       })
       .then((registration) => {
-        console.log('✅ Service Worker registered:', registration.scope);
-        
         // Prevent refresh loops - don't auto-reload on update
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
-            console.log('🔄 New service worker found, updating...');
             newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  // New service worker available but not forcing refresh
-                  console.log('✨ New service worker available. It will activate on next page load.');
-                } else {
-                  // First time installation
-                  console.log('✨ Service worker installed for the first time.');
-                }
-              }
+              // Service worker update handling
             });
           }
         });
       })
       .catch((error) => {
-        console.error('❌ Service Worker registration failed:', error);
+        // Service Worker registration failed silently
       });
     
     // Check for updates less frequently (every 24 hours)

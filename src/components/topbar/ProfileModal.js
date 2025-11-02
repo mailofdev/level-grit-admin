@@ -48,7 +48,7 @@ const ProfileModal = ({ show, onClose }) => {
         setFormData(fields);
         setInitialData(fields);
       } catch (err) {
-        console.error("Error fetching profile:", err);
+        // Error fetching profile
       } finally {
         setLoading(false);
       }
@@ -102,7 +102,7 @@ const ProfileModal = ({ show, onClose }) => {
 
         setIsEditing(false);
       } catch (err) {
-        console.error("Error updating profile:", err);
+        // Error updating profile
       } finally {
         setUpdating(false);
       }
@@ -118,7 +118,7 @@ const ProfileModal = ({ show, onClose }) => {
   };
 
   const handleDeleteConfirm = () => {
-    console.log("Delete Account API will be called here");
+    // Delete Account API call
     setShowDeleteAlert(false);
   };
 

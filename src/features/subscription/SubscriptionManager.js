@@ -88,14 +88,14 @@ const SubscriptionManager = () => {
   ];
 
   const handleUpgrade = (planName) => {
-    console.log('Upgrade to:', planName);
+    // Upgrade to plan
     setShowUpgradeModal(false);
     setShowPaymentModal(true);
   };
 
   const handlePayment = () => {
     // Process payment logic here
-    console.log('Processing payment...');
+    // Processing payment
     setShowPaymentModal(false);
     // Update subscription status
   };

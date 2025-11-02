@@ -86,7 +86,7 @@ export default function AdjustPlan() {
       setMeals(data?.meals?.length > 0 ? data.meals : [{ ...emptyMeal }]);
       setHasUnsavedChanges(false);
     } catch (err) {
-      console.error("Fetch error:", err);
+      // Error fetching meal plan
       showToast("error", "Error", err || "Failed to fetch meal plan.");
       setMeals([{ ...emptyMeal }]);
     } finally {
@@ -152,7 +152,7 @@ export default function AdjustPlan() {
         showToast("success", "Deleted", "Meal deleted successfully.");
         setHasUnsavedChanges(false);
       } catch (err) {
-        console.error("Delete error:", err);
+        // Error deleting meals
         showToast("error", "Delete Failed", err || "Failed to delete meal.");
       } finally {
         setIsDeleting(false);
@@ -220,7 +220,7 @@ export default function AdjustPlan() {
       setHasUnsavedChanges(false);
       await fetchMealPlan();
     } catch (err) {
-      console.error("Save error:", err);
+      // Error saving meal plan
       showToast("error", "Save Failed", err || "Failed to save meal plan.");
     } finally {
       setIsSaving(false);

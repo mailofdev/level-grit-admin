@@ -288,7 +288,7 @@ export default function ClientDetails() {
       setIsGenerating(false);
       return blob;
     } catch (error) {
-      console.error('Error generating image:', error);
+      // Error generating image
       setIsGenerating(false);
       toast.current?.show({
         severity: 'error',
@@ -316,7 +316,7 @@ export default function ClientDetails() {
         });
       } catch (error) {
         if (error.name !== 'AbortError') {
-          console.error('Share failed:', error);
+          // Share failed
         }
       }
     } else if (platform === 'whatsapp') {

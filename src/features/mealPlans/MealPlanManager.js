@@ -86,7 +86,7 @@ const MealPlanManager = () => {
 
   const handleEditPlan = (plan) => {
     // Navigate to edit mode or open edit modal
-    console.log('Edit plan:', plan);
+    // Edit meal plan
   };
 
   const handleDeletePlan = (planId) => {

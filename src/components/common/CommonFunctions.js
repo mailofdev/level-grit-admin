@@ -50,7 +50,7 @@ export const getDecryptedUser = () => {
     const parsed = JSON.parse(decrypted);
     return parsed?.userInfo || null;
   } catch (error) {
-    console.error("Failed to decrypt auth_data:", error);
+    // Failed to decrypt auth_data
     return null;
   }
 };

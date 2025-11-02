@@ -12,18 +12,11 @@ import {
   FaClipboardList,
   FaWeight,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { getDecryptedUser } from "../../components/common/CommonFunctions";
-import RazorpayPayment from "../payments/RazorpayPayment";
 import AnimatedCard from "../../components/common/AnimatedCard";
-import AnimatedButton from "../../components/common/AnimatedButton";
-import FadeIn from "../../components/common/FadeIn";
 import StaggerContainer from "../../components/common/StaggerContainer";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-const user = getDecryptedUser();
-console.log("Authenticated User:", user?.role);
 
   const handleAddClient = () => {
     navigate("/register-client");
@@ -96,7 +89,6 @@ console.log("Authenticated User:", user?.role);
           </StaggerContainer.Item>
         ))}
       </StaggerContainer>
-      </div>
 
       {/* Main Section */}
       <div className="row g-2 g-md-3">
@@ -127,10 +119,10 @@ console.log("Authenticated User:", user?.role);
                 </li>
               </ul>
             </div>
-          </div>
+          </AnimatedCard>
 
           {/* Quick Actions */}
-          <div className="card border-0 shadow-sm text-center hover-shadow theme-transition">
+          <AnimatedCard delay={0.3} className="text-center">
             <div className="card-body p-3 p-md-4">
               <h5 className="card-title mb-3 mb-md-4 fw-bold fs-5">
                 ⚡ Quick Actions
@@ -151,12 +143,12 @@ console.log("Authenticated User:", user?.role);
                 </button>
               </div>
             </div>
-          </div>
+          </AnimatedCard>
         </div>
 
         {/* Right Side: Client Summary + Progress */}
         <div className="col-lg-8">
-          <div className="card border-0 shadow-sm mb-2 mb-md-3 hover-shadow theme-transition">
+          <AnimatedCard delay={0.4} className="mb-2 mb-md-3">
             <div className="card-body p-3 p-md-4">
               <h5 className="card-title mb-3 mb-md-4 fw-bold fs-5 d-flex align-items-center gap-2">
                 <span>👥</span> Recent Clients
@@ -216,10 +208,10 @@ console.log("Authenticated User:", user?.role);
                 </button>
               </div>
             </div>
-          </div>
+          </AnimatedCard>
 
           {/* Performance Section */}
-          <div className="card border-0 shadow-sm hover-shadow theme-transition">
+          <AnimatedCard delay={0.5}>
             <div className="card-body p-3 p-md-4">
               <h5 className="card-title mb-3 mb-md-4 fw-bold fs-5 d-flex align-items-center gap-2">
                 <FaChartLine className="text-info fs-5" />
@@ -249,7 +241,7 @@ console.log("Authenticated User:", user?.role);
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedCard>
         </div>
       </div> 
     </div>

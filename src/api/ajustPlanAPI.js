@@ -14,7 +14,7 @@ export const getMealPlan = async (clientId, date) => {
     });
     return data;
   } catch (error) {
-    console.error("getMealPlan error:", error);
+    // Error fetching meal plan
     throw error;
   }
 };
@@ -32,7 +32,7 @@ export const getMealPlanPreview = async (clientId, date) => {
     });
     return data;
   } catch (error) {
-    console.error("getMealPlanPreview error:", error);
+    // Error fetching meal plan preview
     throw error;
   }
 };
@@ -72,7 +72,7 @@ export const createOrUpdateMealPlan = async (clientId, date, meals) => {
     );
     return data;
   } catch (error) {
-    console.error("createOrUpdateMealPlan error:", error);
+    // Error creating/updating meal plan
     throw error;
   }
 };

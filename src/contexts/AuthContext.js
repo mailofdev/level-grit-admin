@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
         return !!token;
       }
     } catch (err) {
-      console.error("Error reading access token:", err);
+      // Error reading access token
     }
     return false;
   };

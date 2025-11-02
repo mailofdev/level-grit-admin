@@ -24,7 +24,7 @@ export default function AllClients() {
         const data = await GetClientsForTrainer();
         setClients(data);
       } catch (error) {
-        console.error("❌ Error fetching clients:", error);
+        // Error fetching clients
       } finally {
         setLoading(false);
       }

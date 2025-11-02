@@ -60,7 +60,7 @@ const generateProgressImage = async () => {
     setIsGenerating(false);
     return blob;
   } catch (error) {
-    console.error("Error generating image:", error);
+    // Error generating image
     setIsGenerating(false);
     return null;
   }
@@ -94,7 +94,7 @@ const generateProgressImage = async () => {
           files: [file],
         });
       } catch {
-        console.log('Share cancelled.');
+        // Share cancelled
       }
     } 
     
