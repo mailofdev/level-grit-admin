@@ -380,8 +380,9 @@ a:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px 12px max(8px, env(safe-area-inset-bottom));
   z-index: 1030;
+  background: transparent;
 }
 
 .mobile-bottom-nav__container {
@@ -389,45 +390,80 @@ a:hover {
   max-width: 640px;
   background: var(--card-glass);
   border: 1px solid var(--card-border);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
 }
 
 .mobile-bottom-nav__list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin: 0;
-  padding: 8px;
+  padding: 8px 4px;
   list-style: none;
+  gap: 4px;
 }
 
-.mobile-bottom-nav__item { text-align: center; }
+.mobile-bottom-nav__item { 
+  text-align: center; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .mobile-bottom-nav__link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  justify-content: center;
+  gap: 4px;
   color: var(--color-muted);
   text-decoration: none;
-  font-size: 0.75rem;
-  padding: 8px 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 10px 8px;
   border-radius: 12px;
   position: relative;
+  min-height: 60px;
+  width: 100%;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-bottom-nav__link i { font-size: 1.1rem; }
+.mobile-bottom-nav__link i { 
+  font-size: 1.25rem;
+  margin-bottom: 2px;
+}
+
+.mobile-bottom-nav__link .label {
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.mobile-bottom-nav__link:active {
+  transform: scale(0.95);
+  background: rgba(0,0,0,0.05);
+}
 
 .mobile-bottom-nav__link.active {
   color: var(--color-primary);
-  background: rgba(40, 167, 69, 0.08);
+  background: rgba(40, 167, 69, 0.12);
+}
+
+.mobile-bottom-nav__link.active i {
+  transform: scale(1.1);
 }
 
 .mobile-bottom-nav__link .active-indicator {
   position: absolute;
-  bottom: 4px;
-  width: 22px;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-success));
@@ -466,7 +502,25 @@ a:hover {
   body { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
 }
 
-button, .btn, .nav-link, .dropdown-item { min-height: 44px; }
+/* Touch-friendly targets - minimum 44px for accessibility */
+button, .btn, .nav-link, .dropdown-item, 
+a.btn, input[type="button"], input[type="submit"] { 
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Ensure form inputs are touch-friendly on mobile */
+@media (max-width: 768px) {
+  .form-control, .form-select, textarea.form-control {
+    min-height: 44px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
 
 /* =========================================
    Topbar Back Button

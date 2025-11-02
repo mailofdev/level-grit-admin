@@ -32,20 +32,16 @@ console.log("Authenticated User:", user?.role);
   ];
 
   return (
-    <div className="container-fluid py-4 theme-transition">
+    <div className="container-fluid py-3 py-md-4 theme-transition">
       {/* Header */}
-        {/* <div>
-      <h2>Level Grit Payment</h2>
-      <RazorpayPayment />
-    </div> */}
-      <div className="text-center mb-4">
-        <div className="card border-0 shadow-sm mb-4">
-          <div className="card-body py-4">
-            <h2 className="fw-bold d-flex justify-content-center align-items-center gap-2 mb-2">
+      <div className="text-center mb-3 mb-md-4">
+        <div className="card border-0 shadow-sm mb-3 mb-md-4">
+          <div className="card-body py-3 py-md-4 px-3 px-md-4">
+            <h2 className="fw-bold d-flex justify-content-center align-items-center gap-2 mb-2 fs-4 fs-md-3">
               <FaDumbbell className="text-primary" />
-              Trainer Dashboard
+              <span className="text-wrap">Trainer Dashboard</span>
             </h2>
-            <p className="text-muted mb-0">
+            <p className="text-muted mb-0 small small-md-base">
               Stay in control of your clients' fitness progress and performance
             </p>
           </div>
@@ -53,7 +49,7 @@ console.log("Authenticated User:", user?.role);
       </div>
 
       {/* Stats Overview */}
-      <div className="row g-3 mb-4">
+      <div className="row g-2 g-md-3 mb-3 mb-md-4">
         {[
           {
             title: "Total Clients",

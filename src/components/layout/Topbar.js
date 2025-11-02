@@ -55,20 +55,13 @@ const Topbar = ({
   return (
     <nav
       ref={navRef}
-      className="navbar navbar-expand-lg navbar-dark px-3 shadow-sm sticky-top fixed-top"
+      className="navbar navbar-expand-lg navbar-dark px-2 px-md-3 shadow-sm sticky-top fixed-top"
+      style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top))', minHeight: '56px' }}
     >
       <div className="container-fluid">
         {/* Left: Back (mobile) + Logo */}
         <div className="d-flex align-items-center gap-2">
           {!isHome && (
-            // <button
-            //   type="button"
-            //   aria-label="Back"
-            //   className="back-btn d-lg-none"
-            //   onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(homeHref))}
-            // >
-            //   <i className="bi bi-arrow-left"></i>
-            // </button>
             <></>
           )}
           <BrandLogo />
@@ -76,18 +69,20 @@ const Topbar = ({
 
         {/* Hamburger toggle */}
         <button
-          className="navbar-toggler ms-auto bg-dark"
+          className="navbar-toggler ms-auto bg-transparent border-0"
           type="button"
           onClick={() => setNavbarOpen(!navbarOpen)}
+          aria-label="Toggle navigation"
+          style={{ minWidth: '44px', minHeight: '44px', padding: '8px' }}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
         {/* Collapsible content */}
         <div className={`collapse navbar-collapse ${navbarOpen ? "show" : ""}`}>
-          <div className="d-flex w-100 flex-column flex-lg-row align-items-center justify-content-between">
+          <div className="d-flex w-100 flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between mt-3 mt-lg-0 gap-3 gap-lg-0">
             {showNavMenu && (
-              <div className="mx-auto">
+              <div className="w-100 w-lg-auto mx-auto mx-lg-0">
                 <NavMenu
                   navbarOpen={navbarOpen}
                   setNavbarOpen={setNavbarOpen}
@@ -97,7 +92,7 @@ const Topbar = ({
               </div>
             )}
 
-            <div className="d-flex flex-column flex-lg-row align-items-center gap-3">
+            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-100 w-lg-auto">
               {showSearch && <SearchBar />}
               {showThemeToggle && <ThemeSwitch enableThemeAlert />}
               {showUserMenu && (

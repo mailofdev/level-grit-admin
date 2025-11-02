@@ -55,7 +55,7 @@ navigate('/')
   };
 
   return (
-    <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter">
+    <div className="page-container d-flex justify-content-center align-items-center position-relative auth-page-enter px-3 px-md-4" style={{ paddingTop: 'calc(2rem + env(safe-area-inset-top))', paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))' }}>
       {isLoading && (
         <Loader
           fullScreen={true}
@@ -66,31 +66,29 @@ navigate('/')
 
       {/* Enhanced Login Card */}
       <div
-        className="card content-wrapper card-health p-5"
-        style={{ maxWidth: "450px", width: "100%" }}
+        className="card content-wrapper card-health p-3 p-md-4 p-lg-5 w-100"
+        style={{ maxWidth: "450px" }}
       >
           <Heading pageName="Sign in" onBack={handleBack} />
-        <div className="text-center my-4">
+        <div className="text-center my-3 my-md-4">
           <div className="position-relative d-inline-block">
             <img
               src={logo}
               alt="Health App Logo"
               className="rounded-circle border border-3 shadow-sm hover-scale"
               style={{
-                height: "100px",
-                width: "100px",
+                height: "80px",
+                width: "80px",
                 borderColor: "var(--color-primary)",
                 objectFit: "cover",
               }}
             />
-            <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
+            <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse d-none d-md-block"></div>
           </div>
-          {/* <h3 className="fw-bold text-primary mt-3 mb-1">Welcome Back</h3>
-          <p className="text-muted small">Sign in to your health journey</p> */}
         </div>
 
         {errorMessage && (
-          <div className="alert alert-danger text-center py-3 mb-4 smooth-transition">
+          <div className="alert alert-danger text-center py-2 py-md-3 mb-3 mb-md-4 smooth-transition" role="alert">
             <i className="fas fa-exclamation-triangle me-2"></i>
             {errorMessage}
           </div>
@@ -98,23 +96,25 @@ navigate('/')
 
         <form onSubmit={handleSubmit} className="needs-validation">
           {/* Email Field */}
-          <div className="mb-2">
-            <label className="form-label fw-semibold">
+          <div className="mb-3 mb-md-4">
+            <label className="form-label fw-semibold mb-2">
               <i className="fas fa-envelope text-primary me-2"></i>Email Address
             </label>
             <input
               type="email"
-              className="form-control .form-control smooth-transition"
+              className="form-control smooth-transition"
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
+              inputMode="email"
             />
           </div>
 
           {/* Password Field */}
-          <div className="mb-2">
-            <label className="form-label fw-semibold">
+          <div className="mb-3 mb-md-4">
+            <label className="form-label fw-semibold mb-2">
               <i className="fas fa-lock text-primary me-2"></i>Password
             </label>
 
@@ -126,14 +126,16 @@ navigate('/')
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="form-control w-100 pe-5"
-                style={{ paddingRight: "40px" }} // ensure text doesn't overlap icon
+                style={{ paddingRight: "50px" }}
+                autoComplete="current-password"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
-                style={{ right: "10px" }} // 👈 ensures button stays inside right end
+                style={{ right: "12px", minWidth: '44px', minHeight: '44px' }}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
               </button>
@@ -142,14 +144,16 @@ navigate('/')
 
           <button
             type="submit"
-            className="btn btn-primary btn w-100 mt-3 smooth-transition"
+            className="btn btn-primary w-100 mt-3 mt-md-4 smooth-transition"
             disabled={isLoading}
+            style={{ minHeight: '48px' }}
           >
             {isLoading ? (
               <>
                 <span
                   className="spinner-border spinner-border-sm me-2"
                   role="status"
+                  aria-hidden="true"
                 ></span>
                 Signing In...
               </>
@@ -163,13 +167,13 @@ navigate('/')
         </form>
 
         {/* Links */}
-        <div className="text-center mt-4">
-          <p className="text-muted mb-2">
+        <div className="text-center mt-4 mt-md-5">
+          <p className="text-muted mb-2 mb-md-3 small">
             Don't have an account?{" "}
             <Link
               to="/register"
               className="text-decoration-none fw-bold smooth-transition"
-              style={{ color: "var(--color-primary)" }}
+              style={{ color: "var(--color-primary)", minHeight: '44px', display: 'inline-flex', alignItems: 'center' }}
             >
               Create Account
             </Link>
@@ -177,10 +181,10 @@ navigate('/')
           <p className="mb-0">
             <Link
               to="/reset-password"
-              className="text-decoration-none fw-semibold smooth-transition"
-              style={{ color: "var(--color-link)" }}
+              className="text-decoration-none fw-semibold smooth-transition d-inline-flex align-items-center justify-content-center"
+              style={{ color: "var(--color-link)", minHeight: '44px' }}
             >
-              <i className="fas fa-key me-1"></i>
+              <i className="fas fa-key me-2"></i>
               Forgot your password?
             </Link>
           </p>

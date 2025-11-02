@@ -29,24 +29,18 @@ const MainLayout = ({ children, config }) => {
           showUserMenu={true} 
           showThemeToggle={false} 
           showIcons={true} 
-          // user={
-          //   user ? { 
-          //   // name: user.name, 
-          //   // email: user.email,
-          //   avatar: "https://i.pravatar.cc/30" 
-          // } : { name: "User", avatar: "https://i.pravatar.cc/30" }}
           onLogout={handleLogout}
           onProfile={handleProfile}
         />
       )}
-      <div className="container-fluid flex-grow-1 pt-lg-4 pb-5 pb-lg-0">
-        <div className="row g-0">
+      <div className="container-fluid flex-grow-1 pt-3 pt-md-4 pt-lg-4 pb-5 pb-md-5 pb-lg-0" style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}>
+        <div className="row g-0 g-lg-3">
           {cfg.showSidebar && (
             <div className="d-none d-lg-block col-lg-2 col-xl-2">
               <Sidebar showIcons={true} />
             </div>
           )}
-          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-2 px-md-4" : "col-12 px-md-4"}>
+          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-3 px-md-4 px-lg-4" : "col-12 px-3 px-md-4 px-lg-4"}>
             {children}
           </main>
         </div>
