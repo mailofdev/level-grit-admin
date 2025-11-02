@@ -20,6 +20,7 @@ self.addEventListener('install', (event) => {
       })
       .catch((err) => console.error('Cache addAll error:', err))
   );
+  // Skip waiting to activate immediately
   self.skipWaiting();
 });
 
@@ -38,46 +39,56 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
+  // Don't call clients.claim() to prevent refresh loops
+  // Service worker will take control on next page navigation
 });
 
-// ✅ Fetch event - network fallback strategy
+// ✅ Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   // Only handle same-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
+  // Skip service worker and chrome-extension requests
+  if (
+    event.request.url.includes('/service-worker.js') ||
+    event.request.url.includes('chrome-extension://')
+  ) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          // Serve from cache
-          return response;
-        }
-
-        // Otherwise fetch from network and cache it
-        return fetch(event.request)
-          .then((networkResponse) => {
-            if (
-              !networkResponse ||
-              networkResponse.status !== 200 ||
-              networkResponse.type !== 'basic'
-            ) {
-              return networkResponse;
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If network request succeeds, clone and cache it
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            // Only cache same-origin responses
+            if (networkResponse.type === 'basic') {
+              cache.put(event.request, responseToCache).catch(() => {
+                // Ignore cache errors
+              });
             }
-
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-
-            return networkResponse;
-          })
-          .catch((error) => {
-            console.error('Fetch failed:', error);
-            // Optional: Return a custom offline fallback page
           });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Network failed, try cache
+        return caches.match(event.request).then((cachedResponse) => {
+          // For navigation requests, always return index.html if cache misses
+          if (event.request.mode === 'navigate' && !cachedResponse) {
+            return caches.match('/index.html');
+          }
+          return cachedResponse;
+        });
       })
   );
 });

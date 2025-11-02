@@ -16,33 +16,46 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/service-worker.js')
+      .register('/service-worker.js', {
+        updateViaCache: 'none' // Always check for updates
+      })
       .then((registration) => {
         console.log('✅ Service Worker registered:', registration.scope);
         
-        // Check for updates periodically
+        // Prevent refresh loops - don't auto-reload on update
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
-          console.log('🔄 New service worker found, updating...');
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('✨ New service worker available. Refresh to update.');
-            }
-          });
+          if (newWorker) {
+            console.log('🔄 New service worker found, updating...');
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed') {
+                if (navigator.serviceWorker.controller) {
+                  // New service worker available but not forcing refresh
+                  console.log('✨ New service worker available. It will activate on next page load.');
+                } else {
+                  // First time installation
+                  console.log('✨ Service worker installed for the first time.');
+                }
+              }
+            });
+          }
         });
       })
       .catch((error) => {
         console.error('❌ Service Worker registration failed:', error);
       });
     
-    // Check for updates every hour
-    setInterval(() => {
-      navigator.serviceWorker.getRegistration().then((registration) => {
-        if (registration) {
-          registration.update();
-        }
-      });
-    }, 60 * 60 * 1000);
+    // Check for updates less frequently (every 24 hours)
+    // Only in production to avoid refresh loops in development
+    if (process.env.NODE_ENV === 'production') {
+      setInterval(() => {
+        navigator.serviceWorker.getRegistration().then((registration) => {
+          if (registration) {
+            registration.update();
+          }
+        });
+      }, 24 * 60 * 60 * 1000); // 24 hours
+    }
   });
 }
 
