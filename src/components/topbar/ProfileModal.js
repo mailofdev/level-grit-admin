@@ -128,8 +128,17 @@ const ProfileModal = ({ show, onClose }) => {
       setDeleting(true);
       setDeleteError(null);
       
-      // Call delete trainer API
-      await dispatch(deleteTrainerThunk()).unwrap();
+      // Get userId from user object (try multiple possible field names)
+      const userId = user?.userId || user?.id || user?._id;
+      
+      if (!userId) {
+        setDeleteError("User ID not found. Please try logging out and logging back in.");
+        setDeleting(false);
+        return;
+      }
+      
+      // Call delete trainer API with userId
+      await dispatch(deleteTrainerThunk(userId)).unwrap();
       
       // On successful deletion, logout and redirect
       dispatch(logout());

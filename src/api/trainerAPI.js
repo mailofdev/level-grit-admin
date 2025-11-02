@@ -13,9 +13,12 @@ export const getTrainerDashboard = async () => {
 /**
  * Delete Trainer Account
  * API Path: api/Trainer/Delete-trainer
+ * @param {string|number} userId - The user ID to delete
  */
-export const deleteTrainer = async () => {
-  const { data } = await axiosInstance.delete("api/Trainer/Delete-trainer");
+export const deleteTrainer = async (userId) => {
+  const { data } = await axiosInstance.delete("api/Trainer/Delete-trainer", {
+    data: { userId }, // Pass userId in request body
+  });
   return data;
 };
 

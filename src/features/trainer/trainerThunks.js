@@ -23,12 +23,16 @@ export const getTrainerDashboardThunk = createAsyncThunk(
 
 /**
  * Delete Trainer Account
+ * @param {string|number} userId - The user ID to delete
  */
 export const deleteTrainerThunk = createAsyncThunk(
   "trainer/deleteTrainer",
-  async (_, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const data = await deleteTrainer();
+      if (!userId) {
+        return rejectWithValue("User ID is required");
+      }
+      const data = await deleteTrainer(userId);
       return data;
     } catch (error) {
       return rejectWithValue(
