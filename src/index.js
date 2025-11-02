@@ -15,15 +15,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker
+      .register('/service-worker.js')
       .then((registration) => {
-        console.log('SW registered:', registration);
+        console.log('Service Worker registered:', registration.scope);
       })
       .catch((error) => {
-        console.log('SW registration failed:', error);
+        console.error('Service Worker registration failed:', error);
       });
   });
 }
+
 
 root.render(
   <React.StrictMode>

@@ -1,28 +1,48 @@
-const CACHE_NAME = 'my-pwa-cache-v1';
+const CACHE_NAME = 'levelgrit-pwa-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/css/main.css',
-  '/static/js/main.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/favicon.ico',
+  '/logo192.png',
+  '/logo512.png'
 ];
 
-// Install event - cache static assets
+// ✅ Install event - pre-cache core assets
 self.addEventListener('install', (event) => {
+  console.log('[ServiceWorker] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(urlsToCache).catch((err) => {
-          console.log('Cache addAll error:', err);
-        });
+        console.log('[ServiceWorker] Caching app shell');
+        return cache.addAll(urlsToCache);
       })
+      .catch((err) => console.error('Cache addAll error:', err))
   );
-  self.skipWaiting(); // Activate immediately
+  self.skipWaiting();
 });
 
-// Fetch event - serve from cache, fallback to network
+// ✅ Activate event - remove old caches
+self.addEventListener('activate', (event) => {
+  console.log('[ServiceWorker] Activating...');
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[ServiceWorker] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+// ✅ Fetch event - network fallback strategy
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests (like Google Analytics, GTM, etc.)
+  // Only handle same-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
@@ -30,28 +50,33 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request).catch((error) => {
-          console.log('Fetch failed:', error);
-          // You can return a custom offline page here
-          throw error;
-        });
+        if (response) {
+          // Serve from cache
+          return response;
+        }
+
+        // Otherwise fetch from network and cache it
+        return fetch(event.request)
+          .then((networkResponse) => {
+            if (
+              !networkResponse ||
+              networkResponse.status !== 200 ||
+              networkResponse.type !== 'basic'
+            ) {
+              return networkResponse;
+            }
+
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+
+            return networkResponse;
+          })
+          .catch((error) => {
+            console.error('Fetch failed:', error);
+            // Optional: Return a custom offline fallback page
+          });
       })
   );
-});
-
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  return self.clients.claim();
 });
