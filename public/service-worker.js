@@ -4,8 +4,9 @@ const urlsToCache = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
-  '/logo192.png',
-  '/logo512.png'
+  '/192.png',
+  '/512.png',
+  '/180.png'
 ];
 
 // ✅ Install event - pre-cache core assets

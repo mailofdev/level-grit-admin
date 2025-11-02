@@ -18,11 +18,31 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker
       .register('/service-worker.js')
       .then((registration) => {
-        console.log('Service Worker registered:', registration.scope);
+        console.log('✅ Service Worker registered:', registration.scope);
+        
+        // Check for updates periodically
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 New service worker found, updating...');
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('✨ New service worker available. Refresh to update.');
+            }
+          });
+        });
       })
       .catch((error) => {
-        console.error('Service Worker registration failed:', error);
+        console.error('❌ Service Worker registration failed:', error);
       });
+    
+    // Check for updates every hour
+    setInterval(() => {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (registration) {
+          registration.update();
+        }
+      });
+    }, 60 * 60 * 1000);
   });
 }
 

@@ -25,6 +25,8 @@ import { MealPlanManager } from "./features/mealPlans";
 import { ClientMessaging } from "./features/messaging";
 import { ProgressTracker } from "./features/progress";
 import { SubscriptionManager } from "./features/subscription";
+import InstallPrompt from "./InstallPrompt";
+
 function ProtectedLayout({ children, config }) {
   return (
     <ProtectedRoute>
@@ -144,6 +146,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
+        <InstallPrompt />
       </Router>
     </ThemeProvider>
   );
