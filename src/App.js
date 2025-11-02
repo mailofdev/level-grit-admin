@@ -27,6 +27,9 @@ const TermsAndConditions = lazy(() => import("./features/static/TermsAndConditio
 const PrivacyPolicy = lazy(() => import("./features/static/PrivacyPolicy"));
 const ContactUs = lazy(() => import("./features/static/ContactUs"));
 const CancellationPolicy = lazy(() => import("./features/static/CancellationPolicy"));
+const AboutUs = lazy(() => import("./features/static/AboutUs"));
+const Services = lazy(() => import("./features/static/Services"));
+const Testimonials = lazy(() => import("./features/static/Testimonials"));
 const TrainerDashboard = lazy(() => import("./features/trainer/TrainerDashboard"));
 const MealPlanManager = lazy(() => import("./features/mealPlans/MealPlanManager"));
 const ClientMessaging = lazy(() => import("./features/messaging/ClientMessaging"));
@@ -75,6 +78,9 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/testimonials" element={<Testimonials />} />
 
 
           {/* Protected routes */}

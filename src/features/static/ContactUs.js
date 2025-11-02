@@ -38,14 +38,12 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="container py-3">
-      <Heading pageName="Contact Us" />
-      <div
-        className="d-flex flex-column"
-        style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}
-      >
-        <div className="flex-grow-1 overflow-auto">
-          <Row className="justify-content-center">
+    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: '#ffffff' }}>
+      <Heading pageName="Contact Us" showBackButton={true} />
+      <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+        <div className="flex-grow-1 overflow-auto pb-3">
+          <div className="container py-5">
+            <Row className="justify-content-center">
             <Col>
               <Card className="border-0 shadow-sm rounded-4 mb-3">
                 <Card.Body className="p-4">
@@ -319,7 +317,8 @@ const ContactUs = () => {
                 </Card.Body>
               </Card>
             </Col>
-          </Row>
+            </Row>
+          </div>
         </div>
       </div>
     </div>
