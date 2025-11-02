@@ -126,7 +126,17 @@ const ProfileModal = ({ show, onClose }) => {
     <div
       className="modal fade show"
       tabIndex="-1"
-      style={{ display: "block", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+      style={{ 
+        display: "block", 
+        background: "rgba(0,0,0,0.75)", 
+        backdropFilter: "blur(6px)",
+        zIndex: 1055,
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
     >
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content border-0 shadow-lg overflow-hidden" style={{ borderRadius: "1rem", background: "#f7f8f8" }}>

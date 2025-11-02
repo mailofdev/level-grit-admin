@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
   Row,
@@ -7,6 +8,8 @@ import {
   Button,
   ProgressBar,
   Badge,
+  Spinner,
+  Alert,
 } from "react-bootstrap";
 import {
   FaUsers,
@@ -17,21 +20,39 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import { getTrainerDashboardThunk } from "./trainerThunks";
+import {
+  selectTrainerStats,
+  selectTrainerLoading,
+  selectTrainerError,
+  selectDashboardData,
+  clearError,
+} from "./trainerSlice";
 
 const TrainerDashboard = () => {
   const user = getDecryptedUser();
   const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    totalClients: 30,
-    onTrackClients: 22,
-    needAttention: 8,
-    muscleGain: 18,
-    weightLoss: 12,
-  });
+  const dispatch = useDispatch();
+  
+  // Redux state
+  const stats = useSelector(selectTrainerStats);
+  const loading = useSelector(selectTrainerLoading);
+  const error = useSelector(selectTrainerError);
+  const dashboardData = useSelector(selectDashboardData);
 
+  // Fetch dashboard data on component mount
   useEffect(() => {
-    // Simulate API later
-  }, []);
+    dispatch(getTrainerDashboardThunk());
+  }, [dispatch]);
+
+  // Clear error on unmount
+  useEffect(() => {
+    return () => {
+      if (error) {
+        dispatch(clearError());
+      }
+    };
+  }, [error, dispatch]);
 
   const cards = [
     {
@@ -71,7 +92,46 @@ const TrainerDashboard = () => {
     },
   ];
 
-  const progress = Math.round((stats.onTrackClients / stats.totalClients) * 100);
+  const progress = stats.totalClients > 0 
+    ? Math.round((stats.onTrackClients / stats.totalClients) * 100) 
+    : 0;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="trainer-dashboard min-vh-100 py-4 d-flex align-items-center justify-content-center">
+        <Container>
+          <div className="text-center">
+            <Spinner animation="border" variant="success" size="lg" />
+            <p className="mt-3 text-muted">Loading dashboard data...</p>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="trainer-dashboard min-vh-100 py-4">
+        <Container>
+          <Alert variant="danger" className="mt-4">
+            <Alert.Heading>Error Loading Dashboard</Alert.Heading>
+            <p>{error}</p>
+            <hr />
+            <div className="d-flex justify-content-end">
+              <Button 
+                variant="outline-danger" 
+                onClick={() => dispatch(getTrainerDashboardThunk())}
+              >
+                Retry
+              </Button>
+            </div>
+          </Alert>
+        </Container>
+      </div>
+    );
+  }
 
   return (
     <div className="trainer-dashboard min-vh-100 py-4">

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import BrandLogo from "../topbar/BrandLogo";
@@ -120,20 +121,22 @@ const Topbar = ({
           </div>
         </div>
       </div>
-
-      {/* Modals */}
-      {showLogoutModal && (
+      
+      {/* Modals rendered via portal to document.body to ensure they appear above all content */}
+      {showLogoutModal && createPortal(
         <LogoutModal
           show={showLogoutModal}
           onConfirm={handleLogoutConfirm}
           onCancel={() => setShowLogoutModal(false)}
-        />
+        />,
+        document.body
       )}
-      {showProfileModal && (
+      {showProfileModal && createPortal(
         <ProfileModal
           show={showProfileModal}
           onClose={() => setShowProfileModal(false)}
-        />
+        />,
+        document.body
       )}
     </nav>
   );
