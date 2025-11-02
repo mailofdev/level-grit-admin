@@ -200,48 +200,57 @@ const dashboardData = useSelector(selectDashboardData);
         </Card>
 
         {/* Clients Needing Attention */}
-        <Card className="border-0 shadow-sm mt-4 p-4">
-          <h5 className="fw-bold text-danger mb-3">Clients Needing Attention</h5>
-          <Row className="g-3">
-            {clientsNeedingAttention.length > 0 ? (
-              clientsNeedingAttention.map((client) => (
-                <Col md={6} lg={4} key={client.clientId}>
-                  <Card className="border-0 shadow-sm p-3 h-100">
-                    <div className="d-flex flex-column">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h6 className="fw-bold mb-0">{client.fullName}</h6>
-                        <Badge bg="warning" text="dark">
-                          Attention Needed
-                        </Badge>
-                      </div>
-                      <p className="mb-1 text-muted">
-                        <strong>Reason:</strong> {client.reason}
-                      </p>
-                      <p className="mb-1 small text-muted">
-                        <strong>Email:</strong> {client.email}
-                      </p>
-                      <p className="mb-1 small text-muted">
-                        <strong>Phone:</strong> {client.phoneNumber}
-                      </p>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="mt-2 align-self-start"
-                        onClick={() => navigate(`/client/${client.clientId}`)}
-                      >
-                        View Details
-                      </Button>
-                    </div>
-                  </Card>
-                </Col>
-              ))
-            ) : (
-              <Col>
-                <p className="text-muted">All clients are on track 🎯</p>
-              </Col>
-            )}
-          </Row>
+   <Card className="border-0 shadow-sm mt-4 p-4">
+  <h5 className="fw-bold text-danger mb-3">Clients Needing Attention</h5>
+
+  {clientsNeedingAttention.length > 0 ? (
+    <div
+      className="d-flex flex-row flex-nowrap overflow-auto pb-2"
+      style={{ gap: "1rem", scrollSnapType: "x mandatory" }}
+    >
+      {clientsNeedingAttention.map((client) => (
+        <Card
+          key={client.clientId}
+          className="border-0 shadow-sm p-3 flex-shrink-0"
+          style={{
+            width: "300px",
+            borderRadius: "1rem",
+            scrollSnapAlign: "start",
+          }}
+        >
+          <div className="d-flex flex-column">
+            <div className="d-flex justify-content-between align-items-start mb-2">
+              <h6 className="fw-bold mb-0">{client.fullName}</h6>
+              <Badge bg="warning" text="dark">
+                Attention Needed
+              </Badge>
+            </div>
+            <p className="mb-1 text-muted">
+              <strong>Reason:</strong> {client.reason}
+            </p>
+            <p className="mb-1 small text-muted">
+              <strong>Email:</strong> {client.email}
+            </p>
+            <p className="mb-1 small text-muted">
+              <strong>Phone:</strong> {client.phoneNumber}
+            </p>
+            <Button
+              variant="outline-primary"
+              size="sm"
+              className="mt-2 align-self-start"
+              onClick={() => navigate(`/client/${client.clientId}`)}
+            >
+              View Details
+            </Button>
+          </div>
         </Card>
+      ))}
+    </div>
+  ) : (
+    <p className="text-muted">All clients are on track 🎯</p>
+  )}
+</Card>
+
       </Container>
     </div>
   );
