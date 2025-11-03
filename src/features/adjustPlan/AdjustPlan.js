@@ -12,8 +12,10 @@ import {
 } from "react-bootstrap";
 import { FaTrash, FaSave, FaCalendar, FaPlus } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
+import AnimatedCard from "../../components/common/AnimatedCard";
 import {
   getMealPlanThunk,
   createOrUpdateMealPlanThunk,
@@ -293,7 +295,13 @@ export default function AdjustPlan() {
           {isLoading ? (
             <Loader fullScreen={true} text="Loading meal plan" color="#43a047" />
           ) : (
-            <Card className="shadow-sm border-0 rounded-4 p-2 p-md-4 bg-white">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <AnimatedCard delay={0.1}>
+                <Card className="shadow-lg border-0 rounded-4 p-2 p-md-4 bg-white">
               {/* Mobile-Optimized Date Header */}
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3 p-2 p-md-3 bg-light rounded-3 gap-2">
                 <div className="d-flex align-items-start gap-2 w-100 w-md-auto">
@@ -447,7 +455,9 @@ export default function AdjustPlan() {
                   ))}
                 </Accordion>
               </Form>
-            </Card>
+                </Card>
+              </AnimatedCard>
+            </motion.div>
           )}
         </div>
       </div>

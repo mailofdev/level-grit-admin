@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import Heading from "../../components/navigation/Heading";
+import AnimatedCard from "../../components/common/AnimatedCard";
 import {
   FaFire,
   FaCheckCircle,
@@ -461,87 +463,111 @@ export default function ClientDetails() {
       >
         <div className="flex-grow-1 overflow-auto pb-3">
           <div className="px-2 px-md-3">
-            <div className="card border-0 rounded-4 shadow-sm overflow-hidden mb-3 mt-2">
-              <div className="bg-gradient p-3 d-flex justify-content-between align-items-center" 
-                   style={{ background: "linear-gradient(135deg, #4e73df, #1cc88a)" }}>
-                <div className="d-flex align-items-center gap-3">
-                  <div>
-                    <h5 className="text-white mb-0 fw-semibold">{client.fullName}</h5>
-                  </div>
-                </div>
-                <span
-                  className={`badge px-3 py-2 fs-6 rounded-pill ${
-                    client.status === "attention" ? "bg-danger" : "bg-success"
-                  }`}
-                >
-                  {client.status === "attention" ? "⚠️ Need Attention" : "✅ On Track"}
-                </span>
-              </div>
-
-              <div className="card-body p-3 p-md-4">
-                <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-                  <div className="flex-grow-1">
-                    <p className="mb-2 text-muted small">
-                      <strong>Goal:</strong> {getGoalText(client.goal)}
-                    </p>
-                    <p className="mb-2 text-muted small">
-                      <strong>Start:</strong> {client.startDate}
-                    </p>
-                  </div>
-                  <div className="text-md-end">
-                    <div className="d-flex align-items-center gap-2">
-                      <span
-                        className={`fw-bold fs-6 ${
-                          client.streak === "Missed meal" ? "text-danger" : "text-success"
-                        }`}
-                      >
-                        {client.streak}
-                      </span>
-                      {client.streak === "Missed meal" ? (
-                        <FaSadCry className="text-danger fs-5" />
-                      ) : (
-                        <FaFire className="text-success fs-5" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <hr className="my-3" />
-
-                <div className="d-flex flex-column flex-sm-row gap-2">
-                  <button
-                    className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
-                    onClick={() =>
-                      navigate(`/messages/${client.clientId}`, {
-                        state: { client },
-                      })
-                    }
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <AnimatedCard delay={0.1}>
+                <div className="card border-0 rounded-4 shadow-lg overflow-hidden mb-3 mt-2">
+                  <motion.div 
+                    className="bg-gradient p-3 d-flex justify-content-between align-items-center" 
+                    style={{ 
+                      background: client.status === "attention"
+                        ? "linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)"
+                        : "linear-gradient(135deg, #4e73df 0%, #1cc88a 100%)"
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
                   >
-                    <FaMessage /> Message
-                  </button>
+                    <div className="d-flex align-items-center gap-3">
+                      <div>
+                        <h5 className="text-white mb-0 fw-bold fs-5">{client.fullName}</h5>
+                        <small className="text-white-50">Client Details</small>
+                      </div>
+                    </div>
+                    <motion.span
+                      className={`badge px-3 py-2 fs-6 rounded-pill shadow-sm ${
+                        client.status === "attention" ? "bg-danger" : "bg-success"
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {client.status === "attention" ? "⚠️ Need Attention" : "✅ On Track"}
+                    </motion.span>
+                  </motion.div>
 
-                  <SplitButton
-                    label="Plan"
-                    icon="pi pi-plus"
-                    className="flex-grow-1 rounded-3 shadow-sm"
-                    model={[
-                      {
-                        label: "Add",
-                        icon: "pi pi-pencil",
-                        command: () => handlePlanAction("add"),
-                      },
-                      {
-                        label: "Preview",
-                        icon: "pi pi-eye",
-                        command: () => handlePlanAction("preview"),
-                      },
-                    ]}
-                  />
+                  <div className="card-body p-3 p-md-4">
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                      <div className="flex-grow-1">
+                        <p className="mb-2 text-muted small">
+                          <strong>Goal:</strong> {getGoalText(client.goal)}
+                        </p>
+                        <p className="mb-2 text-muted small">
+                          <strong>Start:</strong> {client.startDate}
+                        </p>
+                      </div>
+                      <div className="text-md-end">
+                        <div className="d-flex align-items-center gap-2">
+                          <span
+                            className={`fw-bold fs-6 ${
+                              client.streak === "Missed meal" ? "text-danger" : "text-success"
+                            }`}
+                          >
+                            {client.streak}
+                          </span>
+                          {client.streak === "Missed meal" ? (
+                            <FaSadCry className="text-danger fs-5" />
+                          ) : (
+                            <FaFire className="text-success fs-5" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                  <hr className="my-3" />
+
+                  <div className="d-flex flex-column flex-sm-row gap-2">
+                    <button
+                      className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
+                      onClick={() =>
+                        navigate(`/messages/${client.clientId}`, {
+                          state: { client },
+                        })
+                      }
+                    >
+                      <FaMessage /> Message
+                    </button>
+
+                    <SplitButton
+                      label="Plan"
+                      icon="pi pi-plus"
+                      className="flex-grow-1 rounded-3 shadow-sm"
+                      model={[
+                        {
+                          label: "Add",
+                          icon: "pi pi-pencil",
+                          command: () => handlePlanAction("add"),
+                        },
+                        {
+                          label: "Preview",
+                          icon: "pi pi-eye",
+                          command: () => handlePlanAction("preview"),
+                        },
+                      ]}
+                    />
+                  </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </AnimatedCard>
+            </motion.div>
 
-            <div className="row g-2 g-md-3 mb-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="row g-2 g-md-3 mb-3">
               <div className="col-12 col-lg-8">
                 <div className="card rounded-4 shadow-sm h-100">
                   <div className="card-body p-3">
@@ -609,68 +635,69 @@ export default function ClientDetails() {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
 
-            <div className="card rounded-4 shadow-sm mb-3">
-              <div className="card-body p-3">
-                <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                  <h6 className="fw-bold mb-0">Today's Meals</h6>
-                  <div className="d-flex gap-3">
-                    <span className="text-success fw-semibold small">
-                      ✓ {completedMeals} done
-                    </span>
-                    <span className="text-danger fw-semibold small">
-                      ⏳ {remainingMeals} left
-                    </span>
+              <div className="card rounded-4 shadow-sm mb-3">
+                <div className="card-body p-3">
+                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                    <h6 className="fw-bold mb-0">Today's Meals</h6>
+                    <div className="d-flex gap-3">
+                      <span className="text-success fw-semibold small">
+                        ✓ {completedMeals} done
+                      </span>
+                      <span className="text-danger fw-semibold small">
+                        ⏳ {remainingMeals} left
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="row g-2 g-md-3">
-                  {dashboardData.meals.map((meal, idx) => (
-                    <div key={idx} className="col-12 col-sm-6 col-lg-4">
-                      <div
-                        className={`h-100 rounded-4 p-3 position-relative ${
-                          meal.completed
-                            ? "br-light-green-2"
-                            : "br-light-gray-dotted"
-                        }`}
-                      >
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <h6 className="fw-semibold mb-0 small">{meal.name}</h6>
-                          {meal.completed ? (
-                            <FaCheckCircle className="text-success fs-5 flex-shrink-0 ms-2" />
-                          ) : (
-                            <FaCamera className="text-secondary fs-5 flex-shrink-0 ms-2" />
-                          )}
-                        </div>
-
-                        {meal.image && (
-                          <div
-                            className="rounded-3 overflow-hidden mb-2"
-                            style={{ height: "140px" }}
-                          >
-                            <img
-                              src={meal.image}
-                              alt={meal.name}
-                              className="img-fluid w-100 h-100 object-fit-cover"
-                            />
+                  <div className="row g-2 g-md-3">
+                    {dashboardData.meals.map((meal, idx) => (
+                      <div key={idx} className="col-12 col-sm-6 col-lg-4">
+                        <div
+                          className={`h-100 rounded-4 p-3 position-relative ${
+                            meal.completed
+                              ? "br-light-green-2"
+                              : "br-light-gray-dotted"
+                          }`}
+                        >
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <h6 className="fw-semibold mb-0 small">{meal.name}</h6>
+                            {meal.completed ? (
+                              <FaCheckCircle className="text-success fs-5 flex-shrink-0 ms-2" />
+                            ) : (
+                              <FaCamera className="text-secondary fs-5 flex-shrink-0 ms-2" />
+                            )}
                           </div>
-                        )}
 
-                        <div className="mt-2">
-                          <p className="mb-1 small fw-semibold">
-                            {meal.calories} kcal
-                          </p>
-                          <div className="small text-muted">
-                            P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
+                          {meal.image && (
+                            <div
+                              className="rounded-3 overflow-hidden mb-2"
+                              style={{ height: "140px" }}
+                            >
+                              <img
+                                src={meal.image}
+                                alt={meal.name}
+                                className="img-fluid w-100 h-100 object-fit-cover"
+                              />
+                            </div>
+                          )}
+
+                          <div className="mt-2">
+                            <p className="mb-1 small fw-semibold">
+                              {meal.calories} kcal
+                            </p>
+                            <div className="small text-muted">
+                              P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

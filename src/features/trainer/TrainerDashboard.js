@@ -17,6 +17,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getTrainerDashboardThunk } from "./trainerThunks";
 import {
@@ -25,6 +26,8 @@ import {
   selectDashboardData,
   clearError,
 } from "./trainerSlice";
+import AnimatedCard from "../../components/common/AnimatedCard";
+import StaggerContainer from "../../components/common/StaggerContainer";
 
 const TrainerDashboard = () => {
   const user = getDecryptedUser();
@@ -133,38 +136,37 @@ const dashboardData = useSelector(selectDashboardData);
             <p className="text-muted mb-0">Quick overview of your clients and goals</p>
           </Col>
           <Col xs="auto">
-            <Button
-              variant="primary"
-              className="shadow-sm"
-              onClick={() => navigate("/register-client")}
-            >
-              + Add Client
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="primary"
+                className="shadow-sm rounded-pill px-4"
+                onClick={() => navigate("/register-client")}
+                style={{ minHeight: '44px' }}
+              >
+                + Add Client
+              </Button>
+            </motion.div>
           </Col>
         </Row>
 
         {/* Stats Cards - Essential Metrics Only */}
-        <Row className="g-3 g-md-4 mb-4">
+        <StaggerContainer className="row g-3 g-md-4 mb-4" staggerDelay={0.1}>
           {cards.map((card, i) => (
-            <Col lg={4} md={4} sm={6} key={i}>
-              <Card
-                className="border-0 shadow-lg h-100 position-relative overflow-hidden"
-                style={{
-                  background: card.gradient,
-                  borderRadius: "1rem",
-                  color: card.textColor,
-                  transition: "all 0.3s ease",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.2)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-                }}
-              >
+            <StaggerContainer.Item key={i} className="col-lg-4 col-md-4 col-sm-6">
+              <AnimatedCard delay={i * 0.1} hover>
+                <motion.div
+                  className="border-0 shadow-lg h-100 position-relative overflow-hidden"
+                  style={{
+                    background: card.gradient,
+                    borderRadius: "1rem",
+                    color: card.textColor,
+                    cursor: "default",
+                    padding: 0
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="border-0 h-100 bg-transparent">
                 <div
                   className="position-absolute top-0 end-0"
                   style={{
@@ -205,15 +207,23 @@ const dashboardData = useSelector(selectDashboardData);
                       {card.icon}
                     </div>
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
+                    </Card.Body>
+                  </Card>
+                </motion.div>
+              </AnimatedCard>
+            </StaggerContainer.Item>
           ))}
-        </Row>
+        </StaggerContainer>
 
         {/* Progress Section - Only show if there are clients */}
         {totalClients > 0 && (
-          <Card className="border-0 shadow-sm mt-4 p-4" style={{ background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <AnimatedCard delay={0.3}>
+              <Card className="border-0 shadow-lg mt-4 p-4" style={{ background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)", borderRadius: "1rem" }}>
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div>
                 <h5 className="fw-bold text-primary mb-1">Overall Progress</h5>
@@ -232,11 +242,19 @@ const dashboardData = useSelector(selectDashboardData);
               animated 
               style={{ height: '12px', borderRadius: '10px' }}
             />
-          </Card>
+              </Card>
+            </AnimatedCard>
+          </motion.div>
         )}
 
         {/* Clients Needing Attention */}
-        <Card className="border-0 shadow-sm mt-4 p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <AnimatedCard delay={0.4}>
+            <Card className="border-0 shadow-lg mt-4 p-4" style={{ borderRadius: "1rem" }}>
           <div className="d-flex align-items-center justify-content-between mb-3">
             <h5 className="fw-bold text-danger mb-0 d-flex align-items-center gap-2">
               <FaExclamationTriangle /> Clients Needing Attention
@@ -258,30 +276,27 @@ const dashboardData = useSelector(selectDashboardData);
                 scrollbarColor: "rgba(0,0,0,0.2) transparent"
               }}
             >
-              {clientsNeedingAttention.map((client) => (
-                <Card
+              {clientsNeedingAttention.map((client, idx) => (
+                <motion.div
                   key={client.clientId || client.id}
-                  className="border-0 shadow-sm p-3 flex-shrink-0 position-relative"
-                  style={{
-                    width: "320px",
-                    minWidth: "320px",
-                    borderRadius: "1rem",
-                    scrollSnapAlign: "start",
-                    background: "linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%)",
-                    border: "1px solid rgba(255, 193, 7, 0.3)",
-                    transition: "all 0.3s ease",
-                    cursor: "pointer"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-                  }}
-                  onClick={() => handleViewClient(client)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
                 >
+                  <Card
+                    className="border-0 shadow-sm p-3 flex-shrink-0 position-relative"
+                    style={{
+                      width: "320px",
+                      minWidth: "320px",
+                      borderRadius: "1rem",
+                      scrollSnapAlign: "start",
+                      background: "linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%)",
+                      border: "1px solid rgba(255, 193, 7, 0.3)",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => handleViewClient(client)}
+                  >
                   <div className="d-flex flex-column h-100">
                     <div className="d-flex justify-content-between align-items-start mb-3">
                       <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '1rem' }}>
@@ -327,8 +342,9 @@ const dashboardData = useSelector(selectDashboardData);
                         View Details →
                       </Button>
                     </div>
-                  </div>
-                </Card>
+                    </div>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           ) : (
@@ -338,7 +354,9 @@ const dashboardData = useSelector(selectDashboardData);
               <small className="text-muted">Great job keeping everyone motivated.</small>
             </div>
           )}
-        </Card>
+            </Card>
+          </AnimatedCard>
+        </motion.div>
 
       </Container>
     </div>
