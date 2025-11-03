@@ -213,6 +213,97 @@ const dashboardData = useSelector(selectDashboardData);
               </AnimatedCard>
             </StaggerContainer.Item>
           ))}
+          {/* Goals Breakdown Section */}
+{/* Goals Breakdown Section */}
+{goalsBreakdown.length > 0 && (
+  <>
+    <StaggerContainer className="row g-3 g-md-4 mb-4" staggerDelay={0.1}>
+      {goalsBreakdown.map((item, i) => {
+        // Rotate between a few nice gradients
+        const gradients = [
+          "linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%)",
+          "linear-gradient(135deg, #66bb6a 0%, #43a047 100%)",
+          "linear-gradient(135deg, #ffb74d 0%, #f57c00 100%)",
+          "linear-gradient(135deg, #ba68c8 0%, #8e24aa 100%)",
+          "linear-gradient(135deg, #26c6da 0%, #00acc1 100%)",
+        ];
+        const gradient = gradients[i % gradients.length];
+
+        return (
+          <StaggerContainer.Item key={i} className="col-lg-4 col-md-4 col-sm-6">
+            <AnimatedCard delay={i * 0.1} hover>
+              <motion.div
+                className="border-0 shadow-lg h-100 position-relative overflow-hidden"
+                style={{
+                  background: gradient,
+                  borderRadius: "1rem",
+                  color: "#fff",
+                  cursor: "default",
+                  padding: 0,
+                }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="border-0 h-100 bg-transparent">
+                  <div
+                    className="position-absolute top-0 end-0"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      background: "rgba(255,255,255,0.15)",
+                      borderRadius: "50%",
+                      transform: "translate(30px, -30px)",
+                    }}
+                  />
+                  <Card.Body className="p-4 position-relative">
+                    <div className="d-flex align-items-start justify-content-between mb-3">
+                      <div className="flex-grow-1">
+                        <h6
+                          className="fw-semibold mb-2 opacity-90"
+                          style={{ fontSize: "0.9rem", letterSpacing: "0.5px" }}
+                        >
+                          {item.goal}
+                        </h6>
+                        <h2
+                          className="fw-bold mb-1"
+                          style={{ fontSize: "2.5rem" }}
+                        >
+                          {item.count}
+                        </h2>
+                        <p
+                          className="mb-0 small opacity-75"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {item.count === 1 ? "Client" : "Clients"}
+                        </p>
+                      </div>
+                      <div
+                        className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                        style={{
+                          width: 64,
+                          height: 64,
+                          background: "rgba(255,255,255,0.25)",
+                          backdropFilter: "blur(10px)",
+                          fontSize: "1.75rem",
+                          color: "#fff",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        <FaChartLine />
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </motion.div>
+            </AnimatedCard>
+          </StaggerContainer.Item>
+        );
+      })}
+    </StaggerContainer>
+  </>
+)}
+
+
         </StaggerContainer>
 
         {/* Progress Section - Only show if there are clients */}
