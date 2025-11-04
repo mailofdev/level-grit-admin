@@ -11,18 +11,25 @@ export default function Heading({
 }) {
   const handleDefaultBack = () => window.history.back();
 
+  // Determine background based on sticky state
+  const backgroundStyle = sticky 
+    ? {
+        background: "linear-gradient(135deg, rgba(232, 245, 233, 0.95), rgba(200, 230, 201, 0.95))",
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+      }
+    : {
+        background: 'transparent',
+      };
+
   return (
     <div
-      className={`d-flex align-items-center p-2 p-md-3 my-2 rounded shadow-sm ${
-        sticky ? "sticky-top" : ""
-      }`}
+      className={`d-flex align-items-center p-2 p-md-3 ${sticky ? 'my-2 rounded shadow-sm sticky-top' : ''}`}
       style={{
         zIndex: 1030,
         position: sticky ? "sticky" : "relative",
         top: 0,
-        background: "linear-gradient(135deg, rgba(232, 245, 233, 0.95), rgba(200, 230, 201, 0.95))",
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
+        ...backgroundStyle,
         minHeight: '56px'
       }} 
     >

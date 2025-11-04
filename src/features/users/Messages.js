@@ -119,10 +119,10 @@ export default function Messages({ isTrainer = false }) {
                         maxWidth: "70%",
                         wordBreak: "break-word",
                         backgroundColor: isSender 
-                          ? "linear-gradient(135deg, #28a745 0%, #20c997 100%)" 
+                          ? "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)" 
                           : "#ffffff",
                         background: isSender 
-                          ? "linear-gradient(135deg, #d1f7c4 0%, #c8e6c9 100%)" 
+                          ? "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)" 
                           : "#ffffff",
                         borderRadius: isSender
                           ? "20px 20px 0 20px"
@@ -188,7 +188,7 @@ export default function Messages({ isTrainer = false }) {
                   style={{
                     width: "45px",
                     height: "45px",
-                    backgroundColor: "#28a745",
+                    backgroundColor: "#007AFF",
                     minWidth: "45px",
                     minHeight: "45px"
                   }}
@@ -213,14 +213,14 @@ export default function Messages({ isTrainer = false }) {
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                 <Button
                   type="submit"
-                  variant="success"
+                  variant="primary"
                   className="rounded-circle ms-2 border-0 shadow-sm d-flex align-items-center justify-content-center"
                   style={{ 
                     width: "45px", 
                     height: "45px",
                     minWidth: "45px",
                     minHeight: "45px",
-                    backgroundColor: "#28a745"
+                    backgroundColor: "#007AFF"
                   }}
                 >
                   <FaPaperPlane />

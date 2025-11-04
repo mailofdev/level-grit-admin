@@ -2,119 +2,141 @@
    Modern Bootstrap Theme Variables
 ================================= */
 
-/* Light Theme (default) - Health Focused */
+/* Light Theme (default) - Fittr.com Inspired */
 :root {
-  /* Bootstrap 5.3+ CSS Variables - Health Theme */
-  --bs-primary: #28a745;
-  --bs-secondary: #6c757d;
-  --bs-success: #198754;
+  /* Bootstrap 5.3+ CSS Variables - Fittr Theme */
+  --bs-primary: #007AFF;
+  --bs-secondary: #FF6B35;
+  --bs-success: #28a745;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
   --bs-info: #17a2b8;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
   
-  /* Health-Focused Theme Variables */
-  --color-bg: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 50%, #e8f5e8 100%);
-  --color-bg-solid: #f0f8f0;
-  --color-text: #2d5016;
-  --color-primary: #28a745;
-  --color-secondary: #6c757d;
-  --color-success: #198754;
+  /* Fittr.com Theme Variables - Clean White UI */
+  --color-bg: #ffffff;
+  --color-bg-solid: #ffffff;
+  --color-text: #000000;
+  --color-primary: #007AFF;
+  --color-secondary: #FF6B35;
+  --color-success: #28a745;
   --color-danger: #dc3545;
   --color-warning: #ffc107;
   --color-info: #17a2b8;
-  --color-border: #c3e6c3;
-  --color-card-bg: rgba(255, 255, 255, 0.95);
-  --color-nav-bg: rgba(255, 255, 255, 0.98);
+  --color-border: #e5e5e5;
+  --color-card-bg: #f4f6f8;
+  --color-card-bg-hover: #eeeeee;
+  --color-nav-bg: rgba(255, 255, 255, 0.95);
   --color-muted: #6c757d;
-  --color-link: #28a745;
-  --color-link-hover: #218838;
-  --color-scrollbar: #a8d5a8;
-  --color-scrollbar-bg: #f0f8f0;
-  --color-shadow: rgba(40, 167, 69, 0.1);
-  --color-shadow-hover: rgba(40, 167, 69, 0.2);
-  --color-input-bg: rgba(255, 255, 255, 0.9);
-  --color-input-border: #c3e6c3;
-  --color-input-focus: #28a745;
-  --color-button-bg: #28a745;
+  --color-link: #007AFF;
+  --color-link-hover: #0056b3;
+  --color-scrollbar: #d0d0d0;
+  --color-scrollbar-bg: #f5f5f5;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-shadow-hover: rgba(0, 0, 0, 0.12);
+  --color-shadow-lg: rgba(0, 0, 0, 0.15);
+  --color-input-bg: #ffffff;
+  --color-input-border: #e5e5e5;
+  --color-input-focus: #007AFF;
+  --color-button-bg: #007AFF;
   --color-button-text: #ffffff;
-  --color-button-hover: #218838;
-  --color-button-secondary: #6c757d;
-  --color-button-secondary-hover: #5c636a;
+  --color-button-hover: #0056b3;
+  --color-button-secondary: #FF6B35;
+  --color-button-secondary-hover: #e55a2b;
   
   /* Modern UI Enhancements */
-  --color-surface: rgba(255, 255, 255, 0.95);
-  --color-surface-variant: rgba(248, 249, 250, 0.8);
-  --color-outline: #e9ecef;
-  --color-outline-variant: #c3e6c3;
-  --border-radius: 0.5rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-xl: 1rem;
-  --shadow-sm: 0 0.125rem 0.25rem rgba(40, 167, 69, 0.1);
-  --shadow: 0 0.5rem 1rem rgba(40, 167, 69, 0.15);
-  --shadow-lg: 0 1rem 3rem rgba(40, 167, 69, 0.2);
+  --color-surface: #ffffff;
+  --color-surface-variant: #f5f5f5;
+  --color-surface-hover: #eeeeee;
+  --color-outline: #e5e5e5;
+  --color-outline-variant: #d0d0d0;
+  --border-radius: 0.75rem;
+  --border-radius-lg: 1rem;
+  --border-radius-xl: 1.25rem;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.15);
   
-  /* Health App Specific */
-  --health-gradient: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 25%, #e8f5e8 50%, #f0f8f0 75%, #e8f5e8 100%);
-  --card-glass: rgba(255, 255, 255, 0.9);
-  --card-border: rgba(40, 167, 69, 0.2);
+  /* Glassmorphism & Transparency Effects */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --backdrop-blur: blur(20px);
+  
+  /* Fittr App Specific */
+  --health-gradient: #ffffff;
+  --card-glass: rgba(245, 245, 245, 0.9);
+  --card-border: rgba(229, 229, 229, 0.5);
+  --card-transparent: rgba(245, 245, 245, 0.6);
 }
 
-/* Dark Theme - Health Focused */
+/* Dark Theme - Fittr.com Inspired */
 body.dark {
   /* Bootstrap 5.3+ CSS Variables for Dark Theme */
-  --bs-primary: #28a745;
-  --bs-secondary: #6c757d;
-  --bs-success: #198754;
+  --bs-primary: #007AFF;
+  --bs-secondary: #FF6B35;
+  --bs-success: #28a745;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
   --bs-info: #17a2b8;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
   
-  /* Health-Focused Dark Theme Variables */
-  --color-bg: linear-gradient(135deg, #0d1b0d 0%, #1a2e1a 50%, #0d1b0d 100%);
-  --color-bg-solid: #0d1b0d;
-  --color-text: #e8f5e8;
-  --color-primary: #4caf50;
-  --color-secondary: #8b949e;
+  /* Fittr.com Dark Theme Variables */
+  --color-bg: #121212;
+  --color-bg-solid: #121212;
+  --color-text: #ffffff;
+  --color-primary: #007AFF;
+  --color-secondary: #FF6B35;
   --color-success: #4caf50;
   --color-danger: #ef5350;
   --color-warning: #ffb300;
   --color-info: #29b6f6;
-  --color-border: #2d4a2d;
-  --color-card-bg: rgba(26, 46, 26, 0.95);
-  --color-nav-bg: rgba(13, 27, 13, 0.98);
+  --color-border: #2d2d2d;
+  --color-card-bg: #1a1a1a;
+  --color-card-bg-hover: #252525;
+  --color-nav-bg: rgba(18, 18, 18, 0.95);
   --color-muted: #8b949e;
-  --color-link: #4caf50;
-  --color-link-hover: #66bb6a;
-  --color-scrollbar: #2d4a2d;
-  --color-scrollbar-bg: #0d1b0d;
+  --color-link: #007AFF;
+  --color-link-hover: #3395ff;
+  --color-scrollbar: #3d3d3d;
+  --color-scrollbar-bg: #1a1a1a;
   --color-shadow: rgba(0, 0, 0, 0.4);
   --color-shadow-hover: rgba(0, 0, 0, 0.6);
-  --color-input-bg: rgba(26, 46, 26, 0.9);
-  --color-input-border: #2d4a2d;
-  --color-input-focus: #4caf50;
-  --color-button-bg: #4caf50;
+  --color-shadow-lg: rgba(0, 0, 0, 0.8);
+  --color-input-bg: #1a1a1a;
+  --color-input-border: #2d2d2d;
+  --color-input-focus: #007AFF;
+  --color-button-bg: #007AFF;
   --color-button-text: #ffffff;
-  --color-button-hover: #66bb6a;
-  --color-button-secondary: #2d4a2d;
-  --color-button-secondary-hover: #3d5a3d;
+  --color-button-hover: #3395ff;
+  --color-button-secondary: #FF6B35;
+  --color-button-secondary-hover: #ff8c5a;
   
   /* Modern UI Enhancements for Dark Theme */
-  --color-surface: rgba(26, 46, 26, 0.95);
-  --color-surface-variant: rgba(45, 74, 45, 0.8);
-  --color-outline: #2d4a2d;
-  --color-outline-variant: #3d5a3d;
-  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
-  --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.6);
+  --color-surface: #1a1a1a;
+  --color-surface-variant: #252525;
+  --color-surface-hover: #2d2d2d;
+  --color-outline: #2d2d2d;
+  --color-outline-variant: #3d3d3d;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.8);
   
-  /* Health App Specific - Dark */
-  --health-gradient: linear-gradient(135deg, #0d1b0d 0%, #1a2e1a 25%, #0d1b0d 50%, #1a2e1a 75%, #0d1b0d 100%);
-  --card-glass: rgba(26, 46, 26, 0.9);
-  --card-border: rgba(76, 175, 80, 0.3);
+  /* Glassmorphism & Transparency Effects - Dark */
+  --glass-bg: rgba(26, 26, 26, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --backdrop-blur: blur(20px);
+  
+  /* Fittr App Specific - Dark */
+  --health-gradient: #121212;
+  --card-glass: rgba(26, 26, 26, 0.9);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-transparent: rgba(26, 26, 26, 0.6);
 }
 
 /* Additional utility classes for theme support */

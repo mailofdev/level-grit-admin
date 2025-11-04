@@ -82,7 +82,7 @@ const dashboardData = useSelector(selectDashboardData);
       title: "On Track",
       value: onTrackClients,
       icon: <FaChartLine />,
-      gradient: "linear-gradient(135deg, #28a745 0%, #20c997 100%)",
+      gradient: "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)",
       textColor: "#ffffff",
       description: `${totalClients > 0 ? Math.round((onTrackClients / totalClients) * 100) : 0}% of total`,
     },

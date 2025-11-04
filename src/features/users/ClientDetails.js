@@ -215,7 +215,7 @@ export default function ClientDetails() {
               fill="none"
               stroke={
                 color === "success"
-                  ? "#28a745"
+                  ? "#007AFF"
                   : color === "info"
                   ? "#17a2b8"
                   : "#ffc107"
@@ -619,7 +619,7 @@ export default function ClientDetails() {
                               100
                             }%`,
                             background:
-                              "linear-gradient(90deg, #28a745, #20c997)",
+                              "linear-gradient(90deg, #007AFF, #0056b3)",
                           }}
                         ></div>
                       </div>

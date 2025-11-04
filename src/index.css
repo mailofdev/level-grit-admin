@@ -11,7 +11,7 @@
 }
 
 html {
-  background: var(--health-gradient);
+  background: var(--color-bg);
   color: var(--color-text);
   font-family: 'Poppins', sans-serif;
   scroll-behavior: smooth;
@@ -23,7 +23,7 @@ body {
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--health-gradient);
+  background: var(--color-bg);
   color: var(--color-text);
   transition: all 0.3s ease;
   line-height: 1.6;
@@ -37,7 +37,7 @@ body {
 
 /* Apply theme to root div */
 #root {
-  background: var(--health-gradient);
+  background: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
   position: relative;
@@ -51,18 +51,73 @@ body {
 .auth-container {
   background-color: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow);
-  transition: all 0.3s ease;
+  backdrop-filter: var(--backdrop-blur);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .auth-container:hover {
   box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 /* Auth router styling */
 .auth-router {
   background-color: var(--color-bg);
+}
+
+/* Enhanced Auth Page Styles */
+.auth-page-enter {
+  position: relative;
+}
+
+.auth-page-enter .card {
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.auth-page-enter .card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.auth-page-enter .form-control:focus,
+.auth-page-enter .form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+  outline: none;
+}
+
+.auth-page-enter .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.auth-page-enter a:hover {
+  opacity: 0.8;
+  text-decoration: underline !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-page-enter {
+    padding: 1rem !important;
+  }
+  
+  .auth-page-enter .card {
+    border-radius: 1rem !important;
+  }
 }
 
 /* Loading container styling */

@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
  */
 const Loader = React.memo(({
   size = "120px",
-  color = "#28a745",
+  color = "#007AFF",
   fullScreen = false,
   text = "Loading...",
 }) => {
