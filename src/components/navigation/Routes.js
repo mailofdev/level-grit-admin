@@ -20,25 +20,7 @@ export const getRoutes = () => {
             href: "/AllClients",
             icon: "bi-people-fill",
             showIn: ["sidebar", "topbar"],
-          },
-          // {
-          //   label: "Meal Plans",
-          //   href: "/meal-plans",
-          //   icon: "bi-egg-fried",
-          //   showIn: ["sidebar", "topbar"],
-          // },
-          // {
-          //   label: "Progress Tracking",
-          //   href: "/progress",
-          //   icon: "bi-graph-up",
-          //   showIn: ["sidebar", "topbar"],
-          // },
-          // {
-          //   label: "Subscription",
-          //   href: "/subscription",
-          //   icon: "bi-credit-card",
-          //   showIn: ["sidebar", "topbar"],
-          // },
+          }
         ]
       : []),
     ...(user?.role === "Administrator"
@@ -49,6 +31,16 @@ export const getRoutes = () => {
             icon: "bi-gear-fill",
             showIn: ["sidebar", "topbar"],
           },
+        ]
+      : []),
+          ...(user?.role === "Client"
+      ? [
+          {
+            label: "Dashboard",
+            href: "/client-dashboard",
+            icon: "bi-speedometer2",
+            showIn: ["sidebar", "topbar"],
+          }
         ]
       : []),
   ];

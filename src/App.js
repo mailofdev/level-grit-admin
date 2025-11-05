@@ -48,6 +48,9 @@ const Testimonials = lazy(() => import("./features/static/Testimonials"));
 const TrainerDashboard = lazy(() =>
   import("./features/trainer/TrainerDashboard")
 );
+const ClientDashboard = lazy(() =>
+  import("./features/client/ClientDashboard")
+);  
 const ClientMessaging = lazy(() =>
   import("./features/messaging/ClientMessaging")
 );
@@ -129,6 +132,21 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
+                <Route
+                  path="/client-dashboard"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <ClientDashboard />
+                    </ProtectedLayout>
+                  }
+                />
+                
                 <Route
                   path="/AllClients"
                   element={
