@@ -14,7 +14,8 @@ import Loader from "../../components/display/Loader";
 
 const ClientMessages = () => {
   const user = getDecryptedUser();
-  const clientId = user?.userId || user?.clientId;
+  // Get clientId - try multiple possible field names
+  const clientId = user?.userId || user?.clientId || user?.id;
   
   const [trainer, setTrainer] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -34,6 +35,20 @@ const ClientMessages = () => {
       }
 
       try {
+        // First check if user object has trainerId directly
+        if (user?.trainerId) {
+          setTrainer({
+            trainerId: user.trainerId,
+            fullName: user.trainerName || "Your Trainer",
+            email: user.trainerEmail || "",
+            phoneNumber: user.trainerPhone || "",
+            profileImage: null,
+          });
+          setLoading(false);
+          return;
+        }
+
+        // Otherwise fetch from API
         const trainerData = await getTrainerForClient(clientId);
         setTrainer(trainerData);
       } catch (err) {
@@ -44,16 +59,24 @@ const ClientMessages = () => {
     };
 
     fetchTrainer();
-  }, [clientId]);
+  }, [clientId, user]);
 
   // Subscribe to messages
   useEffect(() => {
-    if (!trainer?.trainerId || !clientId) return;
+    if (!trainer?.trainerId || !clientId) {
+      if (trainer && clientId) {
+        setLoading(false);
+      }
+      return;
+    }
 
+    console.log("Subscribing to messages:", { trainerId: trainer.trainerId, clientId });
+    
     const unsubscribe = subscribeToTrainerMessages(
       trainer.trainerId,
       clientId,
       (msgs) => {
+        console.log("Received messages:", msgs);
         setMessages(msgs);
         setLoading(false);
       }
@@ -65,15 +88,17 @@ const ClientMessages = () => {
   // Send message
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !trainer?.trainerId) return;
+    if (!newMessage.trim() || !trainer?.trainerId || !clientId) return;
 
     try {
+      console.log("Sending message:", { trainerId: trainer.trainerId, clientId, message: newMessage.trim() });
       await sendMessageToTrainer(
         trainer.trainerId,
         clientId,
         newMessage.trim()
       );
       setNewMessage("");
+      setError(null);
     } catch (err) {
       console.error("Error sending message:", err);
       setError("Failed to send message. Please try again.");

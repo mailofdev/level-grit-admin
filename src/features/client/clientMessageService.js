@@ -15,9 +15,36 @@ export const getTrainerForClient = async (clientId) => {
     // const { data } = await axiosInstance.get(`api/Client/GetTrainer/${clientId}`);
     // return data;
     
-    // Mock data for testing
+    // For now, try to get trainer from logged-in user's data
+    // This should come from the API response when client logs in
+    const encryptedAuth = sessionStorage.getItem("auth_data");
+    if (encryptedAuth) {
+      try {
+        const { decryptToken } = await import("../../utils/crypto");
+        const decrypted = decryptToken(encryptedAuth);
+        const parsed = JSON.parse(decrypted);
+        const userInfo = parsed?.userInfo || {};
+        
+        // Check if userInfo has trainerId (for clients)
+        if (userInfo.trainerId) {
+          return {
+            trainerId: userInfo.trainerId,
+            fullName: userInfo.trainerName || "Your Trainer",
+            email: userInfo.trainerEmail || "",
+            phoneNumber: userInfo.trainerPhone || "",
+            profileImage: null,
+          };
+        }
+      } catch (e) {
+        console.error("Error decrypting auth:", e);
+      }
+    }
+    
+    // Fallback: Mock data for testing
+    // IMPORTANT: This trainerId should match the actual trainer's ID for messages to work
+    // To test: Get the actual trainer's userId from their login and use it here
     return {
-      trainerId: "trainer-001",
+      trainerId: "trainer-001", // ⚠️ Replace with actual trainer ID for testing
       fullName: "John Trainer",
       email: "trainer@example.com",
       phoneNumber: "1234567890",

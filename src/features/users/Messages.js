@@ -6,16 +6,24 @@ import EmojiPicker from "emoji-picker-react";
 import Heading from "../../components/navigation/Heading";
 import { useLocation } from "react-router-dom";
 import { sendMessage, subscribeToMessages } from "../../config/chatService";
+import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import Loader from "../../components/display/Loader";
 
 export default function Messages({ isTrainer = false }) {
   const location = useLocation();
   const client = location.state?.client;
   const trainer = location.state?.trainer;
+  const loggedInUser = getDecryptedUser();
 
   // Trainer & Client IDs depend on who is logged in
-  const trainerId = isTrainer ? client?.trainerId : trainer?.trainerId;
-  const clientId = isTrainer ? client?.clientId : client?.clientId;
+  // When isTrainer is true: trainerId = logged-in trainer's ID, clientId = selected client's ID
+  // When isTrainer is false: trainerId = selected trainer's ID, clientId = logged-in client's ID
+  const trainerId = isTrainer 
+    ? (loggedInUser?.userId || loggedInUser?.id || loggedInUser?.trainerId)
+    : (trainer?.trainerId || trainer?.userId || trainer?.id);
+  const clientId = isTrainer 
+    ? (client?.clientId || client?.userId || client?.id)
+    : (loggedInUser?.userId || loggedInUser?.clientId || loggedInUser?.id);
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -25,8 +33,17 @@ export default function Messages({ isTrainer = false }) {
 
   // Fetch messages
   useEffect(() => {
-    if (!trainerId || !clientId) return;
+    if (!trainerId || !clientId) {
+      console.log("Missing IDs for messages:", { trainerId, clientId, isTrainer, client, trainer, loggedInUser });
+      if (trainerId && clientId) {
+        setLoading(false);
+      }
+      return;
+    }
+    
+    console.log("Subscribing to messages (trainer view):", { trainerId, clientId });
     const unsubscribe = subscribeToMessages(trainerId, clientId, (msgs) => {
+      console.log("Received messages (trainer view):", msgs);
       setMessages(msgs);
       setLoading(false);
     });
@@ -36,10 +53,15 @@ export default function Messages({ isTrainer = false }) {
   // Send message
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !trainerId || !clientId) return;
     const senderId = isTrainer ? trainerId : clientId;
-    await sendMessage(trainerId, clientId, senderId, newMessage.trim());
-    setNewMessage("");
+    console.log("Sending message (trainer view):", { trainerId, clientId, senderId, message: newMessage.trim() });
+    try {
+      await sendMessage(trainerId, clientId, senderId, newMessage.trim());
+      setNewMessage("");
+    } catch (err) {
+      console.error("Error sending message:", err);
+    }
   };
 
   // Scroll to bottom
