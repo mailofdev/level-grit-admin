@@ -149,8 +149,8 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
-                <Route
-                  path="/client-messages"
+                  <Route
+                  path="/client-messages/:clientId"
                   element={
                     <ProtectedLayout
                       config={{
@@ -162,8 +162,7 @@ function App() {
                       <ClientMessages />
                     </ProtectedLayout>
                   }
-                />
-                
+                />                
                 <Route
                   path="/AllClients"
                   element={

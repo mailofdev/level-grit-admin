@@ -72,7 +72,7 @@ const UserMenu = memo(({ user, onProfile, onLogout }) => {
               transition: "color 0.3s ease",
             }}
           >
-            {user?.role || "User"}
+            {initials || "User"}
           </span>
         </button>
 

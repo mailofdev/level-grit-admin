@@ -14,7 +14,7 @@ import Loader from "../../components/display/Loader";
 
 const ClientMessages = () => {
   const user = getDecryptedUser();
-  const clientId = user?.id || user?.clientId;
+  const clientId = user?.userId || user?.clientId;
   
   const [trainer, setTrainer] = useState(null);
   const [messages, setMessages] = useState([]);

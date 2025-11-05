@@ -15,12 +15,13 @@ import { Modal } from "react-bootstrap";
 import { FaWhatsapp, FaInstagram, FaDownload } from "react-icons/fa";
 import html2canvas from 'html2canvas';
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import { FaMessage } from "react-icons/fa6";
 
 const ClientDashboard = () => {
-  const user = getDecryptedUser();
+  const updatedUser = getDecryptedUser();
+  const user = { ...updatedUser, trainerId: 29 };
   const navigate = useNavigate();
   const toast = useRef(null);
-
   const [showShareModal, setShowShareModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState('gradient');
@@ -370,6 +371,17 @@ const ClientDashboard = () => {
           height: "calc(100vh - 140px)",
         }}
       >
+          <button
+                              className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
+                              onClick={() =>
+                                navigate(`/client-messages/${user.userId}`, {
+                                  state: { user },
+                                })
+                              }
+                            >
+                              <FaMessage /> Message
+                            </button>
+
         <div className="flex-grow-1 overflow-auto pb-3">
           <div className="px-2 px-md-3">
             <motion.div
