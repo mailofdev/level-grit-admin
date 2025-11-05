@@ -50,7 +50,10 @@ const TrainerDashboard = lazy(() =>
 );
 const ClientDashboard = lazy(() =>
   import("./features/client/ClientDashboard")
-);  
+);
+const ClientMessages = lazy(() =>
+  import("./features/client/ClientMessages")
+);
 const ClientMessaging = lazy(() =>
   import("./features/messaging/ClientMessaging")
 );
@@ -143,6 +146,20 @@ function App() {
                       }}
                     >
                       <ClientDashboard />
+                    </ProtectedLayout>
+                  }
+                />
+                <Route
+                  path="/client-messages"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <ClientMessages />
                     </ProtectedLayout>
                   }
                 />
