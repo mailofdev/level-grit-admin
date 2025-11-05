@@ -27,6 +27,20 @@ const RegisterForm = () => {
 
   const { fullName, phoneNumber, gender, email, password, role } = formData;
 
+  // Helper function to get dashboard route based on role
+  const getDashboardRoute = (role) => {
+    switch (role) {
+      case "Trainer":
+        return "/trainer-dashboard";
+      case "Administrator":
+        return "/admin-dashboard";
+      case "Client":
+        return "/client-dashboard";
+      default:
+        return "/trainer-dashboard"; // Default fallback
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -105,10 +119,14 @@ const RegisterForm = () => {
       // Wait for toast to display before auto-login
       setTimeout(async () => {
         try {
-          await dispatch(
+          const result = await dispatch(
             loginThunk({ email: formData.email, password: formData.password })
           ).unwrap();
-          navigate("/trainer-dashboard", { replace: true });
+          // Get role from the login response
+          const userRole = result?.userInfo?.role || result?.role;
+          // Navigate to the appropriate dashboard based on role
+          const dashboardRoute = getDashboardRoute(userRole);
+          navigate(dashboardRoute, { replace: true });
         } catch (loginError) {
           toast.current.show({
             severity: "error",

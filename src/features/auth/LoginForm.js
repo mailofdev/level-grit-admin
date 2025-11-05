@@ -32,6 +32,20 @@ const LoginForm = () => {
     return true;
   };
 
+  // Helper function to get dashboard route based on role
+  const getDashboardRoute = (role) => {
+    switch (role) {
+      case "Trainer":
+        return "/trainer-dashboard";
+      case "Administrator":
+        return "/admin-dashboard";
+      case "Client":
+        return "/client-dashboard";
+      default:
+        return "/trainer-dashboard"; // Default fallback
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -40,8 +54,12 @@ const LoginForm = () => {
 
     setIsLoading(true);
     try {
-      await dispatch(loginThunk({ email, password })).unwrap();
-      navigate("/trainer-dashboard", { replace: true });
+      const result = await dispatch(loginThunk({ email, password })).unwrap();
+      // Get role from the login response
+      const userRole = result?.userInfo?.role || result?.role;
+      // Navigate to the appropriate dashboard based on role
+      const dashboardRoute = getDashboardRoute(userRole);
+      navigate(dashboardRoute, { replace: true });
     } catch (error) {
       setErrorMessage(error || "Invalid credentials. Please try again.");
     } finally {
