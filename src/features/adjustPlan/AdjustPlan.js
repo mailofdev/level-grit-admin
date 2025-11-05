@@ -248,7 +248,7 @@ export default function AdjustPlan() {
   const rightButtons = [
     {
       label: "Add",
-      icon: "",
+      icon: <FaPlus />,
       variant: "btn-outline-primary",
       onClick: handleAddMeal,
       disabled: isView || isSaving || isDeleting || !isToday,
@@ -258,7 +258,7 @@ export default function AdjustPlan() {
       icon: isSaving ? (
         <Spinner as="span" animation="border" size="sm" />
       ) : (
-        ""
+        <FaSave />
       ),
       variant: "btn-success",
       onClick: handleSave,
@@ -300,8 +300,7 @@ export default function AdjustPlan() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <AnimatedCard delay={0.1}>
-                <Card className="shadow-lg border-0 rounded-4 p-2 p-md-4 bg-white">
+                <Card className=" border-0 rounded-4 p-2 p-md-4 bg-white">
               {/* Mobile-Optimized Date Header */}
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3 p-2 p-md-3 bg-light rounded-3 gap-2">
                 <div className="d-flex align-items-start gap-2 w-100 w-md-auto">
@@ -354,7 +353,7 @@ export default function AdjustPlan() {
                     <Accordion.Item
                       eventKey={index.toString()}
                       key={meal.id || `new-${index}`}
-                      className="border rounded-3 mb-3 shadow-sm"
+                      className="border rounded-3 mb-3"
                     >
                       <Accordion.Header>
                         <div className="d-flex align-items-center justify-content-between w-100 pe-2">
@@ -399,7 +398,7 @@ export default function AdjustPlan() {
                                   handleChange(index, "mealName", e.target.value)
                                 }
                                 placeholder="e.g., Pre-Workout"
-                                className="rounded-3 shadow-sm"
+                                className="rounded-3"
                                 style={{ minHeight: "44px" }}
                                 disabled={isView || !isToday}
                               />
@@ -422,7 +421,7 @@ export default function AdjustPlan() {
                                   onChange={(e) =>
                                     handleChange(index, nutrient, e.target.value)
                                   }
-                                  className="rounded-3 shadow-sm"
+                                  className="rounded-3"
                                   style={{ minHeight: "44px" }}
                                   min="0"
                                   step="0.1"
@@ -445,7 +444,7 @@ export default function AdjustPlan() {
                               handleChange(index, "instructions", e.target.value)
                             }
                             placeholder="e.g., Eat with salad and lemon water"
-                            className="rounded-3 shadow-sm"
+                            className="rounded-3"
                             style={{ minHeight: "100px" }}
                             disabled={isView || !isToday}
                           />
@@ -456,7 +455,6 @@ export default function AdjustPlan() {
                 </Accordion>
               </Form>
                 </Card>
-              </AnimatedCard>
             </motion.div>
           )}
         </div>

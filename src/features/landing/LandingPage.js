@@ -121,9 +121,13 @@ const LandingPage = () => {
               </li>
               <li className="nav-item ms-2">
                 <button
-                  className="btn btn-link text-decoration-none px-3"
+                  className="btn rounded-pill px-4 fw-semibold me-2"
                   onClick={handleSignInNavigation}
-                  style={{ color: "#333", minHeight: "44px" }}
+                  style={{
+                    backgroundColor: "transparent",
+    color: "#4CAF50",
+    border: "2px solid #4CAF50",
+                  }}
                 >
                   Login
                 </button>
@@ -133,9 +137,8 @@ const LandingPage = () => {
                   className="btn rounded-pill px-4 fw-semibold"
                   onClick={handleSignUpNavigation}
                   style={{
-                    backgroundColor: "#4CAF50",
-                    color: "#fff",
-                    minHeight: "44px",
+                backgroundColor: "#4CAF50",
+    color: "#fff",
                   }}
                 >
                   Sign Up

@@ -14,7 +14,7 @@ export default function Heading({
   // Determine background based on sticky state
   const backgroundStyle = sticky 
     ? {
-        background: "linear-gradient(135deg, rgba(232, 245, 233, 0.95), rgba(200, 230, 201, 0.95))",
+        background: "var(--color-card-bg-hover)",
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
       }

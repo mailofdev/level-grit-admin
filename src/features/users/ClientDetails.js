@@ -468,7 +468,7 @@ export default function ClientDetails() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <AnimatedCard delay={0.1}>
+        
                 <div className="card border-0 rounded-4 shadow-lg overflow-hidden mb-3 mt-2">
                   <motion.div 
                     className="bg-gradient p-3 d-flex justify-content-between align-items-center" 
@@ -559,7 +559,7 @@ export default function ClientDetails() {
                   </div>
                   </div>
                 </div>
-              </AnimatedCard>
+             
             </motion.div>
 
             <motion.div
@@ -637,7 +637,7 @@ export default function ClientDetails() {
               </div>
               </div>
 
-              <div className="card rounded-4 shadow-sm mb-3">
+              <div className="card rounded-4 shadow-sm mb-5 pb-4">
                 <div className="card-body p-3">
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                     <h6 className="fw-bold mb-0">Today's Meals</h6>
@@ -702,7 +702,7 @@ export default function ClientDetails() {
         </div>
       </div>
 
-      <Dialog
+  <Dialog
         header={
           <div className="d-flex align-items-center">
             <i
@@ -716,10 +716,46 @@ export default function ClientDetails() {
           </div>
         }
         visible={showDateDialog}
-        style={{ width: "95vw", maxWidth: "450px" }}
+        style={{ width: "95vw", maxWidth: "500px" }}
         onHide={() => setShowDateDialog(false)}
-        footer={
-          <div className="d-flex gap-2">
+        modal
+        dismissableMask={false}
+      >
+        <div className="p-3">
+          <div className="mb-3">
+            <strong>Client:</strong> {client?.fullName || "N/A"}
+          </div>
+
+          <div className="mb-3">
+            <label className="fw-semibold mb-3 d-block">📅 Select Date</label>
+            <Calendar
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.value)}
+              dateFormat="dd M yy"
+              minDate={actionType === "add" ? today : null}
+              maxDate={maxDate}
+              inline
+              className="w-100"
+            />
+          </div>
+
+          {actionType === "add" &&
+            selectedDate &&
+            selectedDate.toDateString() !== today.toDateString() && (
+              <div className="alert alert-info p-2 small mb-3">
+                <i className="pi pi-info-circle me-2"></i>
+                You can only edit today's plan. Future dates will be read-only.
+              </div>
+            )}
+
+          {actionType === "preview" && (
+            <div className="alert alert-secondary p-2 small mb-3">
+              <i className="pi pi-eye me-2"></i>
+              Opening in preview mode (read-only)
+            </div>
+          )}
+
+          <div className="d-flex gap-2 pt-3" style={{ borderTop: '1px solid #dee2e6' }}>
             <Button
               label="Cancel"
               icon="pi pi-times"
@@ -736,46 +772,8 @@ export default function ClientDetails() {
               autoFocus
             />
           </div>
-        }
-      >
-        <div className="p-2">
-          <div className="mb-3">
-            <strong>Client:</strong> {client?.fullName || "N/A"}
-          </div>
-
-          <div className="mb-3">
-            <label className="fw-semibold mb-2 d-block">📅 Select Date</label>
-            <Calendar
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.value)}
-              dateFormat="dd M yy"
-              showIcon
-              minDate={actionType === "add" ? today : null}
-              maxDate={maxDate}
-              inline
-              className="w-100"
-              touchUI
-            />
-          </div>
-
-          {actionType === "add" &&
-            selectedDate &&
-            selectedDate.toDateString() !== today.toDateString() && (
-              <div className="alert alert-info p-2 small mb-0">
-                <i className="pi pi-info-circle me-2"></i>
-                You can only edit today's plan. Future dates will be read-only.
-              </div>
-            )}
-
-          {actionType === "preview" && (
-            <div className="alert alert-secondary p-2 small mb-0">
-              <i className="pi pi-eye me-2"></i>
-              Opening in preview mode (read-only)
-            </div>
-          )}
         </div>
       </Dialog>
-
       {/* Enhanced Share Modal */}
       <Modal
         show={showShareModal}

@@ -78,7 +78,7 @@ export default function Messages({ isTrainer = false }) {
         transition={{ duration: 0.5 }}
       >
         <Card
-          className="border-0 shadow-lg d-flex flex-column"
+          className="border-0 shadow-lg d-flex flex-column mb-5"
           style={{
             height: "calc(100vh - 160px)",
             borderRadius: "16px",

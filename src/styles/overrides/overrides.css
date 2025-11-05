@@ -117,7 +117,7 @@ body.dark .navbar-toggler-icon {
 }
 
 .card:hover {
-  background: var(--color-card-bg-hover);
+  /* background: var(--color-card-bg-hover); */
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
   border-color: var(--color-primary);
