@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import Heading from "../../components/navigation/Heading";
 import {
   FaFire,
@@ -9,25 +8,32 @@ import {
   FaCamera,
   FaSadCry,
   FaShareAlt,
+  FaTimes,
 } from "react-icons/fa";
-import { Toast } from "primereact/toast";
-import { Modal } from "react-bootstrap";
-import { FaWhatsapp, FaInstagram, FaDownload } from "react-icons/fa";
-import html2canvas from 'html2canvas';
-import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { FaMessage } from "react-icons/fa6";
+import { SplitButton } from "primereact/splitbutton";
 
-const ClientDashboard = () => {
-  const updatedUser = getDecryptedUser();
-  const user = { ...updatedUser, trainerId: 29 };
+export default function ClientDashboard() {
   const navigate = useNavigate();
-  const toast = useRef(null);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState('gradient');
-  const shareCardRef = useRef(null);
+  const location = useLocation();
+  const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
-  // Mock data - same structure as ClientDetails
+  const [showCamera, setShowCamera] = useState(false);
+  const [selectedMealIndex, setSelectedMealIndex] = useState(null);
+  const [stream, setStream] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const client = { ...location.state?.client };
+
+  if (!client)
+    return (
+      <p className="text-muted mt-4 text-center">
+        Select a client to view details.
+      </p>
+    );
+
   const meals = [
     {
       name: "Meal 1 (Pre-Workout)",
@@ -101,7 +107,7 @@ const ClientDashboard = () => {
   );
 
   const dashboardData = {
-    user: { name: user?.fullName || "User", streak: 12 },
+    user: { name: "Alex", streak: 12 },
     macros: {
       calories: { value: totals.calories, target: 2500 },
       protein: { value: totals.protein, target: 200 },
@@ -131,6 +137,105 @@ const ClientDashboard = () => {
   const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
   const remainingMeals = dashboardData.meals.length - completedMeals;
 
+  // Handle meal click - open camera for incomplete meals
+  const handleMealClick = (mealIndex) => {
+    if (!meals[mealIndex].completed) {
+      setSelectedMealIndex(mealIndex);
+      setShowCamera(true);
+      startCamera();
+    }
+  };
+
+  // Start camera stream
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+      setStream(mediaStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      alert("Unable to access camera. Please check permissions.");
+    }
+  };
+
+  // Stop camera stream
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+  };
+
+  // Capture photo and convert to base64
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Draw video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert to base64
+    const base64Image = canvas.toDataURL("image/jpeg", 0.8);
+    
+    // Remove the data:image/jpeg;base64, prefix for API
+    const base64Data = base64Image.split(",")[1];
+
+    // Send to API
+    sendToAPI(base64Data);
+  };
+
+  // Send image to API
+  const sendToAPI = async (base64Image) => {
+    setIsProcessing(true);
+    
+    try {
+      const response = await fetch("https://localhost:7240/api/Integration/extract", {
+        method: "POST",
+        headers: {
+          "accept": "text/plain",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Meal analysis for ${meals[selectedMealIndex].name}`,
+          image: base64Image,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        console.log("API Response:", result);
+        alert("Meal image uploaded successfully!");
+        closeCamera();
+      } else {
+        throw new Error("API request failed");
+      }
+    } catch (error) {
+      console.error("Error sending to API:", error);
+      alert("Failed to upload meal image. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Close camera modal
+  const closeCamera = () => {
+    stopCamera();
+    setShowCamera(false);
+    setSelectedMealIndex(null);
+  };
+
   const CircularProgress = ({
     value,
     max,
@@ -148,23 +253,23 @@ const ClientDashboard = () => {
     return (
       <div className="text-center">
         <div className="position-relative d-inline-block mb-2">
-          <svg width="100" height="100" className="transform-rotate-neg90">
+          <svg width="120" height="120" className="transform-rotate-neg90">
             <circle
-              cx="50"
-              cy="50"
+              cx="60"
+              cy="60"
               r="45"
               fill="none"
               stroke="#e9ecef"
               strokeWidth="8"
             />
             <circle
-              cx="50"
-              cy="50"
+              cx="60"
+              cy="60"
               r="45"
               fill="none"
               stroke={
                 color === "success"
-                  ? "#007AFF"
+                  ? "#28a745"
                   : color === "info"
                   ? "#17a2b8"
                   : "#ffc107"
@@ -178,700 +283,318 @@ const ClientDashboard = () => {
             />
           </svg>
           <div className="position-absolute top-50 start-50 translate-middle">
-            <div className="fw-bold fs-6">{percentage}%</div>
+            <div className="fw-bold fs-5">{percentage}%</div>
           </div>
         </div>
-        <h6 className="mb-1 text-capitalize fw-semibold small">{label}</h6>
-        <small className="text-muted" style={{ fontSize: '0.75rem' }}>
+        <h6 className="mb-1 text-capitalize fw-semibold">{label}</h6>
+        <small className="text-muted">
           {current} / {target}
         </small>
       </div>
     );
   };
 
-  const themes = {
-    gradient: {
-      name: 'Aurora',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-      icon: '🌈'
-    },
-    sunset: {
-      name: 'Sunset',
-      background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-      icon: '🌅'
-    },
-    ocean: {
-      name: 'Ocean',
-      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
-      icon: '🌊'
-    },
-    forest: {
-      name: 'Forest',
-      background: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
-      icon: '🌲'
-    },
-    fire: {
-      name: 'Fire',
-      background: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
-      icon: '🔥'
-    }
-  };
-
-  const generateProgressImage = async () => {
-    if (!shareCardRef.current) return null;
-    
-    setIsGenerating(true);
-    
-    try {
-      await document.fonts.ready;
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const canvas = await html2canvas(shareCardRef.current, {
-        scale: 3,
-        backgroundColor: null,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        imageTimeout: 0,
-      });
-      
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
-      setIsGenerating(false);
-      return blob;
-    } catch (error) {
-      setIsGenerating(false);
-      toast.current?.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to generate image. Please try again.',
-        life: 3000
-      });
-      return null;
-    }
-  };
-
-  const handleSharePlatform = async (platform) => {
-    const imageBlob = await generateProgressImage();
-    if (!imageBlob) return;
-
-    const file = new File([imageBlob], 'fitness-progress.png', { type: 'image/png' });
-    const shareText = `💪 I'm on a ${dashboardData.user.streak}-day fitness streak!\n🔥 ${completedMeals}/${dashboardData.meals.length} meals completed today!\n✨ Keep pushing! #FitnessJourney #HealthyLiving`;
-
-    if (platform === 'native' && navigator.share) {
+  const handleShare = async () => {
+    if (navigator.share) {
       try {
         await navigator.share({
-          title: 'My Fitness Progress',
-          text: shareText,
-          files: [file]
+          title: "My Fitness Streak",
+          text: `I'm on a ${dashboardData.user.streak}-day fitness streak! 💪🔥`,
         });
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          // Share failed
-        }
+        console.error("Share failed", error);
       }
-    } else if (platform === 'whatsapp') {
-      const url = URL.createObjectURL(imageBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'fitness-progress.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      setTimeout(() => {
-        if (isMobile) {
-          const whatsappDeepLink = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
-          window.location.href = whatsappDeepLink;
-          
-          setTimeout(() => {
-            const whatsappWebUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-            window.open(whatsappWebUrl, '_blank');
-          }, 2000);
-        } else {
-          const whatsappWebUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-          window.open(whatsappWebUrl, '_blank');
-        }
-        
-        toast.current?.show({
-          severity: 'success',
-          summary: '📸 Image Downloaded!',
-          detail: 'Upload the image to your WhatsApp Status from your gallery.',
-          life: 5000
-        });
-      }, 500);
-    } else if (platform === 'instagram') {
-      const url = URL.createObjectURL(imageBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'fitness-progress-story.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      
-      setTimeout(() => {
-        if (isAndroid) {
-          window.location.href = 'instagram://story-camera';
-          setTimeout(() => {
-            window.location.href = 'instagram://';
-          }, 1500);
-        } else if (isIOS) {
-          window.location.href = 'instagram://story-camera';
-          setTimeout(() => {
-            window.location.href = 'instagram://';
-          }, 1500);
-        } else {
-          window.open('https://www.instagram.com/', '_blank');
-        }
-        
-        toast.current?.show({
-          severity: 'success',
-          summary: '📸 Image Downloaded!',
-          detail: isMobile 
-            ? 'Opening Instagram... Create a Story and select the image from your gallery.' 
-            : 'Open Instagram app on your phone, create a Story, and select the downloaded image.',
-          life: 6000
-        });
-      }, 500);
-    } else if (platform === 'download') {
-      const url = URL.createObjectURL(imageBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'fitness-progress.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      toast.current?.show({
-        severity: 'success',
-        summary: '✅ Downloaded!',
-        detail: 'Image saved to your downloads folder.',
-        life: 3000
-      });
+    } else {
+      alert("Share not supported");
     }
-    
-    setShowShareModal(false);
   };
 
   return (
-    <div className="container-fluid px-2 px-md-3">
-      <Toast ref={toast} />
-      <Heading pageName="Dashboard" sticky={true} />
-      <div
-        className="d-flex flex-column"
-        style={{
-          height: "calc(100vh - 140px)",
-        }}
-      >
-          <button
-                              className="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-3 shadow-sm"
-                              onClick={() =>
-                                navigate(`/client-messages/${user.userId}`, {
-                                  state: { user },
-                                })
-                              }
-                            >
-                              <FaMessage /> Message
-                            </button>
+    <div className="container">
+      <div className="d-flex flex-column">
+        <div className="flex-grow-1 overflow-auto p-3 rounded shadow-sm">
+          {/* Client Info Card */}
+          <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
+            <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+              <div>
+                <h4 className="fw-bold">{client.fullName}</h4>
+                <p className="mb-1 text-muted small">
+                  Goal: <span className="fw-semibold">{client.goal}</span> •
+                  Start: {client.startDate}
+                </p>
+                <span
+                  className={`badge px-3 py-2 ${
+                    client.status === "attention" ? "bg-danger" : "bg-success"
+                  }`}
+                >
+                  {client.status === "attention"
+                    ? "Need Attention"
+                    : "On Track"}
+                </span>
+              </div>
 
-        <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="px-2 px-md-3">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="row g-2 g-md-3 mb-3">
-                <div className="col-12 col-lg-8">
-                  <div className="card rounded-4 shadow-sm h-100">
-                    <div className="card-body p-3">
-                      <h6 className="card-title mb-3 fw-bold">Today's Macros</h6>
-                      <div className="row g-3">
-                        {Object.entries(dashboardData.macros).map(
-                          ([key, value], index) => (
-                            <div key={key} className="col-6 col-sm-6 col-md-3">
-                              <CircularProgress
-                                current={value.value}
-                                target={value.target}
-                                label={key}
-                                color={
-                                  index === 0
-                                    ? "success"
-                                    : index === 1
-                                    ? "info"
-                                    : "warning"
-                                }
-                              />
-                            </div>
-                          )
+              <div className="text-md-end mt-3 mt-md-0">
+                <div className="d-flex align-items-center justify-content-md-end mb-3">
+                  <span
+                    className={`fw-bold ${
+                      client.streak === "Missed meal"
+                        ? "text-danger"
+                        : "text-success"
+                    }`}
+                  >
+                    {client.streak}
+                  </span>
+                  {client.streak === "Missed meal" ? (
+                    <FaSadCry className="text-danger ms-2" />
+                  ) : (
+                    <FaFire className="text-success ms-2" />
+                  )}
+                </div>
+                <div className="d-flex flex-wrap gap-2 justify-content-md-end">
+                  <button
+                    className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
+                    onClick={() =>
+                      navigate(`/messages/${client.clientId}`, {
+                        state: { client },
+                      })
+                    }
+                  >
+                    <FaMessage className="me-1" /> Message
+                  </button>
+
+                  <SplitButton
+                    label="Plan"
+                    icon="pi pi-plus"
+                    className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
+                    style={{
+                      color: "white",
+                    }}
+                    model={[
+                      {
+                        label: "Add",
+                        icon: "pi pi-pencil",
+                        command: () =>
+                          navigate(`/adjust-plan/${client.clientId}`, {
+                            state: { client, isView: false },
+                          }),
+                      },
+                      {
+                        label: "Preview",
+                        icon: "pi pi-eye",
+                        command: () =>
+                          navigate(`/adjust-plan/${client.clientId}`, {
+                            state: { client, isView: true },
+                          }),
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row mb-2 bg-gray">
+            <div className="col-lg-8 mb-3">
+              <div className="card rounded-4 shadow-sm h-100">
+                <div className="card-body">
+                  <div className="d-flex align-items-center mb-2">
+                    <h5 className="card-title mb-0 fw-bold">Today's Macros</h5>
+                  </div>
+                  <div className="row">
+                    {Object.entries(dashboardData.macros).map(
+                      ([key, value], index) => (
+                        <div key={key} className="col-12 col-sm-3 mb-3">
+                          <CircularProgress
+                            current={value.value}
+                            target={value.target}
+                            label={key}
+                            color={
+                              index === 0
+                                ? "success"
+                                : index === 1
+                                ? "info"
+                                : "warning"
+                            }
+                          />
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4 mb-3">
+              <div className="card rounded-4 shadow-sm h-100">
+                <div className="card-body text-center d-flex flex-column">
+                  <div className="mb-3">
+                    <FaFire className="text-warning fs-2 mb-2" />
+                    <h6 className="fw-bold">Streak Progress</h6>
+                  </div>
+                  <div className="flex-grow-1 d-flex flex-column justify-content-center">
+                    <h4 className="text-primary mb-3">
+                      {dashboardData.streakProgress.current} /{" "}
+                      {dashboardData.streakProgress.goal}
+                      <small className="text-muted ms-1">days</small>
+                    </h4>
+                    <div className="progress mb-4" style={{ height: "8px" }}>
+                      <div
+                        className="progress-bar bg-gradient"
+                        style={{
+                          width: `${
+                            (dashboardData.streakProgress.current /
+                              dashboardData.streakProgress.goal) *
+                            100
+                          }%`,
+                          background:
+                            "linear-gradient(90deg, #28a745, #20c997)",
+                        }}
+                      ></div>
+                    </div>
+                    <button
+                      onClick={handleShare}
+                      className="btn btn-outline-primary btn-sm"
+                    >
+                      <FaShareAlt className="me-2" />
+                      Share Progress
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Meal Plan Section */}
+          <div className="card rounded-4 shadow-sm mb-4">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="card-title fw-bold mb-0">Today's Meals</h5>
+                <div>
+                  <span className="text-success fw-semibold me-2">
+                    {completedMeals} completed
+                  </span>
+                  <span className="text-danger fw-semibold">
+                    {remainingMeals} remaining
+                  </span>
+                </div>
+              </div>
+
+              <div className="row g-3">
+                {dashboardData.meals.map((meal, idx) => (
+                  <div key={idx} className="col-12 col-md-4 col-lg-4">
+                    <div
+                      className={`h-100 rounded-4 p-3 position-relative ${
+                        meal.completed
+                          ? "br-light-green-2"
+                          : "br-light-gray-dotted"
+                      }`}
+                      style={{
+                        cursor: meal.completed ? "default" : "pointer",
+                        pointerEvents: meal.completed ? "none" : "auto",
+                      }}
+                      onClick={() => handleMealClick(idx)}
+                    >
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h6 className="fw-semibold mb-1">{meal.name}</h6>
+                        {meal.completed ? (
+                          <FaCheckCircle className="text-success fs-5" />
+                        ) : (
+                          <FaCamera className="text-secondary fs-5" />
                         )}
                       </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="col-12 col-lg-4">
-                  <div className="card rounded-4 shadow-sm h-100">
-                    <div className="card-body p-3 text-center d-flex flex-column">
-                      <div className="mb-3">
-                        <FaFire className="text-warning fs-2 mb-2" />
-                        <h6 className="fw-bold mb-0">Streak Progress</h6>
+                      <div
+                        className="rounded-3 overflow-hidden mb-2"
+                        style={{ height: "120px" }}
+                      >
+                        {meal.image && (
+                          <img
+                            src={meal.image}
+                            alt={meal.name}
+                            className="img-fluid w-100 h-100 object-fit-cover"
+                          />
+                        )}
                       </div>
-                      <div className="flex-grow-1 d-flex flex-column justify-content-center">
-                        <h4 className="text-primary mb-3">
-                          {dashboardData.streakProgress.current} /{" "}
-                          {dashboardData.streakProgress.goal}
-                          <small className="text-muted ms-1">days</small>
-                        </h4>
-                        <div className="progress mb-3" style={{ height: "10px" }}>
-                          <div
-                            className="progress-bar bg-gradient"
-                            style={{
-                              width: `${
-                                (dashboardData.streakProgress.current /
-                                  dashboardData.streakProgress.goal) *
-                                100
-                              }%`,
-                              background:
-                                "linear-gradient(90deg, #007AFF, #0056b3)",
-                            }}
-                          ></div>
-                        </div>
-                        <button
-                          onClick={() => setShowShareModal(true)}
-                          className="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center gap-2 mx-auto"
-                          style={{ minHeight: "40px", minWidth: "150px" }}
-                        >
-                          <FaShareAlt />
-                          <span>Share Progress</span>
-                        </button>
+
+                      <p className="mb-1 small text-muted">
+                        {meal.calories} calories
+                      </p>
+                      <div className="small text-muted">
+                        P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-
-              <div className="card rounded-4 shadow-sm mb-5 pb-4">
-                <div className="card-body p-3">
-                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                    <h6 className="fw-bold mb-0">Today's Meals</h6>
-                    <div className="d-flex gap-3">
-                      <span className="text-success fw-semibold small">
-                        ✓ {completedMeals} done
-                      </span>
-                      <span className="text-danger fw-semibold small">
-                        ⏳ {remainingMeals} left
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="row g-2 g-md-3">
-                    {dashboardData.meals.map((meal, idx) => (
-                      <div key={idx} className="col-12 col-sm-6 col-lg-4">
-                        <div
-                          className={`h-100 rounded-4 p-3 position-relative ${
-                            meal.completed
-                              ? "br-light-green-2"
-                              : "br-light-gray-dotted"
-                          }`}
-                        >
-                          <div className="d-flex justify-content-between align-items-start mb-2">
-                            <h6 className="fw-semibold mb-0 small">{meal.name}</h6>
-                            {meal.completed ? (
-                              <FaCheckCircle className="text-success fs-5 flex-shrink-0 ms-2" />
-                            ) : (
-                              <FaCamera className="text-secondary fs-5 flex-shrink-0 ms-2" />
-                            )}
-                          </div>
-
-                          {meal.image && (
-                            <div
-                              className="rounded-3 overflow-hidden mb-2"
-                              style={{ height: "140px" }}
-                            >
-                              <img
-                                src={meal.image}
-                                alt={meal.name}
-                                className="img-fluid w-100 h-100 object-fit-cover"
-                              />
-                            </div>
-                          )}
-
-                          <div className="mt-2">
-                            <p className="mb-1 small fw-semibold">
-                              {meal.calories} kcal
-                            </p>
-                            <div className="small text-muted">
-                              P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Share Modal */}
-      <Modal
-        show={showShareModal}
-        onHide={() => setShowShareModal(false)}
-        centered
-        size="xl"
-        className="share-progress-modal"
-      >
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title className="d-flex align-items-center gap-2">
-            <div className="bg-gradient rounded-3 p-2" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
-              <span style={{fontSize: '24px'}}>📊</span>
-            </div>
-            <div>
-              <div className="fs-5 fw-bold">Share Your Progress</div>
-              <small className="text-muted fw-normal">Choose a theme and share your achievement</small>
-            </div>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-3 p-md-4">
-          <div className="row g-3 g-md-4">
-            {/* Preview Section */}
-            <div className="col-12 col-lg-6">
-              <div className="bg-light rounded-4 p-3 p-md-4" style={{border: '2px dashed #dee2e6'}}>
-                {/* Theme Selector */}
-                <div className="mb-3">
-                  <label className="fw-semibold mb-2 d-block small">🎨 Choose Theme</label>
-                  <div className="d-flex flex-wrap gap-2">
-                    {Object.entries(themes).map(([key, theme]) => (
-                      <button
-                        key={key}
-                        onClick={() => setSelectedTheme(key)}
-                        className={`btn btn-sm ${selectedTheme === key ? 'btn-primary' : 'btn-outline-secondary'}`}
-                        style={{
-                          borderRadius: '10px',
-                          padding: '6px 12px',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        <span className="me-1">{theme.icon}</span>
-                        {theme.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Progress Card Preview */}
-                <div className="d-flex justify-content-center">
-                  <div 
-                    ref={shareCardRef}
-                    style={{
-                      width: '100%',
-                      maxWidth: '350px',
-                      aspectRatio: '9/16',
-                      background: themes[selectedTheme].background,
-                      borderRadius: '20px',
-                      padding: '28px 20px',
-                      color: 'white',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {/* Header */}
-                    <div>
-                      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        <div style={{ fontSize: '42px', marginBottom: '10px' }}>💪</div>
-                        <h3 style={{ margin: 0, fontSize: '26px', fontWeight: '800', textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-                          {user?.fullName || 'User'}
-                        </h3>
-                        <p style={{ margin: '6px 0 0 0', fontSize: '13px', opacity: 0.9 }}>
-                          {new Date().toLocaleDateString('en-US', { 
-                            month: 'long', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          })}
-                        </p>
-                      </div>
-
-                      {/* Streak Banner */}
-                      <div 
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          borderRadius: '18px',
-                          padding: '20px',
-                          marginBottom: '16px',
-                          border: '1px solid rgba(255, 255, 255, 0.3)',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '14px' }}>
-                          <FaFire style={{fontSize: '40px'}} />
-                          <div>
-                            <div style={{ fontSize: '32px', fontWeight: '900', lineHeight: 1 }}>
-                              {dashboardData.user.streak}
-                            </div>
-                            <div style={{ fontSize: '13px', opacity: 0.9, fontWeight: '600' }}>Day Streak</div>
-                          </div>
-                        </div>
-                        <div style={{
-                          background: 'rgba(255, 255, 255, 0.3)',
-                          borderRadius: '8px',
-                          height: '7px',
-                          overflow: 'hidden',
-                          marginBottom: '8px',
-                        }}>
-                          <div 
-                            style={{
-                              background: 'white',
-                              height: '100%',
-                              width: `${(dashboardData.streakProgress.current / dashboardData.streakProgress.goal) * 100}%`,
-                              borderRadius: '8px',
-                              boxShadow: '0 0 10px rgba(255,255,255,0.5)',
-                            }}
-                          />
-                        </div>
-                        <div style={{ textAlign: 'center', fontSize: '12px', opacity: 0.9, fontWeight: '600' }}>
-                          🎯 Goal: {dashboardData.streakProgress.goal} days
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
-                        {Object.entries(dashboardData.macros).slice(0, 2).map(([key, value]) => {
-                          const percentage = Math.round((value.value / value.target) * 100);
-                          return (
-                            <div 
-                              key={key}
-                              style={{
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                backdropFilter: 'blur(10px)',
-                                borderRadius: '14px',
-                                padding: '14px',
-                                textAlign: 'center',
-                                border: '1px solid rgba(255, 255, 255, 0.2)',
-                              }}
-                            >
-                              <div className="mb-2">
-                                <div 
-                                  className="position-relative d-inline-block"
-                                  style={{ width: '46px', height: '46px' }}
-                                >
-                                  <svg width="46" height="46" style={{ transform: 'rotate(-90deg)' }}>
-                                    <circle
-                                      cx="23"
-                                      cy="23"
-                                      r="18"
-                                      fill="none"
-                                      stroke="rgba(255,255,255,0.3)"
-                                      strokeWidth="4"
-                                    />
-                                    <circle
-                                      cx="23"
-                                      cy="23"
-                                      r="18"
-                                      fill="none"
-                                      stroke="white"
-                                      strokeWidth="4"
-                                      strokeDasharray={`${(percentage / 100) * (2 * Math.PI * 18)} ${2 * Math.PI * 18}`}
-                                      strokeLinecap="round"
-                                    />
-                                  </svg>
-                                  <div 
-                                    className="position-absolute top-50 start-50 translate-middle"
-                                    style={{ fontSize: '10px', fontWeight: 'bold' }}
-                                  >
-                                    {percentage}%
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="text-capitalize fw-semibold" style={{ fontSize: '12px', marginBottom: '2px' }}>
-                                {key}
-                              </div>
-                              <div style={{ fontSize: '10px', opacity: 0.8 }}>
-                                {value.value}/{value.target}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Meals Completed */}
-                      <div 
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          borderRadius: '14px',
-                          padding: '16px',
-                          textAlign: 'center',
-                          border: '1px solid rgba(255, 255, 255, 0.3)',
-                        }}
-                      >
-                        <div style={{ fontSize: '14px', marginBottom: '6px' }}>🍽️</div>
-                        <div style={{ fontSize: '26px', fontWeight: '900', marginBottom: '2px' }}>
-                          {completedMeals}/{dashboardData.meals.length}
-                        </div>
-                        <div style={{ fontSize: '12px', opacity: 0.9, fontWeight: '600' }}>
-                          Meals Completed Today
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div style={{ textAlign: 'center', marginTop: '14px', fontSize: '11px', opacity: 0.7, fontWeight: '600' }}>
-                        #FitnessJourney #HealthyLiving
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {/* Camera Modal */}
+      {showCamera && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            zIndex: 9999,
+          }}
+        >
+          <div className="bg-white rounded-4 p-4" style={{ maxWidth: "600px", width: "90%" }}>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="mb-0">
+                Capture {selectedMealIndex !== null && meals[selectedMealIndex].name}
+              </h5>
+              <button
+                className="btn btn-link text-dark p-0"
+                onClick={closeCamera}
+                disabled={isProcessing}
+              >
+                <FaTimes size={24} />
+              </button>
             </div>
 
-            {/* Share Options Section */}
-            <div className="col-12 col-lg-6">
-              <div className="d-flex flex-column gap-3 h-100">
-                <div className="bg-light rounded-3 p-3 mb-2">
-                  <h6 className="fw-bold mb-1 d-flex align-items-center gap-2">
-                    <span>📱</span>
-                    Share Options
-                  </h6>
-                  <p className="mb-0 small text-muted">
-                    Choose how you want to share your progress
-                  </p>
-                </div>
+            <div className="mb-3">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-100 rounded-3"
+                style={{ maxHeight: "400px", objectFit: "cover" }}
+              />
+            </div>
 
-                {/* Native Share */}
-                {navigator.share && (
-                  <button
-                    onClick={() => handleSharePlatform("native")}
-                    disabled={isGenerating}
-                    className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0 text-white"
-                    style={{
-                      minHeight: "56px",
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                      transition: 'transform 0.2s',
-                    }}
-                    onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                  >
-                    <FaShareAlt className="fs-5" />
-                    <span className="fw-semibold">{isGenerating ? "Generating..." : "Share via..."}</span>
-                  </button>
+            <canvas ref={canvasRef} style={{ display: "none" }} />
+
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-primary flex-grow-1"
+                onClick={capturePhoto}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <FaCamera className="me-2" />
+                    Capture Photo
+                  </>
                 )}
-
-                {/* WhatsApp */}
-                <button
-                  onClick={() => handleSharePlatform("whatsapp")}
-                  disabled={isGenerating}
-                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
-                  style={{
-                    minHeight: "56px",
-                    background: '#25D366',
-                    color: 'white',
-                    boxShadow: '0 4px 15px rgba(37, 211, 102, 0.3)',
-                    transition: 'transform 0.2s',
-                  }}
-                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                >
-                  <FaWhatsapp className="fs-5" />
-                  <span className="fw-semibold">Share on WhatsApp</span>
-                </button>
-
-                {/* Instagram */}
-                <button
-                  onClick={() => handleSharePlatform("instagram")}
-                  disabled={isGenerating}
-                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
-                  style={{
-                    minHeight: "56px",
-                    background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                    color: 'white',
-                    boxShadow: '0 4px 15px rgba(240, 148, 51, 0.3)',
-                    transition: 'transform 0.2s',
-                  }}
-                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                >
-                  <FaInstagram className="fs-5" />
-                  <span className="fw-semibold">Share on Instagram Story</span>
-                </button>
-
-                {/* Download */}
-                <button
-                  onClick={() => handleSharePlatform("download")}
-                  disabled={isGenerating}
-                  className="btn btn-lg w-100 d-flex align-items-center justify-content-center gap-3 rounded-3 border-0"
-                  style={{
-                    minHeight: "56px",
-                    background: '#111827',
-                    color: 'white',
-                    boxShadow: '0 4px 15px rgba(17, 24, 39, 0.3)',
-                    transition: 'transform 0.2s',
-                  }}
-                  onMouseEnter={(e) => !isGenerating && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                >
-                  <FaDownload className="fs-5" />
-                  <span className="fw-semibold">Download Image</span>
-                </button>
-
-                {/* Info Alert */}
-                <div className="alert alert-info mb-0 d-flex align-items-start gap-2" style={{fontSize: '13px', lineHeight: '1.5'}}>
-                  <span style={{fontSize: '18px'}}>💡</span>
-                  <div>
-                    <strong>Tip:</strong> For Instagram, the image will be downloaded. Open Instagram, create a Story, and select the image from your gallery to share!
-                  </div>
-                </div>
-              </div>
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={closeCamera}
+                disabled={isProcessing}
+              >
+                Cancel
+              </button>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
-
-      <style jsx>{`
-        .share-progress-modal .modal-content {
-          border-radius: 24px !important;
-          border: none !important;
-        }
-        
-        .share-progress-modal .modal-header {
-          border-bottom: 1px solid #e5e7eb !important;
-        }
-        
-        .share-progress-modal .btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-        
-        @media (max-width: 991px) {
-          .share-progress-modal .modal-dialog {
-            max-width: 95% !important;
-            margin: 1rem auto !important;
-          }
-        }
-        
-        @media (max-width: 576px) {
-          .share-progress-modal .modal-body {
-            padding: 1rem !important;
-          }
-        }
-      `}</style>
+        </div>
+      )}
     </div>
   );
-};
-
-export default ClientDashboard;
+}
