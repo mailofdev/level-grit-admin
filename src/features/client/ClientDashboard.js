@@ -208,7 +208,7 @@ export default function ClientDashboard() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: `Meal analysis for ${meals[selectedMealIndex].name}`,
+          message: ``,
           image: base64Image,
         }),
       });

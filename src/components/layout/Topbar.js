@@ -97,7 +97,7 @@ const Topbar = ({
         <div className={`collapse navbar-collapse ${navbarOpen ? "show" : ""}`}>
           <div className="d-flex w-100 flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between mt-3 mt-lg-0 gap-3 gap-lg-0">
             {showNavMenu && (
-              <div className="w-100 w-lg-auto mx-auto mx-lg-0">
+              <div className="w-100 w-lg-auto mx-auto mx-lg-0 d-flex justify-content-center">
                 <NavMenu
                   navbarOpen={navbarOpen}
                   setNavbarOpen={setNavbarOpen}
