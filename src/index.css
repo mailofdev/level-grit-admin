@@ -59,7 +59,7 @@ body {
 
 .auth-container:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  /* Removed transform for smoother hover */
 }
 
 /* Auth router styling */
@@ -78,8 +78,8 @@ body {
 }
 
 .auth-page-enter .card:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-xl) !important;
+  /* Removed transform for smoother hover */
 }
 
 .auth-page-enter .form-control:focus,
@@ -90,8 +90,8 @@ body {
 }
 
 .auth-page-enter .btn-primary:hover {
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  /* Removed transform for smoother hover */
 }
 
 .auth-page-enter a:hover {
@@ -102,7 +102,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

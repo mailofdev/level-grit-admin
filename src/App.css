@@ -1,5 +1,6 @@
 @import './styles/overrides/overrides.css';
 @import './styles/themes/variables.css';
+@import './styles/animations.css';
 
 /* =========================================
    App Component Styles & Global Utilities
@@ -42,7 +43,7 @@
 .content-wrapper:hover {
   background: var(--color-card-bg-hover);
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  /* Removed transform for smoother, less distracting hover */
 }
 
 /* Page Container */
@@ -67,24 +68,13 @@
 .section-container:hover {
   background: var(--color-card-bg-hover);
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  /* Removed transform for smoother, less distracting hover */
 }
 
-/* Enhanced hover effects */
-.hover-scale:hover {
-  /* transform: scale(1.05); */
-  transition: transform 0.3s ease;
-}
-
+/* Enhanced hover effects - simplified */
 .hover-lift:hover {
-  /* transform: translateY(-4px); */
-  transition: transform 0.3s ease;
-}
-
-.hover-shadow:hover {
-  /* transform: translateY(-1px); */
-  box-shadow: var(--shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow var(--transition-base);
 }
 
 /* Form focus states */
@@ -210,7 +200,7 @@ select.form-select:focus {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

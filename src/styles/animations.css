@@ -1,0 +1,166 @@
+/* =========================================
+   Simplified & Elegant Animations
+   Production-ready, smooth transitions
+=========================================== */
+
+/* Base transition timing - consistent across app */
+:root {
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.4s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade animations - subtle and professional */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth entrance animations */
+.animate-fade-in {
+  animation: fadeIn var(--transition-base);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--transition-smooth);
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--transition-smooth);
+}
+
+/* Hover effects - subtle and elegant */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-base);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
+}
+
+/* Button interactions - minimal transform */
+.btn-smooth {
+  transition: all var(--transition-base);
+}
+
+.btn-smooth:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.btn-smooth:active {
+  transform: translateY(0);
+}
+
+/* Card entrance */
+.card-enter {
+  animation: fadeInUp var(--transition-smooth);
+}
+
+/* Modal entrance - smooth and professional */
+.modal-enter {
+  animation: fadeInDown var(--transition-smooth);
+}
+
+/* Loading shimmer - subtle */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse animation - subtle */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus transitions */
+.focus-smooth:focus {
+  transition: all var(--transition-base);
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  animation: fadeIn var(--transition-smooth);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+}
+

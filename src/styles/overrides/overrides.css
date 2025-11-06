@@ -47,7 +47,7 @@ body {
 .navbar-nav .nav-link:hover {
   color: var(--color-primary) !important;
   background: var(--color-surface-variant);
-  transform: translateY(-1px);
+  /* Removed transform for smoother hover */
 }
 
 .navbar-nav .nav-link.active {

@@ -9,14 +9,48 @@ import {
   FaEnvelope,
   FaPhone,
   FaUserPlus,
+  FaDownload,
 } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Animated3DCard from "../../components/landing/Animated3DCard";
 import logo3 from "../../assets/images/logo3.jpeg";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+
+    // Check if app is already installed
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setShowInstallButton(false);
+    }
+
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === "accepted") {
+      setShowInstallButton(false);
+    }
+    
+    setDeferredPrompt(null);
+  };
 
   const handleSignInNavigation = () => navigate("/login");
   const handleSignUpNavigation = () => navigate("/register");
@@ -183,8 +217,7 @@ const LandingPage = () => {
                     color: "#fff",
                     minHeight: "52px",
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ opacity: 0.9 }}
                 >
                   👉 Get Started Free
                 </motion.button>
@@ -195,9 +228,9 @@ const LandingPage = () => {
             </div>
             <div className="col-lg-6 text-center">
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
               >
                 <div className="position-relative">
                   <img
@@ -221,7 +254,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileHover={{ opacity: 0.9 }}
                   >
                     <small className="text-muted d-block">Daily Steps</small>
                     <strong style={{ color: "#4CAF50", fontSize: "1.2rem" }}>
@@ -238,7 +271,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    whileHover={{ scale: 1.1, rotate: -5 }}
+                    whileHover={{ opacity: 0.9 }}
                   >
                     <small className="text-muted d-block">
                       Calories Burned
@@ -364,8 +397,8 @@ const LandingPage = () => {
               <motion.div
                 key={i}
                 className="col-md-4"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 200 }}
+                whileHover={{ opacity: 0.9 }}
+                transition={{ duration: 0.2 }}
               >
                 <div className="card border-0 shadow-sm text-center h-100 p-4 rounded-4">
                   <step.icon size={36} className="text-success mb-3" />
@@ -406,8 +439,7 @@ const LandingPage = () => {
               color: "#fff",
               minHeight: "52px",
             }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ opacity: 0.9 }}
           >
             Contact Us
           </motion.button>
@@ -469,8 +501,7 @@ const LandingPage = () => {
                   className="btn btn-dark rounded-pill px-4 py-2"
                   style={{ minHeight: "44px" }}
                   onClick={handleSignUpNavigation}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                whileHover={{ opacity: 0.9 }}
                 >
                   Get Started
                 </motion.button>
@@ -561,7 +592,7 @@ const LandingPage = () => {
                   <motion.div
                     key={idx}
                     className="col-4"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileHover={{ opacity: 0.9 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <img
@@ -594,7 +625,7 @@ const LandingPage = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ opacity: 0.9 }}
               />
             </div>
             <div className="col-lg-6 mb-4 mb-lg-0">
@@ -620,6 +651,28 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* PWA Install Button - Floating */}
+      {showInstallButton && (
+        <motion.button
+          className="position-fixed bottom-0 end-0 m-4 btn btn-primary shadow-lg rounded-pill d-flex align-items-center gap-2 px-4 py-3"
+          style={{
+            zIndex: 1050,
+            minHeight: "56px",
+            backgroundColor: "#007AFF",
+            border: "none",
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3 }}
+          onClick={handleInstallClick}
+          whileHover={{ opacity: 0.9 }}
+        >
+          <FaDownload size={20} />
+          <span className="fw-semibold">Install PWA App</span>
+        </motion.button>
+      )}
+
       {/* Footer */}
       <footer className="bg-dark text-white pt-4">
         <div className="container">
@@ -636,7 +689,7 @@ const LandingPage = () => {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ opacity: 0.8 }}
                 >
                   <FaFacebook
                     size={24}
@@ -647,7 +700,7 @@ const LandingPage = () => {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ opacity: 0.8 }}
                 >
                   <FaInstagram
                     size={24}
@@ -658,7 +711,7 @@ const LandingPage = () => {
                   href="https://linkedin.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ opacity: 0.8 }}
                 >
                   <FaLinkedin
                     size={24}

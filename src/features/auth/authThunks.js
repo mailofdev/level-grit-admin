@@ -2,12 +2,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserById, loginUser, registerUser, UpdateProfileData, ChangePassword } from "../../api/authAPI";
 import { encryptToken } from "../../utils/crypto";
+import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const result = await loginUser(credentials);
+
+      if (!result?.token) {
+        throw new Error("Invalid response from server. Please try again.");
+      }
 
       // Combine all auth info
       const authData = {
@@ -16,16 +21,18 @@ export const loginThunk = createAsyncThunk(
       };
 
       // Encrypt and store in sessionStorage
-      const encryptedAuth = encryptToken(JSON.stringify(authData));
-      sessionStorage.setItem("auth_data", encryptedAuth);
+      try {
+        const encryptedAuth = encryptToken(JSON.stringify(authData));
+        sessionStorage.setItem("auth_data", encryptedAuth);
+      } catch (encryptError) {
+        logError(encryptError, "Login - Encryption");
+        throw new Error("Failed to save session. Please try again.");
+      }
 
       return authData;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Login failed"
-      );
+      logError(error, "Login");
+      return rejectWithValue(formatErrorMessage(error, "Login failed. Please check your credentials and try again."));
     }
   }
 );
@@ -35,9 +42,11 @@ export const registerThunk = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      return await registerUser(userData);
+      const result = await registerUser(userData);
+      return result;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Registration failed");
+      logError(error, "Registration");
+      return rejectWithValue(formatErrorMessage(error, "Registration failed. Please check your information and try again."));
     }
   }
 );
@@ -48,11 +57,15 @@ export const getCurrentUserThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const userId = sessionStorage.getItem("user_id"); // we'll save this on login
-      if (!userId) return rejectWithValue("No user ID found in session");
+      if (!userId) {
+        return rejectWithValue("No user ID found in session");
+      }
 
-      return await getUserById(userId);
+      const user = await getUserById(userId);
+      return user;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch user");
+      logError(err, "Get Current User");
+      return rejectWithValue(formatErrorMessage(err, "Failed to load user information. Please log in again."));
     }
   }
 );
@@ -64,9 +77,8 @@ export const updateProfileThunk = createAsyncThunk(
       const result = await UpdateProfileData(userData);
       return result;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update profile"
-      );
+      logError(error, "Update Profile");
+      return rejectWithValue(formatErrorMessage(error, "Failed to update profile. Please try again."));
     }
   }
 );
