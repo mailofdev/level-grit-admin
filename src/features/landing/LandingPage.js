@@ -159,8 +159,8 @@ const LandingPage = () => {
                   onClick={handleSignInNavigation}
                   style={{
                     backgroundColor: "transparent",
-    color: "#4CAF50",
-    border: "2px solid #4CAF50",
+    color: "#222222",
+    border: "2px solid #222222",
                   }}
                 >
                   Login
@@ -171,7 +171,7 @@ const LandingPage = () => {
                   className="btn rounded-pill px-4 fw-semibold"
                   onClick={handleSignUpNavigation}
                   style={{
-                backgroundColor: "#4CAF50",
+                backgroundColor: "#222222",
     color: "#fff",
                   }}
                 >

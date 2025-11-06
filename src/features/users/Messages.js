@@ -15,9 +15,6 @@ export default function Messages({ isTrainer = false }) {
   const trainer = location.state?.trainer;
   const loggedInUser = getDecryptedUser();
 
-  // Trainer & Client IDs depend on who is logged in
-  // When isTrainer is true: trainerId = logged-in trainer's ID, clientId = selected client's ID
-  // When isTrainer is false: trainerId = selected trainer's ID, clientId = logged-in client's ID
   const trainerId = isTrainer 
     ? (loggedInUser?.userId || loggedInUser?.id || loggedInUser?.trainerId)
     : (trainer?.trainerId || trainer?.userId || trainer?.id);

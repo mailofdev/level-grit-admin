@@ -1,9 +1,7 @@
 import React, { useState, useRef } from "react";
-import { ProgressBar } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Heading from "../../components/navigation/Heading";
-import AnimatedCard from "../../components/common/AnimatedCard";
 import {
   FaFire,
   FaCheckCircle,

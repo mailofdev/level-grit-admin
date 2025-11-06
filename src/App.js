@@ -51,16 +51,11 @@ const AdminDashboard = lazy(() =>
 const TrainerDashboard = lazy(() =>
   import("./features/trainer/TrainerDashboard")
 );
-const ClientDashboard = lazy(() =>
-  import("./features/client/ClientDashboard")
-);
 
 // Client Management Components
 const AllClients = lazy(() => import("./features/users/AllClients"));
 const ClientDetails = lazy(() => import("./features/users/ClientDetails"));
-const ClientMessages = lazy(() =>
-  import("./features/client/ClientMessages")
-);
+
 
 // Communication Components
 const Messages = lazy(() => import("./features/users/Messages"));
@@ -183,20 +178,6 @@ function App() {
                   }
                 />
                 <Route
-                  path="/client-dashboard"
-                  element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <ClientDashboard />
-                    </ProtectedLayout>
-                  }
-                />
-                <Route
                   path="/admin-dashboard"
                   element={
                     <ProtectedLayout>
@@ -219,22 +200,6 @@ function App() {
                   element={
                     <ProtectedLayout>
                       <ClientDetails />
-                    </ProtectedLayout>
-                  }
-                />
-
-                {/* Communication Routes */}
-                <Route
-                  path="/client-messages/:clientId"
-                  element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <ClientMessages />
                     </ProtectedLayout>
                   }
                 />
