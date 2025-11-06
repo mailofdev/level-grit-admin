@@ -1,5 +1,5 @@
 {
- "name": "LevelGrit-admin",
+ "name": "LevelGrit-client",
  "version": "0.1.0",
  "private": true,
  "dependencies": {

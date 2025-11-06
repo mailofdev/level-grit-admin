@@ -1,4 +1,11 @@
-// routes.js
+/**
+ * Client Portal Navigation Routes
+ * 
+ * Defines the navigation menu items for the client portal.
+ * Only includes routes relevant to clients/users.
+ * 
+ * @returns {Array} Array of route objects with label, href, icon, and display locations
+ */
 import { getDecryptedUser } from "../common/CommonFunctions";
 
 export const getRoutes = () => {
@@ -6,42 +13,13 @@ export const getRoutes = () => {
 
   if (!user) return [];
 
+  // Client Portal - Only client dashboard route
   return [
-    ...(user?.role === "Trainer"
-      ? [
-          {
-            label: "Dashboard",
-            href: "/trainer-dashboard",
-            icon: "bi-speedometer2",
-            showIn: ["sidebar", "topbar"],
-          },
-          {
-            label: "View Clients",
-            href: "/AllClients",
-            icon: "bi-people-fill",
-            showIn: ["sidebar", "topbar"],
-          }
-        ]
-      : []),
-    ...(user?.role === "Administrator"
-      ? [
-          {
-            label: "Dashboard",
-            href: "/admin-dashboard",
-            icon: "bi-gear-fill",
-            showIn: ["sidebar", "topbar"],
-          },
-        ]
-      : []),
-          ...(user?.role === "Client"
-      ? [
-          {
-            label: "Dashboard",
-            href: "/client-dashboard",
-            icon: "bi-speedometer2",
-            showIn: ["sidebar", "topbar"],
-          }
-        ]
-      : []),
+    {
+      label: "Dashboard",
+      href: "/client-dashboard",
+      icon: "bi-speedometer2",
+      showIn: ["sidebar", "topbar"],
+    }
   ];
 };

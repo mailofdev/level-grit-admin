@@ -180,7 +180,7 @@ const ClientMessages = () => {
           <div
             className="p-3 border-bottom"
             style={{
-              background: "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)",
+              background: "linear-gradient(135deg, #28a745 0%, #218838 100%)",
             }}
           >
             <div className="d-flex align-items-center">
@@ -189,7 +189,7 @@ const ClientMessages = () => {
                 style={{
                   width: "50px",
                   height: "50px",
-                  color: "#007AFF",
+                  color: "#28a745",
                   fontWeight: "bold",
                   fontSize: "1.2rem",
                 }}
@@ -331,7 +331,7 @@ const ClientMessages = () => {
                     style={{
                       width: "45px",
                       height: "45px",
-                      backgroundColor: "#007AFF",
+                      backgroundColor: "#28a745",
                       minWidth: "45px",
                       minHeight: "45px",
                     }}
@@ -367,7 +367,7 @@ const ClientMessages = () => {
                       height: "45px",
                       minWidth: "45px",
                       minHeight: "45px",
-                      backgroundColor: "#007AFF",
+                      backgroundColor: "#28a745",
                     }}
                     disabled={!newMessage.trim()}
                   >

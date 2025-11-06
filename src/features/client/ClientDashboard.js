@@ -1,7 +1,19 @@
+/**
+ * Client Dashboard Component
+ * 
+ * Main dashboard for clients/users in the LevelGrit Client Portal.
+ * Displays meal tracking, macros, progress, and meal plan management.
+ * 
+ * Features:
+ * - Meal tracking with camera integration
+ * - Macro progress visualization
+ * - Streak tracking
+ * - Meal plan management
+ */
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
-import Heading from "../../components/navigation/Heading";
+import { useNavigate } from "react-router-dom";
+import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import {
   FaFire,
   FaCheckCircle,
@@ -10,13 +22,10 @@ import {
   FaShareAlt,
   FaTimes,
 } from "react-icons/fa";
-import { FaMessage } from "react-icons/fa6";
 import { SplitButton } from "primereact/splitbutton";
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -25,14 +34,31 @@ export default function ClientDashboard() {
   const [stream, setStream] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const client = { ...location.state?.client };
+  // Get current logged-in user (client)
+  const user = getDecryptedUser();
+  
+  // Use user data as client data for client portal
+  const client = user ? {
+    fullName: user.fullName || "User",
+    goal: user.goal || "Fitness Goal",
+    startDate: user.startDate || new Date().toLocaleDateString(),
+    status: user.status || "on-track",
+    streak: user.streak || "0",
+    clientId: user.userId || user.id || user.clientId,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    gender: user.gender
+  } : null;
 
-  if (!client)
+  if (!client) {
     return (
-      <p className="text-muted mt-4 text-center">
-        Select a client to view details.
-      </p>
+      <div className="container">
+        <div className="text-center mt-5">
+          <p className="text-muted">Please log in to view your dashboard.</p>
+        </div>
+      </div>
     );
+  }
 
   const meals = [
     {
@@ -351,35 +377,17 @@ export default function ClientDashboard() {
                   )}
                 </div>
                 <div className="d-flex flex-wrap gap-2 justify-content-md-end">
-                  <button
-                    className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
-                    onClick={() =>
-                      navigate(`/messages/${client.clientId}`, {
-                        state: { client },
-                      })
-                    }
-                  >
-                    <FaMessage className="me-1" /> Message
-                  </button>
-
                   <SplitButton
-                    label="Plan"
-                    icon="pi pi-plus"
-                    className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
+                    label="Meal Plan"
+                    icon="pi pi-calendar"
+                    className="bg-button fs-6 btn-sm border-0 rounded-3 shadow-sm"
                     style={{
+                      backgroundColor: "var(--color-button-bg)",
                       color: "white",
                     }}
                     model={[
                       {
-                        label: "Add",
-                        icon: "pi pi-pencil",
-                        command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: false },
-                          }),
-                      },
-                      {
-                        label: "Preview",
+                        label: "View Plan",
                         icon: "pi pi-eye",
                         command: () =>
                           navigate(`/adjust-plan/${client.clientId}`, {

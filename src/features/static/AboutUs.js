@@ -43,7 +43,7 @@ const AboutUs = () => {
                 }} 
               />
               <h1 className="display-4 fw-bold mb-4" style={{ color: '#333' }}>
-                About <span style={{ color: '#007AFF' }}>Level Grit</span>
+                About <span style={{ color: '#28a745' }}>Level Grit</span>
               </h1>
               <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.2rem', lineHeight: '1.8' }}>
                 At Level Grit, we're building more than just a fitness app — we're creating a community 
@@ -98,7 +98,7 @@ const AboutUs = () => {
                         style={{ 
                           width: '60px', 
                           height: '60px', 
-                          backgroundColor: '#007AFF',
+                          backgroundColor: '#28a745',
                           color: '#fff'
                         }}
                       >
@@ -190,7 +190,7 @@ const AboutUs = () => {
                         style={{ 
                           width: '60px', 
                           height: '60px', 
-                          backgroundColor: '#007AFF',
+                          backgroundColor: '#28a745',
                           color: '#fff'
                         }}
                       >
@@ -246,7 +246,7 @@ const AboutUs = () => {
                     <div key={idx} className="col-md-4">
                       <Animated3DCard delay={idx * 0.1}>
                         <div className="card border-0 shadow-sm h-100 text-center p-4" style={{ borderRadius: '1rem' }}>
-                          <feature.icon size={50} className="mb-3" style={{ color: '#007AFF' }} />
+                          <feature.icon size={50} className="mb-3" style={{ color: '#28a745' }} />
                           <h4 className="fw-bold mb-3">{feature.title}</h4>
                           <p className="text-muted mb-0">{feature.desc}</p>
                         </div>
@@ -261,7 +261,7 @@ const AboutUs = () => {
             <motion.section 
               className="text-center py-5"
               style={{ 
-                backgroundColor: '#007AFF', 
+                backgroundColor: '#28a745', 
                 color: '#fff',
                 borderRadius: '1rem'
               }}

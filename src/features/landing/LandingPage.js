@@ -658,7 +658,7 @@ const LandingPage = () => {
           style={{
             zIndex: 1050,
             minHeight: "56px",
-            backgroundColor: "#007AFF",
+            backgroundColor: "#28a745",
             border: "none",
           }}
           initial={{ opacity: 0, y: 20 }}

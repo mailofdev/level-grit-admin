@@ -1,46 +1,36 @@
-// src/features/trainer/trainerThunks.js
+/**
+ * Client Thunks - Client Portal
+ * 
+ * Async thunks for client-related API calls.
+ * Handles client dashboard data and client-specific operations.
+ */
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getTrainerDashboard, deleteTrainer } from "../../api/trainerAPI";
 
 /**
- * Fetch Trainer Dashboard Data
+ * Fetch Client Dashboard Data
+ * This thunk can be extended to fetch client-specific dashboard data when needed
  */
-export const getTrainerDashboardThunk = createAsyncThunk(
-  "trainer/getDashboard",
+export const getClientDashboardThunk = createAsyncThunk(
+  "client/getDashboard",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await getTrainerDashboard();
-      return data;
+      // TODO: Implement client dashboard API call when backend is ready
+      // const { data } = await axiosInstance.get("api/Client/Dashboard");
+      // return data;
+      
+      // For now, return empty data structure
+      return {
+        dashboardData: null,
+        loading: false,
+        error: null,
+      };
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
         error.message ||
-        "Failed to fetch trainer dashboard data"
+        "Failed to fetch client dashboard data"
       );
     }
   }
 );
-
-/**
- * Delete Trainer Account
- * @param {string|number} userId - The user ID to delete
- */
-export const deleteTrainerThunk = createAsyncThunk(
-  "trainer/deleteTrainer",
-  async (userId, { rejectWithValue }) => {
-    try {
-      if (!userId) {
-        return rejectWithValue("User ID is required");
-      }
-      const data = await deleteTrainer(userId);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to delete trainer account"
-      );
-    }
-  }
-);
-

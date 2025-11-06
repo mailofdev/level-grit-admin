@@ -77,11 +77,11 @@
   transition: box-shadow var(--transition-base);
 }
 
-/* Form focus states */
+/* Form focus states - Green theme */
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-select:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
   border-color: var(--color-input-focus);
 }
 

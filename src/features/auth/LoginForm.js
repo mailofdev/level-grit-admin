@@ -32,18 +32,12 @@ const LoginForm = () => {
     return true;
   };
 
-  // Helper function to get dashboard route based on role
+  /**
+   * Get dashboard route for client portal
+   * All users are clients, so always route to client dashboard
+   */
   const getDashboardRoute = (role) => {
-    switch (role) {
-      case "Trainer":
-        return "/trainer-dashboard";
-      case "Administrator":
-        return "/admin-dashboard";
-      case "Client":
-        return "/client-dashboard";
-      default:
-        return "/trainer-dashboard"; // Default fallback
-    }
+    return "/client-dashboard"; // Client portal - single dashboard
   };
 
   const handleSubmit = async (e) => {
@@ -242,7 +236,7 @@ navigate('/')
 
           {/* Links */}
           <div className="text-center mt-4">
-            <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
+            {/* <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
               Don't have an account?{" "}
               <Link
                 to="/register"
@@ -251,7 +245,7 @@ navigate('/')
               >
                 Create Account
               </Link>
-            </p>
+            </p> */}
             <p className="mb-0">
               <Link
                 to="/reset-password"

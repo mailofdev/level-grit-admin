@@ -1,5 +1,12 @@
+/**
+ * Client Slice - Client Portal
+ * 
+ * Redux slice for managing client state.
+ * Handles client dashboard data and client-specific state.
+ */
+
 import { createSlice } from "@reduxjs/toolkit";
-import { getTrainerDashboardThunk, deleteTrainerThunk } from "./clientThunks";
+import { getClientDashboardThunk } from "./clientThunks";
 
 const initialState = {
   dashboardData: null,
@@ -8,7 +15,7 @@ const initialState = {
 };
 
 const ClientSlice = createSlice({
-  name: "trainer",
+  name: "client",
   initialState,
   reducers: {
     clearError: (state) => {
@@ -17,87 +24,39 @@ const ClientSlice = createSlice({
     clearLoading: (state) => {
       state.loading = false;
     },
-    resetTrainerState: () => initialState,
+    resetClientState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       // --- Pending ---
-      .addCase(getTrainerDashboardThunk.pending, (state) => {
+      .addCase(getClientDashboardThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
 
       // --- Fulfilled ---
-      .addCase(getTrainerDashboardThunk.fulfilled, (state, action) => {
+      .addCase(getClientDashboardThunk.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload || {};
-
-        // ✅ Normalize payload structure to ensure consistency
-        const normalized = {
-          totalClients:
-            payload.totalClients ||
-            payload.totalClientsCount ||
-            payload.clientsCount ||
-            0,
-          onTrackClients:
-            payload.onTrackClients ||
-            payload.onTrackCount ||
-            payload.onTrack ||
-            0,
-          needAttentionClients:
-            payload.needAttentionClients ||
-            payload.needAttentionCount ||
-            payload.attentionCount ||
-            0,
-          overallProgressPercent:
-            payload.overallProgressPercent ||
-            payload.overallProgress ||
-            0,
-          goalsBreakdown: payload.goalsBreakdown || [],
-          clientsNeedingAttention: payload.clientsNeedingAttention || [],
-        };
-
-        state.dashboardData = normalized;
+        state.dashboardData = action.payload;
         state.error = null;
       })
 
       // --- Rejected ---
-      .addCase(getTrainerDashboardThunk.rejected, (state, action) => {
+      .addCase(getClientDashboardThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to load trainer dashboard";
+        state.error = action.payload || "Failed to load client dashboard";
         state.dashboardData = null;
-      })
-
-      // --- DELETE TRAINER THUNK ---
-      // Pending
-      .addCase(deleteTrainerThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-
-      // Fulfilled
-      .addCase(deleteTrainerThunk.fulfilled, (state) => {
-        state.loading = false;
-        state.error = null;
-        // Reset trainer state after successful deletion
-        state.dashboardData = null;
-      })
-
-      // Rejected
-      .addCase(deleteTrainerThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to delete trainer account";
       });
   },
 });
 
-export const { clearError, clearLoading, resetTrainerState } =
+export const { clearError, clearLoading, resetClientState } =
   ClientSlice.actions;
 
 export default ClientSlice.reducer;
 
 // ✅ Selectors
-export const selectTrainer = (state) => state.trainer;
-export const selectDashboardData = (state) => state.trainer.dashboardData;
-export const selectTrainerLoading = (state) => state.trainer.loading;
-export const selectTrainerError = (state) => state.trainer.error;
+export const selectClient = (state) => state.client;
+export const selectDashboardData = (state) => state.client.dashboardData;
+export const selectClientLoading = (state) => state.client.loading;
+export const selectClientError = (state) => state.client.error;

@@ -13,7 +13,6 @@ import {
 import { Form, Spinner, Alert } from "react-bootstrap";
 import getRoleIcon from "../common/CommonFunctions";
 import { GetProfileData, UpdateProfileData } from "../../api/authAPI";
-import { deleteTrainerThunk } from "../../features/trainer/trainerThunks";
 import { logout } from "../../features/auth/authSlice";
 
 const ProfileModal = ({ show, onClose }) => {
@@ -137,12 +136,14 @@ const ProfileModal = ({ show, onClose }) => {
         return;
       }
       
-      // Call delete trainer API with userId
-      await dispatch(deleteTrainerThunk(userId)).unwrap();
+      // TODO: Implement client account deletion API call when backend is ready
+      // For now, show error message
+      setDeleteError("Account deletion is not available yet. Please contact support.");
+      setDeleting(false);
       
       // On successful deletion, logout and redirect
-      dispatch(logout());
-      window.location.href = "/";
+      // dispatch(logout());
+      // window.location.href = "/";
     } catch (error) {
       // Handle error
       setDeleteError(error || "Failed to delete account. Please try again.");
