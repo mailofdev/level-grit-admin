@@ -34,8 +34,6 @@ const RegisterForm = () => {
         return "/trainer-dashboard";
       case "Administrator":
         return "/admin-dashboard";
-      case "Client":
-        return "/client-dashboard";
       default:
         return "/trainer-dashboard"; // Default fallback
     }
