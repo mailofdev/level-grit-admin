@@ -104,6 +104,7 @@ body.dark .navbar-toggler-icon {
   backdrop-filter: var(--backdrop-blur);
 }
 
+/* Card top border accent on hover - matches theme */
 .card::before {
   content: '';
   position: absolute;
@@ -111,15 +112,14 @@ body.dark .navbar-toggler-icon {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-primary);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
 }
 
 .card:hover {
-  /* background: var(--color-card-bg-hover); */
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow);
   border-color: var(--color-primary);
 }
 
@@ -157,7 +157,7 @@ body.dark .navbar-toggler-icon {
 
 .card-health:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+  box-shadow: var(--shadow);
 }
 
 .card-stats {
@@ -167,7 +167,7 @@ body.dark .navbar-toggler-icon {
 
 .card-stats:hover {
   border-color: var(--color-secondary);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+  box-shadow: var(--shadow);
 }
 
 .card-info {
@@ -177,7 +177,7 @@ body.dark .navbar-toggler-icon {
 
 .card-info:hover {
   border-color: var(--color-info);
-  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
+  box-shadow: var(--shadow);
 }
 
 /* Enhanced Forms */
@@ -277,8 +277,7 @@ body.dark .navbar-toggler-icon {
 .btn-primary:hover,
 .btn-primary:focus-visible {
   background: var(--color-button-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .btn-primary:active {
@@ -295,7 +294,7 @@ body.dark .navbar-toggler-icon {
 .btn-secondary:hover {
   background: linear-gradient(135deg, var(--color-button-secondary-hover), #495057);
   /* transform: translateY(-2px) scale(1.05); */
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .btn-outline-primary {
@@ -309,8 +308,7 @@ body.dark .navbar-toggler-icon {
 .btn-outline-primary:focus-visible {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
   border-color: transparent;
 }
 
@@ -328,7 +326,7 @@ body.dark .navbar-toggler-icon {
   background: linear-gradient(135deg, var(--color-secondary), #5a6268);
   color: #fff;
   /* transform: translateY(-2px) scale(1.05); */
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
   border-color: transparent;
 }
 
@@ -471,7 +469,7 @@ a:hover {
   background-color: var(--color-card-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow);
   z-index: 1055 !important;
   position: relative;
   backdrop-filter: var(--backdrop-blur);
@@ -506,7 +504,7 @@ a:hover {
   background-color: var(--color-card-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
   backdrop-filter: var(--backdrop-blur);
   padding: 0.5rem;
 }
@@ -565,7 +563,7 @@ a:hover {
   backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
   border-radius: 20px 20px 0 0;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .mobile-bottom-nav__list {
@@ -656,7 +654,7 @@ a:hover {
   justify-content: center;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #fff;
-  box-shadow: 0 10px 24px rgba(0, 122, 255, 0.3);
+  box-shadow: var(--shadow);
   z-index: 1040;
 }
 
@@ -807,8 +805,7 @@ a.btn, input[type="button"], input[type="submit"] {
 
 /* Hover Effects */
 .hover-lift:hover {
-  /* transform: translateY(-4px); */
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .hover-scale:hover {
@@ -817,7 +814,7 @@ a.btn, input[type="button"], input[type="submit"] {
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px var(--color-primary);
+  box-shadow: 0 0 12px rgba(0, 122, 255, 0.2);
 }
 
 /* Card Utilities */
@@ -826,8 +823,8 @@ a.btn, input[type="button"], input[type="submit"] {
 }
 
 .card-hover:hover {
-  /* transform: translateY(-4px) scale(1.02); */
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
+  border-color: var(--color-primary);
 }
 
 /* Glass Effect */
@@ -859,8 +856,8 @@ a.btn, input[type="button"], input[type="submit"] {
 
 .card-modern:hover {
   background: var(--color-card-bg-hover);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--color-primary);
 }
 
 /* Smooth Transitions */
@@ -1059,8 +1056,7 @@ html {
 .btn-success:focus-visible,
 .btn-outline-success:hover,
 .btn-outline-success:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .btn-info,
@@ -1072,8 +1068,7 @@ html {
 .btn-info:focus-visible,
 .btn-outline-info:hover,
 .btn-outline-info:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .btn-danger,
@@ -1085,8 +1080,7 @@ html {
 .btn-danger:focus-visible,
 .btn-outline-danger:hover,
 .btn-outline-danger:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .btn:disabled,
@@ -1118,8 +1112,8 @@ html {
 }
 
 .card-hover-effect:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
+  border-color: var(--color-primary);
 }
 
 /* Card clickable */

@@ -62,8 +62,7 @@
 }
 
 .hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 
 .hover-glow {
@@ -71,7 +70,7 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
+  box-shadow: 0 0 12px rgba(0, 122, 255, 0.15);
 }
 
 /* Button interactions - minimal transform */
@@ -80,7 +79,6 @@
 }
 
 .btn-smooth:hover {
-  transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
 

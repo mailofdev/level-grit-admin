@@ -54,10 +54,11 @@
   --border-radius: 0.75rem;
   --border-radius-lg: 1rem;
   --border-radius-xl: 1.25rem;
+  /* Consistent shadow system - subtle and professional */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.15);
+  /* shadow-xl removed - using shadow-lg for consistency */
   
   /* Glassmorphism & Transparency Effects */
   --glass-bg: rgba(255, 255, 255, 0.8);
@@ -121,10 +122,11 @@ body.dark {
   --color-surface-hover: #2d2d2d;
   --color-outline: #2d2d2d;
   --color-outline-variant: #3d3d3d;
+  /* Consistent shadow system - subtle and professional */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.8);
+  /* shadow-xl removed - using shadow-lg for consistency */
   
   /* Glassmorphism & Transparency Effects - Dark */
   --glass-bg: rgba(26, 26, 26, 0.8);

@@ -1,3 +1,16 @@
+/**
+ * Main Application Component
+ * 
+ * This is the root component that sets up routing, authentication, theming,
+ * and error boundaries for the entire application.
+ * 
+ * Features:
+ * - Lazy loading for better performance
+ * - Protected routes with role-based access
+ * - Global error handling with ErrorBoundary
+ * - Theme and authentication context providers
+ */
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,9 +26,14 @@ import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import ScrollToTop from "./components/navigation/ScrollToTop";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
-import InstallPrompt from "./InstallPrompt";
 
-// Lazy load components for better performance - reduces initial bundle size
+// ============================================
+// Lazy Load Components - Performance Optimization
+// ============================================
+// Lazy loading reduces initial bundle size by splitting code into chunks
+// Components are loaded only when their routes are accessed
+
+// Authentication Components
 const LandingPage = lazy(() => import("./features/landing/LandingPage"));
 const LoginForm = lazy(() => import("./features/auth/LoginForm"));
 const RegisterForm = lazy(() => import("./features/auth/RegisterForm"));
@@ -25,14 +43,30 @@ const ResetPasswordForm = lazy(() =>
 const RegisterClientForm = lazy(() =>
   import("./features/auth/RegisterClientForm")
 );
-// const Dashboard = lazy(() => import("./features/dashboard/Dashboard")); // Not used in routes
+
+// Dashboard Components
 const AdminDashboard = lazy(() =>
   import("./features/dashboard/AdminDashboard")
 );
+const TrainerDashboard = lazy(() =>
+  import("./features/trainer/TrainerDashboard")
+);
+const ClientDashboard = lazy(() =>
+  import("./features/client/ClientDashboard")
+);
+
+// Client Management Components
 const AllClients = lazy(() => import("./features/users/AllClients"));
 const ClientDetails = lazy(() => import("./features/users/ClientDetails"));
+const ClientMessages = lazy(() =>
+  import("./features/client/ClientMessages")
+);
+
+// Communication Components
 const Messages = lazy(() => import("./features/users/Messages"));
 const AdjustPlan = lazy(() => import("./features/adjustPlan/AdjustPlan"));
+
+// Static Pages
 const NotFound = lazy(() => import("./features/errors/NotFound"));
 const TermsAndConditions = lazy(() =>
   import("./features/static/TermsAndConditions")
@@ -45,20 +79,14 @@ const CancellationPolicy = lazy(() =>
 const AboutUs = lazy(() => import("./features/static/AboutUs"));
 const Services = lazy(() => import("./features/static/Services"));
 const Testimonials = lazy(() => import("./features/static/Testimonials"));
-const TrainerDashboard = lazy(() =>
-  import("./features/trainer/TrainerDashboard")
-);
-const ClientDashboard = lazy(() =>
-  import("./features/client/ClientDashboard")
-);
-const ClientMessages = lazy(() =>
-  import("./features/client/ClientMessages")
-);
-const ClientMessaging = lazy(() =>
-  import("./features/messaging/ClientMessaging")
-);
 
-// Loading fallback component
+// ============================================
+// Loading Component
+// ============================================
+/**
+ * Fallback component shown while lazy-loaded components are being fetched
+ * Provides visual feedback during code splitting
+ */
 const PageLoader = () => (
   <div className="d-flex align-items-center justify-content-center min-vh-100">
     <div className="text-center">
@@ -74,6 +102,16 @@ const PageLoader = () => (
   </div>
 );
 
+// ============================================
+// Protected Layout Wrapper
+// ============================================
+/**
+ * Wrapper component that combines ProtectedRoute and MainLayout
+ * Ensures only authenticated users can access protected routes
+ * 
+ * @param {Object} children - Child components to render
+ * @param {Object} config - Layout configuration (showTopbar, showSidebar, etc.)
+ */
 function ProtectedLayout({ children, config }) {
   return (
     <ProtectedRoute>
@@ -82,6 +120,9 @@ function ProtectedLayout({ children, config }) {
   );
 }
 
+// ============================================
+// Main App Component
+// ============================================
 function App() {
   return (
     <ErrorBoundary>
@@ -91,7 +132,9 @@ function App() {
           <AuthProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                {/* Public routes */}
+                {/* ============================================
+                    Public Routes - No Authentication Required
+                    ============================================ */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route
@@ -105,7 +148,7 @@ function App() {
                 />
                 <Route path="/reset-password" element={<ResetPasswordForm />} />
 
-                {/* Static Pages */}
+                {/* Static Information Pages */}
                 <Route
                   path="/terms-conditions"
                   element={<TermsAndConditions />}
@@ -120,7 +163,11 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/testimonials" element={<Testimonials />} />
 
-                {/* Protected routes */}
+                {/* ============================================
+                    Protected Routes - Authentication Required
+                    ============================================ */}
+                
+                {/* Dashboard Routes - Role-based access */}
                 <Route
                   path="/trainer-dashboard"
                   element={
@@ -149,20 +196,16 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
-                  <Route
-                  path="/client-messages/:clientId"
+                <Route
+                  path="/admin-dashboard"
                   element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <ClientMessages />
+                    <ProtectedLayout>
+                      <AdminDashboard />
                     </ProtectedLayout>
                   }
-                />                
+                />
+
+                {/* Client Management Routes */}
                 <Route
                   path="/AllClients"
                   element={
@@ -180,6 +223,21 @@ function App() {
                   }
                 />
 
+                {/* Communication Routes */}
+                <Route
+                  path="/client-messages/:clientId"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <ClientMessages />
+                    </ProtectedLayout>
+                  }
+                />
                 <Route
                   path="/messages/:clientId"
                   element={
@@ -188,6 +246,8 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
+
+                {/* Meal Plan Management */}
                 <Route
                   path="/adjust-plan/:clientId"
                   element={
@@ -196,29 +256,12 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
-                <Route
-                  path="/admin-dashboard"
-                  element={
-                    <ProtectedLayout>
-                      <AdminDashboard />
-                    </ProtectedLayout>
-                  }
-                />
 
-                {/* Trainer Features */}
-                <Route
-                  path="/messages/:clientId"
-                  element={
-                    <ProtectedLayout>
-                      <ClientMessaging />
-                    </ProtectedLayout>
-                  }
-                />
+                {/* 404 - Catch all unmatched routes */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </AuthProvider>
-          <InstallPrompt />
         </Router>
       </ThemeProvider>
     </ErrorBoundary>

@@ -78,7 +78,7 @@ body {
 }
 
 .auth-page-enter .card:hover {
-  box-shadow: var(--shadow-xl) !important;
+  box-shadow: var(--shadow-lg) !important;
   /* Removed transform for smoother hover */
 }
 
