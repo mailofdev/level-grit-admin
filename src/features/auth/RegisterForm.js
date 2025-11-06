@@ -27,12 +27,18 @@ const RegisterForm = () => {
 
   const { fullName, phoneNumber, gender, email, password, role } = formData;
 
-  /**
-   * Get dashboard route for client portal
-   * All users are clients, so always route to client dashboard
-   */
+  // Helper function to get dashboard route based on role
   const getDashboardRoute = (role) => {
-    return "/client-dashboard"; // Client portal - single dashboard
+    switch (role) {
+      case "Trainer":
+        return "/trainer-dashboard";
+      case "Administrator":
+        return "/admin-dashboard";
+      case "Client":
+        return "/client-dashboard";
+      default:
+        return "/trainer-dashboard"; // Default fallback
+    }
   };
 
   const handleChange = (e) => {

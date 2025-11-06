@@ -1,24 +1,32 @@
 /**
- * Common Utility Functions - Client Portal
+ * Common Utility Functions
  * 
  * Shared utility functions used across multiple components.
- * Provides user data retrieval for client portal.
+ * Provides role-based UI helpers and user data retrieval.
  */
 
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaDumbbell, FaShieldAlt } from "react-icons/fa";
 import { decryptToken } from "../../utils/crypto";
 
 // ============================================
-// Role Mappings Configuration - Client Portal
+// Role Mappings Configuration
 // ============================================
 /**
  * Maps user roles to their corresponding icons and emojis
- * Client portal only supports Client role
+ * Used for displaying role-specific UI elements throughout the app
  */
 const ROLE_MAPPINGS = {
+  Trainer: {
+    icon: <FaDumbbell size={20} className="text-white" />,
+    emoji: "🏋️‍♂️"
+  },
   Client: {
     icon: <FaUser size={20} className="text-white" />,
     emoji: "👤"
+  },
+  Administrator: {
+    icon: <FaShieldAlt size={20} className="text-white" />,
+    emoji: "👨‍💻"
   }
 };
 
@@ -36,12 +44,12 @@ const DEFAULT_ROLE = {
 /**
  * Returns the appropriate icon or emoji for a given user role
  * 
- * @param {string} role - User role (Client only for client portal)
+ * @param {string} role - User role (Trainer, Client, Administrator)
  * @param {string} type - Display type: 'icon' (React component) or 'emoji' (string)
  * @returns {React.ReactNode|string} - Icon component or emoji string
  * 
  * @example
- * getRoleIcon('Client', 'icon') // Returns <FaUser />
+ * getRoleIcon('Trainer', 'icon') // Returns <FaDumbbell />
  * getRoleIcon('Client', 'emoji') // Returns "👤"
  */
 const getRoleIcon = (role, type = 'icon') => {

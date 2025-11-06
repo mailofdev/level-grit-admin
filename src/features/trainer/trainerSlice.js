@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTrainerDashboardThunk, deleteTrainerThunk } from "./clientThunks";
+import { getTrainerDashboardThunk, deleteTrainerThunk } from "./trainerThunks";
 
 const initialState = {
   dashboardData: null,
@@ -7,7 +7,7 @@ const initialState = {
   error: null,
 };
 
-const ClientSlice = createSlice({
+const trainerSlice = createSlice({
   name: "trainer",
   initialState,
   reducers: {
@@ -92,9 +92,9 @@ const ClientSlice = createSlice({
 });
 
 export const { clearError, clearLoading, resetTrainerState } =
-  ClientSlice.actions;
+  trainerSlice.actions;
 
-export default ClientSlice.reducer;
+export default trainerSlice.reducer;
 
 // ✅ Selectors
 export const selectTrainer = (state) => state.trainer;

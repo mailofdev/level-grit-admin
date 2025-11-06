@@ -9,8 +9,6 @@ import {
 } from "../../api/authAPI";
 
 // Fetch all users
-// TODO: Update to use client-specific API endpoint when backend is ready
-// Currently using trainer API endpoint as placeholder
 export const fetchUsers = createAsyncThunk("users/GetClientsForTrainer", async (_, { rejectWithValue }) => {
   try {
     const data = await GetClientsForTrainer();

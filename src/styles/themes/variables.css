@@ -2,11 +2,11 @@
    Modern Bootstrap Theme Variables
 ================================= */
 
-/* Light Theme (default) - Client Portal Green Theme */
+/* Light Theme (default) - Fittr.com Inspired */
 :root {
-  /* Bootstrap 5.3+ CSS Variables - Green Theme */
-  --bs-primary: #28a745;
-  --bs-secondary: #20c997;
+  /* Bootstrap 5.3+ CSS Variables - Fittr Theme */
+  --bs-primary: #007AFF;
+  --bs-secondary: #FF6B35;
   --bs-success: #28a745;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
@@ -14,12 +14,12 @@
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
   
-  /* Client Portal Theme Variables - Green Primary Color */
+  /* Fittr.com Theme Variables - Clean White UI */
   --color-bg: #ffffff;
   --color-bg-solid: #ffffff;
   --color-text: #000000;
-  --color-primary: #28a745;
-  --color-secondary: #20c997;
+  --color-primary: #007AFF;
+  --color-secondary: #FF6B35;
   --color-success: #28a745;
   --color-danger: #dc3545;
   --color-warning: #ffc107;
@@ -29,8 +29,8 @@
   --color-card-bg-hover: #eeeeee;
   --color-nav-bg: rgba(255, 255, 255, 0.95);
   --color-muted: #6c757d;
-  --color-link: #28a745;
-  --color-link-hover: #218838;
+  --color-link: #007AFF;
+  --color-link-hover: #0056b3;
   --color-scrollbar: #d0d0d0;
   --color-scrollbar-bg: #f5f5f5;
   --color-shadow: rgba(0, 0, 0, 0.08);
@@ -38,12 +38,12 @@
   --color-shadow-lg: rgba(0, 0, 0, 0.15);
   --color-input-bg: #ffffff;
   --color-input-border: #e5e5e5;
-  --color-input-focus: #28a745;
-  --color-button-bg: #28a745;
+  --color-input-focus: #007AFF;
+  --color-button-bg: #007AFF;
   --color-button-text: #ffffff;
-  --color-button-hover: #218838;
-  --color-button-secondary: #20c997;
-  --color-button-secondary-hover: #1aa179;
+  --color-button-hover: #0056b3;
+  --color-button-secondary: #FF6B35;
+  --color-button-secondary-hover: #e55a2b;
   
   /* Modern UI Enhancements */
   --color-surface: #ffffff;
@@ -73,11 +73,11 @@
   --card-transparent: rgba(245, 245, 245, 0.6);
 }
 
-/* Dark Theme - Client Portal Green Theme */
+/* Dark Theme - Fittr.com Inspired */
 body.dark {
   /* Bootstrap 5.3+ CSS Variables for Dark Theme */
-  --bs-primary: #28a745;
-  --bs-secondary: #20c997;
+  --bs-primary: #007AFF;
+  --bs-secondary: #FF6B35;
   --bs-success: #28a745;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
@@ -85,12 +85,12 @@ body.dark {
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
   
-  /* Client Portal Dark Theme Variables - Green Primary */
+  /* Fittr.com Dark Theme Variables */
   --color-bg: #121212;
   --color-bg-solid: #121212;
   --color-text: #ffffff;
-  --color-primary: #28a745;
-  --color-secondary: #20c997;
+  --color-primary: #007AFF;
+  --color-secondary: #FF6B35;
   --color-success: #4caf50;
   --color-danger: #ef5350;
   --color-warning: #ffb300;
@@ -100,8 +100,8 @@ body.dark {
   --color-card-bg-hover: #252525;
   --color-nav-bg: rgba(18, 18, 18, 0.95);
   --color-muted: #8b949e;
-  --color-link: #28a745;
-  --color-link-hover: #34ce57;
+  --color-link: #007AFF;
+  --color-link-hover: #3395ff;
   --color-scrollbar: #3d3d3d;
   --color-scrollbar-bg: #1a1a1a;
   --color-shadow: rgba(0, 0, 0, 0.4);
@@ -109,12 +109,12 @@ body.dark {
   --color-shadow-lg: rgba(0, 0, 0, 0.8);
   --color-input-bg: #1a1a1a;
   --color-input-border: #2d2d2d;
-  --color-input-focus: #28a745;
-  --color-button-bg: #28a745;
+  --color-input-focus: #007AFF;
+  --color-button-bg: #007AFF;
   --color-button-text: #ffffff;
-  --color-button-hover: #34ce57;
-  --color-button-secondary: #20c997;
-  --color-button-secondary-hover: #1fd4a0;
+  --color-button-hover: #3395ff;
+  --color-button-secondary: #FF6B35;
+  --color-button-secondary-hover: #ff8c5a;
   
   /* Modern UI Enhancements for Dark Theme */
   --color-surface: #1a1a1a;

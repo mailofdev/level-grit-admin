@@ -44,15 +44,26 @@ const RegisterClientForm = lazy(() =>
   import("./features/auth/RegisterClientForm")
 );
 
-// Client Dashboard Component
+// Dashboard Components
+const AdminDashboard = lazy(() =>
+  import("./features/dashboard/AdminDashboard")
+);
+const TrainerDashboard = lazy(() =>
+  import("./features/trainer/TrainerDashboard")
+);
 const ClientDashboard = lazy(() =>
   import("./features/client/ClientDashboard")
 );
 
-// Client Features
+// Client Management Components
+const AllClients = lazy(() => import("./features/users/AllClients"));
+const ClientDetails = lazy(() => import("./features/users/ClientDetails"));
 const ClientMessages = lazy(() =>
   import("./features/client/ClientMessages")
 );
+
+// Communication Components
+const Messages = lazy(() => import("./features/users/Messages"));
 const AdjustPlan = lazy(() => import("./features/adjustPlan/AdjustPlan"));
 
 // Static Pages
@@ -153,10 +164,24 @@ function App() {
                 <Route path="/testimonials" element={<Testimonials />} />
 
                 {/* ============================================
-                    Protected Routes - Client Portal Only
+                    Protected Routes - Authentication Required
                     ============================================ */}
                 
-                {/* Client Dashboard Route */}
+                {/* Dashboard Routes - Role-based access */}
+                <Route
+                  path="/trainer-dashboard"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <TrainerDashboard />
+                    </ProtectedLayout>
+                  }
+                />
                 <Route
                   path="/client-dashboard"
                   element={
@@ -171,8 +196,34 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
+                <Route
+                  path="/admin-dashboard"
+                  element={
+                    <ProtectedLayout>
+                      <AdminDashboard />
+                    </ProtectedLayout>
+                  }
+                />
 
-                {/* Client Messages Route */}
+                {/* Client Management Routes */}
+                <Route
+                  path="/AllClients"
+                  element={
+                    <ProtectedLayout>
+                      <AllClients />
+                    </ProtectedLayout>
+                  }
+                />
+                <Route
+                  path="/client-details/:clientId"
+                  element={
+                    <ProtectedLayout>
+                      <ClientDetails />
+                    </ProtectedLayout>
+                  }
+                />
+
+                {/* Communication Routes */}
                 <Route
                   path="/client-messages/:clientId"
                   element={
@@ -187,8 +238,16 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
+                <Route
+                  path="/messages/:clientId"
+                  element={
+                    <ProtectedLayout>
+                      <Messages isTrainer={true} />
+                    </ProtectedLayout>
+                  }
+                />
 
-                {/* Meal Plan Management Route */}
+                {/* Meal Plan Management */}
                 <Route
                   path="/adjust-plan/:clientId"
                   element={
