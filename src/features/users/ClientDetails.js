@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { getClientDashboardThunk } from "../client/clientThunks";
 import {
-  getDashboardThunk,
-} from "../../features/trainer/trainerThunks";
+  selectClientDashboardData,
+  selectClientDashboardLoading,
+  selectClientDashboardError,
+} from "../client/clientSlice";
 import {
   FaFire,
   FaCheckCircle,
@@ -21,21 +24,20 @@ export default function ClientDashboard() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { dashboard, loading, error } = useSelector((state) => state.client);
-  const clientsData = location.state?.client ? { ...location.state.client } : null;
-  const fileInputRef = useRef(null);
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  // Get client from location state
+  const client = location.state?.client ? { ...location.state.client } : null;
+  
+  // Redux state for client dashboard
+  const dashboard = useSelector(selectClientDashboardData);
+  const loading = useSelector(selectClientDashboardLoading);
+  const error = useSelector(selectClientDashboardError);
 
-  const [showCamera, setShowCamera] = useState(false);
-  const [selectedMeal, setSelectedMeal] = useState(null);
-  const [stream, setStream] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-
+  // Fetch client dashboard data when component mounts or clientId changes
   useEffect(() => {
-    dispatch(getDashboardThunk(clientsData.clientId));
-  }, [dispatch]);
+    if (client?.clientId) {
+      dispatch(getClientDashboardThunk(client.clientId));
+    }
+  }, [client?.clientId, dispatch]);
 
   // Parse macro strings from "consumed/target" format
   const parseMacro = (macroString) => {
@@ -44,22 +46,26 @@ export default function ClientDashboard() {
     return { value: value || 0, target: target || 0 };
   };
 
-  // Prepare client and dashboard data from API response
-  const client = dashboard
+  // Prepare client data from API response or use existing client
+  const clientData = dashboard
     ? {
-        clientId: dashboard.clientId,
-        trainerId: dashboard.trainerId,
-        clientName: dashboard.clientName,
-        fullName: dashboard.clientName,
-        goal: "- - -",
-        startDate: new Date().toLocaleDateString(),
+        clientId: dashboard.clientId || client?.clientId,
+        trainerId: dashboard.trainerId || client?.trainerId,
+        clientName: dashboard.clientName || client?.clientName || client?.fullName,
+        fullName: dashboard.clientName || client?.fullName || "Client",
+        goal: client?.goal || "- - -",
+        startDate: client?.startDate || new Date().toLocaleDateString(),
         status: dashboard.currentStreakDays >= 3 ? "on-track" : "attention",
         streak:
           dashboard.currentStreakDays > 0
             ? `${dashboard.currentStreakDays} days`
             : "Missed meal",
       }
-    : null;
+    : client ? {
+        ...client,
+        status: "attention",
+        streak: "Missed meal",
+      } : null;
 
   // Prepare dashboard data from API response
   const dashboardData = dashboard
@@ -97,12 +103,13 @@ export default function ClientDashboard() {
           name: `Meal ${index + 1} (${planned.mealName})`,
           mealName: planned.mealName,
           uploadId: planned.uploadId,
-          // Show uploaded image if completed, otherwise show planned image
+          // Show uploaded image if completed, otherwise show planned image or placeholder
           image: uploadedMeal?.base64Image
             ? `data:image/jpeg;base64,${uploadedMeal.base64Image}`
             : planned.base64Image
             ? `data:image/jpeg;base64,${planned.base64Image}`
-            : null,
+            : null, // Will use placeholder in UI
+          hasImage: !!(uploadedMeal?.base64Image || planned.base64Image),
           // Show actual consumed values if completed, otherwise show planned values
           calories: uploadedMeal
             ? Math.round(uploadedMeal.calories)
@@ -148,7 +155,7 @@ export default function ClientDashboard() {
     );
   }
 
-  if (!dashboardData || !client) {
+  if (!dashboardData || !clientData) {
     return (
       <div className="container">
         <p className="text-muted mt-4 text-center">Loading dashboard data...</p>
@@ -159,30 +166,14 @@ export default function ClientDashboard() {
   const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
   const remainingMeals = dashboardData.meals.length - completedMeals;
 
-  // Prepare data for ShareProgressModal
-  const shareClientData =
-    client && dashboardData
-      ? {
-          name: client.clientName || "Client",
-          streak: dashboardData.streakProgress.current,
-          streakCurrent: dashboardData.streakProgress.current,
-          streakGoal: dashboardData.streakProgress.goal,
-          completedMeals: completedMeals,
-          totalMeals: dashboardData.meals.length,
-          macros: [
-            {
-              label: "calories",
-              value: dashboardData.macros.calories.value,
-              target: dashboardData.macros.calories.target,
-            },
-            {
-              label: "protein",
-              value: dashboardData.macros.protein.value,
-              target: dashboardData.macros.protein.target,
-            },
-          ],
-        }
-      : null;
+  // Helper function to get placeholder image for incomplete meals
+  const getMealPlaceholderImage = () => {
+    // Create a simple SVG placeholder that indicates incomplete meal
+    const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#f8f9fa"/><circle cx="100" cy="80" r="30" fill="none" stroke="#dee2e6" stroke-width="3" stroke-dasharray="5,5"/><path d="M 70 120 L 130 120" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><path d="M 70 140 L 130 140" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><path d="M 70 160 L 110 160" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><text x="100" y="190" font-family="Arial" font-size="14" fill="#6c757d" text-anchor="middle">Pending</text></svg>`;
+    // Encode SVG for data URL
+    const encoded = encodeURIComponent(svg);
+    return `data:image/svg+xml;charset=utf-8,${encoded}`;
+  };
 
   const CircularProgress = ({
     value,
@@ -253,17 +244,17 @@ export default function ClientDashboard() {
           <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
             <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
               <div>
-                <h4 className="fw-bold">{client.fullName}</h4>
+                <h4 className="fw-bold">{clientData.fullName}</h4>
                 <p className="mb-1 text-muted small">
-                  Goal: <span className="fw-semibold">{client.goal}</span> •
-                  Start: {client.startDate}
+                  Goal: <span className="fw-semibold">{clientData.goal}</span> •
+                  Start: {clientData.startDate}
                 </p>
                 <span
                   className={`badge px-3 py-2 ${
-                    client.status === "attention" ? "bg-danger" : "bg-success"
+                    clientData.status === "attention" ? "bg-danger" : "bg-success"
                   }`}
                 >
-                  {client.status === "attention"
+                  {clientData.status === "attention"
                     ? "Need Attention"
                     : "On Track"}
                 </span>
@@ -273,14 +264,14 @@ export default function ClientDashboard() {
                 <div className="d-flex align-items-center justify-content-md-end mb-3">
                   <span
                     className={`fw-bold ${
-                      client.streak === "Missed meal"
+                      clientData.streak === "Missed meal"
                         ? "text-danger"
                         : "text-success"
                     }`}
                   >
                     {dashboardData.streakProgress.current} day streak
                   </span>
-                  {client.streak === "Missed meal" ? (
+                  {clientData.streak === "Missed meal" ? (
                     <FaSadCry className="text-danger ms-2" />
                   ) : (
                     <FaFire className="text-success ms-2" />
@@ -290,14 +281,12 @@ export default function ClientDashboard() {
                   <button
                     className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
                     onClick={() =>
-                      navigate(`/client-messages/${client.trainerId}`, {
-  state: { 
-    client,
-    trainerId: client.trainerId,
-    clientId: client.clientId,
-                          clientName: client.clientName,
+                      navigate(`/messages/${clientData.clientId}`, {
+                        state: { 
+                          client: clientData,
+                          clientId: clientData.clientId,
                         },
-})
+                      })
                     }
                   >
                     <FaMessage className="me-1" /> Message
@@ -315,16 +304,16 @@ export default function ClientDashboard() {
                         label: "Add",
                         icon: "pi pi-pencil",
                         command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: false },
+                          navigate(`/adjust-plan/${clientData.clientId}`, {
+                            state: { client: clientData, isView: false },
                           }),
                       },
                       {
                         label: "Preview",
                         icon: "pi pi-eye",
                         command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: true },
+                          navigate(`/adjust-plan/${clientData.clientId}`, {
+                            state: { client: clientData, isView: true },
                           }),
                       },
                     ]}
@@ -437,7 +426,7 @@ export default function ClientDashboard() {
                       </div>
 
                       <div
-                        className="rounded-3 overflow-hidden mb-2"
+                        className="rounded-3 overflow-hidden mb-2 position-relative"
                         style={{ height: "120px" }}
                       >
                         {meal.image ? (
@@ -445,14 +434,31 @@ export default function ClientDashboard() {
                             src={meal.image}
                             alt={meal.name}
                             className="img-fluid w-100 h-100 object-fit-cover"
-                            style={{ opacity: meal.completed ? 1 : 0.7 }}
+                            style={{ opacity: meal.completed ? 1 : 0.6 }}
                           />
                         ) : (
-                          <div className="d-flex align-items-center justify-content-center h-100 bg-light">
-                            <FaCamera
-                              className="text-muted"
-                              style={{ fontSize: "2rem" }}
-                            />
+                          <img
+                            src={getMealPlaceholderImage()}
+                            alt="Meal not completed"
+                            className="img-fluid w-100 h-100 object-fit-cover"
+                            style={{ 
+                              opacity: 0.8,
+                              filter: meal.completed ? 'none' : 'grayscale(100%)'
+                            }}
+                          />
+                        )}
+                        {!meal.completed && (
+                          <div 
+                            className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                            style={{
+                              background: 'rgba(0, 0, 0, 0.1)',
+                              pointerEvents: 'none'
+                            }}
+                          >
+                            <div className="text-center">
+                              <FaCamera className="text-muted mb-2" style={{ fontSize: "2rem" }} />
+                              <div className="small text-muted fw-semibold">Pending</div>
+                            </div>
                           </div>
                         )}
                       </div>
