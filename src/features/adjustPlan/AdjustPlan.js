@@ -286,7 +286,7 @@ export default function AdjustPlan() {
   };
 
   return (
-    <div className="container-fluid px-2 px-md-3">
+    <div className="container-fluid px-2 px-md-3 py-3 py-md-4">
       <Toast ref={toast} />
       <Heading {...headingProps} />
       

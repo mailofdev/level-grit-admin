@@ -42,7 +42,7 @@ const MainLayout = ({ children, config }) => {
               <Sidebar showIcons={true} />
             </div>
           )}
-          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto px-3 px-md-4 px-lg-4" : "col-12 px-3 px-md-4 px-lg-4"}>
+          <main id="main-content" role="main" tabIndex="-1" className={cfg.showSidebar ? "col-12 col-lg-10 ms-lg-auto" : "col-12"}>
             {children}
           </main>
         </div>

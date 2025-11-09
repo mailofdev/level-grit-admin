@@ -224,11 +224,11 @@ useEffect(() => {
   };
 
   return (
-    <div className="container-fluid px-2 px-md-3">
+    <div className="container-fluid px-2 px-md-3 py-3 py-md-4">
       <Heading pageName="details" sticky={true} />
       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)" }}>
         <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="px-2 px-md-3">
+          <div>
             {/* Client Info Card */}
             <div className="card shadow-sm rounded-4 mb-3 mt-2 border-0">
               <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
@@ -417,24 +417,36 @@ useEffect(() => {
                           </div>
 
                           <div
-                            className="rounded-3 overflow-hidden mb-2 position-relative"
-                            style={{ height: "120px" }}
+                            className="rounded-3 overflow-hidden mb-2 position-relative d-flex align-items-center justify-content-center"
+                            style={{ 
+                              minHeight: "120px",
+                              maxHeight: "200px",
+                              backgroundColor: "var(--color-surface-variant)"
+                            }}
                           >
                             {meal.image ? (
                               <img
                                 src={meal.image}
                                 alt={meal.name}
-                                className="img-fluid w-100 h-100 object-fit-cover"
-                                style={{ opacity: meal.completed ? 1 : 0.6 }}
+                                className="img-fluid"
+                                style={{ 
+                                  opacity: meal.completed ? 1 : 0.6,
+                                  maxHeight: "200px",
+                                  width: "100%",
+                                  objectFit: "contain"
+                                }}
                               />
                             ) : (
                               <img
                                 src={getMealPlaceholderImage()}
                                 alt="Meal not completed"
-                                className="img-fluid w-100 h-100 object-fit-cover"
+                                className="img-fluid"
                                 style={{ 
                                   opacity: 0.8,
-                                  filter: meal.completed ? 'none' : 'grayscale(100%)'
+                                  filter: meal.completed ? 'none' : 'grayscale(100%)',
+                                  maxHeight: "200px",
+                                  width: "100%",
+                                  objectFit: "contain"
                                 }}
                               />
                             )}

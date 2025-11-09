@@ -88,7 +88,7 @@ export default function Messages({ isTrainer = false }) {
   }
 
   return (
-    <div className="container py-3">
+    <div className="container-fluid px-2 px-md-3 py-3">
       <Heading pageName={chatName} sticky={true} />
 
       <motion.div

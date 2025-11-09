@@ -37,7 +37,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="container-fluid py-4 py-md-5" style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
+    <div className="container-fluid px-2 px-md-3 py-3 py-md-4" style={{ backgroundColor: "var(--color-bg)", minHeight: "100vh" }}>
       {/* Header */}
       <motion.div 
         className="text-center mb-4 mb-md-5"

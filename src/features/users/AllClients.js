@@ -62,7 +62,7 @@ export default function AllClients() {
   }
 
   return (
-    <div className="container-fluid px-2 px-sm-3 px-md-4 pb-4 theme-transition">
+    <div className="container-fluid px-2 px-md-3 py-3 py-md-4 theme-transition">
       {/* Main Card Container */}
       <div className="card border-0 shadow-lg theme-transition rounded-4 overflow-hidden">
         {/* Header Section */}
