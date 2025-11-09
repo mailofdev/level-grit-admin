@@ -129,7 +129,7 @@ const TrainerDashboard = () => {
   // --- Main UI ---
   return (
     <div className="trainer-dashboard min-vh-100 py-4">
-      <Container>
+      <Container fluid>
         {/* Header */}
         <Row className="mb-4 align-items-center">
           <Col>
