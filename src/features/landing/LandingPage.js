@@ -98,7 +98,6 @@ const LandingPage = () => {
                 borderRadius: "8px",
               }}
             />
-            LevelGrit
           </Link>
           <button
             className="navbar-toggler border-0"
