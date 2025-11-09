@@ -1,5 +1,6 @@
 import React from "react";
-import { FaUsers, FaUserTie, FaClipboardList, FaChartLine, FaCog } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaUsers, FaUserTie, FaClipboardList, FaChartLine, FaCog, FaMoneyBillWave } from "react-icons/fa";
 import { motion } from "framer-motion";
 import AnimatedCard from "../../components/common/AnimatedCard";
 import StaggerContainer from "../../components/common/StaggerContainer";
@@ -163,8 +164,8 @@ export default function AdminDashboard() {
                 </h5>
                 <div className="d-grid gap-3">
                   {[
-                    { label: "Add Trainer", icon: <FaUserTie />, variant: "primary" },
-                    { label: "View Clients", icon: <FaUsers />, variant: "success" },
+                    { label: "Payment Management", icon: <FaMoneyBillWave />, variant: "success", href: "/payment-management" },
+                    { label: "View Clients", icon: <FaUsers />, variant: "primary" },
                     { label: "Admin Settings", icon: <FaCog />, variant: "warning" }
                   ].map((action, idx) => (
                     <motion.div
@@ -172,13 +173,24 @@ export default function AdminDashboard() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <button 
-                        className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm`}
-                        style={{ minHeight: '48px' }}
-                      >
-                        <span className="me-2">{action.icon}</span>
-                        {action.label}
-                      </button>
+                      {action.href ? (
+                        <Link
+                          to={action.href}
+                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm text-decoration-none`}
+                          style={{ minHeight: '48px', color: 'white' }}
+                        >
+                          <span className="me-2">{action.icon}</span>
+                          {action.label}
+                        </Link>
+                      ) : (
+                        <button 
+                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm`}
+                          style={{ minHeight: '48px' }}
+                        >
+                          <span className="me-2">{action.icon}</span>
+                          {action.label}
+                        </button>
+                      )}
                     </motion.div>
                   ))}
                 </div>

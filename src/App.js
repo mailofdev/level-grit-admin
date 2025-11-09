@@ -51,6 +51,9 @@ const AdminDashboard = lazy(() =>
 const TrainerDashboard = lazy(() =>
   import("./features/trainer/TrainerDashboard")
 );
+const PaymentManagement = lazy(() =>
+  import("./features/payments/PaymentManagement")
+);
 
 // Client Management Components
 const AllClients = lazy(() => import("./features/users/AllClients"));
@@ -182,6 +185,14 @@ function App() {
                   element={
                     <ProtectedLayout>
                       <AdminDashboard />
+                    </ProtectedLayout>
+                  }
+                />
+                <Route
+                  path="/payment-management"
+                  element={
+                    <ProtectedLayout>
+                      <PaymentManagement />
                     </ProtectedLayout>
                   }
                 />
