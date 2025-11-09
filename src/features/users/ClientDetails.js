@@ -68,115 +68,102 @@ export default function ClientDetails() {
     }
   }, [clientDashboardError]);
 
+  // Helper function to parse macro strings (format: "current/target")
+  const parseMacro = (macroString) => {
+    if (!macroString || typeof macroString !== 'string') {
+      return { value: 0, target: 0 };
+    }
+    const parts = macroString.split('/');
+    return {
+      value: parseFloat(parts[0]) || 0,
+      target: parseFloat(parts[1]) || 0,
+    };
+  };
+
+  // Helper function to convert base64 to data URL
+  const getImageSrc = (base64Image) => {
+    if (!base64Image) return null;
+    // Check if it's already a data URL
+    if (base64Image.startsWith('data:')) return base64Image;
+    // Check if it's a full base64 string or just the data part
+    if (base64Image.startsWith('/9j/') || base64Image.length > 100) {
+      return `data:image/jpeg;base64,${base64Image}`;
+    }
+    return base64Image;
+  };
+
+  // Transform API data to component format
+  const transformDashboardData = (apiData) => {
+    if (!apiData) {
+      // Return default/empty data structure
+      return {
+        user: { name: client?.fullName || "Client", streak: 0 },
+        macros: {
+          calories: { value: 0, target: 0 },
+          protein: { value: 0, target: 0 },
+          carbs: { value: 0, target: 0 },
+          fat: { value: 0, target: 0 },
+        },
+        streakProgress: { current: 0, goal: 20 },
+        meals: [],
+      };
+    }
+
+    // Parse macros from API
+    const macros = {
+      calories: parseMacro(apiData.totalMacros?.calories),
+      protein: parseMacro(apiData.totalMacros?.protein),
+      carbs: parseMacro(apiData.totalMacros?.carbs),
+      fat: parseMacro(apiData.totalMacros?.fat),
+    };
+
+    // Combine meals and plannedMeals
+    // Mark meals as completed if they have an uploaded image
+    const uploadedMealNames = new Set((apiData.meals || []).map(m => m.mealName?.toLowerCase()));
+    
+    const allMeals = (apiData.plannedMeals || []).map((meal) => {
+      const isCompleted = uploadedMealNames.has(meal.mealName?.toLowerCase());
+      // Find uploaded meal data if exists
+      const uploadedMeal = (apiData.meals || []).find(
+        m => m.mealName?.toLowerCase() === meal.mealName?.toLowerCase()
+      );
+
+      return {
+        name: meal.mealName || "Meal",
+        image: getImageSrc(uploadedMeal?.base64Image || meal.base64Image),
+        calories: Math.round(uploadedMeal?.calories || meal.calories || 0),
+        protein: Math.round(uploadedMeal?.protein || meal.protein || 0),
+        carbs: Math.round(uploadedMeal?.carbs || meal.carbs || 0),
+        fat: Math.round(uploadedMeal?.fat || meal.fat || 0),
+        completed: isCompleted,
+      };
+    });
+
+    return {
+      user: {
+        name: apiData.clientName || client?.fullName || "Client",
+        streak: apiData.currentStreakDays || 0,
+      },
+      macros,
+      streakProgress: {
+        current: apiData.currentStreakDays || 0,
+        goal: 20, // Default goal, can be updated if API provides it
+      },
+      meals: allMeals,
+    };
+  };
+
+  // Get dashboard data from API or use default
+  const dashboardData = transformDashboardData(clientDashboardData);
+  const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
+  const remainingMeals = dashboardData.meals.length - completedMeals;
+
   if (!client)
     return (
       <p className="text-muted mt-4 text-center">
         Select a client to view details.
       </p>
     );
-
-  const meals = [
-    {
-      name: "Meal 1 (Pre-Workout)",
-      image:
-        "https://media.self.com/photos/5fd796783fd930328ef43628/4:3/w_2240,c_limit/banana-peanut-butter.jpg",
-      calories: 450,
-      protein: 15,
-      carbs: 60,
-      fat: 18,
-      completed: true,
-    },
-    {
-      name: "Meal 2 (Breakfast)",
-      image:
-        "https://www.shutterstock.com/image-photo/milk-breakfast-two-glasses-oatmeal-260nw-1905708703.jpg",
-      calories: 520,
-      protein: 35,
-      carbs: 25,
-      fat: 28,
-      completed: true,
-    },
-    {
-      name: "Meal 3 (Lunch)",
-      image:
-        "https://www.subbuskitchen.com/wp-content/uploads/2014/07/NorthIndian-Lunch-Menu1_Final2.jpg",
-      calories: 280,
-      protein: 8,
-      carbs: 18,
-      fat: 22,
-      completed: true,
-    },
-    {
-      name: "Meal 4 (Evening Snack)",
-      image:
-        "https://i0.wp.com/www.shanazrafiq.com/wp-content/uploads/2022/02/Fruit-Yogurt-Salad-8.jpg?resize=1200%2C798&ssl=1",
-      calories: 625,
-      protein: 42,
-      carbs: 45,
-      fat: 28,
-      completed: true,
-    },
-    {
-      name: "Meal 5 (Dinner)",
-      image:
-        "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/07/paneer-fried-rice-recipe.jpg",
-      calories: 625,
-      protein: 42,
-      carbs: 45,
-      fat: 28,
-      completed: true,
-    },
-    {
-      name: "Meal 6 (Before Bed)",
-      calories: 625,
-      protein: 42,
-      carbs: 45,
-      fat: 28,
-      completed: false,
-    },
-  ];
-
-  const totals = meals.reduce(
-    (acc, meal) => {
-      acc.calories += meal.calories;
-      acc.protein += meal.protein;
-      acc.carbs += meal.carbs;
-      acc.fat += meal.fat;
-      return acc;
-    },
-    { calories: 0, protein: 0, carbs: 0, fat: 0 }
-  );
-
-  const dashboardData = {
-    user: { name: "Alex", streak: 12 },
-    macros: {
-      calories: { value: totals.calories, target: 2500 },
-      protein: { value: totals.protein, target: 200 },
-      carbs: { value: totals.carbs, target: 300 },
-      fat: { value: totals.fat, target: 80 },
-    },
-    streakProgress: { current: 12, goal: 20 },
-    meals,
-    reminders: [
-      {
-        text: "Dinner reminder",
-        time: "6:00 PM - Don't forget your protein!",
-        type: "warning",
-      },
-      {
-        text: "Time for your next glass of water",
-        time: "4:00 PM - Time for your next glass of water",
-        type: "info",
-      },
-    ],
-    water: {
-      current: 6,
-      goal: 8,
-    },
-  };
-
-  const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
-  const remainingMeals = dashboardData.meals.length - completedMeals;
 
   const handlePlanAction = (type) => {
     setActionType(type);
@@ -541,12 +528,15 @@ export default function ClientDetails() {
                         <div className="d-flex align-items-center gap-2">
                           <span
                             className={`fw-bold fs-6 ${
-                              client.streak === "Missed meal" ? "text-danger" : "text-success"
+                              dashboardData.user.streak === 0 ? "text-danger" : "text-success"
                             }`}
                           >
-                            {client.streak}
+                            {dashboardData.user.streak > 0 
+                              ? `${dashboardData.user.streak} day${dashboardData.user.streak !== 1 ? 's' : ''} streak`
+                              : "No streak"
+                            }
                           </span>
-                          {client.streak === "Missed meal" ? (
+                          {dashboardData.user.streak === 0 ? (
                             <FaSadCry className="text-danger fs-5" />
                           ) : (
                             <FaFire className="text-success fs-5" />
@@ -592,39 +582,47 @@ export default function ClientDetails() {
              
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="row g-2 g-md-3 mb-3">
-              <div className="col-12 col-lg-8">
-                <div className="card rounded-4 shadow-sm h-100">
-                  <div className="card-body p-3">
-                    <h6 className="card-title mb-3 fw-bold">Today's Macros</h6>
-                    <div className="row g-3">
-                      {Object.entries(dashboardData.macros).map(
-                        ([key, value], index) => (
-                          <div key={key} className="col-6 col-sm-6 col-md-3">
-                            <CircularProgress
-                              current={value.value}
-                              target={value.target}
-                              label={key}
-                              color={
-                                index === 0
-                                  ? "success"
-                                  : index === 1
-                                  ? "info"
-                                  : "warning"
-                              }
-                            />
-                          </div>
-                        )
-                      )}
+            {clientDashboardLoading ? (
+              <div className="text-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <p className="text-muted mt-3">Loading dashboard data...</p>
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="row g-2 g-md-3 mb-3">
+                <div className="col-12 col-lg-8">
+                  <div className="card rounded-4 shadow-sm h-100">
+                    <div className="card-body p-3">
+                      <h6 className="card-title mb-3 fw-bold">Today's Macros</h6>
+                      <div className="row g-3">
+                        {Object.entries(dashboardData.macros).map(
+                          ([key, value], index) => (
+                            <div key={key} className="col-6 col-sm-6 col-md-3">
+                              <CircularProgress
+                                current={value.value}
+                                target={value.target}
+                                label={key}
+                                color={
+                                  index === 0
+                                    ? "success"
+                                    : index === 1
+                                    ? "info"
+                                    : "warning"
+                                }
+                              />
+                            </div>
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
               <div className="col-12 col-lg-4">
                 <div className="card rounded-4 shadow-sm h-100">
@@ -667,67 +665,75 @@ export default function ClientDetails() {
               </div>
               </div>
 
-              <div className="card rounded-4 shadow-sm mb-5 pb-4">
-                <div className="card-body p-3">
-                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                    <h6 className="fw-bold mb-0">Today's Meals</h6>
-                    <div className="d-flex gap-3">
-                      <span className="text-success fw-semibold small">
-                        ✓ {completedMeals} done
-                      </span>
-                      <span className="text-danger fw-semibold small">
-                        ⏳ {remainingMeals} left
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="row g-2 g-md-3">
-                    {dashboardData.meals.map((meal, idx) => (
-                      <div key={idx} className="col-12 col-sm-6 col-lg-4">
-                        <div
-                          className={`h-100 rounded-4 p-3 position-relative ${
-                            meal.completed
-                              ? "br-light-green-2"
-                              : "br-light-gray-dotted"
-                          }`}
-                        >
-                          <div className="d-flex justify-content-between align-items-start mb-2">
-                            <h6 className="fw-semibold mb-0 small">{meal.name}</h6>
-                            {meal.completed ? (
-                              <FaCheckCircle className="text-success fs-5 flex-shrink-0 ms-2" />
-                            ) : (
-                              <FaCamera className="text-secondary fs-5 flex-shrink-0 ms-2" />
-                            )}
-                          </div>
-
-                          {meal.image && (
-                            <div
-                              className="rounded-3 overflow-hidden mb-2"
-                              style={{ height: "140px" }}
-                            >
-                              <img
-                                src={meal.image}
-                                alt={meal.name}
-                                className="img-fluid w-100 h-100 object-fit-cover"
-                              />
-                            </div>
-                          )}
-
-                          <div className="mt-2">
-                            <p className="mb-1 small fw-semibold">
-                              {meal.calories} kcal
-                            </p>
-                            <div className="small text-muted">
-                              P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
-                            </div>
-                          </div>
-                        </div>
+                <div className="card rounded-4 shadow-sm mb-5 pb-4">
+                  <div className="card-body p-3">
+                    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                      <h6 className="fw-bold mb-0">Today's Meals</h6>
+                      <div className="d-flex gap-3">
+                        <span className="text-success fw-semibold small">
+                          ✓ {completedMeals} done
+                        </span>
+                        <span className="text-danger fw-semibold small">
+                          ⏳ {remainingMeals} left
+                        </span>
                       </div>
-                    ))}
+                    </div>
+
+                    {dashboardData.meals.length === 0 ? (
+                      <div className="text-center py-5">
+                        <FaCamera className="text-muted fs-1 mb-3" />
+                        <p className="text-muted mb-0">No meals planned for today</p>
+                      </div>
+                    ) : (
+                      <div className="row g-2 g-md-3">
+                        {dashboardData.meals.map((meal, idx) => (
+                          <div key={idx} className="col-12 col-sm-6 col-lg-4">
+                            <div
+                              className={`h-100 rounded-4 p-3 position-relative ${
+                                meal.completed
+                                  ? "br-light-green-2"
+                                  : "br-light-gray-dotted"
+                              }`}
+                            >
+                              <div className="d-flex justify-content-between align-items-start mb-2">
+                                <h6 className="fw-semibold mb-0 small">{meal.name}</h6>
+                                {meal.completed ? (
+                                  <FaCheckCircle className="text-success fs-5 flex-shrink-0 ms-2" />
+                                ) : (
+                                  <FaCamera className="text-secondary fs-5 flex-shrink-0 ms-2" />
+                                )}
+                              </div>
+
+                              {meal.image && (
+                                <div
+                                  className="rounded-3 overflow-hidden mb-2"
+                                  style={{ height: "140px" }}
+                                >
+                                  <img
+                                    src={meal.image}
+                                    alt={meal.name}
+                                    className="img-fluid w-100 h-100 object-fit-cover"
+                                  />
+                                </div>
+                              )}
+
+                              <div className="mt-2">
+                                <p className="mb-1 small fw-semibold">
+                                  {meal.calories} kcal
+                                </p>
+                                <div className="small text-muted">
+                                  P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fat}g
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>

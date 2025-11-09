@@ -123,10 +123,10 @@ export default ClientSlice.reducer;
 // ✅ Selectors
 // Note: These selectors use state.client because clientReducer is mapped to 'client' key in rootReducer
 // The slice name "trainer" is a legacy naming that should be updated to "client" in the future
-export const selectTrainer = (state) => state.client;
-export const selectDashboardData = (state) => state.client.dashboardData;
-export const selectTrainerLoading = (state) => state.client.loading;
-export const selectTrainerError = (state) => state.client.error;
-export const selectClientDashboardData = (state) => state.client.clientDashboardData;
-export const selectClientDashboardLoading = (state) => state.client.clientDashboardLoading;
-export const selectClientDashboardError = (state) => state.client.clientDashboardError;
+export const selectTrainer = (state) => state.client || {};
+export const selectDashboardData = (state) => state.client?.dashboardData ?? null;
+export const selectTrainerLoading = (state) => state.client?.loading ?? false;
+export const selectTrainerError = (state) => state.client?.error ?? null;
+export const selectClientDashboardData = (state) => state.client?.clientDashboardData ?? null;
+export const selectClientDashboardLoading = (state) => state.client?.clientDashboardLoading ?? false;
+export const selectClientDashboardError = (state) => state.client?.clientDashboardError ?? null;
