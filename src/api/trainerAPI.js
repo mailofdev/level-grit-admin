@@ -20,3 +20,11 @@ export const deleteTrainer = async (userId) => {
   return data;
 };
 
+/**
+ * Get Client Dashboard Data
+ * API Path: api/Client/GetDashboard
+ */
+export const getDashboard = async () => {
+  const { data } = await axiosInstance.get(`api/Client/GetDashboard`);
+  return data;
+};

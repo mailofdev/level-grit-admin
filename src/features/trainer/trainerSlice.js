@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTrainerDashboardThunk, deleteTrainerThunk } from "./trainerThunks";
+import { getTrainerDashboardThunk, deleteTrainerThunk, getDashboardThunk } from "./trainerThunks";
 
 const initialState = {
-  dashboardData: null,
+  dashboard: null,
   loading: false,
   error: null,
 };
@@ -57,7 +57,7 @@ const trainerSlice = createSlice({
           clientsNeedingAttention: payload.clientsNeedingAttention || [],
         };
 
-        state.dashboardData = normalized;
+        state.dashboard = normalized;
         state.error = null;
       })
 
@@ -65,8 +65,52 @@ const trainerSlice = createSlice({
       .addCase(getTrainerDashboardThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to load trainer dashboard";
-        state.dashboardData = null;
+        state.dashboard = null;
       })
+
+           // ============================================================
+      // ✅ FETCH DASHBOARD
+      // ============================================================
+      .addCase(getDashboardThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDashboardThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload || {};
+
+        // ✅ Normalize & structure dashboard response
+        state.dashboard = {
+          clientId: payload.clientId || payload.userId || payload.id || null,
+          trainerId: payload.trainerId || null,
+          clientName:
+            payload.clientName ||
+            payload.fullName ||
+            payload.name ||
+            "Client",
+          currentStreakDays:
+            payload.currentStreakDays ||
+            payload.streakDays ||
+            payload.currentStreak ||
+            0,
+          totalMacros: payload.totalMacros || {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0,
+          },
+          plannedMeals: payload.plannedMeals || [],
+          meals: payload.meals || [],
+        };
+
+        state.error = null;
+      })
+      .addCase(getDashboardThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload || "Failed to fetch client dashboard data";
+      })
+
 
       // --- DELETE TRAINER THUNK ---
       // Pending
@@ -80,7 +124,7 @@ const trainerSlice = createSlice({
         state.loading = false;
         state.error = null;
         // Reset trainer state after successful deletion
-        state.dashboardData = null;
+        state.dashboard = null;
       })
 
       // Rejected
@@ -98,6 +142,6 @@ export default trainerSlice.reducer;
 
 // ✅ Selectors
 export const selectTrainer = (state) => state.trainer;
-export const selectDashboardData = (state) => state.trainer.dashboardData;
+export const selectdashboard = (state) => state.trainer.dashboard;
 export const selectTrainerLoading = (state) => state.trainer.loading;
 export const selectTrainerError = (state) => state.trainer.error;

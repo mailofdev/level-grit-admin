@@ -19,7 +19,7 @@ import { getTrainerDashboardThunk } from "./trainerThunks";
 import {
   selectTrainerLoading,
   selectTrainerError,
-  selectDashboardData,
+  selectdashboard,
   clearError,
 } from "./trainerSlice";
 import AnimatedCard from "../../components/common/AnimatedCard";
@@ -32,7 +32,7 @@ const TrainerDashboard = () => {
 
   const loading = useSelector(selectTrainerLoading);
   const error = useSelector(selectTrainerError);
-  const dashboardData = useSelector(selectDashboardData);
+  const dashboardData = useSelector(selectdashboard);
 
   useEffect(() => {
     dispatch(getTrainerDashboardThunk());
