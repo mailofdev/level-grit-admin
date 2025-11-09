@@ -29,90 +29,9 @@ export default function ClientDetails() {
   const toast = useRef(null);
   const dispatch = useDispatch();
 
-const { dashboard, loading, error } = useSelector((state) => state.client);
+  // Get client from location state (passed from navigation)
+  const client = location.state?.client ? { ...location.state.client } : null;
 
-  // Prepare client and dashboard data from API response
-  const client = dashboard
-    ? {
-        clientId: dashboard.clientId,
-        trainerId: dashboard.trainerId,
-        clientName: dashboard.clientName,
-        fullName: dashboard.clientName,
-        goal: "- - -",
-        startDate: new Date().toLocaleDateString(),
-        status: dashboard.currentStreakDays >= 3 ? "on-track" : "attention",
-        streak:
-          dashboard.currentStreakDays > 0
-            ? `${dashboard.currentStreakDays} days`
-            : "Missed meal",
-      }
-    : null;
-
-  // Prepare dashboard data from API response
-  const dashboardData = dashboard
-    ? {
-        user: {
-          name: dashboard.clientName || "Client",
-          streak: dashboard.currentStreakDays || 0,
-        },
-        macros: {
-          calories: parseMacro(dashboard.totalMacros?.calories),
-          protein: parseMacro(dashboard.totalMacros?.protein),
-          carbs: parseMacro(dashboard.totalMacros?.carbs),
-          fat: parseMacro(dashboard.totalMacros?.fat),
-        },
-        streakProgress: { current: dashboard.currentStreakDays || 0, goal: 20 },
-        meals: [],
-        reminders: [],
-        water: { current: 6, goal: 8 },
-      }
-    : null;
-
-  // Match uploaded meals with planned meals
-  if (dashboard) {
-    const uploadedMealsMap = {};
-    (dashboard.meals || []).forEach((meal) => {
-      uploadedMealsMap[meal.mealName.toLowerCase().trim()] = meal;
-    });
-
-    dashboardData.meals = (dashboard.plannedMeals || []).map(
-      (planned, index) => {
-        const uploadedMeal =
-          uploadedMealsMap[planned.mealName.toLowerCase().trim()];
-
-        return {
-          name: `Meal ${index + 1} (${planned.mealName})`,
-          mealName: planned.mealName,
-          uploadId: planned.uploadId,
-          // Show uploaded image if completed, otherwise show planned image
-          image: uploadedMeal?.base64Image
-            ? `data:image/jpeg;base64,${uploadedMeal.base64Image}`
-            : planned.base64Image
-            ? `data:image/jpeg;base64,${planned.base64Image}`
-            : null,
-          // Show actual consumed values if completed, otherwise show planned values
-          calories: uploadedMeal
-            ? Math.round(uploadedMeal.calories)
-            : Math.round(planned.calories),
-          protein: uploadedMeal
-            ? Math.round(uploadedMeal.protein)
-            : Math.round(planned.protein),
-          carbs: uploadedMeal
-            ? Math.round(uploadedMeal.carbs)
-            : Math.round(planned.carbs),
-          fat: uploadedMeal
-            ? Math.round(uploadedMeal.fat)
-            : Math.round(planned.fat),
-          completed: !!uploadedMeal,
-          // Store both planned and actual for reference
-          plannedCalories: Math.round(planned.calories),
-          plannedProtein: Math.round(planned.protein),
-          plannedCarbs: Math.round(planned.carbs),
-          plannedFat: Math.round(planned.fat),
-        };
-      }
-    );
-  }
   // Redux state
   const clientDashboardData = useSelector(selectClientDashboardData);
   const clientDashboardLoading = useSelector(selectClientDashboardLoading);
@@ -196,14 +115,17 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
 
     // Combine meals and plannedMeals
     // Mark meals as completed if they have an uploaded image
-    const uploadedMealNames = new Set((apiData.meals || []).map(m => m.mealName?.toLowerCase()));
+    const uploadedMealsMap = {};
+    (apiData.meals || []).forEach((meal) => {
+      if (meal.mealName) {
+        uploadedMealsMap[meal.mealName.toLowerCase().trim()] = meal;
+      }
+    });
     
     const allMeals = (apiData.plannedMeals || []).map((meal) => {
-      const isCompleted = uploadedMealNames.has(meal.mealName?.toLowerCase());
-      // Find uploaded meal data if exists
-      const uploadedMeal = (apiData.meals || []).find(
-        m => m.mealName?.toLowerCase() === meal.mealName?.toLowerCase()
-      );
+      const mealNameKey = meal.mealName?.toLowerCase().trim();
+      const uploadedMeal = mealNameKey ? uploadedMealsMap[mealNameKey] : null;
+      const isCompleted = !!uploadedMeal;
 
       return {
         name: meal.mealName || "Meal",
@@ -226,12 +148,26 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
         current: apiData.currentStreakDays || 0,
         goal: 20, // Default goal, can be updated if API provides it
       },
-      meals: allMeals,
+      meals: allMeals || [],
     };
   };
+
+  // Get dashboard data from API or use default
+  const dashboardData = transformDashboardData(clientDashboardData);
   
-  const completedMeals = dashboardData.meals.filter((m) => m.completed).length;
-  const remainingMeals = dashboardData.meals.length - completedMeals;
+  // Debug logging
+  useEffect(() => {
+    if (clientDashboardData) {
+      console.log('Client Dashboard Data:', clientDashboardData);
+      console.log('Transformed Dashboard Data:', dashboardData);
+      console.log('Meals:', dashboardData.meals);
+      console.log('Macros:', dashboardData.macros);
+    }
+  }, [clientDashboardData]);
+  
+  // Safely calculate completed meals
+  const completedMeals = dashboardData?.meals?.filter((m) => m.completed).length || 0;
+  const remainingMeals = (dashboardData?.meals?.length || 0) - completedMeals;
 
   if (!client)
     return (
@@ -406,15 +342,15 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                         <div className="d-flex align-items-center gap-2">
                           <span
                             className={`fw-bold fs-6 ${
-                              dashboardData.user.streak === 0 ? "text-danger" : "text-success"
+                              dashboardData?.user?.streak === 0 ? "text-danger" : "text-success"
                             }`}
                           >
-                            {dashboardData.user.streak > 0 
-                              ? `${dashboardData.user.streak} day${dashboardData.user.streak !== 1 ? 's' : ''} streak`
+                            {(dashboardData?.user?.streak || 0) > 0 
+                              ? `${dashboardData?.user?.streak || 0} day${(dashboardData?.user?.streak || 0) !== 1 ? 's' : ''} streak`
                               : "No streak"
                             }
                           </span>
-                          {dashboardData.user.streak === 0 ? (
+                          {(dashboardData?.user?.streak || 0) === 0 ? (
                             <FaSadCry className="text-danger fs-5" />
                           ) : (
                             <FaFire className="text-success fs-5" />
@@ -484,7 +420,7 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                     <h5 className="card-title mb-0 fw-bold">Today's Macros</h5>
                   </div>
                   <div className="row">
-                    {Object.entries(dashboardData.macros).map(
+                    {Object.entries(dashboardData?.macros || {}).map(
                       ([key, value], index) => (
                         <div key={key} className="col-12 col-sm-3 mb-3">
                           <CircularProgress
@@ -516,8 +452,8 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                   </div>
                   <div className="flex-grow-1 d-flex flex-column justify-content-center">
                     <h4 className="text-primary mb-3">
-                      {dashboardData.streakProgress.current} /{" "}
-                      {dashboardData.streakProgress.goal}
+                      {dashboardData?.streakProgress?.current || 0} /{" "}
+                      {dashboardData?.streakProgress?.goal || 20}
                       <small className="text-muted ms-1">days</small>
                     </h4>
                     <div className="progress mb-4" style={{ height: "8px" }}>
@@ -525,9 +461,9 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                         className="progress-bar bg-gradient"
                         style={{
                           width: `${
-                            (dashboardData.streakProgress.current /
-                              dashboardData.streakProgress.goal) *
-                            100
+                            ((dashboardData?.streakProgress?.current || 0) /
+                              (dashboardData?.streakProgress?.goal || 20)) *
+                              100
                           }%`,
                           background:
                             "linear-gradient(90deg, #28a745, #20c997)",
@@ -556,7 +492,7 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
               </div>
 
               <div className="row g-3">
-                {dashboardData.meals.map((meal, idx) => (
+                {(dashboardData?.meals || []).map((meal, idx) => (
                   <div key={idx} className="col-12 col-md-4 col-lg-4">
                     <div
                       className={`h-100 rounded-4 p-3 position-relative ${
@@ -634,8 +570,8 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                     </div>
                     <div className="flex-grow-1 d-flex flex-column justify-content-center">
                       <h4 className="text-primary mb-3">
-                        {dashboardData.streakProgress.current} /{" "}
-                        {dashboardData.streakProgress.goal}
+                        {dashboardData?.streakProgress?.current || 0} /{" "}
+                        {dashboardData?.streakProgress?.goal || 20}
                         <small className="text-muted ms-1">days</small>
                       </h4>
                       <div className="progress mb-3" style={{ height: "10px" }}>
@@ -643,8 +579,8 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                           className="progress-bar bg-gradient"
                           style={{
                             width: `${
-                              (dashboardData.streakProgress.current /
-                                dashboardData.streakProgress.goal) *
+                            ((dashboardData?.streakProgress?.current || 0) /
+                              (dashboardData?.streakProgress?.goal || 20)) *
                               100
                             }%`,
                             background:
@@ -672,14 +608,14 @@ const { dashboard, loading, error } = useSelector((state) => state.client);
                       </div>
                     </div>
 
-                    {dashboardData.meals.length === 0 ? (
+                    {(dashboardData?.meals || []).length === 0 ? (
                       <div className="text-center py-5">
                         <FaCamera className="text-muted fs-1 mb-3" />
                         <p className="text-muted mb-0">No meals planned for today</p>
                       </div>
                     ) : (
                       <div className="row g-2 g-md-3">
-                        {dashboardData.meals.map((meal, idx) => (
+                        {(dashboardData?.meals || []).map((meal, idx) => (
                           <div key={idx} className="col-12 col-sm-6 col-lg-4">
                             <div
                               className={`h-100 rounded-4 p-3 position-relative ${
