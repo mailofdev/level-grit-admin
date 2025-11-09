@@ -23,6 +23,7 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { Eye, EyeClosed } from "lucide-react";
+import Razorpay from "razorpay";
 
 const RegisterClientForm = () => {
   const navigate = useNavigate();
@@ -89,6 +90,26 @@ const RegisterClientForm = () => {
       gender: "",
     });
 
+    const razorpay = new Razorpay ({
+      key_id: process.env.REACT_APP_RAZORPAY_KEY_ID,
+      key_secret: process.env.REACT_APP_RAZORPAY_KEY_SECRET,
+    })
+    export async function createRazorpayOrder(amount, currency="INR", receipt="receipt#1") {
+      const options = {
+        amount: amount * 100, // amount in the smallest currency unit
+        currency,
+        receipt,
+      };
+    
+      try {
+        const order = await razorpay.orders.create(options);
+        return order;
+      } catch (error) {
+        console.error("Error creating Razorpay order:", error);
+        throw error;
+      }
+    }
+    
   return (
     <div className="page-container auth-page-enter">
       {loading && <Loader fullScreen text="Registering client..." color="var(--color-primary)" />}
