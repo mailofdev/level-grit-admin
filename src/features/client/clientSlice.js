@@ -1,10 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTrainerDashboardThunk, deleteTrainerThunk } from "./clientThunks";
+import { getTrainerDashboardThunk, deleteTrainerThunk, getClientDashboardThunk } from "./clientThunks";
 
 const initialState = {
   dashboardData: null,
+  clientDashboardData: null,
   loading: false,
+  clientDashboardLoading: false,
   error: null,
+  clientDashboardError: null,
 };
 
 const ClientSlice = createSlice({
@@ -87,6 +90,27 @@ const ClientSlice = createSlice({
       .addCase(deleteTrainerThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to delete trainer account";
+      })
+
+      // --- GET CLIENT DASHBOARD THUNK ---
+      // Pending
+      .addCase(getClientDashboardThunk.pending, (state) => {
+        state.clientDashboardLoading = true;
+        state.clientDashboardError = null;
+      })
+
+      // Fulfilled
+      .addCase(getClientDashboardThunk.fulfilled, (state, action) => {
+        state.clientDashboardLoading = false;
+        state.clientDashboardData = action.payload || null;
+        state.clientDashboardError = null;
+      })
+
+      // Rejected
+      .addCase(getClientDashboardThunk.rejected, (state, action) => {
+        state.clientDashboardLoading = false;
+        state.clientDashboardError = action.payload || "Failed to load client dashboard";
+        state.clientDashboardData = null;
       });
   },
 });
@@ -97,7 +121,12 @@ export const { clearError, clearLoading, resetTrainerState } =
 export default ClientSlice.reducer;
 
 // ✅ Selectors
-export const selectTrainer = (state) => state.trainer;
-export const selectDashboardData = (state) => state.trainer.dashboardData;
-export const selectTrainerLoading = (state) => state.trainer.loading;
-export const selectTrainerError = (state) => state.trainer.error;
+// Note: These selectors use state.client because clientReducer is mapped to 'client' key in rootReducer
+// The slice name "trainer" is a legacy naming that should be updated to "client" in the future
+export const selectTrainer = (state) => state.client;
+export const selectDashboardData = (state) => state.client.dashboardData;
+export const selectTrainerLoading = (state) => state.client.loading;
+export const selectTrainerError = (state) => state.client.error;
+export const selectClientDashboardData = (state) => state.client.clientDashboardData;
+export const selectClientDashboardLoading = (state) => state.client.clientDashboardLoading;
+export const selectClientDashboardError = (state) => state.client.clientDashboardError;

@@ -1,7 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ProgressBar } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { getClientDashboardThunk } from "../client/clientThunks";
+import {
+  selectClientDashboardData,
+  selectClientDashboardLoading,
+  selectClientDashboardError,
+} from "../client/clientSlice";
 import Heading from "../../components/navigation/Heading";
 import AnimatedCard from "../../components/common/AnimatedCard";
 import {
@@ -25,8 +32,14 @@ export default function ClientDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useRef(null);
+  const dispatch = useDispatch();
 
   const client = { ...location.state?.client };
+
+  // Redux state
+  const clientDashboardData = useSelector(selectClientDashboardData);
+  const clientDashboardLoading = useSelector(selectClientDashboardLoading);
+  const clientDashboardError = useSelector(selectClientDashboardError);
 
   // Date picker state
   const [showDateDialog, setShowDateDialog] = useState(false);
@@ -37,6 +50,25 @@ export default function ClientDetails() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState('gradient');
   const shareCardRef = useRef(null);
+
+  // Fetch client dashboard data when component mounts or clientId changes
+  useEffect(() => {
+    if (client?.clientId) {
+      dispatch(getClientDashboardThunk(client.clientId));
+    }
+  }, [client?.clientId, dispatch]);
+
+  // Show error toast if API call fails
+  useEffect(() => {
+    if (clientDashboardError) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: clientDashboardError,
+        life: 5000,
+      });
+    }
+  }, [clientDashboardError]);
 
   if (!client)
     return (
