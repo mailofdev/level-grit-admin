@@ -6,13 +6,6 @@ import { savePayment } from "../../utils/paymentStorage";
 /**
  * Razorpay Payment Component
  * Handles Razorpay payment integration for trainer client registration
- * 
- * @param {Object} props
- * @param {number} props.amount - Payment amount in rupees (default: 500)
- * @param {Function} props.onSuccess - Callback function when payment is successful
- * @param {Function} props.onError - Callback function when payment fails
- * @param {Function} props.onCancel - Callback function when payment is cancelled
- * @param {Object} props.userInfo - User information for prefill (optional)
  */
 export default function RazorpayPayment({
   amount = 500,
@@ -25,7 +18,7 @@ export default function RazorpayPayment({
   const [loading, setLoading] = useState(false);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-  // Load Razorpay script
+  // ✅ Load Razorpay script
   useEffect(() => {
     if (window.Razorpay) {
       setRazorpayLoaded(true);
@@ -35,9 +28,7 @@ export default function RazorpayPayment({
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
-    script.onload = () => {
-      setRazorpayLoaded(true);
-    };
+    script.onload = () => setRazorpayLoaded(true);
     script.onerror = () => {
       toast.current?.show({
         severity: "error",
@@ -46,17 +37,17 @@ export default function RazorpayPayment({
         life: 5000,
       });
     };
+
     document.body.appendChild(script);
 
     return () => {
-      // Cleanup script if component unmounts
       if (document.body.contains(script)) {
         document.body.removeChild(script);
       }
     };
   }, []);
 
-  // Get user info for prefill
+  // ✅ Get user info
   const getUserInfo = () => {
     if (userInfo) return userInfo;
     const user = getDecryptedUser();
@@ -75,37 +66,71 @@ export default function RazorpayPayment({
     }
 
     setLoading(true);
+
     try {
       const user = getUserInfo();
-      
-      // Generate order ID for frontend-only integration
-      const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Use Razorpay Key ID from environment or default test key
-      // Note: For production, this should come from backend for security
-      const razorpayKeyId = process.env.REACT_APP_RAZORPAY_KEY_ID || "rzp_test_1DP5mmOlF5G5ag";
-      
-      // Razorpay payment options (frontend-only)
+
+      // ✅ Get Razorpay Key ID
+      const razorpayKeyId =
+        process.env.REACT_APP_RAZORPAY_KEY_ID ||
+        window.REACT_APP_RAZORPAY_KEY_ID ||
+        "rzp_test_1DP5mmOlF5G5ag"; // fallback for testing
+
+      console.log(
+        "Razorpay Key ID loaded:",
+        razorpayKeyId ? `${razorpayKeyId.substring(0, 10)}...` : "NOT FOUND"
+      );
+
+      if (!razorpayKeyId || typeof razorpayKeyId !== "string") {
+        throw new Error(
+          "Razorpay Key ID is not configured. Please set REACT_APP_RAZORPAY_KEY_ID in your environment variables."
+        );
+      }
+
+      const trimmedKey = razorpayKeyId.trim();
+
+      if (trimmedKey === "") {
+        throw new Error(
+          "Razorpay Key ID is empty. Please set REACT_APP_RAZORPAY_KEY_ID with a valid Razorpay test key."
+        );
+      }
+
+      if (
+        !trimmedKey.startsWith("rzp_test_") &&
+        !trimmedKey.startsWith("rzp_live_")
+      ) {
+        console.warn(
+          "⚠️ Razorpay Key ID format may be invalid. Expected rzp_test_* or rzp_live_*"
+        );
+      }
+
+      const receiptId = `receipt_${Date.now()}_${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
+
       const options = {
-        key: razorpayKeyId,
-        amount: amount * 100, // Amount in paise
+        key: trimmedKey,
+        amount: amount * 100, // amount in paise
         currency: "INR",
         name: "Level Grit",
         description: "Payment for Additional Client Registration",
-        order_id: orderId,
         handler: async function (response) {
           try {
             setLoading(true);
-            
-            // Save payment to localStorage
+
+            const localOrderId = `order_${Date.now()}_${Math.random()
+              .toString(36)
+              .substr(2, 9)}`;
+
             const paymentRecord = savePayment({
               trainerId: user?.userId || user?.id || "unknown",
               trainerName: user?.fullName || "Unknown Trainer",
               trainerEmail: user?.email || "",
               paymentId: response.razorpay_payment_id,
-              orderId: response.razorpay_order_id,
-              amount: amount,
+              orderId: response.razorpay_order_id || localOrderId,
+              amount,
               paymentDate: new Date().toISOString(),
+              receiptId,
             });
 
             toast.current?.show({
@@ -114,20 +139,17 @@ export default function RazorpayPayment({
               detail: `Payment of ₹${amount} completed successfully!`,
               life: 3000,
             });
-            
-            // Call success callback
+
             if (onSuccess) {
               onSuccess({
                 paymentId: response.razorpay_payment_id,
-                orderId: response.razorpay_order_id,
+                orderId: response.razorpay_order_id || localOrderId,
                 paymentRecord,
               });
             }
           } catch (error) {
-            const errorMsg =
-              error?.message ||
-              "Failed to save payment record";
-            
+            const errorMsg = error?.message || "Failed to save payment record";
+
             toast.current?.show({
               severity: "error",
               summary: "Payment Record Error",
@@ -135,9 +157,7 @@ export default function RazorpayPayment({
               life: 5000,
             });
 
-            if (onError) {
-              onError(error);
-            }
+            if (onError) onError(error);
           } finally {
             setLoading(false);
           }
@@ -150,6 +170,7 @@ export default function RazorpayPayment({
         notes: {
           purpose: "Additional Client Registration",
           trainerId: user?.userId || user?.id || "",
+          receipt: receiptId,
         },
         theme: {
           color: "#F37254",
@@ -157,18 +178,28 @@ export default function RazorpayPayment({
         modal: {
           ondismiss: function () {
             setLoading(false);
-            if (onCancel) {
-              onCancel();
-            }
+            if (onCancel) onCancel();
           },
         },
       };
 
+      if (!window.Razorpay) {
+        throw new Error(
+          "Razorpay SDK is not loaded. Please refresh the page and try again."
+        );
+      }
+
       const rzp = new window.Razorpay(options);
+
       rzp.on("payment.failed", function (response) {
         setLoading(false);
-        const errorMsg = response.error?.description || "Payment failed. Please try again.";
-        
+        const errorMsg =
+          response.error?.description ||
+          response.error?.reason ||
+          "Payment failed. Please try again.";
+
+        console.error("Razorpay payment failed:", response);
+
         toast.current?.show({
           severity: "error",
           summary: "Payment Failed",
@@ -176,29 +207,31 @@ export default function RazorpayPayment({
           life: 5000,
         });
 
-        if (onError) {
-          onError(new Error(errorMsg));
-        }
+        if (onError) onError(new Error(errorMsg));
       });
-      
+
       rzp.open();
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
-      const errorMsg =
-        error?.message ||
-        "Failed to initiate payment. Please try again.";
+      console.error("Razorpay initialization error:", error);
+
+      let errorMsg =
+        error?.message || "Failed to initiate payment. Please try again.";
+
+      if (errorMsg.includes("Key ID") || errorMsg.includes("not configured")) {
+        errorMsg +=
+          " Make sure to set REACT_APP_RAZORPAY_KEY_ID in your .env file and restart the development server.";
+      }
 
       toast.current?.show({
         severity: "error",
         summary: "Payment Error",
         detail: errorMsg,
-        life: 5000,
+        life: 6000,
       });
 
-      if (onError) {
-        onError(error);
-      }
+      if (onError) onError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
