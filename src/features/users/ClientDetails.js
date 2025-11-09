@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import { ProgressBar } from "react-bootstrap";
+import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +9,6 @@ import {
   selectClientDashboardError,
 } from "../client/clientSlice";
 import Heading from "../../components/navigation/Heading";
-import AnimatedCard from "../../components/common/AnimatedCard";
 import {
   FaFire,
   FaCheckCircle,

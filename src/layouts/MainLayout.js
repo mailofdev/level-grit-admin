@@ -1,11 +1,8 @@
-import React from 'react';
 import layoutConfig from '../config/layout';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import MobileBottomNav from '../components/navigation/MobileBottomNav';
 import Footer from '../components/layout/Footer';
-import ThemeSwitch from '../components/display/ThemeSwitch';
-// import { useAuth } from '../features/auth/hooks/useAuth';
 
 const MainLayout = ({ children, config }) => {
   // const { user, logout } = useAuth();

@@ -32,16 +32,6 @@ export const getRoutes = () => {
             showIn: ["sidebar", "topbar"],
           },
         ]
-      : []),
-          ...(user?.role === "Client"
-      ? [
-          {
-            label: "Dashboard",
-            href: "/client-dashboard",
-            icon: "bi-speedometer2",
-            showIn: ["sidebar", "topbar"],
-          }
-        ]
-      : []),
+      : [])
   ];
 };
