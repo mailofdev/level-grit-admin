@@ -30,7 +30,12 @@ const MainLayout = ({ children, config }) => {
           onProfile={handleProfile}
         />
       )}
-      <div className="container-fluid flex-grow-1 pt-3 pt-md-4 pt-lg-4 pb-5 pb-md-5 pb-lg-0" style={{ paddingTop: 'calc(4rem + env(safe-area-inset-top))', paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))', backgroundColor: 'var(--color-bg)' }}>
+      <div className="container-fluid flex-grow-1 pt-3 pt-md-4 pt-lg-4 pb-5 pb-md-5 pb-lg-0" style={{ 
+        paddingTop: 'calc(4rem + env(safe-area-inset-top))', 
+        paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))', 
+        backgroundColor: 'var(--color-bg)',
+        minHeight: 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))'
+      }}>
         <div className="row g-0 g-lg-3">
           {cfg.showSidebar && (
             <div className="d-none d-lg-block col-lg-2 col-xl-2">

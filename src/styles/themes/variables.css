@@ -39,11 +39,11 @@
   --color-input-bg: #ffffff;
   --color-input-border: #e5e5e5;
   --color-input-focus: #007AFF;
-  --color-button-bg: #007AFF;
+  --color-button-bg: #000000;
   --color-button-text: #ffffff;
-  --color-button-hover: #0056b3;
-  --color-button-secondary: #FF6B35;
-  --color-button-secondary-hover: #e55a2b;
+  --color-button-hover: #333333;
+  --color-button-secondary: #000000;
+  --color-button-secondary-hover: #333333;
   
   /* Modern UI Enhancements */
   --color-surface: #ffffff;
@@ -110,11 +110,11 @@ body.dark {
   --color-input-bg: #1a1a1a;
   --color-input-border: #2d2d2d;
   --color-input-focus: #007AFF;
-  --color-button-bg: #007AFF;
+  --color-button-bg: #000000;
   --color-button-text: #ffffff;
-  --color-button-hover: #3395ff;
-  --color-button-secondary: #FF6B35;
-  --color-button-secondary-hover: #ff8c5a;
+  --color-button-hover: #333333;
+  --color-button-secondary: #000000;
+  --color-button-secondary-hover: #333333;
   
   /* Modern UI Enhancements for Dark Theme */
   --color-surface: #1a1a1a;

@@ -1,6 +1,7 @@
 @import './styles/overrides/overrides.css';
 @import './styles/themes/variables.css';
 @import './styles/animations.css';
+@import './styles/mobile.css';
 
 /* =========================================
    App Component Styles & Global Utilities
@@ -53,6 +54,19 @@
   padding: 2rem 1rem;
 }
 
+/* Mobile responsive page container */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-container {
+    padding: 0.875rem 0.625rem;
+  }
+}
+
 /* Section Containers */
 .section-container {
   background: var(--color-card-bg);
@@ -63,6 +77,23 @@
   padding: 2rem;
   margin-bottom: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile responsive section containers */
+@media (max-width: 768px) {
+  .section-container {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+  }
+}
+
+@media (max-width: 576px) {
+  .section-container {
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--border-radius);
+  }
 }
 
 .section-container:hover {
