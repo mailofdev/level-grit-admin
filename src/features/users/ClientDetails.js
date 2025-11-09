@@ -3,10 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getClientDashboardThunk } from "../client/clientThunks";
 import {
-  selectClientDashboardData,
-  selectClientDashboardLoading,
-  selectClientDashboardError,
-} from "../client/clientSlice";
+selectDashboard,
+  selectClientLoading,
+  selectClientError, 
+} from "../users/clientSlice";
 import {
   FaFire,
   FaCheckCircle,
@@ -23,27 +23,27 @@ export default function ClientDetails() {
   const dispatch = useDispatch();
 
   // Get client from location state
-  const client = location.state?.client ? { ...location.state.client } : null;
+  const clientFromState = location.state?.client ? { ...location.state.client } : null;
   
   // Redux state for client dashboard
-  const dashboard = useSelector(selectClientDashboardData);
-  const loading = useSelector(selectClientDashboardLoading);
-  const error = useSelector(selectClientDashboardError);
+const dashboard = useSelector(selectDashboard);
+const loading = useSelector(selectClientLoading);
+const error = useSelector(selectClientError);
+
 
   // Fetch client dashboard data when component mounts or clientId changes
-  useEffect(() => {
-    if (client?.clientId) {
-      dispatch(getClientDashboardThunk(client.clientId));
-    }
-  }, [client?.clientId, dispatch]);
+useEffect(() => {
+  if (clientFromState?.clientId) {
+    dispatch(getClientDashboardThunk(clientFromState.clientId));
+  }
+}, [clientFromState?.clientId, dispatch]);
+
 
   // Parse macro strings from "consumed/target" format
   const parseMacro = (macroString) => {
-    if (!macroString || typeof macroString !== 'string') return { value: 0, target: 1 };
-    const parts = macroString.split("/");
-    const value = parseFloat(parts[0]) || 0;
-    const target = parseFloat(parts[1]) || 1;
-    return { value, target };
+    if (!macroString) return { value: 0, target: 0 };
+    const [value, target] = macroString.split("/").map(parseFloat);
+    return { value: value || 0, target: target || 0 };
   };
 
   // Helper function to get placeholder image for incomplete meals
@@ -53,132 +53,114 @@ export default function ClientDetails() {
     return `data:image/svg+xml;charset=utf-8,${encoded}`;
   };
 
-  // Helper function to convert base64 to data URL
-  const getImageSrc = (base64Image) => {
-    if (!base64Image) return null;
-    if (base64Image.startsWith('data:')) return base64Image;
-    if (base64Image.startsWith('/9j/') || base64Image.length > 100) {
-      return `data:image/jpeg;base64,${base64Image}`;
-    }
-    return base64Image;
-  };
-
-  // Transform API data to component format
-  const transformDashboardData = (apiData) => {
-    if (!apiData) {
-      return {
-        user: { name: client?.fullName || "Client", streak: 0 },
-        macros: {
-          calories: { value: 0, target: 1 },
-          protein: { value: 0, target: 1 },
-          carbs: { value: 0, target: 1 },
-          fat: { value: 0, target: 1 },
-        },
-        streakProgress: { current: 0, goal: 20 },
-        meals: [],
-      };
-    }
-
-    const macros = {
-      calories: parseMacro(apiData.totalMacros?.calories),
-      protein: parseMacro(apiData.totalMacros?.protein),
-      carbs: parseMacro(apiData.totalMacros?.carbs),
-      fat: parseMacro(apiData.totalMacros?.fat),
-    };
-
-    // Combine meals and plannedMeals
-    const uploadedMealsMap = {};
-    (apiData.meals || []).forEach((meal) => {
-      if (meal.mealName) {
-        uploadedMealsMap[meal.mealName.toLowerCase().trim()] = meal;
-      }
-    });
-    
-    const allMeals = (apiData.plannedMeals || []).map((meal) => {
-      const mealNameKey = meal.mealName?.toLowerCase().trim();
-      const uploadedMeal = mealNameKey ? uploadedMealsMap[mealNameKey] : null;
-      const isCompleted = !!uploadedMeal;
-
-      return {
-        name: meal.mealName || "Meal",
-        image: getImageSrc(uploadedMeal?.base64Image || meal.base64Image),
-        calories: Math.round(uploadedMeal?.calories || meal.calories || 0),
-        protein: Math.round(uploadedMeal?.protein || meal.protein || 0),
-        carbs: Math.round(uploadedMeal?.carbs || meal.carbs || 0),
-        fat: Math.round(uploadedMeal?.fat || meal.fat || 0),
-        completed: isCompleted,
-      };
-    });
-
-    return {
-      user: {
-        name: apiData.clientName || client?.fullName || "Client",
-        streak: apiData.currentStreakDays || 0,
-      },
-      macros,
-      streakProgress: {
-        current: apiData.currentStreakDays || 0,
-        goal: 20,
-      },
-      meals: allMeals || [],
-    };
-  };
-
-  // Get dashboard data from API or use default
-  const dashboardData = transformDashboardData(dashboard);
-  
-  // Prepare client data
+  // Prepare client data from API response
   const clientData = dashboard
     ? {
-        clientId: dashboard.clientId || client?.clientId,
-        trainerId: dashboard.trainerId || client?.trainerId,
-        clientName: dashboard.clientName || client?.clientName || client?.fullName,
-        fullName: dashboard.clientName || client?.fullName || "Client",
-        goal: client?.goal || "- - -",
-        startDate: client?.startDate || new Date().toLocaleDateString(),
+        clientId: dashboard.clientId,
+        trainerId: dashboard.trainerId,
+        clientName: dashboard.clientName,
+        fullName: dashboard.clientName,
+        goal: "- - -",
+        startDate: new Date().toLocaleDateString(),
         status: dashboard.currentStreakDays >= 3 ? "on-track" : "attention",
-        streak: dashboard.currentStreakDays > 0 ? `${dashboard.currentStreakDays} days` : "Missed meal",
+        streak:
+          dashboard.currentStreakDays > 0
+            ? `${dashboard.currentStreakDays} days`
+            : "Missed meal",
       }
-    : client ? {
-        ...client,
-        status: "attention",
-        streak: "Missed meal",
-      } : null;
+    : clientFromState; // Fallback to client from location state
 
-  // Loading state
-  if (loading) {
+  // Prepare dashboard data from API response
+  const dashboardData = dashboard
+    ? {
+        user: {
+          name: dashboard.clientName || "Client",
+          streak: dashboard.currentStreakDays || 0,
+        },
+        macros: {
+          calories: parseMacro(dashboard.totalMacros?.calories),
+          protein: parseMacro(dashboard.totalMacros?.protein),
+          carbs: parseMacro(dashboard.totalMacros?.carbs),
+          fat: parseMacro(dashboard.totalMacros?.fat),
+        },
+        streakProgress: { current: dashboard.currentStreakDays || 0, goal: 20 },
+        meals: [],
+        reminders: [],
+        water: { current: 6, goal: 8 },
+      }
+    : null;
+
+  // Match uploaded meals with planned meals
+  if (dashboard) {
+    const uploadedMealsMap = {};
+    (dashboard.meals || []).forEach((meal) => {
+      uploadedMealsMap[meal.mealName.toLowerCase().trim()] = meal;
+    });
+
+    dashboardData.meals = (dashboard.plannedMeals || []).map(
+      (planned, index) => {
+        const uploadedMeal =
+          uploadedMealsMap[planned.mealName.toLowerCase().trim()];
+
+        return {
+          name: `Meal ${index + 1} (${planned.mealName})`,
+          mealName: planned.mealName,
+          uploadId: planned.uploadId,
+          // Show uploaded image if completed, otherwise show planned image
+          image: uploadedMeal?.base64Image
+            ? `data:image/jpeg;base64,${uploadedMeal.base64Image}`
+            : planned.base64Image
+            ? `data:image/jpeg;base64,${planned.base64Image}`
+            : null,
+          // Show actual consumed values if completed, otherwise show planned values
+          calories: uploadedMeal
+            ? Math.round(uploadedMeal.calories)
+            : Math.round(planned.calories),
+          protein: uploadedMeal
+            ? Math.round(uploadedMeal.protein)
+            : Math.round(planned.protein),
+          carbs: uploadedMeal
+            ? Math.round(uploadedMeal.carbs)
+            : Math.round(planned.carbs),
+          fat: uploadedMeal
+            ? Math.round(uploadedMeal.fat)
+            : Math.round(planned.fat),
+          completed: !!uploadedMeal,
+          // Store both planned and actual for reference
+          plannedCalories: Math.round(planned.calories),
+          plannedProtein: Math.round(planned.protein),
+          plannedCarbs: Math.round(planned.carbs),
+          plannedFat: Math.round(planned.fat),
+        };
+      }
+    );
+  }
+
+  if (loading && !dashboard) {
     return (
-      <div className="container-fluid px-2 px-md-3">
-        <Heading pageName="details" sticky={true} />
+      <div className="container">
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
-          <p className="mt-3 text-muted">Loading dashboard data...</p>
+          <p className="mt-3">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="container-fluid px-2 px-md-3">
-        <Heading pageName="details" sticky={true} />
-        <div className="text-center py-5">
-          <p className="text-danger">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // No client selected
-  if (!client && !clientData) {
-    return (
-      <div className="container-fluid px-2 px-md-3">
-        <Heading pageName="details" sticky={true} />
-        <div className="text-center py-5">
-          <p className="text-muted">Select a client to view details.</p>
+      <div className="container">
+        <div className="alert alert-danger mt-5" role="alert">
+          <h4 className="alert-heading">Error Loading Dashboard</h4>
+          <p>{error}</p>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => dispatch(getClientDashboardThunk(clientFromState?.clientId))}
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
