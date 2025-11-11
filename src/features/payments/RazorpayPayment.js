@@ -106,7 +106,7 @@ export default function RazorpayPayment({
   // Validate Razorpay key
   const validateRazorpayKey = () => {
     try {
-      const keyId = getRazorpayKeyId();
+      const keyId = getRazorpayKeyId(true); // Throw if missing (this is a critical validation)
       if (!keyId) {
         showError(
           "Configuration Error",
@@ -160,7 +160,7 @@ export default function RazorpayPayment({
 
     try {
       const user = getUserInfo();
-      const razorpayKeyId = getRazorpayKeyId();
+      const razorpayKeyId = getRazorpayKeyId(true); // Throw if missing (needed for payment)
 
       // Create order on backend
       let orderData;

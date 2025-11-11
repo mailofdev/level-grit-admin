@@ -131,10 +131,11 @@ export const getPaymentStatus = async () => {
 /**
  * Get Razorpay Key ID from environment
  * 
- * @returns {string} Razorpay Key ID
- * @throws {Error} If key ID is not found
+ * @param {boolean} throwIfMissing - Whether to throw error if key is missing (default: false)
+ * @returns {string|null} Razorpay Key ID or null if not found
+ * @throws {Error} If key ID is not found and throwIfMissing is true
  */
-export const getRazorpayKeyId = () => {
+export const getRazorpayKeyId = (throwIfMissing = false) => {
   // Check for REACT_APP_ prefix first (Create React App convention)
   // Also check window.env for runtime injection (if needed)
   const keyId = 
@@ -149,7 +150,12 @@ export const getRazorpayKeyId = () => {
       'Please create a .env.local file with REACT_APP_RAZORPAY_KEY_ID=rzp_test_... ' +
       'and restart the development server.';
     console.error(errorMsg);
-    throw new Error(errorMsg);
+    
+    if (throwIfMissing) {
+      throw new Error(errorMsg);
+    }
+    
+    return null;
   }
   
   return keyId;
@@ -158,10 +164,18 @@ export const getRazorpayKeyId = () => {
 /**
  * Check if using test mode
  * 
- * @returns {boolean} True if test mode
+ * @returns {boolean} True if test mode, false if live mode or key not found
  */
 export const isTestMode = () => {
-  const keyId = getRazorpayKeyId();
-  return keyId ? keyId.includes('rzp_test_') : true;
+  try {
+    const keyId = getRazorpayKeyId(false); // Don't throw, just return null
+    if (!keyId) {
+      return false; // Default to false if key not found
+    }
+    return keyId.includes('rzp_test_');
+  } catch (error) {
+    console.warn('Error checking test mode:', error);
+    return false;
+  }
 };
 
