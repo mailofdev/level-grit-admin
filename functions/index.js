@@ -55,86 +55,24 @@ const getRazorpayInstance = () => {
  * POST /createRazorpayOrder
  * Body: { amount: number, currency: string, receipt: string, metadata: object }
  */
-exports.createRazorpayOrder = functions.https.onCall(async (data, context) => {
-  try {
-    // Verify authentication
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated to create an order'
-      );
+const functions = require("firebase-functions");
+const Razorpay = require("razorpay");
+const cors = require("cors")({ origin: true });
+
+export const createRazorpayOrder = async (amount) => {
+  const response = await fetch(
+    "https://us-central1-level-grit-messagener.cloudfunctions.net/createRazorpayOrder",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount }),
     }
+  );
+  if (!response.ok) throw new Error("Failed to create Razorpay order");
+  return await response.json();
+};
 
-    const { amount, currency = 'INR', receipt, metadata = {} } = data;
 
-    // Validate amount
-    if (!amount || amount <= 0) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Amount must be greater than 0'
-      );
-    }
-
-    // Convert to paise (Razorpay uses paise)
-    const amountInPaise = Math.round(amount * 100);
-
-    // Create order in Razorpay
-    const razorpay = getRazorpayInstance();
-    const orderOptions = {
-      amount: amountInPaise,
-      currency: currency,
-      receipt: receipt || `receipt_${Date.now()}_${context.auth.uid}`,
-      notes: {
-        userId: context.auth.uid,
-        ...metadata
-      }
-    };
-
-    const razorpayOrder = await razorpay.orders.create(orderOptions);
-
-    // Save order to Firestore
-    const orderData = {
-      userId: context.auth.uid,
-      razorpayOrderId: razorpayOrder.id,
-      amount: amount,
-      amountInPaise: amountInPaise,
-      currency: currency,
-      receipt: orderOptions.receipt,
-      status: 'created',
-      metadata: metadata,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    };
-
-    const orderRef = await admin.firestore()
-      .collection('orders')
-      .add(orderData);
-
-    return {
-      success: true,
-      order: {
-        id: orderRef.id,
-        razorpayOrderId: razorpayOrder.id,
-        amount: amount,
-        amountInPaise: amountInPaise,
-        currency: currency,
-        key: functions.config().razorpay?.key_id || process.env.RAZORPAY_KEY_ID,
-        ...orderData
-      }
-    };
-  } catch (error) {
-    console.error('Error creating Razorpay order:', error);
-    
-    if (error instanceof functions.https.HttpsError) {
-      throw error;
-    }
-
-    throw new functions.https.HttpsError(
-      'internal',
-      error.message || 'Failed to create order'
-    );
-  }
-});
 
 /**
  * Verify Razorpay Payment

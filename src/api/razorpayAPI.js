@@ -135,31 +135,19 @@ export const getPaymentStatus = async () => {
  * @returns {string|null} Razorpay Key ID or null if not found
  * @throws {Error} If key ID is not found and throwIfMissing is true
  */
-export const getRazorpayKeyId = (throwIfMissing = false) => {
-  // Check for REACT_APP_ prefix first (Create React App convention)
-  // Also check window.env for runtime injection (if needed)
-  const keyId = 
-    process.env.REACT_APP_RAZORPAY_KEY_ID || 
-    process.env.REACT_PUBLIC_RAZORPAY_KEY_ID ||
-    process.env.RAZORPAY_KEY_ID ||
-    (typeof window !== 'undefined' && window.env?.RAZORPAY_KEY_ID);
-  
-  if (!keyId) {
-    const errorMsg = 
-      'Razorpay Key ID not found in environment variables. ' +
-      'Please create a .env.local file with REACT_APP_RAZORPAY_KEY_ID=rzp_test_... ' +
-      'and restart the development server.';
-    console.error(errorMsg);
-    
-    if (throwIfMissing) {
-      throw new Error(errorMsg);
-    }
-    
-    return null;
+export const getRazorpayKeyId = (throwOnMissing = true) => {
+  const keyId = process.env.REACT_APP_RAZORPAY_KEY_ID;
+
+  if (!keyId && throwOnMissing) {
+    console.error(
+      "Razorpay Key ID not found. Please create .env.local in root and restart."
+    );
+    throw new Error("Razorpay Key ID not found in environment variables.");
   }
-  
+
   return keyId;
 };
+
 
 /**
  * Check if using test mode
