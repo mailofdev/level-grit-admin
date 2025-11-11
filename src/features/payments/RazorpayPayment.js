@@ -105,21 +105,29 @@ export default function RazorpayPayment({
 
   // Validate Razorpay key
   const validateRazorpayKey = () => {
-    const keyId = getRazorpayKeyId();
-    if (!keyId) {
+    try {
+      const keyId = getRazorpayKeyId();
+      if (!keyId) {
+        showError(
+          "Configuration Error",
+          "Razorpay Key ID is not configured. Please check your environment variables."
+        );
+        return false;
+      }
+
+      // Warn if using test mode in production
+      if (isTestMode() && process.env.NODE_ENV === 'production') {
+        console.warn('Using Razorpay test keys in production mode');
+      }
+
+      return true;
+    } catch (error) {
       showError(
         "Configuration Error",
-        "Razorpay Key ID is not configured. Please check your environment variables."
+        error.message || "Razorpay Key ID is not configured. Please check your .env.local file and restart the server."
       );
       return false;
     }
-
-    // Warn if using test mode in production
-    if (isTestMode() && process.env.NODE_ENV === 'production') {
-      console.warn('Using Razorpay test keys in production mode');
-    }
-
-    return true;
   };
 
   // Handle payment initiation
