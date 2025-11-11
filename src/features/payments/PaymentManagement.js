@@ -1,42 +1,119 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Row, Col, Card, Table, Badge, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Card, Table, Badge, Button, Alert, Spinner } from "react-bootstrap";
 import { Toast } from "primereact/toast";
-import { getPaymentsByTrainer, getAllPayments, clearAllPayments } from "../../utils/paymentStorage";
+import { getAllPayments } from "../../services/paymentService";
 import Heading from "../../components/navigation/Heading";
-import { FaRupeeSign, FaUsers, FaMoneyBillWave, FaTrash, FaDownload } from "react-icons/fa";
+import { FaRupeeSign, FaUsers, FaMoneyBillWave, FaSync } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { Timestamp } from "firebase/firestore";
 
 /**
  * Payment Management Component
- * Admin view to see all trainers and their payment records
+ * Admin view to see all trainers and their payment records from Firestore
  */
 export default function PaymentManagement() {
   const toast = useRef(null);
   const [trainerPayments, setTrainerPayments] = useState([]);
   const [allPayments, setAllPayments] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadPayments();
   }, []);
 
-  const loadPayments = () => {
+  const loadPayments = async () => {
+    setLoading(true);
     try {
-      const paymentsByTrainer = getPaymentsByTrainer();
-      const allPaymentRecords = getAllPayments();
+      const payments = await getAllPayments();
       
+      // Filter only successful payments for statistics
+      const successfulPayments = payments.filter(
+        p => p.status === 'success' || p.status === 'Success'
+      );
+      
+      setAllPayments(successfulPayments);
+      
+      // Group payments by trainer
+      const paymentsByTrainer = groupPaymentsByTrainer(successfulPayments);
       setTrainerPayments(paymentsByTrainer);
-      setAllPayments(allPaymentRecords);
     } catch (error) {
       console.error("Error loading payments:", error);
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: "Failed to load payment records",
-        life: 3000,
+        detail: error.message || "Failed to load payment records",
+        life: 5000,
       });
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadPayments();
+    setRefreshing(false);
+    toast.current?.show({
+      severity: "success",
+      summary: "Refreshed",
+      detail: "Payment records updated",
+      life: 2000,
+    });
+  };
+
+  const groupPaymentsByTrainer = (payments) => {
+    const trainerMap = {};
+    
+    payments.forEach((payment) => {
+      const userId = payment.userId;
+      if (!userId) return;
+      
+      if (!trainerMap[userId]) {
+        trainerMap[userId] = {
+          trainerId: userId,
+          trainerName: payment.userName || "Unknown Trainer",
+          trainerEmail: payment.userEmail || "",
+          totalPayments: 0,
+          totalAmount: 0,
+          payments: [],
+          lastPaymentDate: null,
+        };
+      }
+      
+      trainerMap[userId].totalPayments += 1;
+      trainerMap[userId].totalAmount += payment.amount || 0;
+      trainerMap[userId].payments.push(payment);
+      
+      // Update last payment date
+      const paymentDate = getPaymentDate(payment.paymentDate);
+      if (
+        !trainerMap[userId].lastPaymentDate ||
+        paymentDate > new Date(trainerMap[userId].lastPaymentDate)
+      ) {
+        trainerMap[userId].lastPaymentDate = paymentDate.toISOString();
+      }
+    });
+    
+    return Object.values(trainerMap);
+  };
+
+  const getPaymentDate = (dateValue) => {
+    if (!dateValue) return new Date();
+    
+    // Handle Firestore Timestamp
+    if (dateValue instanceof Timestamp) {
+      return dateValue.toDate();
+    }
+    
+    // Handle Firestore Timestamp object
+    if (dateValue?.seconds) {
+      return new Date(dateValue.seconds * 1000);
+    }
+    
+    // Handle ISO string or Date
+    return new Date(dateValue);
   };
 
   const handleViewDetails = (trainerId) => {
@@ -47,31 +124,10 @@ export default function PaymentManagement() {
     }
   };
 
-  const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to clear all payment records? This action cannot be undone.")) {
-      try {
-        clearAllPayments();
-        loadPayments();
-        toast.current?.show({
-          severity: "success",
-          summary: "Success",
-          detail: "All payment records cleared",
-          life: 3000,
-        });
-      } catch (error) {
-        toast.current?.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Failed to clear payment records",
-          life: 3000,
-        });
-      }
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "N/A";
+    
+    const date = getPaymentDate(dateValue);
     return date.toLocaleDateString("en-IN", {
       year: "numeric",
       month: "short",
@@ -88,6 +144,22 @@ export default function PaymentManagement() {
   const totalTrainers = trainerPayments.length;
   const totalPayments = allPayments.length;
   const totalRevenue = calculateTotalRevenue();
+
+  if (loading) {
+    return (
+      <div className="page-container" style={{ backgroundColor: "var(--color-bg)", minHeight: "100vh" }}>
+        <Container fluid className="py-4">
+          <Heading pageName="Payment Management" sticky={true} />
+          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
+            <div className="text-center">
+              <Spinner animation="border" variant="primary" className="mb-3" />
+              <p className="text-muted">Loading payment records...</p>
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container" style={{ backgroundColor: "var(--color-bg)", minHeight: "100vh" }}>
@@ -194,21 +266,29 @@ export default function PaymentManagement() {
             </h5>
             <div>
               <Button
-                variant="outline-danger"
-                size="sm"
-                onClick={handleClearAll}
-                className="me-2"
-              >
-                <FaTrash className="me-1" />
-                Clear All
-              </Button>
-              <Button
                 variant="outline-primary"
                 size="sm"
-                onClick={loadPayments}
+                onClick={handleRefresh}
+                disabled={refreshing}
               >
-                <i className="fas fa-sync-alt me-1"></i>
-                Refresh
+                {refreshing ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <FaSync className="me-1" />
+                    Refresh
+                  </>
+                )}
               </Button>
             </div>
           </Card.Header>
@@ -232,7 +312,7 @@ export default function PaymentManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {trainerPayments.map((trainer, index) => (
+                    {trainerPayments.map((trainer) => (
                       <React.Fragment key={trainer.trainerId}>
                         <tr
                           style={{ cursor: "pointer" }}
@@ -282,7 +362,7 @@ export default function PaymentManagement() {
                                       <tr>
                                         <th>Payment ID</th>
                                         <th>Order ID</th>
-                                        <th>Client Name</th>
+                                        <th>Status</th>
                                         <th className="text-end">Amount</th>
                                         <th>Date</th>
                                       </tr>
@@ -291,32 +371,34 @@ export default function PaymentManagement() {
                                       {trainer.payments
                                         .sort(
                                           (a, b) =>
-                                            new Date(b.paymentDate) -
-                                            new Date(a.paymentDate)
+                                            getPaymentDate(b.paymentDate) -
+                                            getPaymentDate(a.paymentDate)
                                         )
                                         .map((payment) => (
                                           <tr key={payment.id}>
                                             <td>
                                               <code className="small">
-                                                {payment.paymentId?.substring(0, 20)}...
+                                                {payment.razorpayPaymentId || payment.paymentId
+                                                  ? (payment.razorpayPaymentId || payment.paymentId).substring(0, 20) + "..."
+                                                  : "N/A"}
                                               </code>
                                             </td>
                                             <td>
                                               <code className="small">
-                                                {payment.orderId?.substring(0, 20)}...
+                                                {payment.razorpayOrderId || payment.orderId
+                                                  ? (payment.razorpayOrderId || payment.orderId).substring(0, 20) + "..."
+                                                  : "N/A"}
                                               </code>
                                             </td>
                                             <td>
-                                              {payment.clientName ? (
-                                                <Badge bg="success">
-                                                  {payment.clientName}
-                                                </Badge>
+                                              {payment.status === 'success' || payment.status === 'Success' ? (
+                                                <Badge bg="success">Verified</Badge>
                                               ) : (
-                                                <Badge bg="secondary">Pending</Badge>
+                                                <Badge bg="warning">{payment.status || 'Unknown'}</Badge>
                                               )}
                                             </td>
                                             <td className="text-end fw-semibold">
-                                              ₹{payment.amount || 500}
+                                              ₹{payment.amount || 0}
                                             </td>
                                             <td>{formatDate(payment.paymentDate)}</td>
                                           </tr>
@@ -340,4 +422,3 @@ export default function PaymentManagement() {
     </div>
   );
 }
-
