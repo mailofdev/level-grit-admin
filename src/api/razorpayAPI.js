@@ -40,10 +40,29 @@ export const createRazorpayOrder = async (amount, currency = 'INR', metadata = {
   } catch (error) {
     console.error('Error creating Razorpay order:', error);
     
-    // If Cloud Functions error, try backend API
+    // Handle specific Firebase errors
     if (error.code === 'functions/unavailable' || error.code === 'functions/not-found') {
       console.warn('Cloud Functions unavailable, trying backend API');
       return await backendCreateOrder(amount, currency, metadata.receipt);
+    }
+    
+    // Handle unauthenticated error
+    if (error.code === 'unauthenticated') {
+      throw new Error(
+        'Authentication required. Please log in to make a payment.'
+      );
+    }
+    
+    // Handle CORS or network errors
+    if (error.code === 'internal' || error.message?.includes('CORS') || error.message?.includes('Failed to fetch')) {
+      console.warn('Cloud Functions CORS/network error, trying backend API');
+      try {
+        return await backendCreateOrder(amount, currency, metadata.receipt);
+      } catch (fallbackError) {
+        throw new Error(
+          'Payment service unavailable. Please check your connection and try again, or contact support.'
+        );
+      }
     }
     
     throw new Error(
