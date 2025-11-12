@@ -136,45 +136,53 @@ export const NotificationProvider = ({ children }) => {
     loadNotifications();
 
     // Subscribe to new messages
-    const unsubscribe = subscribeToAllTrainerMessages(
-      trainerId,
-      clients,
-      (notification) => {
-        setNotifications((prev) => {
-          // Check if notification already exists
-          const exists = prev.some((n) => n.id === notification.id);
-          if (exists) return prev;
+    let unsubscribe = null;
+    
+    try {
+      unsubscribe = subscribeToAllTrainerMessages(
+        trainerId,
+        clients,
+        (notification) => {
+          setNotifications((prev) => {
+            // Check if notification already exists
+            const exists = prev.some((n) => n.id === notification.id);
+            if (exists) return prev;
 
-          // Add new notification at the beginning
-          const updated = [notification, ...prev];
-          setUnreadCount(updated.filter((n) => !n.read).length);
-          
-          // Play sound for new notification
-          playNotificationSound();
-          
-          // Show browser notification if enabled
-          if (pushEnabled && "Notification" in window && Notification.permission === "granted") {
-            showBrowserNotification(
-              `New message from ${notification.clientName}`,
-              {
-                body: notification.messageText || notification.fullMessage || "New message",
-                icon: "/192.png",
-                tag: `message-${notification.clientId}`,
-                onClick: () => {
-                  window.focus();
-                  // Navigate to message (handled by toast notification)
-                },
-              }
-            );
-          }
-          
-          return updated;
-        });
-      }
-    );
+            // Add new notification at the beginning
+            const updated = [notification, ...prev];
+            setUnreadCount(updated.filter((n) => !n.read).length);
+            
+            // Play sound for new notification
+            playNotificationSound();
+            
+            // Show browser notification if enabled
+            if (pushEnabled && "Notification" in window && Notification.permission === "granted") {
+              showBrowserNotification(
+                `New message from ${notification.clientName}`,
+                {
+                  body: notification.messageText || notification.fullMessage || "New message",
+                  icon: "/192.png",
+                  tag: `message-${notification.clientId}`,
+                  onClick: () => {
+                    window.focus();
+                    // Navigate to message (handled by toast notification)
+                  },
+                }
+              );
+            }
+            
+            return updated;
+          });
+        }
+      );
+    } catch (error) {
+      console.error("Error setting up message subscriptions:", error);
+    }
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsubscribe && typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
     };
   }, [isTrainer, trainerId, clients, playNotificationSound]);
 

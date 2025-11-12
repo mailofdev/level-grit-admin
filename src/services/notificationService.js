@@ -50,7 +50,7 @@ export const subscribeToTrainerNotifications = (trainerId, callback) => {
  * Listen to all chats for a trainer and detect new messages
  * This is a more comprehensive approach that listens to all message collections
  */
-export const subscribeToAllTrainerMessages = async (trainerId, clients, callback) => {
+export const subscribeToAllTrainerMessages = (trainerId, clients, callback) => {
   if (!trainerId || !clients || clients.length === 0) {
     return () => {};
   }
@@ -86,16 +86,26 @@ export const subscribeToAllTrainerMessages = async (trainerId, clients, callback
           if (notification) {
             callback(notification);
           }
+        }).catch((error) => {
+          console.error("Error creating notification:", error);
         });
       }
+    }, (error) => {
+      console.error("Error in message snapshot:", error);
     });
 
-    unsubscribes.push(unsubscribe);
+    if (unsubscribe && typeof unsubscribe === 'function') {
+      unsubscribes.push(unsubscribe);
+    }
   });
 
   // Return cleanup function
   return () => {
-    unsubscribes.forEach((unsub) => unsub());
+    unsubscribes.forEach((unsub) => {
+      if (unsub && typeof unsub === 'function') {
+        unsub();
+      }
+    });
   };
 };
 
