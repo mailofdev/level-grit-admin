@@ -5,7 +5,7 @@ import Loader from "../../components/display/Loader";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import AnimatedCard from "../../components/common/AnimatedCard";
 import StaggerContainer from "../../components/common/StaggerContainer";
-
+import { FaDumbbell, FaWeight } from "react-icons/fa";
 export default function AllClients() {
   const user = getDecryptedUser();
   const navigate = useNavigate();
@@ -106,125 +106,141 @@ export default function AllClients() {
           </div>
         </div>
 
-        {/* Clients Grid - Desktop */}
-        <div className="card-body d-none d-md-block">
-          <StaggerContainer className="row g-3" staggerDelay={0.05}>
-            {currentClients.map((client, idx) => {
-              const goalValue = client.goal !== undefined ? Number(client.goal) : null;
-              const borderColor = goalValue === 0 ? '#dc3545' : goalValue === 1 ? '#28a745' : 'transparent';
-              
-              return (
-              <StaggerContainer.Item
-                key={client.clientId}
-                className="col-12 col-sm-6 col-md-4 col-lg-3"
-              >
-                <AnimatedCard
-                  delay={idx * 0.05}
-                  hover
-                  onClick={() => handleClientClick(client)}
-                  className="h-100 cursor-pointer position-relative rounded-4"
-                  style={{
-                    border: borderColor !== 'transparent' ? `3px solid ${borderColor}` : 'none'
-                  }}
-                >
-                  <div
-                    className="position-absolute top-0 start-0 end-0"
-                    style={{
-                      height: "3px",
-                      background:
-                        "linear-gradient(90deg, var(--color-primary), var(--color-info), var(--color-secondary))",
-                      opacity: 0.6,
-                    }}
-                  />
-                  <div className="card-body p-3">
-                    <h5 className="card-title fw-bold mb-3 fs-5">
-                      {client.fullName}
-                    </h5>
-                    <div className="d-flex flex-column gap-2 small">
-                      <p className="mb-0 d-flex align-items-start">
-                        <span
-                          className="text-muted me-2"
-                          style={{ minWidth: "55px" }}
-                        >
-                          Email
-                        </span>
-                        <span className="fw-medium text-break flex-grow-1">
-                          {client.email}
-                        </span>
-                      </p>
-                      <p className="mb-0 d-flex align-items-center">
-                        <span
-                          className="text-muted me-2"
-                          style={{ minWidth: "55px" }}
-                        >
-                          Gender
-                        </span>
-                        <span className="fw-medium">{client.gender}</span>
-                      </p>
-                      <p className="mb-0 d-flex align-items-center">
-                        <span
-                          className="text-muted me-2"
-                          style={{ minWidth: "55px" }}
-                        >
-                          Phone
-                        </span>
-                        <span className="fw-medium">{client.phoneNumber}</span>
-                      </p>
-                    </div>
-                  </div>
-                </AnimatedCard>
-              </StaggerContainer.Item>
-            );
-            })}
-          </StaggerContainer>
-        </div>
+{/* Clients Grid - Desktop */}
+<div className="card-body d-none d-md-block">
+  <StaggerContainer className="row g-3" staggerDelay={0.05}>
+    {currentClients.map((client, idx) => (
+      <StaggerContainer.Item
+        key={client.clientId}
+        className="col-12 col-sm-6 col-md-4 col-lg-3"
+      >
+        <AnimatedCard
+          delay={idx * 0.05}
+          hover
+          onClick={() => handleClientClick(client)}
+          className="h-100 cursor-pointer position-relative rounded-4"
+        >
+          <div
+            className="position-absolute top-0 start-0 end-0"
+            style={{
+              height: "3px",
+              background:
+                "linear-gradient(90deg, var(--color-primary), var(--color-info), var(--color-secondary))",
+              opacity: 0.6,
+            }}
+          />
+          <div className="card-body p-3">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="card-title fw-bold fs-5 mb-0">
+                {client.fullName}
+              </h5>
 
-        {/* Clients List - Mobile */}
-        <div className="card-body d-md-none">
-          <StaggerContainer staggerDelay={0.05}>
-            {currentClients.map((client, idx) => {
-              const goalValue = client.goal !== undefined ? Number(client.goal) : null;
-              const borderColor = goalValue === 0 ? '#dc3545' : goalValue === 1 ? '#28a745' : 'transparent';
-              
-              return (
-              <StaggerContainer.Item key={client.clientId} className="mb-2">
-                <AnimatedCard
-                  delay={idx * 0.05}
-                  hover
-                  onClick={() => handleClientClick(client)}
-                  className="w-100 text-start rounded-4"
-                  style={{ 
-                    cursor: 'pointer',
-                    border: borderColor !== 'transparent' ? `3px solid ${borderColor}` : 'none'
-                  }}
+              {/* ✅ Goal Badge */}
+              {client.goal !== undefined && (
+                <span
+                  className={`badge d-flex align-items-center gap-1 px-3 py-2 rounded-pill small ${
+                    client.goal === 0
+                      ? "bg-success bg-opacity-10 text-success"
+                      : "bg-danger bg-opacity-10 text-danger"
+                  }`}
                 >
-                  <div className="card-body p-3">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h6 className="fw-bold mb-0 fs-6 text-primary-emphasis">
-                        {client.fullName}
-                      </h6>
-                      {client.streak && (
-                        <span className="badge bg-primary bg-opacity-15 text-primary px-3 py-2 rounded-pill small">
-                          {client.streak}
-                        </span>
-                      )}
-                    </div>
-                    <div className="d-flex flex-column gap-1">
-                      <p className="mb-0 small text-muted">{client.email}</p>
-                      <div className="d-flex gap-3 mt-1">
-                        <small className="small text-muted">{client.gender}</small>
-                        <small className="small text-muted">
-                          {client.phoneNumber}
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                </AnimatedCard>
-              </StaggerContainer.Item>
-            );
-            })}
-          </StaggerContainer>
-        </div>
+                  {client.goal === 0 ? (
+                    <>
+                      <FaDumbbell /> Muscle Gain
+                    </>
+                  ) : (
+                    <>
+                      <FaWeight /> Weight Loss
+                    </>
+                  )}
+                </span>
+              )}
+            </div>
+
+            <div className="d-flex flex-column gap-2 small">
+              <p className="mb-0 d-flex align-items-start">
+                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
+                  Email
+                </span>
+                <span className="fw-medium text-break flex-grow-1">
+                  {client.email}
+                </span>
+              </p>
+              <p className="mb-0 d-flex align-items-center">
+                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
+                  Gender
+                </span>
+                <span className="fw-medium">{client.gender}</span>
+              </p>
+              <p className="mb-0 d-flex align-items-center">
+                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
+                  Phone
+                </span>
+                <span className="fw-medium">{client.phoneNumber}</span>
+              </p>
+            </div>
+          </div>
+        </AnimatedCard>
+      </StaggerContainer.Item>
+    ))}
+  </StaggerContainer>
+</div>
+
+{/* Clients List - Mobile */}
+<div className="card-body d-md-none">
+  <StaggerContainer staggerDelay={0.05}>
+    {currentClients.map((client, idx) => (
+      <StaggerContainer.Item key={client.clientId} className="mb-2">
+        <AnimatedCard
+          delay={idx * 0.05}
+          hover
+          onClick={() => handleClientClick(client)}
+          className="w-100 text-start rounded-4"
+          style={{ cursor: "pointer" }}
+        >
+          <div className="card-body p-3">
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-bold mb-0 fs-6 text-primary-emphasis">
+                {client.fullName}
+              </h6>
+
+              {/* ✅ Goal Badge */}
+              {client.goal !== undefined && (
+                <span
+                  className={`badge d-flex align-items-center gap-1 px-2 py-1 rounded-pill small ${
+                    client.goal === 0
+                      ? "bg-success bg-opacity-10 text-success"
+                      : "bg-danger bg-opacity-10 text-danger"
+                  }`}
+                >
+                  {client.goal === 0 ? (
+                    <>
+                      <FaDumbbell /> Muscle Gain
+                    </>
+                  ) : (
+                    <>
+                      <FaWeight /> Weight Loss
+                    </>
+                  )}
+                </span>
+              )}
+            </div>
+
+            <div className="d-flex flex-column gap-1">
+              <p className="mb-0 small text-muted">{client.email}</p>
+              <div className="d-flex gap-3 mt-1">
+                <small className="small text-muted">{client.gender}</small>
+                <small className="small text-muted">
+                  {client.phoneNumber}
+                </small>
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
+      </StaggerContainer.Item>
+    ))}
+  </StaggerContainer>
+</div>
 
         {/* Pagination Footer */}
         <div className="card-footer border-0 bg-body-tertiary py-3 sticky-bottom">
