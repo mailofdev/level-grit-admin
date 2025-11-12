@@ -109,7 +109,11 @@ export default function AllClients() {
         {/* Clients Grid - Desktop */}
         <div className="card-body d-none d-md-block">
           <StaggerContainer className="row g-3" staggerDelay={0.05}>
-            {currentClients.map((client, idx) => (
+            {currentClients.map((client, idx) => {
+              const goalValue = client.goal !== undefined ? Number(client.goal) : null;
+              const borderColor = goalValue === 0 ? '#dc3545' : goalValue === 1 ? '#28a745' : 'transparent';
+              
+              return (
               <StaggerContainer.Item
                 key={client.clientId}
                 className="col-12 col-sm-6 col-md-4 col-lg-3"
@@ -119,6 +123,9 @@ export default function AllClients() {
                   hover
                   onClick={() => handleClientClick(client)}
                   className="h-100 cursor-pointer position-relative rounded-4"
+                  style={{
+                    border: borderColor !== 'transparent' ? `3px solid ${borderColor}` : 'none'
+                  }}
                 >
                   <div
                     className="position-absolute top-0 start-0 end-0"
@@ -167,21 +174,29 @@ export default function AllClients() {
                   </div>
                 </AnimatedCard>
               </StaggerContainer.Item>
-            ))}
+            );
+            })}
           </StaggerContainer>
         </div>
 
         {/* Clients List - Mobile */}
         <div className="card-body d-md-none">
           <StaggerContainer staggerDelay={0.05}>
-            {currentClients.map((client, idx) => (
+            {currentClients.map((client, idx) => {
+              const goalValue = client.goal !== undefined ? Number(client.goal) : null;
+              const borderColor = goalValue === 0 ? '#dc3545' : goalValue === 1 ? '#28a745' : 'transparent';
+              
+              return (
               <StaggerContainer.Item key={client.clientId} className="mb-2">
                 <AnimatedCard
                   delay={idx * 0.05}
                   hover
                   onClick={() => handleClientClick(client)}
                   className="w-100 text-start rounded-4"
-                  style={{ cursor: 'pointer' }}
+                  style={{ 
+                    cursor: 'pointer',
+                    border: borderColor !== 'transparent' ? `3px solid ${borderColor}` : 'none'
+                  }}
                 >
                   <div className="card-body p-3">
                     <div className="d-flex justify-content-between align-items-center mb-2">
@@ -206,7 +221,8 @@ export default function AllClients() {
                   </div>
                 </AnimatedCard>
               </StaggerContainer.Item>
-            ))}
+            );
+            })}
           </StaggerContainer>
         </div>
 
