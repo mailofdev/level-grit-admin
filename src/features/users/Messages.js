@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import { sendMessage, subscribeToMessages } from "../../config/chatService";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import Loader from "../../components/display/Loader";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 export default function Messages({ isTrainer = false }) {
   const location = useLocation();
@@ -27,6 +28,10 @@ export default function Messages({ isTrainer = false }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  
+  // Get notification context for marking as read (only for trainers)
+  // useNotifications returns safe defaults if context is not available
+  const { markConversationRead } = useNotifications();
 
   // Fetch messages
   useEffect(() => {
@@ -44,8 +49,14 @@ export default function Messages({ isTrainer = false }) {
       setMessages(msgs);
       setLoading(false);
     });
+    
+    // Mark conversation as read when trainer opens it
+    if (isTrainer && trainerId && clientId) {
+      markConversationRead(clientId);
+    }
+    
     return () => unsubscribe();
-  }, [trainerId, clientId]);
+  }, [trainerId, clientId, isTrainer, markConversationRead]);
 
   // Send message
   const handleSubmit = async (e) => {
