@@ -35,20 +35,20 @@ export default function RazorpayPayment({
   };
 
   return (
-    <div>
-      <button
-        onClick={handlePayment}
-        className="btn btn-primary"
-        style={{
-          minHeight: "44px",
-          fontSize: "1rem",
-          fontWeight: "600",
+      <div>
+        <button
+          onClick={handlePayment}
+          className="btn btn-primary"
+          style={{
+            minHeight: "44px",
+            fontSize: "1rem",
+            fontWeight: "600",
           cursor: "pointer"
         }}
       >
-        <i className="fas fa-credit-card me-2"></i>
-        {getButtonText()}
-      </button>
-    </div>
+              <i className="fas fa-credit-card me-2"></i>
+              {getButtonText()}
+        </button>
+      </div>
   );
 }

@@ -284,7 +284,7 @@ const LandingPage = () => {
                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
                     AI does the tracking
                   </span>
-                </div>
+              </div>
                 <div className="d-flex align-items-center gap-2">
                   <FaCheckCircle style={{ color: "#4ade80", fontSize: "1.2rem" }} />
                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
@@ -313,19 +313,19 @@ const LandingPage = () => {
                     <img
                       src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=500&fit=crop&q=80"
                       alt="Meal Tracking"
-                      className="img-fluid rounded-4 shadow-lg"
-                      style={{
+                    className="img-fluid rounded-4 shadow-lg"
+                    style={{
                         maxHeight: "450px",
-                        objectFit: "cover",
-                        width: "100%",
+                      objectFit: "cover",
+                      width: "100%",
                         border: "4px solid rgba(255,255,255,0.3)",
-                      }}
-                    />
+                    }}
+                  />
                     {/* Floating AI Badge */}
-                    <motion.div
+                  <motion.div
                       className="position-absolute bg-white rounded-pill px-4 py-2 shadow-lg d-flex align-items-center gap-2"
-                      style={{
-                        top: "20px",
+                    style={{
+                      top: "20px",
                         right: "20px",
                       }}
                       initial={{ opacity: 0, scale: 0 }}
@@ -348,22 +348,22 @@ const LandingPage = () => {
                         height: "60px",
                       }}
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1 }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
+                  >
                       <FaCamera style={{ color: "#667eea", fontSize: "1.5rem" }} />
-                    </motion.div>
+                  </motion.div>
                     {/* Floating Stats Card */}
-                    <motion.div
+                  <motion.div
                       className="position-absolute bg-white rounded-3 p-3 shadow-lg"
-                      style={{
+                    style={{
                         bottom: "30px",
                         right: "30px",
                         minWidth: "140px",
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.2 }}
                       whileHover={{ scale: 1.05 }}
                     >
@@ -372,7 +372,7 @@ const LandingPage = () => {
                         <FaChartBar style={{ color: "#4ade80", fontSize: "1.2rem" }} />
                         <strong style={{ color: "#667eea", fontSize: "1.1rem" }}>
                           Real-time
-                        </strong>
+                    </strong>
                       </div>
                     </motion.div>
                   </motion.div>
@@ -850,14 +850,14 @@ const LandingPage = () => {
                         position: "relative",
                         overflow: "hidden",
                       }}
-                    >
-                      <img
-                        src={feature.img}
-                        alt={feature.title}
-                        style={{
-                          width: "100%",
+                  >
+                    <img
+                      src={feature.img}
+                      alt={feature.title}
+                      style={{
+                        width: "100%",
                           height: "100%",
-                          objectFit: "cover",
+                        objectFit: "cover",
                           opacity: 0.3,
                         }}
                       />
@@ -877,8 +877,8 @@ const LandingPage = () => {
                             border: "2px solid rgba(255,255,255,0.3)",
                           }}
                         >
-                          <feature.icon
-                            size={40}
+                      <feature.icon
+                        size={40}
                             style={{ color: "#fff" }}
                           />
                         </div>

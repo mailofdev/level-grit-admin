@@ -47,3 +47,18 @@ export const getUserById = async (id) => {
   });
   return data;
 };
+
+export const ChangePassword = async (passwordData) => {
+  const { data } = await axiosInstance.post("api/Auth/ChangePassword", passwordData);
+  return data;
+};
+
+export const ForgotPassword = async (email) => {
+  const { data } = await axiosInstance.post("api/Auth/ForgotPassword", { email });
+  return data;
+};
+
+export const ResetPassword = async (resetData) => {
+  const { data } = await axiosInstance.post("api/Auth/ResetPassword", resetData);
+  return data;
+};

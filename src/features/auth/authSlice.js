@@ -3,7 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { 
   loginThunk, 
   registerThunk, 
-  getCurrentUserThunk, 
+  getCurrentUserThunk,
+  forgotPasswordThunk,
+  resetPasswordThunk,
 } from "./authThunks";
 
 const initialState = {
@@ -90,6 +92,34 @@ const authSlice = createSlice({
       .addCase(getCurrentUserThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to load user";
+      })
+      
+      // ✅ FORGOT PASSWORD THUNK
+      .addCase(forgotPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(forgotPasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to send reset link";
+      })
+      
+      // ✅ RESET PASSWORD THUNK
+      .addCase(resetPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(resetPasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to reset password";
       });
   },
 });

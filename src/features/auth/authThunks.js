@@ -1,6 +1,6 @@
 // src/features/auth/authThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserById, loginUser, registerUser, UpdateProfileData, ChangePassword } from "../../api/authAPI";
+import { getUserById, loginUser, registerUser, UpdateProfileData, ChangePassword, ForgotPassword, ResetPassword } from "../../api/authAPI";
 import { encryptToken } from "../../utils/crypto";
 import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
@@ -79,6 +79,32 @@ export const updateProfileThunk = createAsyncThunk(
     } catch (error) {
       logError(error, "Update Profile");
       return rejectWithValue(formatErrorMessage(error, "Failed to update profile. Please try again."));
+    }
+  }
+);
+
+export const forgotPasswordThunk = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const result = await ForgotPassword(email);
+      return result;
+    } catch (error) {
+      logError(error, "Forgot Password");
+      return rejectWithValue(formatErrorMessage(error, "Failed to send reset link. Please check your email and try again."));
+    }
+  }
+);
+
+export const resetPasswordThunk = createAsyncThunk(
+  "auth/resetPassword",
+  async (resetData, { rejectWithValue }) => {
+    try {
+      const result = await ResetPassword(resetData);
+      return result;
+    } catch (error) {
+      logError(error, "Reset Password");
+      return rejectWithValue(formatErrorMessage(error, "Failed to reset password. Please check your OTP and try again."));
     }
   }
 );
