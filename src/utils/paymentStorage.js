@@ -26,8 +26,8 @@ export const getAllPayments = () => {
  * @param {string} paymentData.trainerId - Trainer user ID
  * @param {string} paymentData.trainerName - Trainer name
  * @param {string} paymentData.trainerEmail - Trainer email
- * @param {string} paymentData.paymentId - Razorpay payment ID
- * @param {string} paymentData.orderId - Razorpay order ID
+ * @param {string} paymentData.paymentId - Payment ID
+ * @param {string} paymentData.orderId - Order ID
  * @param {number} paymentData.amount - Payment amount in rupees
  * @param {string} paymentData.clientId - Client ID for which payment was made (optional)
  * @param {string} paymentData.clientName - Client name for which payment was made (optional)

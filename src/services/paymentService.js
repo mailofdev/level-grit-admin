@@ -42,11 +42,9 @@ export const PaymentStatus = {
 };
 
 /**
- * Create a Razorpay order
+ * Create an order
  * 
- * This should be called from Firebase Cloud Functions for security.
- * For now, we'll create a client-side order record that will be
- * validated on the backend.
+ * Creates a client-side order record in Firestore.
  * 
  * @param {number} amount - Amount in rupees
  * @param {string} currency - Currency code (default: INR)
@@ -81,9 +79,7 @@ export const createOrder = async (amount, currency = 'INR', metadata = {}) => {
     
     return {
       id: orderRef.id,
-      ...orderData,
-      // This order ID will be used to create Razorpay order on backend
-      razorpayOrderId: null // Will be set by backend
+      ...orderData
     };
   } catch (error) {
     console.error('Error creating order:', error);
@@ -107,7 +103,6 @@ export const savePaymentRecord = async (paymentData) => {
       userEmail: paymentData.userEmail || user?.email || '',
       paymentId: paymentData.paymentId,
       orderId: paymentData.orderId,
-      razorpayOrderId: paymentData.razorpayOrderId,
       amount: paymentData.amount,
       currency: paymentData.currency || 'INR',
       status: paymentData.status || PaymentStatus.SUCCESS,
@@ -231,11 +226,11 @@ export const getPaymentById = async (paymentId) => {
 };
 
 /**
- * Verify payment status from Razorpay
+ * Verify payment status
  * This should be called from backend/Cloud Functions
  * 
- * @param {string} paymentId - Razorpay payment ID
- * @param {string} orderId - Razorpay order ID
+ * @param {string} paymentId - Payment ID
+ * @param {string} orderId - Order ID
  * @param {string} signature - Payment signature
  * @returns {Promise<Object>} Verification result
  */

@@ -378,15 +378,15 @@ export default function PaymentManagement() {
                                           <tr key={payment.id}>
                                             <td>
                                               <code className="small">
-                                                {payment.razorpayPaymentId || payment.paymentId
-                                                  ? (payment.razorpayPaymentId || payment.paymentId).substring(0, 20) + "..."
+                                                {payment.paymentId
+                                                  ? payment.paymentId.substring(0, 20) + "..."
                                                   : "N/A"}
                                               </code>
                                             </td>
                                             <td>
                                               <code className="small">
-                                                {payment.razorpayOrderId || payment.orderId
-                                                  ? (payment.razorpayOrderId || payment.orderId).substring(0, 20) + "..."
+                                                {payment.orderId
+                                                  ? payment.orderId.substring(0, 20) + "..."
                                                   : "N/A"}
                                               </code>
                                             </td>
