@@ -963,27 +963,6 @@ const LandingPage = () => {
                     overflow: "visible",
                   }}
                 >
-                  <div
-                    className="position-absolute top-0 start-50 translate-middle"
-                    style={{
-                      transform: "translate(-50%, -50%)",
-                      width: "70px",
-                      height: "70px",
-                      borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${step.color} 0%, ${step.color}dd 100%)`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    <span
-                      className="fw-bold"
-                      style={{ color: "#fff", fontSize: "1.8rem" }}
-                    >
-                      {step.number}
-                    </span>
-                  </div>
                   <div className="mt-4 mb-4">
                     <div
                       className="rounded-circle d-inline-flex align-items-center justify-content-center"
