@@ -1,10 +1,17 @@
-// src/api/paymentAPI.js
+/**
+ * Payment API
+ * 
+ * All API endpoints under /api/Payment/*
+ * Domain-based organization for payment-related operations.
+ */
+
 import axiosInstance from "./axiosInstance";
 
 /**
  * Get Payment Status
  * Checks if trainer has made payment for additional clients
- * @returns {Promise<Object>} - Payment status information
+ * API Path: api/Payment/GetPaymentStatus
+ * @returns {Promise<Object>} Payment status information
  */
 export const getPaymentStatus = async () => {
   try {
@@ -18,4 +25,3 @@ export const getPaymentStatus = async () => {
     );
   }
 };
-

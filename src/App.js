@@ -28,6 +28,7 @@ import ScrollToTop from "./components/navigation/ScrollToTop";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
 import ToastNotification from "./components/notifications/ToastNotification";
+import { ROLES } from "./utils/roles";
 
 // ============================================
 // Lazy Load Components - Performance Optimization
@@ -66,7 +67,7 @@ const ClientDetails = lazy(() => import("./features/users/ClientDetails"));
 
 
 // Communication Components
-const Messages = lazy(() => import("./features/users/Messages"));
+const Messages = lazy(() => import("./features/conversations/Messages"));
 const AdjustPlan = lazy(() => import("./features/adjustPlan/AdjustPlan"));
 
 // Static Pages
@@ -175,37 +176,43 @@ function App() {
                 <Route
                   path="/trainer-dashboard"
                   element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <TrainerDashboard />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER]}>
+                      <MainLayout
+                        config={{
+                          showTopbar: true,
+                          showSidebar: false,
+                          showFooter: false,
+                        }}
+                      >
+                        <TrainerDashboard />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                  <Route
                   path="/client-dashboard"
                   element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <ClientDashboard />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.CLIENT]}>
+                      <MainLayout
+                        config={{
+                          showTopbar: true,
+                          showSidebar: false,
+                          showFooter: false,
+                        }}
+                      >
+                        <ClientDashboard />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
                   path="/admin-dashboard"
                   element={
-                    <ProtectedLayout>
-                      <AdminDashboard />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.ADMINISTRATOR]}>
+                      <MainLayout>
+                        <AdminDashboard />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
@@ -217,53 +224,63 @@ function App() {
                   }
                 />
 
-                {/* Client Management Routes */}
+                {/* Client Management Routes - Trainer/Admin only */}
                 <Route
                   path="/AllClients"
                   element={
-                    <ProtectedLayout>
-                      <AllClients />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER, ROLES.ADMINISTRATOR]}>
+                      <MainLayout>
+                        <AllClients />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
                   path="/client-details/:clientId"
                   element={
-                    <ProtectedLayout>
-                      <ClientDetails />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER, ROLES.ADMINISTRATOR]}>
+                      <MainLayout>
+                        <ClientDetails />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
                   path="/messages/:clientId"
                   element={
-                    <ProtectedLayout>
-                      <Messages isTrainer={true} />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER, ROLES.ADMINISTRATOR]}>
+                      <MainLayout>
+                        <Messages isTrainer={true} />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                  <Route
                   path="/client-messages/:trainerId"
                   element={
-                    <ProtectedLayout
-                      config={{
-                        showTopbar: true,
-                        showSidebar: false,
-                        showFooter: false,
-                      }}
-                    >
-                      <Messages isTrainer={false} />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.CLIENT]}>
+                      <MainLayout
+                        config={{
+                          showTopbar: true,
+                          showSidebar: false,
+                          showFooter: false,
+                        }}
+                      >
+                        <Messages isTrainer={false} />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
 
-                {/* Meal Plan Management */}
+                {/* Meal Plan Management - Trainer only */}
                 <Route
                   path="/adjust-plan/:clientId"
                   element={
-                    <ProtectedLayout>
-                      <AdjustPlan />
-                    </ProtectedLayout>
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER]}>
+                      <MainLayout>
+                        <AdjustPlan />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
 

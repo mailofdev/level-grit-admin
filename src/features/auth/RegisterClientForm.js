@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
-import { RegisterClient, GetClientsForTrainer } from "../../api/authAPI";
+import { registerClient, getClientsForTrainer } from "../../api/trainerAPI";
 import Loader from "../../components/display/Loader";
 import RazorpayPayment from "../payments/RazorpayPayment";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
@@ -58,7 +58,7 @@ const RegisterClientForm = () => {
           return;
         }
 
-        const clients = await GetClientsForTrainer();
+        const clients = await getClientsForTrainer();
         const count = Array.isArray(clients) ? clients.length : 0;
         setClientCount(count);
         
@@ -103,7 +103,7 @@ const RegisterClientForm = () => {
     setLoading(true);
 
     try {
-      const response = await RegisterClient(clientData);
+      const response = await registerClient(clientData);
       const user = getDecryptedUser();
       const trainerId = user?.userId || user?.id;
       

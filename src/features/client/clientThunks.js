@@ -1,103 +1,62 @@
-// src/features/client/clientThunks.js
+/**
+ * Client Thunks
+ * 
+ * All async actions for client-related operations.
+ * Consolidated from scattered client API calls.
+ */
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getTrainerDashboard, deleteTrainer, uploadMeal, getDashboard  } from "../../api/trainerAPI";
-import { getClientDashboard } from "../../api/clientAPI";
+import { getClientDashboard, uploadMeal } from "../../api/clientAPI";
+import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
-/**
- * Fetch Trainer Dashboard Data
- */
-export const getTrainerDashboardThunk = createAsyncThunk(
-  "trainer/getDashboard",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getTrainerDashboard();
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch trainer dashboard data"
-      );
-    }
-  }
-);
-
-/**
- * Delete Trainer Account
- * @param {string|number} userId - The user ID to delete
- */
-export const deleteTrainerThunk = createAsyncThunk(
-  "trainer/deleteTrainer",
-  async (userId, { rejectWithValue }) => {
-    try {
-      if (!userId) {
-        return rejectWithValue("User ID is required");
-      }
-      const data = await deleteTrainer(userId);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to delete trainer account"
-      );
-    }
-  }
-);
+// ============================================
+// Dashboard
+// ============================================
 
 /**
  * Fetch Client Dashboard Data
- * @param {string|number} clientId - The client ID to fetch dashboard for
  */
 export const getClientDashboardThunk = createAsyncThunk(
   "client/getDashboard",
-  async (clientId, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      if (!clientId) {
-        return rejectWithValue("Client ID is required");
-      }
-      const data = await getClientDashboard(clientId);
+      const data = await getClientDashboard();
       return data;
     } catch (error) {
+      logError(error, "Get Client Dashboard");
       return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch client dashboard data"
+        formatErrorMessage(error, "Failed to fetch client dashboard data")
       );
     }
   }
 );
 
-export const getDashboardThunk = createAsyncThunk(
-  "client/getDashboard",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getDashboard();
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch client dashboard data"
-      );
-    }
-  }
-);
+// ============================================
+// Meal Tracking
+// ============================================
 
 /**
  * Upload a meal (image + info)
+ * @param {Object} mealData - Meal data
+ * @param {string|number} mealData.mealPlanId - Meal plan ID
+ * @param {string} mealData.mealName - Name of the meal
+ * @param {number} mealData.sequence - Meal sequence number
+ * @param {string} mealData.message - Optional message
+ * @param {string} mealData.imageBase64 - Base64 encoded meal image
  */
 export const uploadMealThunk = createAsyncThunk(
   "client/uploadMeal",
   async (mealData, { rejectWithValue }) => {
     try {
+      if (!mealData) {
+        return rejectWithValue("Meal data is required");
+      }
       const data = await uploadMeal(mealData);
       return data;
     } catch (error) {
+      logError(error, "Upload Meal");
       return rejectWithValue(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to upload meal"
+        formatErrorMessage(error, "Failed to upload meal")
       );
     }
   }

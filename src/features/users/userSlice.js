@@ -1,17 +1,17 @@
 // src/features/users/userSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  GetClientsForTrainer,
   deleteUserById,
   registerUser,
   updateUserById,
   getUserById,
 } from "../../api/authAPI";
+import { getClientsForTrainer } from "../../api/trainerAPI";
 
 // Fetch all users
 export const fetchUsers = createAsyncThunk("users/GetClientsForTrainer", async (_, { rejectWithValue }) => {
   try {
-    const data = await GetClientsForTrainer();
+    const data = await getClientsForTrainer();
     return [...data].reverse();
   } catch (err) {
     return rejectWithValue(err.response?.data?.message || "Failed to fetch users");

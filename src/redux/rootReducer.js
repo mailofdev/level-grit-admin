@@ -20,6 +20,7 @@ import userReducer from '../features/users/userSlice';
 import adjustPlanReducer from "../features/adjustPlan/adjustPlanSlice";
 import trainerReducer from '../features/trainer/trainerSlice';
 import clientReducer from '../features/users/clientSlice';
+import conversationReducer from '../features/conversations/conversationSlice';
 /**
  * Root reducer combining all feature reducers
  * 
@@ -29,6 +30,7 @@ import clientReducer from '../features/users/clientSlice';
  * - adjustPlan: Meal plan creation and updates
  * - trainer: Trainer dashboard data
  * - client: Client dashboard data
+ * - conversations: Message state, unread counts, active conversations
  */
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -36,6 +38,7 @@ const rootReducer = combineReducers({
   adjustPlan: adjustPlanReducer,
   trainer: trainerReducer,
   client: clientReducer,
+  conversations: conversationReducer,
 });
 
 export default rootReducer;

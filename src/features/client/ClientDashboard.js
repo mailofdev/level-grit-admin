@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getDashboardThunk,
+  getClientDashboardThunk,
   uploadMealThunk,
 } from "../../features/client/clientThunks";
 import ShareProgressModal from "../../components/common/ShareProgressModal";
@@ -36,7 +36,7 @@ export default function ClientDashboard() {
   const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getDashboardThunk());
+    dispatch(getClientDashboardThunk());
   }, [dispatch]);
 
   // Parse macro strings from "consumed/target" format
@@ -254,7 +254,7 @@ export default function ClientDashboard() {
 
       alert("✅ Meal uploaded successfully!");
       closeCamera();
-      dispatch(getDashboardThunk()); // Refresh dashboard
+      dispatch(getClientDashboardThunk()); // Refresh dashboard
     } catch (err) {
       console.error("Error uploading meal:", err);
       alert("❌ Failed to upload meal image: " + (err.message || err));

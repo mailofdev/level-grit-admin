@@ -11,7 +11,7 @@ import {
   showBrowserNotification,
   initializeServiceWorker,
 } from "../services/pushNotificationService";
-import { GetClientsForTrainer } from "../api/authAPI";
+import { getClientsForTrainer } from "../api/trainerAPI";
 import { getDecryptedUser } from "../components/common/CommonFunctions";
 
 const NotificationContext = createContext();
@@ -100,7 +100,7 @@ export const NotificationProvider = ({ children }) => {
 
     const fetchClients = async () => {
       try {
-        const clientsData = await GetClientsForTrainer();
+        const clientsData = await getClientsForTrainer();
         setClients(clientsData || []);
       } catch (error) {
         console.error("Error fetching clients:", error);

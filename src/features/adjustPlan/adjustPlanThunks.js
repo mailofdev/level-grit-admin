@@ -3,7 +3,7 @@ import {
   getMealPlan,
   createOrUpdateMealPlan,
   getMealPlanPreview,
-} from "../../api/ajustPlanAPI";
+} from "../../api/trainerAPI";
 import axiosInstance from "../../api/axiosInstance";
 
 // ✅ Fetch meal plan by clientId and date

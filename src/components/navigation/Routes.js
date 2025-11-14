@@ -1,13 +1,16 @@
 // routes.js
 import { getDecryptedUser } from "../common/CommonFunctions";
+import { ROLES, getUserRole, isTrainer, isClient, isAdministrator } from "../../utils/roles";
 
 export const getRoutes = () => {
   const user = getDecryptedUser();
 
   if (!user) return [];
 
+  const userRole = getUserRole(user);
+
   return [
-    ...(user?.role === "Trainer"
+    ...(isTrainer(userRole) || user?.role === "Trainer"
       ? [
           {
             label: "Dashboard",
@@ -23,7 +26,7 @@ export const getRoutes = () => {
           }
         ]
       : []),
-    ...(user?.role === "Administrator"
+    ...(isAdministrator(userRole) || user?.role === "Administrator"
       ? [
           {
             label: "Dashboard",
@@ -33,7 +36,7 @@ export const getRoutes = () => {
           },
         ]
       : []),
-         ...(user?.role === "Client"
+    ...(isClient(userRole) || user?.role === "Client"
       ? [
           {
             label: "Dashboard",

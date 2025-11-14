@@ -7,6 +7,7 @@
 
 import { FaUser, FaDumbbell, FaShieldAlt } from "react-icons/fa";
 import { decryptToken } from "../../utils/crypto";
+import { getRoleString, normalizeRole } from "../../utils/roles";
 
 // ============================================
 // Role Mappings Configuration
@@ -44,23 +45,26 @@ const DEFAULT_ROLE = {
 /**
  * Returns the appropriate icon or emoji for a given user role
  * 
- * @param {string} role - User role (Trainer, Client, Administrator)
+ * @param {string|number} role - User role (Trainer, Client, Administrator) or role code (0, 1, 2)
  * @param {string} type - Display type: 'icon' (React component) or 'emoji' (string)
  * @returns {React.ReactNode|string} - Icon component or emoji string
  * 
  * @example
  * getRoleIcon('Trainer', 'icon') // Returns <FaDumbbell />
+ * getRoleIcon(1, 'emoji') // Returns "🏋️‍♂️"
  * getRoleIcon('Client', 'emoji') // Returns "👤"
  */
 const getRoleIcon = (role, type = 'icon') => {
-  const roleMapping = ROLE_MAPPINGS[role] || DEFAULT_ROLE;
+  // Normalize role to string if it's a number
+  const roleString = typeof role === 'number' ? getRoleString(role) : role;
+  const roleMapping = ROLE_MAPPINGS[roleString] || DEFAULT_ROLE;
   
   if (type === 'emoji') {
     return (
       <span 
         className="text-white text-xl" 
         role="img" 
-        aria-label={role || 'User'}
+        aria-label={roleString || 'User'}
       >
         {roleMapping.emoji}
       </span>

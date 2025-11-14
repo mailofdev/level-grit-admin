@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetClientsForTrainer } from "../../api/authAPI";
+import { getClientsForTrainer } from "../../api/trainerAPI";
 import Loader from "../../components/display/Loader";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import AnimatedCard from "../../components/common/AnimatedCard";
@@ -23,7 +23,7 @@ export default function AllClients() {
     const fetchClients = async () => {
       try {
         setLoading(true);
-        const data = await GetClientsForTrainer();
+        const data = await getClientsForTrainer();
         setClients(data);
       } catch (error) {
         // Error fetching clients
