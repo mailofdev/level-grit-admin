@@ -497,7 +497,7 @@ const LandingPage = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="mb-3"
+                  className="mb-3 mt-5"
                 >
                   <span
                     className="badge rounded-pill px-3 py-2"
@@ -531,7 +531,7 @@ const LandingPage = () => {
                   </strong>
                 </p>
                 <motion.button
-                  className="btn btn-lg rounded-pill px-5 py-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2"
+                  className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2 w-100 w-md-auto"
                   onClick={handleSignUpNavigation}
                   style={{
                     backgroundColor: "#fff",
@@ -539,12 +539,17 @@ const LandingPage = () => {
                     minHeight: "56px",
                     boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
                     border: "none",
+                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
                   }}
                   whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  👉 Start Coaching Smarter — Free
-                  <FaArrowRight />
+                  <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
+                    <span>👉 Start Coaching Smarter — Free</span>
+                    <FaArrowRight className="flex-shrink-0" />
+                  </span>
                 </motion.button>
               </motion.div>
               <motion.div
@@ -1313,36 +1318,45 @@ const LandingPage = () => {
                     Just snap a photo → get instant calories & macros → keep your streak alive for 32 days.
                   </strong>
                 </p>
-                <motion.button
-                  className="btn btn-lg rounded-pill px-5 py-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2 me-3"
-                  onClick={handleClientLogin}
-                  style={{
-                    backgroundColor: "#fff",
-                    color: "#43e97b",
-                    minHeight: "56px",
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-                    border: "none",
-                  }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  👉 Join the 32-Day Challenge Now
-                  <FaArrowRight />
-                </motion.button>
-                <motion.button
-                  className="btn btn-lg rounded-pill px-5 py-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2"
-                  onClick={handleClientLogin}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#fff",
-                    minHeight: "56px",
-                    border: "2px solid #fff",
-                  }}
-                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Login
-                </motion.button>
+                <div className="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mb-3">
+                  <motion.button
+                    className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold d-inline-flex align-items-center gap-2 flex-grow-1 flex-sm-grow-0"
+                    onClick={handleClientLogin}
+                    style={{
+                      backgroundColor: "#fff",
+                      color: "#43e97b",
+                      minHeight: "56px",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+                      border: "none",
+                      fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                    }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
+                      <span>👉 Join the 32-Day Challenge Now</span>
+                      <FaArrowRight className="flex-shrink-0" />
+                    </span>
+                  </motion.button>
+                  <motion.button
+                    className="btn btn-lg rounded-pill px-4 px-md-5 py-3 fw-semibold d-inline-flex align-items-center justify-content-center"
+                    onClick={handleClientLogin}
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "#fff",
+                      minHeight: "56px",
+                      border: "2px solid #fff",
+                      fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+                      whiteSpace: "nowrap",
+                    }}
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Login
+                  </motion.button>
+                </div>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0 }}
@@ -1712,7 +1726,7 @@ const LandingPage = () => {
             Snap. Track. Share. Transform.
           </motion.p>
           <motion.button
-            className="btn btn-lg rounded-pill px-5 py-3 fw-semibold d-inline-flex align-items-center gap-2"
+            className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold d-inline-flex align-items-center gap-2 w-100 w-md-auto"
             onClick={handleClientLogin}
             style={{
               backgroundColor: "#43e97b",
@@ -1720,6 +1734,10 @@ const LandingPage = () => {
               minHeight: "56px",
               boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
               border: "none",
+              fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              maxWidth: "400px",
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -1728,8 +1746,10 @@ const LandingPage = () => {
             whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
             whileTap={{ scale: 0.98 }}
           >
-            👉 Join the 32-Day Challenge
-            <FaArrowRight />
+            <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
+              <span>👉 Join the 32-Day Challenge</span>
+              <FaArrowRight className="flex-shrink-0" />
+            </span>
           </motion.button>
         </div>
       </section>

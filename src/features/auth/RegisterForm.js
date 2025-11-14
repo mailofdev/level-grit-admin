@@ -191,7 +191,8 @@ const RegisterForm = () => {
         }}>
           <Heading 
             pageName="Create Account" 
-            showBackButton={false}
+            onBack={() => navigate('/')}
+            showBackButton={true}
             sticky={false}
           />
         </div>
