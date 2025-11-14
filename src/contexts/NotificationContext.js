@@ -56,8 +56,25 @@ export const NotificationProvider = ({ children }) => {
   const isInitializedRef = useRef(false);
 
   const user = getDecryptedUser();
-  const isTrainer = user?.role?.toLowerCase() === "trainer";
+  // More flexible role check - handle "Trainer", "trainer", or role codes
+  const userRole = user?.role;
+  const isTrainer = userRole && (
+    userRole.toLowerCase() === "trainer" || 
+    userRole === "Trainer" ||
+    userRole === 1 // Role code for trainer
+  );
   const trainerId = user?.userId || user?.id || user?.trainerId;
+
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[NotificationContext] User check:', {
+        user: user ? { role: user.role, userId: user.userId, id: user.id, trainerId: user.trainerId } : null,
+        isTrainer,
+        trainerId,
+      });
+    }
+  }, [user, isTrainer, trainerId]);
 
   // Save sound preference to localStorage
   useEffect(() => {
@@ -117,14 +134,24 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (!isTrainer || !trainerId) {
       setIsLoading(false);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[NotificationContext] Skipping client fetch:', { isTrainer, trainerId });
+      }
       return;
     }
 
     const fetchClients = async () => {
       try {
         setError(null);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[NotificationContext] Fetching clients for trainer:', trainerId);
+        }
         const clientsData = await getClientsForTrainer();
-        setClients(clientsData || []);
+        const clientsList = clientsData || [];
+        setClients(clientsList);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[NotificationContext] Clients fetched:', clientsList.length);
+        }
       } catch (error) {
         console.error("Error fetching clients:", error);
         setError("Failed to load clients");
@@ -159,18 +186,29 @@ export const NotificationProvider = ({ children }) => {
 
   // Subscribe to notifications
   useEffect(() => {
-    if (!isTrainer || !trainerId || clients.length === 0) {
-      if (clients.length === 0 && isTrainer && trainerId) {
-        // Still try to load notifications even if no clients yet
-        loadNotifications();
+    if (!isTrainer || !trainerId) {
+      setIsLoading(false);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[NotificationContext] Not a trainer or no trainerId, skipping subscription');
       }
       return;
     }
 
-    // Load existing notifications first
+    // Always load existing notifications first, even without clients
     if (!isInitializedRef.current) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[NotificationContext] Loading existing notifications for trainer:', trainerId);
+      }
       loadNotifications();
       isInitializedRef.current = true;
+    }
+
+    // Only subscribe to new messages if we have clients
+    if (clients.length === 0) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[NotificationContext] No clients yet, will subscribe when clients are loaded');
+      }
+      return;
     }
 
     // Clean up previous subscription
@@ -182,10 +220,16 @@ export const NotificationProvider = ({ children }) => {
     // Subscribe to new messages
     try {
       setError(null);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[NotificationContext] Setting up subscriptions for', clients.length, 'clients');
+      }
       unsubscribeRef.current = subscribeToAllTrainerMessages(
         trainerId,
         clients,
         (notification) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[NotificationContext] New notification received:', notification);
+          }
           setNotifications((prev) => {
             // Check if notification already exists
             const exists = prev.some((n) => n.id === notification.id);

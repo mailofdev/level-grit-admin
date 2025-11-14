@@ -9,11 +9,18 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 
 const NotificationBell = () => {
-  const { unreadCount, notifications, isLoading } = useNotifications();
+  const { unreadCount, notifications, isLoading, error } = useNotifications();
   const [showPanel, setShowPanel] = useState(false);
   const bellRef = useRef(null);
   const panelRef = useRef(null);
   const navigate = useNavigate();
+
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[NotificationBell] State:', { unreadCount, notificationsCount: notifications.length, isLoading, error });
+    }
+  }, [unreadCount, notifications.length, isLoading, error]);
 
   // Close panel when clicking outside or pressing Escape
   useEffect(() => {
@@ -95,9 +102,33 @@ const NotificationBell = () => {
           aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
           aria-expanded={showPanel}
           disabled={isLoading}
+          title={error ? `Error: ${error}` : isLoading ? "Loading notifications..." : unreadCount > 0 ? `${unreadCount} unread notifications` : "No new notifications"}
         >
-          <FaBell size={20} />
-          {unreadCount > 0 && (
+          <FaBell size={20} style={{ opacity: isLoading ? 0.5 : 1 }} />
+          {error && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="position-absolute top-0 end-0"
+              style={{
+                transform: "translate(25%, -25%)",
+                pointerEvents: "none",
+              }}
+            >
+              <Badge
+                bg="warning"
+                pill
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  minWidth: "12px",
+                  height: "12px",
+                  fontSize: "0.6rem",
+                }}
+                title={error}
+              />
+            </motion.div>
+          )}
+          {!error && unreadCount > 0 && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}

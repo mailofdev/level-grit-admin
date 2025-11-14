@@ -111,7 +111,7 @@ const Topbar = ({
             <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-lg-auto" style={{ flexShrink: 0 }}>
               {showSearch && <SearchBar />}
               {showThemeToggle && <ThemeSwitch enableThemeAlert />}
-              {user?.role?.toLowerCase() === "trainer" && (
+              {(user?.role?.toLowerCase() === "trainer" || user?.role === "Trainer" || user?.role === 1) && (
                 <div style={{ flexShrink: 0 }}>
                   <NotificationBell />
                 </div>
