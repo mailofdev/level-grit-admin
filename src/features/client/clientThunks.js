@@ -7,6 +7,7 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getClientDashboard, uploadMeal } from "../../api/clientAPI";
+import { getClientDashboardByTrainer } from "../../api/trainerAPI";
 import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
 // ============================================
@@ -15,12 +16,17 @@ import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
 /**
  * Fetch Client Dashboard Data
+ * @param {string|number} clientId - Optional client ID. If provided, uses trainer API endpoint.
  */
 export const getClientDashboardThunk = createAsyncThunk(
   "client/getDashboard",
-  async (_, { rejectWithValue }) => {
+  async (clientId, { rejectWithValue }) => {
     try {
-      const data = await getClientDashboard();
+      // If clientId is provided, use trainer API endpoint (for trainers viewing a client)
+      // Otherwise, use client API endpoint (for clients viewing their own dashboard)
+      const data = clientId 
+        ? await getClientDashboardByTrainer(clientId)
+        : await getClientDashboard();
       return data;
     } catch (error) {
       logError(error, "Get Client Dashboard");

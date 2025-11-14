@@ -46,17 +46,39 @@ export default function Messages({ isTrainer = false }) {
   const client = location.state?.client;
   const trainer = location.state?.trainer;
   
+  // Get clientId from URL params (primary) or location state (fallback)
+  const clientIdFromUrl = params?.clientId;
+  const trainerIdFromUrl = params?.trainerId;
+  
   // Determine IDs based on role
+  // For trainers: trainerId = logged-in user's ID, clientId = selected client's ID
+  // For clients: clientId = logged-in user's ID, trainerId = their trainer's ID
   const trainerId = isTrainer || userRole === ROLES.TRAINER
     ? (loggedInUser?.userId || loggedInUser?.id || loggedInUser?.trainerId)
-    : (trainer?.trainerId || trainer?.userId || trainer?.id || params?.trainerId);
+    : (trainerIdFromUrl || trainer?.trainerId || trainer?.userId || trainer?.id || client?.trainerId);
     
   const clientId = isTrainer || userRole === ROLES.TRAINER
-    ? (client?.clientId || client?.userId || client?.id || params?.clientId)
-    : (loggedInUser?.userId || loggedInUser?.clientId || loggedInUser?.id);
+    ? (clientIdFromUrl || client?.clientId || client?.userId || client?.id)
+    : (loggedInUser?.userId || loggedInUser?.id || loggedInUser?.clientId);
   
   const currentUserId = loggedInUser?.userId || loggedInUser?.id;
   const chatId = trainerId && clientId ? getChatId(trainerId, clientId) : null;
+  
+  // Debug logging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Messages Debug:', {
+      isTrainer,
+      userRole,
+      loggedInUser,
+      clientFromState: client,
+      clientIdFromUrl,
+      trainerIdFromUrl,
+      finalTrainerId: trainerId,
+      finalClientId: clientId,
+      currentUserId,
+      chatId,
+    });
+  }
   
   // Redux state
   const messages = useSelector((state) => selectMessages(state, chatId));

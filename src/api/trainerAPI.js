@@ -57,6 +57,35 @@ export const registerClient = async (userData) => {
   return data;
 };
 
+/**
+ * Get Client Dashboard Data (for trainers viewing a specific client)
+ * API Path: api/Trainer/GetClientDashboard/{clientId} or api/Client/GetDashboard?clientId={clientId}
+ * @param {string|number} clientId - Client identifier
+ * @returns {Promise<Object>} Client dashboard data
+ */
+export const getClientDashboardByTrainer = async (clientId) => {
+  if (!clientId) {
+    throw new Error("Client ID is required");
+  }
+  
+  try {
+    // Try trainer endpoint first (most likely pattern)
+    const { data } = await axiosInstance.get(`api/Trainer/GetClientDashboard/${clientId}`);
+    return data;
+  } catch (error) {
+    // If that fails, try client endpoint with clientId as query parameter
+    try {
+      const { data } = await axiosInstance.get("api/Client/GetDashboard", {
+        params: { clientId },
+      });
+      return data;
+    } catch (err) {
+      // If both fail, throw the original error
+      throw error;
+    }
+  }
+};
+
 // ============================================
 // Meal Plan Management
 // ============================================

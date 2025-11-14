@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { FaTrash, FaSave, FaCalendar, FaPlus } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
@@ -28,10 +28,30 @@ export default function AdjustPlan() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const client = location.state?.client;
+  const params = useParams();
+  
+  // Get clientId from URL params (primary) or location state (fallback)
+  const clientIdFromUrl = params?.clientId;
+  const clientFromState = location.state?.client;
+  const clientId = clientIdFromUrl || clientFromState?.clientId;
+  
+  // Create client object if we only have clientId
+  const client = clientFromState || (clientId ? { clientId } : null);
   const isView = location.state?.isView;
   const initialDate = location.state?.initialDate;
   const toast = useRef(null);
+  
+  // Debug logging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('AdjustPlan Debug:', {
+      clientIdFromUrl,
+      clientFromState,
+      finalClientId: clientId,
+      client,
+      params,
+      locationState: location.state,
+    });
+  }
 
   const [meals, setMeals] = useState([]);
   const [assignedDate, setAssignedDate] = useState(
@@ -65,7 +85,7 @@ export default function AdjustPlan() {
   };
 
   useEffect(() => {
-    if (!client?.clientId) {
+    if (!clientId) {
       showToast("error", "Error", "No client selected. Redirecting...");
       setTimeout(() => navigate(-1), 2000);
       return;
@@ -73,14 +93,14 @@ export default function AdjustPlan() {
     if (assignedDate) {
       fetchMealPlan();
     }
-  }, [client?.clientId, assignedDate]);
+  }, [clientId, assignedDate]);
 
   const fetchMealPlan = async () => {
     setIsLoading(true);
     try {
       const data = await dispatch(
         getMealPlanThunk({
-          clientId: client.clientId,
+          clientId: clientId,
           date: assignedDate,
         })
       ).unwrap();
@@ -145,7 +165,7 @@ export default function AdjustPlan() {
         await dispatch(
           deleteMealsThunk({
             mealIds: [meal.id],
-            clientId: client.clientId,
+            clientId: clientId,
             date: assignedDate,
           })
         ).unwrap();
@@ -212,7 +232,7 @@ export default function AdjustPlan() {
     try {
       await dispatch(
         createOrUpdateMealPlanThunk({
-          clientId: client.clientId,
+          clientId: clientId,
           date: assignedDate,
           meals: meals,
         })

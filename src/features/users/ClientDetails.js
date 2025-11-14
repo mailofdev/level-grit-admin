@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getClientDashboardThunk } from "../client/clientThunks";
 import {
@@ -20,23 +20,41 @@ import Heading from "../../components/navigation/Heading";
 export default function ClientDetails() {
   const navigate = useNavigate();
   const location = useLocation();
+  const params = useParams();
   const dispatch = useDispatch();
 
-  // Get client from location state
+  // Get clientId from URL params (primary) or location state (fallback)
+  const clientIdFromUrl = params?.clientId;
   const clientFromState = location.state?.client ? { ...location.state.client } : null;
+  const clientId = clientIdFromUrl || clientFromState?.clientId;
   
   // Redux state for client dashboard
 const dashboard = useSelector(selectDashboard);
 const loading = useSelector(selectClientLoading);
 const error = useSelector(selectClientError);
 
+  // Debug logging (remove in production)
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('ClientDetails Debug:', {
+        clientIdFromUrl,
+        clientFromState,
+        finalClientId: clientId,
+        params,
+        locationState: location.state,
+      });
+    }
+  }, [clientIdFromUrl, clientFromState, clientId, params, location.state]);
 
   // Fetch client dashboard data when component mounts or clientId changes
 useEffect(() => {
-  if (clientFromState?.clientId) {
-    dispatch(getClientDashboardThunk(clientFromState.clientId));
+  if (clientId) {
+    console.log('Fetching dashboard for clientId:', clientId);
+    dispatch(getClientDashboardThunk(clientId));
+  } else {
+    console.warn('No clientId available to fetch dashboard');
   }
-}, [clientFromState?.clientId, dispatch]);
+}, [clientId, dispatch]);
 
 
   // Parse macro strings from "consumed/target" format
@@ -56,7 +74,7 @@ useEffect(() => {
   // Prepare client data from API response
   const clientData = dashboard
     ? {
-        clientId: dashboard.clientId,
+        clientId: dashboard.clientId || clientId,
         trainerId: dashboard.trainerId,
         clientName: dashboard.clientName,
         fullName: dashboard.clientName,
@@ -68,7 +86,7 @@ useEffect(() => {
             ? `${dashboard.currentStreakDays} days`
             : "Missed meal",
       }
-    : clientFromState; // Fallback to client from location state
+    : clientFromState || (clientId ? { clientId } : null); // Fallback to client from location state or URL param
 
   // Prepare dashboard data from API response
   const dashboardData = dashboard
@@ -157,7 +175,7 @@ useEffect(() => {
           <p>{error}</p>
           <button 
             className="btn btn-primary" 
-            onClick={() => dispatch(getClientDashboardThunk(clientFromState?.clientId))}
+            onClick={() => dispatch(getClientDashboardThunk(clientId))}
           >
             Retry
           </button>
