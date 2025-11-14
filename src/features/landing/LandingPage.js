@@ -90,6 +90,8 @@ const LandingPage = () => {
   const handleSignInNavigation = () => navigate("/login");
   const handleSignUpNavigation = () => navigate("/register");
   const handleClientLogin = () => navigate("/login");
+  const handleTrainerLogin = () => navigate("/login");
+  const handleTrainerSignUp = () => navigate("/register");
 
   // Animation variants
   const fadeInUp = {
@@ -110,20 +112,22 @@ const LandingPage = () => {
 
   return (
     <div className="min-vh-100" style={{ backgroundColor: "#ffffff" }}>
-      {/* Header/Navigation Bar */}
+      {/* Header/Navigation Bar - Role-Based Design */}
       <nav
         className="navbar navbar-expand-lg navbar-light shadow-sm py-3 fixed-top"
         style={{
           backgroundColor: "rgba(255, 255, 255, 0.98)",
           backdropFilter: "blur(10px)",
           zIndex: 1000,
+          borderBottom: "1px solid rgba(0,0,0,0.05)",
         }}
       >
         <div className="container">
+          {/* Logo */}
           <Link
-            className="navbar-brand fw-bold"
+            className="navbar-brand fw-bold d-flex align-items-center"
             to="/"
-            style={{ fontSize: "1.5rem", color: "#000000" }}
+            style={{ fontSize: "1.5rem", color: "#000000", textDecoration: "none" }}
           >
             <img
               src={logo3}
@@ -134,18 +138,27 @@ const LandingPage = () => {
                 borderRadius: "8px",
               }}
             />
+            <span className="d-none d-sm-inline">LevelGrit</span>
           </Link>
+
+          {/* Mobile Menu Toggle */}
           <button
             className="navbar-toggler border-0"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
             style={{ minHeight: "44px", minWidth: "44px" }}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+
+          {/* Navigation Content */}
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto align-items-center">
+            {/* General Links */}
+            <ul className="navbar-nav me-auto align-items-center mb-3 mb-lg-0">
               <li className="nav-item">
                 <Link
                   className="nav-link"
@@ -155,6 +168,8 @@ const LandingPage = () => {
                     minHeight: "44px",
                     display: "flex",
                     alignItems: "center",
+                    fontWeight: "500",
+                    padding: "0.5rem 1rem",
                   }}
                 >
                   Home
@@ -169,9 +184,11 @@ const LandingPage = () => {
                     minHeight: "44px",
                     display: "flex",
                     alignItems: "center",
+                    fontWeight: "500",
+                    padding: "0.5rem 1rem",
                   }}
                 >
-                  About Us
+                  About
                 </Link>
               </li>
               <li className="nav-item">
@@ -183,37 +200,151 @@ const LandingPage = () => {
                     minHeight: "44px",
                     display: "flex",
                     alignItems: "center",
+                    fontWeight: "500",
+                    padding: "0.5rem 1rem",
                   }}
                 >
-                  Contact Us
+                  Contact
                 </Link>
               </li>
-              <li className="nav-item ms-2">
-                <button
-                  className="btn rounded-pill px-4 fw-semibold me-2"
-                  onClick={handleSignInNavigation}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#222222",
-                    border: "2px solid #222222",
-                  }}
-                >
-                  Login
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
-                  className="btn rounded-pill px-4 fw-semibold"
-                  onClick={handleSignUpNavigation}
-                  style={{
-                    backgroundColor: "#222222",
-                    color: "#fff",
-                  }}
-                >
-                  Sign Up
-                </button>
-              </li>
             </ul>
+
+            {/* Role-Based Action Buttons */}
+            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-3 ms-lg-auto">
+              {/* Client Section - Clear Visual Grouping */}
+              <div 
+                className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3"
+                style={{
+                  backgroundColor: "rgba(67, 233, 123, 0.05)",
+                  border: "1px solid rgba(67, 233, 123, 0.2)",
+                }}
+              >
+                <div className="d-flex align-items-center gap-2 mb-2 mb-lg-0">
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center"
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      backgroundColor: "#43e97b",
+                      color: "#fff",
+                    }}
+                  >
+                    <FaUser size={14} />
+                  </div>
+                  <div className="d-flex flex-column">
+                    <small className="fw-bold" style={{ fontSize: "0.7rem", color: "#43e97b", lineHeight: "1" }}>
+                      FOR CLIENTS
+                    </small>
+                    <small className="text-muted d-none d-xl-inline" style={{ fontSize: "0.65rem" }}>
+                      Join the challenge
+                    </small>
+                  </div>
+                </div>
+                <motion.button
+                  className="btn rounded-pill px-4 fw-semibold"
+                  onClick={handleClientLogin}
+                  style={{
+                    backgroundColor: "#43e97b",
+                    color: "#fff",
+                    border: "none",
+                    minHeight: "44px",
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 2px 8px rgba(67, 233, 123, 0.3)",
+                    fontSize: "0.9rem",
+                  }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(67, 233, 123, 0.4)" }}
+                  whileTap={{ scale: 0.98 }}
+                  title="Login as a Client to track your meals and join the 32-day challenge"
+                >
+                  <FaUser className="d-lg-none me-2" size={14} />
+                  Client Login
+                </motion.button>
+              </div>
+
+              {/* Visual Divider */}
+              <div 
+                className="d-none d-lg-flex align-items-center"
+                style={{
+                  width: "1px",
+                  height: "50px",
+                  backgroundColor: "rgba(0,0,0,0.1)",
+                }}
+              />
+
+              {/* Trainer Section - Clear Visual Grouping */}
+              <div 
+                className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3"
+                style={{
+                  backgroundColor: "rgba(102, 126, 234, 0.05)",
+                  border: "1px solid rgba(102, 126, 234, 0.2)",
+                }}
+              >
+                <div className="d-flex align-items-center gap-2 mb-2 mb-lg-0">
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center"
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      backgroundColor: "#667eea",
+                      color: "#fff",
+                    }}
+                  >
+                    <FaDumbbell size={14} />
+                  </div>
+                  <div className="d-flex flex-column">
+                    <small className="fw-bold" style={{ fontSize: "0.7rem", color: "#667eea", lineHeight: "1" }}>
+                      FOR TRAINERS
+                    </small>
+                    <small className="text-muted d-none d-xl-inline" style={{ fontSize: "0.65rem" }}>
+                      Start coaching smarter
+                    </small>
+                  </div>
+                </div>
+                <div className="d-flex gap-2">
+                  <motion.button
+                    className="btn rounded-pill px-3 px-md-4 fw-semibold"
+                    onClick={handleTrainerLogin}
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "#667eea",
+                      border: "2px solid #667eea",
+                      minHeight: "44px",
+                      whiteSpace: "nowrap",
+                      fontSize: "0.9rem",
+                    }}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      backgroundColor: "#667eea",
+                      color: "#fff",
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    title="Login as a Trainer to manage your clients"
+                  >
+                    <FaDumbbell className="d-lg-none me-2" size={14} />
+                    Login
+                  </motion.button>
+                  <motion.button
+                    className="btn rounded-pill px-3 px-md-4 fw-semibold"
+                    onClick={handleTrainerSignUp}
+                    style={{
+                      backgroundColor: "#667eea",
+                      color: "#fff",
+                      border: "none",
+                      minHeight: "44px",
+                      whiteSpace: "nowrap",
+                      boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
+                      fontSize: "0.9rem",
+                    }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)" }}
+                    whileTap={{ scale: 0.98 }}
+                    title="Sign up as a Trainer to start coaching clients"
+                  >
+                    <FaDumbbell className="d-lg-none me-2" size={14} />
+                    Sign Up
+                  </motion.button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </nav>

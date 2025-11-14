@@ -1,59 +1,68 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaStar, FaQuoteLeft } from 'react-icons/fa';
+import { FaStar, FaQuoteLeft, FaDumbbell, FaUsers } from 'react-icons/fa';
 import Animated3DCard from '../../components/landing/Animated3DCard';
 import Heading from '../../components/navigation/Heading';
 
 const Testimonials = () => {
-  const testimonials = [
+  const clientTestimonials = [
     {
       name: 'Rupali Arora',
-      role: 'Weight Loss Success',
-      quote: 'LevelGrit transformed my lifestyle completely. I lost 25kg in 8 months with the guidance of my amazing coach. The personalized meal plans and workout routines were perfect for my busy schedule. I never thought I could achieve this, but LevelGrit made it possible!',
+      role: '32-Day Challenge Success',
+      quote: 'The 32-Day Challenge changed everything! I lost 8kg and built habits that stuck. Snapping meal photos was so easy, and my trainer could see my progress in real-time. The AI analysis made tracking effortless!',
       rating: 5,
       img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&q=80'
+      beforeAfter: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&q=80',
+      type: 'client'
     },
     {
       name: 'Sanjana Sharma',
-      role: 'Muscle Gain Achievement',
-      quote: 'My coach is absolutely incredible! The support and guidance I received was unmatched. I gained 12kg of lean muscle mass in just 6 months. The progress tracking feature helped me stay motivated throughout my journey.',
+      role: 'Meal Tracking Enthusiast',
+      quote: 'I love how simple it is! Just snap a photo of my meal and the AI does all the work. My trainer can see everything instantly and gives me feedback right away. It\'s like having a coach in my pocket!',
       rating: 5,
       img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&q=80'
+      beforeAfter: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&q=80',
+      type: 'client'
     },
     {
       name: 'Mohit Kumar',
-      role: 'Fitness Transformation',
-      quote: 'The best investment I\'ve made in my health. The app makes it so easy to stay on track with meal logging and workout reminders. My coach was always available to answer questions and adjust my plan when needed.',
+      role: 'Progress Tracker',
+      quote: 'The visual progress tracking is amazing! I can see my transformation over time, and sharing it with my trainer keeps me accountable. The 32-Day Challenge structure made it so easy to stay consistent.',
       rating: 5,
       img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop&q=80'
+      beforeAfter: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop&q=80',
+      type: 'client'
+    }
+  ];
+
+  const trainerTestimonials = [
+    {
+      name: 'Rajesh Kumar',
+      role: 'Fitness Coach',
+      quote: 'LevelGrit transformed how I manage clients! No more WhatsApp check-ins or manual tracking. The AI analyzes meal photos automatically, and I get real-time insights on my dashboard. I can now handle 3x more clients efficiently!',
+      rating: 5,
+      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop&q=80',
+      beforeAfter: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&h=300&fit=crop&q=80',
+      type: 'trainer'
     },
     {
-      name: 'Priya Patel',
-      role: 'Diabetes Management',
-      quote: 'As someone managing diabetes, I was skeptical about online coaching. But LevelGrit proved me wrong. My coach worked with my doctor to create a plan that helped me lose weight and improve my blood sugar levels significantly.',
+      name: 'Priya Sharma',
+      role: 'Nutrition Coach',
+      quote: 'The AI meal photo analysis is a game-changer! Clients just snap photos, and I instantly see their macros and progress. The automated tracking saves me hours every week, and clients love how easy it is.',
       rating: 5,
       img: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&q=80'
+      beforeAfter: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&q=80',
+      type: 'trainer'
     },
     {
-      name: 'Rajesh Singh',
-      role: 'Post-Injury Recovery',
-      quote: 'After my knee injury, I thought my fitness journey was over. But my LevelGrit coach designed a rehabilitation program that got me back to running in just 4 months. The injury rehabilitation service is top-notch!',
+      name: 'Amit Patel',
+      role: 'Personal Trainer',
+      quote: 'Best coaching platform I\'ve used! The centralized dashboard shows all my clients\' progress at a glance. Meal plan management is seamless, and the communication tools keep everything organized. Highly recommend!',
       rating: 5,
       img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&h=300&fit=crop&q=80'
-    },
-    {
-      name: 'Anjali Verma',
-      role: 'Pregnancy Fitness',
-      quote: 'LevelGrit helped me stay active and healthy during my pregnancy. My coach modified my workouts throughout all three trimesters, and I felt stronger and more energetic than ever. Highly recommend for expecting mothers!',
-      rating: 5,
-      img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=400&fit=crop&q=80',
-      beforeAfter: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&q=80'
+      beforeAfter: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop&q=80',
+      type: 'trainer'
     }
   ];
 
@@ -69,15 +78,25 @@ const Testimonials = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <h1 className="display-4 fw-bold mb-3" style={{ color: '#333' }}>
-            Client <span style={{ color: '#4CAF50' }}>Testimonials</span>
+            Success <span style={{ color: '#667eea' }}>Stories</span>
           </h1>
           <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
-            Hear what our clients have to say about their transformation journey with LevelGrit
+            Hear from Trainers and Clients about how LevelGrit is transforming fitness coaching and accountability
           </p>
         </motion.div>
 
-        <div className="row g-4 mb-5">
-            {testimonials.map((testimonial, idx) => (
+        {/* Client Testimonials */}
+        <motion.div
+          className="mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#43e97b' }}>
+            Client Success Stories
+          </h2>
+          <div className="row g-4 mb-5">
+            {clientTestimonials.map((testimonial, idx) => (
               <div key={idx} className="col-md-6 col-lg-4">
                 <Animated3DCard delay={idx * 0.1}>
                 <div className="card border-0 shadow-lg h-100" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
@@ -126,7 +145,71 @@ const Testimonials = () => {
                 </Animated3DCard>
               </div>
             ))}
-        </div>
+          </div>
+        </motion.div>
+
+        {/* Trainer Testimonials */}
+        <motion.div
+          className="mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#667eea' }}>
+            Trainer Success Stories
+          </h2>
+          <div className="row g-4 mb-5">
+            {trainerTestimonials.map((testimonial, idx) => (
+              <div key={idx} className="col-md-6 col-lg-4">
+                <Animated3DCard delay={idx * 0.1}>
+                <div className="card border-0 shadow-lg h-100" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
+                  <div className="position-relative">
+                    <img 
+                      src={testimonial.img} 
+                      alt={testimonial.name} 
+                      style={{ width: '100%', height: '250px', objectFit: 'cover' }}
+                    />
+                    <div 
+                      className="position-absolute top-0 start-0 w-100 h-100"
+                      style={{ 
+                        background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%)',
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        padding: '20px'
+                      }}
+                    >
+                      <div>
+                        <h5 className="text-white fw-bold mb-1">{testimonial.name}</h5>
+                        <small className="text-white-50">{testimonial.role}</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-body p-4">
+                    <div className="mb-3">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <FaStar key={i} className="text-warning" size={16} />
+                      ))}
+                    </div>
+                    <FaQuoteLeft className="text-muted mb-2" size={24} />
+                    <p className="text-muted mb-0" style={{ lineHeight: '1.6', fontStyle: 'italic' }}>
+                      "{testimonial.quote}"
+                    </p>
+                  </div>
+                  <div className="card-footer bg-transparent border-0 p-4 pt-0">
+                    <img 
+                      src={testimonial.beforeAfter} 
+                      alt="Success Story" 
+                      className="img-fluid rounded"
+                      style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+                    />
+                    <small className="text-muted d-block text-center mt-2">Platform Impact</small>
+                  </div>
+                  </div>
+                </Animated3DCard>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Stats Section */}
         <motion.section 
@@ -170,19 +253,38 @@ const Testimonials = () => {
         {/* CTA */}
         <motion.section 
           className="text-center py-5"
-          style={{ backgroundColor: '#4CAF50', color: '#fff', borderRadius: '1rem' }}
+          style={{ 
+            background: 'linear-gradient(135deg, #667eea 0%, #43e97b 100%)', 
+            color: '#fff', 
+            borderRadius: '1rem' 
+          }}
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
         >
           <div className="container">
             <h2 className="fw-bold mb-3">Ready to Write Your Success Story?</h2>
-            <p className="mb-4" style={{ fontSize: '1.1rem' }}>
-              Join thousands of clients who have transformed their lives with LevelGrit
+            <p className="mb-4" style={{ fontSize: '1.1rem', opacity: 0.95 }}>
+              Join thousands of Trainers and Clients transforming fitness through AI-powered coaching
             </p>
-            <Link to="/register" className="btn btn-light btn-lg rounded-pill px-5 py-3">
-              Start Your Journey Today
-            </Link>
+            <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
+              <Link 
+                to="/register" 
+                className="btn btn-light btn-lg rounded-pill px-5 py-3"
+                style={{ fontWeight: '600', backgroundColor: '#fff', color: '#667eea', border: 'none' }}
+              >
+                <FaDumbbell className="me-2" />
+                For Trainers
+              </Link>
+              <Link 
+                to="/login" 
+                className="btn btn-light btn-lg rounded-pill px-5 py-3"
+                style={{ fontWeight: '600', backgroundColor: '#fff', color: '#43e97b', border: 'none' }}
+              >
+                <FaUsers className="me-2" />
+                For Clients
+              </Link>
+            </div>
           </div>
         </motion.section>
           </div>

@@ -46,8 +46,9 @@ const AboutUs = () => {
                 About <span style={{ color: '#007AFF' }}>Level Grit</span>
               </h1>
               <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.2rem', lineHeight: '1.8' }}>
-                At Level Grit, we're building more than just a fitness app — we're creating a community 
-                where fitness enthusiasts and coaches connect, collaborate, and grow together.
+                LevelGrit is an AI-powered fitness platform that connects Trainers and Clients through 
+                smart meal tracking, real-time progress monitoring, and seamless communication. 
+                We're making fitness coaching effortless for trainers and accountability fun for clients.
               </p>
             </motion.div>
 
@@ -80,10 +81,14 @@ const AboutUs = () => {
               </div>
             </motion.section>
 
-            {/* For Fitness Coaches Section */}
+            {/* For Trainers Section */}
             <motion.section 
               className="mb-5 py-5"
-              style={{ backgroundColor: '#f8f9fa', borderRadius: '1rem' }}
+              style={{ 
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '1rem',
+                color: '#fff'
+              }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -98,38 +103,50 @@ const AboutUs = () => {
                         style={{ 
                           width: '60px', 
                           height: '60px', 
-                          backgroundColor: '#007AFF',
-                          color: '#fff'
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: '#fff',
+                          backdropFilter: 'blur(10px)'
                         }}
                       >
                         <FaDumbbell size={28} />
                       </div>
-                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: '#333' }}>
-                        For Fitness Coaches
+                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: '#fff' }}>
+                        For Trainers
                       </h2>
                     </div>
-                    <p className="text-muted" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-                      Coaches get a smarter way to manage and motivate clients — using AI to track meal 
-                      pictures, monitor progress, and ensure every client stays on top of their goals. 
-                      No more manual check-ins or endless spreadsheets — just real, visual insights into 
-                      your clients' routines.
+                    <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'rgba(255,255,255,0.95)' }}>
+                      Still tracking clients over WhatsApp or calls? Time to make this fun, automated, and less painful. 
+                      With our AI-powered platform, your clients just snap a photo of their meal — and you get real-time 
+                      progress on your dashboard. No more manual check-ins or endless spreadsheets — just real, visual 
+                      insights into your clients' routines.
                     </p>
+                    <ul className="list-unstyled" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                      <li className="mb-2">✓ AI-powered meal photo analysis</li>
+                      <li className="mb-2">✓ Real-time progress tracking dashboard</li>
+                      <li className="mb-2">✓ Automated macro calculations</li>
+                      <li className="mb-2">✓ Seamless client communication</li>
+                    </ul>
                   </div>
                   <div className="col-lg-6">
                     <img 
                       src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&q=80" 
-                      alt="Fitness Coaches" 
-                      className="img-fluid rounded-4 shadow"
-                      style={{ width: '100%', objectFit: 'cover' }}
+                      alt="For Trainers" 
+                      className="img-fluid rounded-4 shadow-lg"
+                      style={{ width: '100%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.3)' }}
                     />
                   </div>
                 </div>
               </div>
             </motion.section>
 
-            {/* For Fitness Enthusiasts Section */}
+            {/* For Clients Section */}
             <motion.section 
               className="mb-5 py-5"
+              style={{ 
+                background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                borderRadius: '1rem',
+                color: '#fff'
+              }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -144,28 +161,35 @@ const AboutUs = () => {
                         style={{ 
                           width: '60px', 
                           height: '60px', 
-                          backgroundColor: '#FF6B35',
-                          color: '#fff'
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: '#fff',
+                          backdropFilter: 'blur(10px)'
                         }}
                       >
                         <FaUsers size={28} />
                       </div>
-                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: '#333' }}>
-                        For Fitness Enthusiasts
+                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: '#fff' }}>
+                        For Clients
                       </h2>
                     </div>
-                    <p className="text-muted" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-                      Clients get to work closely with their coaches and community by sharing daily meals, 
-                      workouts, and progress updates. Every picture, every check-in, every milestone fuels 
-                      accountability — and turns consistency into a lifestyle.
+                    <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'rgba(255,255,255,0.95)' }}>
+                      Join the 32-Day Challenge and make fitness fun again! Snap photos of your meals, track your progress, 
+                      and share your journey with your trainer and community. Every picture, every check-in, every milestone 
+                      fuels accountability — and turns consistency into a lifestyle.
                     </p>
+                    <ul className="list-unstyled" style={{ color: 'rgba(255,255,255,0.95)' }}>
+                      <li className="mb-2">✓ 32-Day Fitness Challenge</li>
+                      <li className="mb-2">✓ Easy meal photo tracking</li>
+                      <li className="mb-2">✓ Real-time progress sharing</li>
+                      <li className="mb-2">✓ Direct communication with your trainer</li>
+                    </ul>
                   </div>
                   <div className="col-lg-6 order-lg-1">
                     <img 
                       src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&q=80" 
-                      alt="Fitness Enthusiasts" 
-                      className="img-fluid rounded-4 shadow"
-                      style={{ width: '100%', objectFit: 'cover' }}
+                      alt="For Clients" 
+                      className="img-fluid rounded-4 shadow-lg"
+                      style={{ width: '100%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.3)' }}
                     />
                   </div>
                 </div>
@@ -201,12 +225,13 @@ const AboutUs = () => {
                       </h2>
                     </div>
                     <p className="text-muted mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-                      We're redefining what fitness tracking means making it social, human, and intelligent. 
-                      Here, progress isn't lonely. It's shared, celebrated, and supported.
+                      We're redefining what fitness tracking means — making it social, human, and intelligent. 
+                      Here, progress isn't lonely. It's shared, celebrated, and supported through AI-powered 
+                      technology that makes coaching effortless and accountability fun.
                     </p>
                     <p className="text-muted mb-0" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-                      Join us in building a world where fitness meets accountability, and where every 
-                      enthusiast and coach can thrive together.
+                      Join thousands of trainers and clients who are transforming fitness coaching through 
+                      smart technology, real-time tracking, and seamless communication.
                     </p>
                   </div>
                 </div>
@@ -273,15 +298,26 @@ const AboutUs = () => {
               <div className="container">
                 <h2 className="fw-bold mb-3">Ready to Start Your Journey?</h2>
                 <p className="mb-4" style={{ fontSize: '1.1rem', opacity: 0.95 }}>
-                  Join thousands of people who are transforming their lives with Level Grit
+                  Whether you're a Trainer looking to coach smarter or a Client ready to join the 32-Day Challenge
                 </p>
-                <Link 
-                  to="/register" 
-                  className="btn btn-light btn-lg rounded-pill px-5 py-3"
-                  style={{ fontWeight: '600' }}
-                >
-                  Get Started Today
-                </Link>
+                <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                  <Link 
+                    to="/register" 
+                    className="btn btn-light btn-lg rounded-pill px-5 py-3"
+                    style={{ fontWeight: '600', backgroundColor: '#667eea', color: '#fff', border: 'none' }}
+                  >
+                    <FaDumbbell className="me-2" />
+                    For Trainers
+                  </Link>
+                  <Link 
+                    to="/login" 
+                    className="btn btn-light btn-lg rounded-pill px-5 py-3"
+                    style={{ fontWeight: '600', backgroundColor: '#43e97b', color: '#fff', border: 'none' }}
+                  >
+                    <FaUsers className="me-2" />
+                    For Clients
+                  </Link>
+                </div>
               </div>
             </motion.section>
           </div>

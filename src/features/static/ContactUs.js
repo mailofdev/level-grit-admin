@@ -152,22 +152,20 @@ const ContactUs = () => {
                           <Col md={6}>
                             <Form.Group>
                               <Form.Label className="fw-semibold">
-                                <i className="fas fa-dumbbell text-primary me-2"></i>
-                                Trainer Type
+                                <i className="fas fa-user-tag text-primary me-2"></i>
+                                I am a...
                               </Form.Label>
                               <Form.Select
                                 name="trainerType"
                                 value={formData.trainerType}
                                 onChange={handleChange}
                               >
-                                <option value="">Select your specialty</option>
-                                <option value="personal">
-                                  Personal Trainer
+                                <option value="">Select your role</option>
+                                <option value="trainer">
+                                  Trainer / Coach
                                 </option>
-                                <option value="nutrition">Nutritionist</option>
-                                <option value="strength">Strength Coach</option>
-                                <option value="cardio">Cardio Specialist</option>
-                                <option value="yoga">Yoga Instructor</option>
+                                <option value="client">Client</option>
+                                <option value="both">Both (Trainer & Client)</option>
                                 <option value="other">Other</option>
                               </Form.Select>
                             </Form.Group>
@@ -287,20 +285,20 @@ const ContactUs = () => {
                     <Row className="g-4">
                       {[
                         {
-                          q: "How do I get started?",
-                          a: "Sign up for an account, complete your trainer profile, and begin adding clients. Our onboarding will guide you step-by-step.",
+                          q: "How do Trainers get started?",
+                          a: "Sign up as a Trainer, complete your profile, and start inviting clients. Our AI-powered platform will help you track meal photos and monitor progress effortlessly.",
                         },
                         {
-                          q: "What payment methods do you accept?",
-                          a: "We accept major credit cards, PayPal, and bank transfers. Payments are securely processed.",
+                          q: "How do Clients join the 32-Day Challenge?",
+                          a: "Clients can log in with credentials provided by their trainer. Once logged in, you can start uploading meal photos and tracking your progress in the challenge.",
                         },
                         {
-                          q: "Is my client data secure?",
-                          a: "Yes, we use enterprise-grade encryption and comply with privacy laws to protect your data.",
+                          q: "Is my data secure?",
+                          a: "Yes, we use enterprise-grade encryption and comply with privacy laws to protect all trainer and client data.",
                         },
                         {
-                          q: "Can I cancel my subscription anytime?",
-                          a: "Yes, you can cancel anytime. You’ll retain access until the end of your billing period.",
+                          q: "How does the AI meal photo analysis work?",
+                          a: "Clients simply snap a photo of their meal. Our AI automatically analyzes the image, calculates macros, and updates your dashboard in real-time.",
                         },
                       ].map((faq, index) => (
                         <Col md={6} key={index}>

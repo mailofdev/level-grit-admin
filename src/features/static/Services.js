@@ -8,62 +8,65 @@ import Heading from '../../components/navigation/Heading';
 const Services = () => {
   const navigate = useNavigate();
   
-  const services = [
+  const trainerServices = [
     {
-      title: 'Fitness and Nutrition Coaching',
-      icon: FaStar,
-      gradient: 'linear-gradient(135deg, #FFE5B4 0%, #FFCC99 100%)',
-      color: '#FF9800',
-      features: [
-        'Personalized meal plans tailored to your goals',
-        'Custom workout routines designed for your fitness level',
-        'Regular progress reviews and plan adjustments',
-        'Macro and calorie tracking guidance',
-        '24/7 access to your coach through our platform'
-      ],
-      price: 'Starting at $99/month'
-    },
-    {
-      title: 'Online Personal Training',
+      title: 'AI-Powered Client Tracking',
       icon: FaDumbbell,
-      gradient: 'linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%)',
-      color: '#4CAF50',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: '#667eea',
       features: [
-        'Live workout sessions via video calls',
-        'Real-time form correction and feedback',
-        'Flexible scheduling to fit your life',
-        'Equipment-free and gym-based options',
-        'Progressive training programs'
+        'AI analyzes client meal photos automatically',
+        'Real-time macro calculations and progress tracking',
+        'Centralized dashboard for all clients',
+        'Automated progress reports and insights',
+        'Seamless client communication tools'
       ],
-      price: 'Starting at $149/month'
+      price: 'Free to Start'
     },
     {
-      title: 'Injury Rehabilitation',
-      icon: FaHeart,
-      gradient: 'linear-gradient(135deg, #FFCDD2 0%, #FFB3BA 100%)',
-      color: '#E91E63',
+      title: 'Smart Meal Plan Management',
+      icon: FaStar,
+      gradient: 'linear-gradient(135deg, #f5576c 0%, #f093fb 100%)',
+      color: '#f5576c',
       features: [
-        'Recovery-focused exercise plans',
-        'Physiotherapy-guided rehabilitation',
-        'Safe return-to-activity protocols',
-        'Pain management strategies',
-        'Collaboration with healthcare providers'
+        'Create and customize meal plans instantly',
+        'Track client adherence in real-time',
+        'Adjust plans based on AI insights',
+        'Meal plan preview and sharing',
+        'Nutrition database integration'
       ],
-      price: 'Starting at $129/month'
-    },
+      price: 'Included'
+    }
+  ];
+
+  const clientServices = [
     {
-      title: 'LevelGrit Kids',
+      title: '32-Day Fitness Challenge',
       icon: FaUsers,
-      gradient: 'linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%)',
-      color: '#9C27B0',
+      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      color: '#43e97b',
       features: [
-        'Age-appropriate fitness programs',
-        'Fun and engaging activities',
-        'Healthy habit building from an early age',
-        'Nutrition education for kids and parents',
-        'Safe and supervised workouts'
+        'Join the transformative 32-day journey',
+        'Snap meal photos - AI does the rest',
+        'Track progress with visual insights',
+        'Share achievements with your trainer',
+        'Build lasting healthy habits'
       ],
-      price: 'Starting at $79/month'
+      price: 'Free with Trainer'
+    },
+    {
+      title: 'Progress Sharing & Accountability',
+      icon: FaHeart,
+      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      color: '#4facfe',
+      features: [
+        'Share meal photos and progress updates',
+        'Real-time feedback from your trainer',
+        'Visual progress tracking',
+        'Community support and motivation',
+        'Direct messaging with your coach'
+      ],
+      price: 'Included'
     }
   ];
 
@@ -79,15 +82,26 @@ const Services = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <h1 className="display-4 fw-bold mb-3" style={{ color: '#333' }}>
-            Our <span style={{ color: '#4CAF50' }}>Services</span>
+            Our <span style={{ color: '#667eea' }}>Services</span>
           </h1>
           <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
-            Comprehensive fitness and nutrition solutions tailored to your unique needs and goals
+            AI-powered fitness solutions for Trainers and Clients — making coaching smarter and accountability fun
           </p>
         </motion.div>
 
-        <div className="row g-4 mb-5">
-          {services.map((service, idx) => (
+        {/* Trainer Services */}
+        <motion.div
+          className="mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#667eea' }}>
+            <FaDumbbell className="me-2" />
+            For Trainers
+          </h2>
+          <div className="row g-4 mb-5">
+            {trainerServices.map((service, idx) => (
             <div key={idx} className="col-lg-6">
               <Animated3DCard delay={idx * 0.1}>
                 <motion.div
@@ -114,7 +128,8 @@ const Services = () => {
                           {service.price}
                         </span>
                         <motion.button
-                          className="btn btn-dark rounded-pill px-4"
+                          className="btn rounded-pill px-4"
+                          style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => navigate('/register')}
@@ -128,7 +143,65 @@ const Services = () => {
               </Animated3DCard>
             </div>
           ))}
-        </div>
+          </div>
+        </motion.div>
+
+        {/* Client Services */}
+        <motion.div
+          className="mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#43e97b' }}>
+            <FaUsers className="me-2" />
+            For Clients
+          </h2>
+          <div className="row g-4 mb-5">
+            {clientServices.map((service, idx) => (
+              <div key={idx} className="col-lg-6">
+                <Animated3DCard delay={idx * 0.1}>
+                  <motion.div
+                    className="card border-0 shadow-lg h-100"
+                    style={{ borderRadius: '1rem', background: service.gradient }}
+                    whileHover={{ scale: 1.03 }}
+                  >
+                    <div className="card-body p-5">
+                      <div className="d-flex align-items-center mb-4">
+                        <service.icon size={40} className="me-3" style={{ color: service.color }} />
+                        <h3 className="fw-bold mb-0" style={{ color: '#333' }}>{service.title}</h3>
+                      </div>
+                      <ul className="list-unstyled mb-4">
+                        {service.features.map((feature, fIdx) => (
+                          <li key={fIdx} className="mb-3 d-flex align-items-start">
+                            <FaCheck className="text-success me-2 mt-1" />
+                            <span style={{ color: '#333' }}>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="border-top pt-4 mt-4">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span className="fw-bold" style={{ color: '#333', fontSize: '1.2rem' }}>
+                            {service.price}
+                          </span>
+                          <motion.button
+                            className="btn rounded-pill px-4"
+                            style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate('/login')}
+                          >
+                            Join Now <FaArrowRight className="ms-2" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </Animated3DCard>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Why Choose Us */}
         <motion.section 
@@ -144,12 +217,12 @@ const Services = () => {
             </h2>
             <div className="row g-4">
               {[
-                { title: 'Expert Coaches', desc: 'All our coaches are certified professionals with years of experience' },
-                { title: 'Proven Results', desc: 'Thousands of success stories from clients who achieved their goals' },
-                { title: 'Flexible Plans', desc: 'Customizable programs that adapt to your lifestyle and schedule' },
-                { title: '24/7 Support', desc: 'Round-the-clock access to your coach and platform resources' },
-                { title: 'PWA Technology', desc: 'No app download needed - access everything through your browser' },
-                { title: 'Affordable Pricing', desc: 'Premium coaching at prices that work for everyone' }
+                { title: 'AI-Powered Tracking', desc: 'Automated meal photo analysis and macro calculations for trainers and clients' },
+                { title: 'Real-Time Progress', desc: 'Instant updates and insights on your dashboard - no manual tracking needed' },
+                { title: '32-Day Challenge', desc: 'Proven program that helps clients build lasting healthy habits' },
+                { title: 'Seamless Communication', desc: 'Direct messaging between trainers and clients built into the platform' },
+                { title: 'PWA Technology', desc: 'No app download needed - access everything through your browser, works offline' },
+                { title: 'Free to Start', desc: 'Trainers can start coaching smarter for free - no upfront costs' }
               ].map((benefit, idx) => (
                 <motion.div 
                   key={idx}
@@ -160,7 +233,7 @@ const Services = () => {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <div className="card border-0 shadow-sm h-100 p-4 text-center" style={{ borderRadius: '1rem' }}>
-                    <h5 className="fw-bold mb-3" style={{ color: '#4CAF50' }}>{benefit.title}</h5>
+                    <h5 className="fw-bold mb-3" style={{ color: '#667eea' }}>{benefit.title}</h5>
                     <p className="text-muted mb-0">{benefit.desc}</p>
                   </div>
                 </motion.div>
@@ -177,12 +250,19 @@ const Services = () => {
           viewport={{ once: true }}
         >
           <h3 className="fw-bold mb-3" style={{ fontSize: '2rem', color: '#333' }}>
-            Ready to Transform Your Life?
+            Ready to Transform Your Fitness Journey?
           </h3>
-          <p className="text-muted mb-4">Choose the service that's right for you and get started today</p>
-          <Link to="/register" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#4CAF50', color: '#fff' }}>
-            Start Your Journey
-          </Link>
+          <p className="text-muted mb-4">Whether you're a Trainer or Client, we have the perfect solution for you</p>
+          <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
+            <Link to="/register" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#667eea', color: '#fff', border: 'none' }}>
+              <FaDumbbell className="me-2" />
+              For Trainers
+            </Link>
+            <Link to="/login" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#43e97b', color: '#fff', border: 'none' }}>
+              <FaUsers className="me-2" />
+              For Clients
+            </Link>
+          </div>
         </motion.section>
           </div>
         </div>
