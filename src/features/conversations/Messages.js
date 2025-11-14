@@ -90,9 +90,62 @@ export default function Messages({ isTrainer = false }) {
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [trainerInfo, setTrainerInfo] = useState(null);
   const messagesEndRef = useRef(null);
   const unsubscribeRef = useRef(null);
   
+  // Fetch trainer info for client view
+  useEffect(() => {
+    // Only fetch if it's a client view and we don't have trainer info
+    if ((!isTrainer && userRole !== ROLES.TRAINER) && trainerId && !trainer?.fullName && !trainer?.name) {
+      const fetchTrainerInfo = async () => {
+        try {
+          // Try to get trainer info from API
+          const axiosInstance = (await import("../../api/axiosInstance")).default;
+          const response = await axiosInstance.get(`api/Client/GetTrainer/${clientId || currentUserId}`);
+          if (response?.data) {
+            setTrainerInfo({
+              fullName: response.data.fullName || response.data.name,
+              name: response.data.name || response.data.fullName,
+              trainerId: response.data.trainerId || trainerId,
+            });
+          }
+        } catch (error) {
+          console.warn("Could not fetch trainer info from API, trying alternative method:", error);
+          // Fallback: Try to get from user's stored data
+          try {
+            const { getTrainerForClient } = await import("../client/clientMessageService");
+            const trainerData = await getTrainerForClient(clientId || currentUserId);
+            if (trainerData) {
+              setTrainerInfo({
+                fullName: trainerData.fullName || trainerData.name,
+                name: trainerData.name || trainerData.fullName,
+                trainerId: trainerData.trainerId || trainerId,
+              });
+            }
+          } catch (fallbackError) {
+            console.warn("Could not fetch trainer info:", fallbackError);
+            // Set a default name with trainerId
+            setTrainerInfo({
+              fullName: `Trainer ${trainerId?.substring(0, 8) || ""}`,
+              name: `Trainer ${trainerId?.substring(0, 8) || ""}`,
+              trainerId: trainerId,
+            });
+          }
+        }
+      };
+      
+      fetchTrainerInfo();
+    } else if (trainer?.fullName || trainer?.name) {
+      // If trainer info is already in location state, use it
+      setTrainerInfo({
+        fullName: trainer.fullName || trainer.name,
+        name: trainer.name || trainer.fullName,
+        trainerId: trainer.trainerId || trainer.userId || trainer.id || trainerId,
+      });
+    }
+  }, [isTrainer, userRole, trainerId, clientId, currentUserId, trainer]);
+
   // Set active conversation
   useEffect(() => {
     if (chatId && trainerId && clientId) {
@@ -184,10 +237,10 @@ export default function Messages({ isTrainer = false }) {
     setShowEmojiPicker(false);
   }, []);
   
-  // Get chat name
+  // Get chat name - use trainerInfo if available (for client view)
   const chatName = isTrainer || userRole === ROLES.TRAINER
     ? `Chat with ${client?.fullName || client?.name || "Client"}`
-    : `Chat with ${trainer?.fullName || trainer?.name || "Trainer"}`;
+    : `Chat with ${trainerInfo?.fullName || trainerInfo?.name || trainer?.fullName || trainer?.name || "Trainer"}`;
   
   // Loading state
   if (loading && messages.length === 0) {
