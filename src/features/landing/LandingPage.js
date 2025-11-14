@@ -26,7 +26,7 @@ import {
 } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Animated3DCard from "../../components/landing/Animated3DCard";
 import logo3 from "../../assets/images/logo3.jpeg";
 
@@ -35,6 +35,8 @@ const LandingPage = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
   const [activeTab, setActiveTab] = useState("trainer");
+  const [isScrolled, setIsScrolled] = useState(false);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const handler = (e) => {
@@ -52,6 +54,25 @@ const LandingPage = () => {
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
+
+  // Handle scroll for tab styling
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to top when tab changes
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    // Smooth scroll to top
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
@@ -197,76 +218,129 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Tab Switcher */}
+      {/* Tab Switcher - Sticky below navbar */}
       <motion.div
-        className="position-fixed top-0 start-50 translate-middle-x mt-5"
-        style={{ zIndex: 999, marginTop: "100px" }}
+        className="position-sticky"
+        style={{
+          top: "76px", // Navbar height + padding
+          zIndex: 998,
+          paddingTop: "1.5rem",
+          paddingBottom: "1rem",
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.98)" : "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(10px)",
+          borderBottom: isScrolled ? "1px solid rgba(0,0,0,0.08)" : "none",
+          boxShadow: isScrolled ? "0 2px 10px rgba(0,0,0,0.05)" : "none",
+          transition: "all 0.3s ease",
+        }}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div
-          className="d-flex rounded-pill p-2 shadow-lg"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(10px)",
-            border: "2px solid rgba(0,0,0,0.1)",
-            maxWidth: "500px",
-            width: "90vw",
-          }}
-        >
-          <motion.button
-            onClick={() => setActiveTab("trainer")}
-            className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold"
-            style={{
-              backgroundColor: activeTab === "trainer" ? "#667eea" : "transparent",
-              color: activeTab === "trainer" ? "#fff" : "#6c757d",
-              border: "none",
-              padding: "12px 24px",
-              minHeight: "50px",
-            }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <FaDumbbell size={18} />
-            <span>For Trainers</span>
-          </motion.button>
-          <motion.button
-            onClick={() => setActiveTab("client")}
-            className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold"
-            style={{
-              backgroundColor: activeTab === "client" ? "#43e97b" : "transparent",
-              color: activeTab === "client" ? "#fff" : "#6c757d",
-              border: "none",
-              padding: "12px 24px",
-              minHeight: "50px",
-            }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <FaUser size={18} />
-            <span>For Clients</span>
-          </motion.button>
+        <div className="container">
+          <div className="d-flex justify-content-center">
+            <div
+              className="d-flex rounded-pill p-2 shadow-lg"
+              style={{
+                backgroundColor: "#f8f9fa",
+                border: "2px solid #e9ecef",
+                maxWidth: "600px",
+                width: "100%",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+              }}
+            >
+              <motion.button
+                onClick={() => handleTabChange("trainer")}
+                className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative"
+                style={{
+                  backgroundColor: activeTab === "trainer" ? "#667eea" : "transparent",
+                  color: activeTab === "trainer" ? "#fff" : "#6c757d",
+                  border: "none",
+                  padding: "14px 28px",
+                  minHeight: "52px",
+                  fontSize: "0.95rem",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+                whileHover={{ 
+                  scale: activeTab === "trainer" ? 1 : 1.02,
+                  backgroundColor: activeTab === "trainer" ? "#667eea" : "rgba(102, 126, 234, 0.1)",
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FaDumbbell size={18} />
+                <span className="d-none d-md-inline">For Trainers</span>
+                <span className="d-md-none">Trainers</span>
+                {activeTab === "trainer" && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="position-absolute"
+                    style={{
+                      inset: 0,
+                      borderRadius: "9999px",
+                      backgroundColor: "#667eea",
+                      zIndex: -1,
+                    }}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </motion.button>
+              <motion.button
+                onClick={() => handleTabChange("client")}
+                className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative"
+                style={{
+                  backgroundColor: activeTab === "client" ? "#43e97b" : "transparent",
+                  color: activeTab === "client" ? "#fff" : "#6c757d",
+                  border: "none",
+                  padding: "14px 28px",
+                  minHeight: "52px",
+                  fontSize: "0.95rem",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+                whileHover={{ 
+                  scale: activeTab === "client" ? 1 : 1.02,
+                  backgroundColor: activeTab === "client" ? "#43e97b" : "rgba(67, 233, 123, 0.1)",
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FaUser size={18} />
+                <span className="d-none d-md-inline">For Clients</span>
+                <span className="d-md-none">Clients</span>
+                {activeTab === "client" && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="position-absolute"
+                    style={{
+                      inset: 0,
+                      borderRadius: "9999px",
+                      backgroundColor: "#43e97b",
+                      zIndex: -1,
+                    }}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </motion.button>
+            </div>
+          </div>
         </div>
       </motion.div>
 
-      {/* ============================================
-          TRAINER SECTION
-          ============================================ */}
-      <AnimatePresence mode="wait">
-        {activeTab === "trainer" && (
-          <motion.div
-            key="trainer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+      {/* Content Area */}
+      <div ref={contentRef}>
+        {/* ============================================
+            TRAINER SECTION
+            ============================================ */}
+        <AnimatePresence mode="wait">
+          {activeTab === "trainer" && (
+            <motion.div
+              key="trainer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
       <section
         className="py-5"
         style={{
-          marginTop: "80px",
-          paddingTop: "6rem",
+          paddingTop: "2rem",
           paddingBottom: "6rem",
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
           position: "relative",
@@ -1021,33 +1095,18 @@ const LandingPage = () => {
         {activeTab === "client" && (
           <motion.div
             key="client"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
           >
-      {/* Divider Section */}
-      <section className="py-5" style={{ backgroundColor: "#1f2937", paddingTop: "3rem", paddingBottom: "3rem" }}>
-        <div className="container text-center">
-          <motion.h2
-            className="fw-bold mb-0"
-            style={{ fontSize: "2.5rem", color: "#fff" }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            👇 For Clients 👇
-          </motion.h2>
-        </div>
-      </section>
-
       {/* ============================================
           CLIENT SECTION
           ============================================ */}
       <section
         className="py-5"
         style={{
-          paddingTop: "6rem",
+          paddingTop: "2rem",
           paddingBottom: "6rem",
           background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
           position: "relative",
@@ -1543,9 +1602,41 @@ const LandingPage = () => {
           </motion.button>
         </div>
       </section>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Scroll to Top Button */}
+      {isScrolled && (
+        <motion.button
+          className="position-fixed bottom-0 end-0 m-4 btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+          style={{
+            zIndex: 1040,
+            width: "56px",
+            height: "56px",
+            backgroundColor: "#667eea",
+            border: "none",
+            marginBottom: showInstallButton ? "80px" : "16px",
+          }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          whileHover={{ scale: 1.1, backgroundColor: "#5568d3" }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          <FaArrowRight 
+            style={{ 
+              transform: "rotate(-90deg)",
+              fontSize: "1.2rem",
+              color: "#fff"
+            }} 
+          />
+        </motion.button>
+      )}
 
       {/* PWA Install Button - Floating */}
       {showInstallButton && (
