@@ -1,5 +1,5 @@
 // src/components/notifications/ToastNotification.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
@@ -10,13 +10,70 @@ const ToastNotification = () => {
   const { notifications, markAsRead } = useNotifications();
   const navigate = useNavigate();
   const unreadNotifications = notifications.filter((n) => !n.read);
+  const [shownNotifications, setShownNotifications] = useState(new Set());
+  const timeoutRefs = useRef({});
 
-  const handleClose = (notificationId) => {
+  // Track which notifications to show (max 3 at a time)
+  const [visibleNotifications, setVisibleNotifications] = useState([]);
+
+  useEffect(() => {
+    // Find new unread notifications that haven't been shown yet
+    const newNotifications = unreadNotifications.filter(
+      (n) => !shownNotifications.has(n.id)
+    );
+
+    if (newNotifications.length > 0) {
+      // Add new notifications to visible list (limit to 3)
+      setVisibleNotifications((prev) => {
+        const combined = [...newNotifications, ...prev];
+        return combined.slice(0, 3);
+      });
+
+      // Mark as shown
+      setShownNotifications((prev) => {
+        const updated = new Set(prev);
+        newNotifications.forEach((n) => updated.add(n.id));
+        return updated;
+      });
+
+      // Auto-remove after 5 seconds
+      newNotifications.forEach((notification) => {
+        timeoutRefs.current[notification.id] = setTimeout(() => {
+          setVisibleNotifications((prev) =>
+            prev.filter((n) => n.id !== notification.id)
+          );
+          delete timeoutRefs.current[notification.id];
+        }, 5000);
+      });
+    }
+  }, [unreadNotifications, shownNotifications]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(timeoutRefs.current).forEach((timeout) => {
+        if (timeout) clearTimeout(timeout);
+      });
+    };
+  }, []);
+
+  const handleClose = (notificationId, e) => {
+    if (e) e.stopPropagation();
     markAsRead(notificationId);
+    setVisibleNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+    if (timeoutRefs.current[notificationId]) {
+      clearTimeout(timeoutRefs.current[notificationId]);
+      delete timeoutRefs.current[notificationId];
+    }
   };
 
   const handleClick = (notification) => {
     markAsRead(notification.id);
+    setVisibleNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    if (timeoutRefs.current[notification.id]) {
+      clearTimeout(timeoutRefs.current[notification.id]);
+      delete timeoutRefs.current[notification.id];
+    }
     navigate(`/messages/${notification.clientId}`, {
       state: { client: { clientId: notification.clientId, fullName: notification.clientName } },
     });
@@ -40,25 +97,29 @@ const ToastNotification = () => {
     }
   };
 
-  // Show only the latest unread notification as toast
-  const latestNotification = unreadNotifications[0];
-
   return (
     <ToastContainer
       position="top-end"
       className="p-3"
       style={{ zIndex: 1060 }}
     >
-      <AnimatePresence>
-        {latestNotification && (
+      <AnimatePresence mode="popLayout">
+        {visibleNotifications.map((notification, index) => (
           <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
+            key={notification.id}
+            initial={{ opacity: 0, y: -50, scale: 0.9, x: 100 }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95, x: 100 }}
+            transition={{ 
+              duration: 0.3,
+              delay: index * 0.1 
+            }}
+            style={{
+              marginBottom: index < visibleNotifications.length - 1 ? "0.5rem" : "0",
+            }}
           >
             <Toast
-              onClose={() => handleClose(latestNotification.id)}
+              onClose={() => handleClose(notification.id)}
               show={true}
               delay={5000}
               autohide
@@ -70,7 +131,7 @@ const ToastNotification = () => {
                 overflow: "hidden",
                 cursor: "pointer",
               }}
-              onClick={() => handleClick(latestNotification)}
+              onClick={() => handleClick(notification)}
             >
               <Toast.Header
                 className="text-white border-0"
@@ -90,21 +151,18 @@ const ToastNotification = () => {
                     fontSize: "0.85rem",
                   }}
                 >
-                  {latestNotification.clientName?.charAt(0)?.toUpperCase() || "C"}
+                  {notification.clientName?.charAt(0)?.toUpperCase() || "C"}
                 </div>
                 <strong className="me-auto flex-grow-1">
-                  {latestNotification.clientName || "Client"}
+                  {notification.clientName || "Client"}
                 </strong>
                 <small className="text-white-50 me-2">
-                  {formatTime(latestNotification.timestamp)}
+                  {formatTime(notification.timestamp)}
                 </small>
                 <button
                   type="button"
                   className="btn-close btn-close-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClose(latestNotification.id);
-                  }}
+                  onClick={(e) => handleClose(notification.id, e)}
                 />
               </Toast.Header>
               <Toast.Body
@@ -114,12 +172,12 @@ const ToastNotification = () => {
                 }}
               >
                 <p className="mb-0" style={{ fontSize: "0.9rem" }}>
-                  {latestNotification.messageText || latestNotification.fullMessage || "New message"}
+                  {notification.messageText || notification.fullMessage || "New message"}
                 </p>
               </Toast.Body>
             </Toast>
           </motion.div>
-        )}
+        ))}
       </AnimatePresence>
     </ToastContainer>
   );

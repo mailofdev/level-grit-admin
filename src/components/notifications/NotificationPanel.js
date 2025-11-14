@@ -1,8 +1,8 @@
 // src/components/notifications/NotificationPanel.js
-import React from "react";
-import { Card, Button, Badge } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Button, Badge, Spinner, Alert } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaCheckDouble, FaTrash, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import { FaTimes, FaCheckDouble, FaTrash, FaVolumeUp, FaVolumeMute, FaSync } from "react-icons/fa";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { formatDistanceToNow, parseISO } from "date-fns";
 
@@ -15,7 +15,11 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
     markAsRead,
     markAllAsRead,
     clearAll,
+    isLoading,
+    error,
+    refreshNotifications,
   } = useNotifications();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "Just now";
@@ -51,12 +55,35 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
     }
   };
 
-  const handleNotificationClick = (notification) => {
+  const handleNotificationClick = async (notification) => {
     if (!notification.read) {
-      markAsRead(notification.id);
+      await markAsRead(notification.id);
     }
     if (onNotificationClick) {
       onNotificationClick(notification);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refreshNotifications();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllAsRead();
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (window.confirm("Are you sure you want to clear all notifications? This will only clear them from view, not delete them permanently.")) {
+      clearAll();
     }
   };
 
@@ -90,6 +117,16 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
           <Button
             variant="link"
             className="text-white p-1 border-0"
+            onClick={handleRefresh}
+            disabled={isRefreshing || isLoading}
+            title="Refresh notifications"
+            style={{ minWidth: "32px", minHeight: "32px" }}
+          >
+            <FaSync size={14} className={isRefreshing ? "spinning" : ""} />
+          </Button>
+          <Button
+            variant="link"
+            className="text-white p-1 border-0"
             onClick={() => setSoundEnabled(!soundEnabled)}
             title={soundEnabled ? "Mute sound" : "Enable sound"}
             style={{ minWidth: "32px", minHeight: "32px" }}
@@ -100,12 +137,20 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
             variant="link"
             className="text-white p-1 border-0"
             onClick={onClose}
+            title="Close"
             style={{ minWidth: "32px", minHeight: "32px" }}
           >
             <FaTimes size={16} />
           </Button>
         </div>
       </Card.Header>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="warning" className="m-2 mb-0" dismissible onClose={() => {}}>
+          <small>{error}</small>
+        </Alert>
+      )}
 
       {/* Actions */}
       {notifications.length > 0 && (
@@ -114,8 +159,8 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
             variant="link"
             size="sm"
             className="text-primary"
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
+            onClick={handleMarkAllAsRead}
+            disabled={unreadCount === 0 || isLoading}
           >
             <FaCheckDouble className="me-1" />
             Mark all read
@@ -124,7 +169,8 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
             variant="link"
             size="sm"
             className="text-danger"
-            onClick={clearAll}
+            onClick={handleClearAll}
+            disabled={isLoading}
           >
             <FaTrash className="me-1" />
             Clear all
@@ -139,7 +185,12 @@ const NotificationPanel = ({ onClose, onNotificationClick }) => {
           maxHeight: "400px",
         }}
       >
-        {notifications.length === 0 ? (
+        {isLoading && notifications.length === 0 ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="primary" className="mb-3" />
+            <p className="text-muted mb-0">Loading notifications...</p>
+          </div>
+        ) : notifications.length === 0 ? (
           <div className="text-center py-5 text-muted">
             <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔔</div>
             <p className="mb-0">No notifications</p>

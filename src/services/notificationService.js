@@ -52,60 +52,103 @@ export const subscribeToTrainerNotifications = (trainerId, callback) => {
  */
 export const subscribeToAllTrainerMessages = (trainerId, clients, callback) => {
   if (!trainerId || !clients || clients.length === 0) {
+    console.warn("subscribeToAllTrainerMessages: Missing trainerId or clients");
     return () => {};
   }
 
   const unsubscribes = [];
+  const activeSubscriptions = new Set();
 
   // Subscribe to messages from each client
   clients.forEach((client) => {
-    const clientId = client.clientId || client.id || client.userId;
-    if (!clientId) return;
-
-    const chatId = getChatId(trainerId, clientId);
-    const messagesRef = collection(db, "chats", chatId, "messages");
-    const q = query(messagesRef, orderBy("timestamp", "desc"), limit(1));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) return;
-
-      const latestMessage = snapshot.docs[0].data();
-      
-      // Only trigger notification if message is from client (not from trainer)
-      if (latestMessage.senderId === clientId && latestMessage.receiverId === trainerId) {
-        // Check if we've already notified about this message
-        const messageId = snapshot.docs[0].id;
-        checkAndCreateNotification(
-          trainerId,
-          clientId,
-          client.fullName || client.name || "Client",
-          latestMessage.text,
-          latestMessage.timestamp,
-          messageId
-        ).then((notification) => {
-          if (notification) {
-            callback(notification);
-          }
-        }).catch((error) => {
-          console.error("Error creating notification:", error);
-        });
+    try {
+      const clientId = client.clientId || client.id || client.userId;
+      if (!clientId) {
+        console.warn("subscribeToAllTrainerMessages: Invalid client data", client);
+        return;
       }
-    }, (error) => {
-      console.error("Error in message snapshot:", error);
-    });
 
-    if (unsubscribe && typeof unsubscribe === 'function') {
-      unsubscribes.push(unsubscribe);
+      const chatId = getChatId(trainerId, clientId);
+      if (!chatId) {
+        console.warn("subscribeToAllTrainerMessages: Failed to generate chatId", { trainerId, clientId });
+        return;
+      }
+
+      const messagesRef = collection(db, "chats", chatId, "messages");
+      const q = query(messagesRef, orderBy("timestamp", "desc"), limit(1));
+
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          try {
+            if (snapshot.empty) return;
+
+            const latestMessage = snapshot.docs[0].data();
+            
+            // Validate message data
+            if (!latestMessage || !latestMessage.senderId || !latestMessage.receiverId) {
+              console.warn("subscribeToAllTrainerMessages: Invalid message data", latestMessage);
+              return;
+            }
+            
+            // Only trigger notification if message is from client (not from trainer)
+            if (latestMessage.senderId === clientId && latestMessage.receiverId === trainerId) {
+              const messageId = snapshot.docs[0].id;
+              if (!messageId) {
+                console.warn("subscribeToAllTrainerMessages: Missing messageId");
+                return;
+              }
+
+              checkAndCreateNotification(
+                trainerId,
+                clientId,
+                client.fullName || client.name || "Client",
+                latestMessage.text || "",
+                latestMessage.timestamp,
+                messageId
+              )
+                .then((notification) => {
+                  if (notification) {
+                    callback(notification);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error creating notification:", error);
+                  // Don't throw, just log the error
+                });
+            }
+          } catch (error) {
+            console.error("Error processing message snapshot:", error);
+          }
+        },
+        (error) => {
+          console.error("Error in message snapshot:", error);
+          // Remove from active subscriptions on error
+          activeSubscriptions.delete(clientId);
+        }
+      );
+
+      if (unsubscribe && typeof unsubscribe === 'function') {
+        unsubscribes.push(unsubscribe);
+        activeSubscriptions.add(clientId);
+      }
+    } catch (error) {
+      console.error("Error setting up subscription for client:", error, client);
     }
   });
 
   // Return cleanup function
   return () => {
     unsubscribes.forEach((unsub) => {
-      if (unsub && typeof unsub === 'function') {
-        unsub();
+      try {
+        if (unsub && typeof unsub === 'function') {
+          unsub();
+        }
+      } catch (error) {
+        console.error("Error unsubscribing:", error);
       }
     });
+    activeSubscriptions.clear();
   };
 };
 
@@ -120,6 +163,16 @@ const checkAndCreateNotification = async (
   timestamp,
   messageId
 ) => {
+  // Validate inputs
+  if (!trainerId || !clientId || !messageId) {
+    console.warn("checkAndCreateNotification: Missing required parameters", {
+      trainerId,
+      clientId,
+      messageId,
+    });
+    return null;
+  }
+
   const notificationId = `${trainerId}_${clientId}_${messageId}`;
   const notificationRef = doc(db, "notifications", notificationId);
 
@@ -128,13 +181,17 @@ const checkAndCreateNotification = async (
 
     // If notification doesn't exist, create it
     if (!notificationDoc.exists()) {
+      const safeMessageText = messageText || "";
+      const safeClientName = clientName || "Client";
+      const safeTimestamp = timestamp || new Date();
+
       await setDoc(notificationRef, {
         trainerId,
         clientId,
-        clientName,
-        messageText: messageText.substring(0, 100), // Preview
-        fullMessage: messageText,
-        timestamp,
+        clientName: safeClientName,
+        messageText: safeMessageText.substring(0, 100), // Preview
+        fullMessage: safeMessageText,
+        timestamp: safeTimestamp,
         read: false,
         messageId,
         type: "message",
@@ -145,10 +202,10 @@ const checkAndCreateNotification = async (
         id: notificationId,
         trainerId,
         clientId,
-        clientName,
-        messageText: messageText.substring(0, 100),
-        fullMessage: messageText,
-        timestamp,
+        clientName: safeClientName,
+        messageText: safeMessageText.substring(0, 100),
+        fullMessage: safeMessageText,
+        timestamp: safeTimestamp,
         read: false,
         messageId,
         type: "message",
@@ -159,6 +216,7 @@ const checkAndCreateNotification = async (
     return null;
   } catch (error) {
     console.error("Error creating notification:", error);
+    // Return null instead of throwing to prevent breaking the subscription
     return null;
   }
 };
@@ -167,14 +225,27 @@ const checkAndCreateNotification = async (
  * Mark notification as read
  */
 export const markNotificationAsRead = async (notificationId) => {
+  if (!notificationId) {
+    console.warn("markNotificationAsRead: Missing notificationId");
+    throw new Error("Notification ID is required");
+  }
+
   try {
     const notificationRef = doc(db, "notifications", notificationId);
+    const notificationDoc = await getDoc(notificationRef);
+    
+    if (!notificationDoc.exists()) {
+      console.warn("markNotificationAsRead: Notification not found", notificationId);
+      return;
+    }
+
     await updateDoc(notificationRef, {
       read: true,
       readAt: new Date(),
     });
   } catch (error) {
     console.error("Error marking notification as read:", error);
+    throw error; // Re-throw to allow caller to handle
   }
 };
 
@@ -229,13 +300,18 @@ export const getUnreadNotificationCount = async (trainerId) => {
  * Get all notifications for a trainer
  */
 export const getTrainerNotifications = async (trainerId, limitCount = 50) => {
+  if (!trainerId) {
+    console.warn("getTrainerNotifications: Missing trainerId");
+    return [];
+  }
+
   try {
     const notificationsRef = collection(db, "notifications");
     const q = query(
       notificationsRef,
       where("trainerId", "==", trainerId),
       orderBy("timestamp", "desc"),
-      limit(limitCount)
+      limit(Math.min(limitCount, 100)) // Cap at 100 for safety
     );
 
     const snapshot = await getDocs(q);
@@ -245,6 +321,7 @@ export const getTrainerNotifications = async (trainerId, limitCount = 50) => {
     }));
   } catch (error) {
     console.error("Error getting notifications:", error);
+    // Return empty array instead of throwing to prevent breaking the UI
     return [];
   }
 };

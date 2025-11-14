@@ -1,5 +1,5 @@
 // src/contexts/NotificationContext.js
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import {
   subscribeToAllTrainerMessages,
   markNotificationAsRead,
@@ -33,6 +33,8 @@ export const useNotifications = () => {
       markAllAsRead: async () => {},
       clearAll: () => {},
       isTrainer: false,
+      error: null,
+      refreshNotifications: async () => {},
     };
   }
   return context;
@@ -42,23 +44,43 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    // Load from localStorage
+    const saved = localStorage.getItem("notificationSoundEnabled");
+    return saved !== null ? saved === "true" : true;
+  });
   const [clients, setClients] = useState([]);
   const [pushEnabled, setPushEnabled] = useState(false);
+  const [error, setError] = useState(null);
+  const unsubscribeRef = useRef(null);
+  const isInitializedRef = useRef(false);
 
   const user = getDecryptedUser();
   const isTrainer = user?.role?.toLowerCase() === "trainer";
   const trainerId = user?.userId || user?.id || user?.trainerId;
 
+  // Save sound preference to localStorage
+  useEffect(() => {
+    localStorage.setItem("notificationSoundEnabled", soundEnabled.toString());
+  }, [soundEnabled]);
+
   // Initialize push notifications
   useEffect(() => {
-    if (!isTrainer) return;
+    if (!isTrainer) {
+      setIsLoading(false);
+      return;
+    }
 
     const initPushNotifications = async () => {
-      const hasPermission = await requestNotificationPermission();
-      if (hasPermission) {
-        setPushEnabled(true);
-        await initializeServiceWorker();
+      try {
+        const hasPermission = await requestNotificationPermission();
+        if (hasPermission) {
+          setPushEnabled(true);
+          await initializeServiceWorker();
+        }
+      } catch (error) {
+        console.error("Error initializing push notifications:", error);
+        setError("Failed to initialize push notifications");
       }
     };
 
@@ -100,46 +122,67 @@ export const NotificationProvider = ({ children }) => {
 
     const fetchClients = async () => {
       try {
+        setError(null);
         const clientsData = await getClientsForTrainer();
         setClients(clientsData || []);
       } catch (error) {
         console.error("Error fetching clients:", error);
+        setError("Failed to load clients");
         setClients([]);
+        setIsLoading(false);
       }
     };
 
     fetchClients();
   }, [isTrainer, trainerId]);
 
-  // Subscribe to notifications
-  useEffect(() => {
-    if (!isTrainer || !trainerId || clients.length === 0) {
+  // Load existing notifications
+  const loadNotifications = useCallback(async () => {
+    if (!isTrainer || !trainerId) {
       setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
+    try {
+      setError(null);
+      setIsLoading(true);
+      const existingNotifications = await getTrainerNotifications(trainerId);
+      setNotifications(existingNotifications);
+      setUnreadCount(existingNotifications.filter((n) => !n.read).length);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error loading notifications:", error);
+      setError("Failed to load notifications");
+      setIsLoading(false);
+    }
+  }, [isTrainer, trainerId]);
 
-    // Load existing notifications
-    const loadNotifications = async () => {
-      try {
-        const existingNotifications = await getTrainerNotifications(trainerId);
-        setNotifications(existingNotifications);
-        setUnreadCount(existingNotifications.filter((n) => !n.read).length);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error loading notifications:", error);
-        setIsLoading(false);
+  // Subscribe to notifications
+  useEffect(() => {
+    if (!isTrainer || !trainerId || clients.length === 0) {
+      if (clients.length === 0 && isTrainer && trainerId) {
+        // Still try to load notifications even if no clients yet
+        loadNotifications();
       }
-    };
+      return;
+    }
 
-    loadNotifications();
+    // Load existing notifications first
+    if (!isInitializedRef.current) {
+      loadNotifications();
+      isInitializedRef.current = true;
+    }
+
+    // Clean up previous subscription
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
 
     // Subscribe to new messages
-    let unsubscribe = null;
-    
     try {
-      unsubscribe = subscribeToAllTrainerMessages(
+      setError(null);
+      unsubscribeRef.current = subscribeToAllTrainerMessages(
         trainerId,
         clients,
         (notification) => {
@@ -150,7 +193,8 @@ export const NotificationProvider = ({ children }) => {
 
             // Add new notification at the beginning
             const updated = [notification, ...prev];
-            setUnreadCount(updated.filter((n) => !n.read).length);
+            const newUnreadCount = updated.filter((n) => !n.read).length;
+            setUnreadCount(newUnreadCount);
             
             // Play sound for new notification
             playNotificationSound();
@@ -158,14 +202,13 @@ export const NotificationProvider = ({ children }) => {
             // Show browser notification if enabled
             if (pushEnabled && "Notification" in window && Notification.permission === "granted") {
               showBrowserNotification(
-                `New message from ${notification.clientName}`,
+                `New message from ${notification.clientName || "Client"}`,
                 {
                   body: notification.messageText || notification.fullMessage || "New message",
                   icon: "/192.png",
                   tag: `message-${notification.clientId}`,
                   onClick: () => {
                     window.focus();
-                    // Navigate to message (handled by toast notification)
                   },
                 }
               );
@@ -177,29 +220,45 @@ export const NotificationProvider = ({ children }) => {
       );
     } catch (error) {
       console.error("Error setting up message subscriptions:", error);
+      setError("Failed to subscribe to notifications");
     }
 
     return () => {
-      if (unsubscribe && typeof unsubscribe === 'function') {
-        unsubscribe();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
+      isInitializedRef.current = false;
     };
-  }, [isTrainer, trainerId, clients, playNotificationSound]);
+  }, [isTrainer, trainerId, clients, playNotificationSound, pushEnabled, loadNotifications]);
 
   // Mark notification as read
   const markAsRead = useCallback(
     async (notificationId) => {
       try {
-        await markNotificationAsRead(notificationId);
+        setError(null);
+        const notification = notifications.find((n) => n.id === notificationId);
+        if (!notification) return;
+
+        // Optimistic update
         setNotifications((prev) =>
           prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
         );
         setUnreadCount((prev) => Math.max(0, prev - 1));
+
+        // Update in backend
+        await markNotificationAsRead(notificationId);
       } catch (error) {
         console.error("Error marking notification as read:", error);
+        setError("Failed to mark notification as read");
+        // Revert optimistic update
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === notificationId ? { ...n, read: false } : n))
+        );
+        setUnreadCount((prev) => prev + 1);
       }
     },
-    []
+    [notifications]
   );
 
   // Mark conversation as read
@@ -207,47 +266,67 @@ export const NotificationProvider = ({ children }) => {
     async (clientId) => {
       if (!trainerId) return;
       try {
-        await markConversationAsRead(trainerId, clientId);
+        setError(null);
+        const unreadInConversation = notifications.filter(
+          (n) => n.clientId === clientId && !n.read
+        ).length;
+
+        // Optimistic update
         setNotifications((prev) =>
           prev.map((n) =>
             n.clientId === clientId ? { ...n, read: true } : n
           )
         );
-        setUnreadCount((prev) => {
-          const unreadInConversation = notifications.filter(
-            (n) => n.clientId === clientId && !n.read
-          ).length;
-          return Math.max(0, prev - unreadInConversation);
-        });
+        setUnreadCount((prev) => Math.max(0, prev - unreadInConversation));
+
+        // Update in backend
+        await markConversationAsRead(trainerId, clientId);
       } catch (error) {
         console.error("Error marking conversation as read:", error);
+        setError("Failed to mark conversation as read");
+        // Revert optimistic update
+        loadNotifications();
       }
     },
-    [trainerId, notifications]
+    [trainerId, notifications, loadNotifications]
   );
 
   // Mark all as read
   const markAllAsRead = useCallback(async () => {
     if (!trainerId) return;
     try {
+      setError(null);
       const unreadNotifications = notifications.filter((n) => !n.read);
-      await Promise.all(
-        unreadNotifications.map((n) => markNotificationAsRead(n.id))
-      );
+      
+      // Optimistic update
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, read: true }))
       );
+      const previousUnreadCount = unreadCount;
       setUnreadCount(0);
+
+      // Update in backend
+      await Promise.all(
+        unreadNotifications.map((n) => markNotificationAsRead(n.id))
+      );
     } catch (error) {
       console.error("Error marking all as read:", error);
+      setError("Failed to mark all as read");
+      // Revert optimistic update
+      loadNotifications();
     }
-  }, [trainerId, notifications]);
+  }, [trainerId, notifications, unreadCount, loadNotifications]);
 
-  // Clear all notifications
+  // Clear all notifications (local only, doesn't delete from backend)
   const clearAll = useCallback(() => {
     setNotifications([]);
     setUnreadCount(0);
   }, []);
+
+  // Refresh notifications manually
+  const refreshNotifications = useCallback(async () => {
+    await loadNotifications();
+  }, [loadNotifications]);
 
   const value = {
     notifications,
@@ -262,6 +341,8 @@ export const NotificationProvider = ({ children }) => {
     markAllAsRead,
     clearAll,
     isTrainer,
+    error,
+    refreshNotifications,
   };
 
   return (

@@ -108,10 +108,14 @@ const Topbar = ({
               </div>
             )}
 
-            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3  w-lg-auto">
+            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-lg-auto" style={{ flexShrink: 0 }}>
               {showSearch && <SearchBar />}
               {showThemeToggle && <ThemeSwitch enableThemeAlert />}
-              {user?.role?.toLowerCase() === "trainer" && <NotificationBell />}
+              {user?.role?.toLowerCase() === "trainer" && (
+                <div style={{ flexShrink: 0 }}>
+                  <NotificationBell />
+                </div>
+              )}
               {showUserMenu && (
                 <UserMenu
                   user={user}
