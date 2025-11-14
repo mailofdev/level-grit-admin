@@ -1,6 +1,6 @@
 // src/features/client/clientThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getTrainerDashboard, deleteTrainer } from "../../api/trainerAPI";
+import { getTrainerDashboard, deleteTrainer, uploadMeal, getDashboard  } from "../../api/trainerAPI";
 import { getClientDashboard } from "../../api/clientAPI";
 
 /**
@@ -63,6 +63,41 @@ export const getClientDashboardThunk = createAsyncThunk(
         error.response?.data?.message ||
         error.message ||
         "Failed to fetch client dashboard data"
+      );
+    }
+  }
+);
+
+export const getDashboardThunk = createAsyncThunk(
+  "client/getDashboard",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getDashboard();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch client dashboard data"
+      );
+    }
+  }
+);
+
+/**
+ * Upload a meal (image + info)
+ */
+export const uploadMealThunk = createAsyncThunk(
+  "client/uploadMeal",
+  async (mealData, { rejectWithValue }) => {
+    try {
+      const data = await uploadMeal(mealData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to upload meal"
       );
     }
   }

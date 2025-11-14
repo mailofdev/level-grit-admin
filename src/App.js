@@ -53,6 +53,9 @@ const AdminDashboard = lazy(() =>
 const TrainerDashboard = lazy(() =>
   import("./features/trainer/TrainerDashboard")
 );
+const ClientDashboard = lazy(() =>
+  import("./features/client/ClientDashboard")
+);
 const PaymentManagement = lazy(() =>
   import("./features/payments/PaymentManagement")
 );
@@ -183,6 +186,20 @@ function App() {
                     </ProtectedLayout>
                   }
                 />
+                 <Route
+                  path="/client-dashboard"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <ClientDashboard />
+                    </ProtectedLayout>
+                  }
+                />
                 <Route
                   path="/admin-dashboard"
                   element={
@@ -222,6 +239,20 @@ function App() {
                   element={
                     <ProtectedLayout>
                       <Messages isTrainer={true} />
+                    </ProtectedLayout>
+                  }
+                />
+                 <Route
+                  path="/client-messages/:trainerId"
+                  element={
+                    <ProtectedLayout
+                      config={{
+                        showTopbar: true,
+                        showSidebar: false,
+                        showFooter: false,
+                      }}
+                    >
+                      <Messages isTrainer={false} />
                     </ProtectedLayout>
                   }
                 />

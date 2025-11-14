@@ -28,3 +28,13 @@ export const getDashboard = async () => {
   const { data } = await axiosInstance.get(`api/Client/GetDashboard`);
   return data;
 };
+
+/**
+ * Upload Meal API
+ * API Path: api/Client/UploadMeal
+ * Body: { mealPlanId, mealName, sequence, message, imageBase64 }
+ */
+export const uploadMeal = async (mealData) => {
+  const { data } = await axiosInstance.post(`api/Client/UploadMeal`, mealData);
+  return data;
+};
