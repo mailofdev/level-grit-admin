@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getClientDashboardThunk,
-  uploadMealThunk,
-} from "./clientThunks";
+import { getClientDashboardThunk, uploadMealThunk } from "./clientThunks";
 import ShareProgressModal from "../../components/common/ShareProgressModal";
 import {
   FaFire,
@@ -24,13 +21,13 @@ import Heading from "../../components/navigation/Heading";
 
 /**
  * Shared Client Dashboard View Component
- * 
+ *
  * A unified component that handles both client-dashboard and client-details views.
  * Dynamically adjusts UI and functionality based on:
  * - User role (client vs trainer)
  * - View mode (dashboard vs details)
  * - Feature flags/permissions
- * 
+ *
  * @param {Object} props
  * @param {string} props.viewMode - 'dashboard' or 'details'
  * @param {string|number} props.clientId - Optional client ID (for trainer viewing client)
@@ -57,21 +54,25 @@ export default function ClientDashboardView({
   const isClientRole = isClient(userRole);
 
   // Auto-detect feature flags based on role if not explicitly provided
-  const canUploadMeals = enableMealUpload !== null 
-    ? enableMealUpload 
-    : (isClientRole && viewMode === "dashboard");
-  const canShareProgress = enableShareProgress !== null 
-    ? enableShareProgress 
-    : (isClientRole && viewMode === "dashboard");
-  const shouldShowHeading = showHeading !== null 
-    ? showHeading 
-    : (viewMode === "details");
+  const canUploadMeals =
+    enableMealUpload !== null
+      ? enableMealUpload
+      : isClientRole && viewMode === "dashboard";
+  const canShareProgress =
+    enableShareProgress !== null
+      ? enableShareProgress
+      : isClientRole && viewMode === "dashboard";
+  const shouldShowHeading =
+    showHeading !== null ? showHeading : viewMode === "details";
 
   // Determine final clientId (use prop, URL param, or logged-in user)
   const params = useParams();
   const clientIdFromUrl = params?.clientId;
   const clientFromState = location.state?.client;
-  const finalClientId = clientId || clientIdFromUrl || (isClientRole ? (loggedInUser?.userId || loggedInUser?.id) : null);
+  const finalClientId =
+    clientId ||
+    clientIdFromUrl ||
+    (isClientRole ? loggedInUser?.userId || loggedInUser?.id : null);
 
   // Redux state - both views use the same client slice
   const { dashboard, loading, error } = useSelector((state) => state.client);
@@ -108,7 +109,9 @@ export default function ClientDashboardView({
         // For other dates, send dateTime in ISO format
         const dateTime = new Date(selectedDate).toISOString();
         if (finalClientId) {
-          dispatch(getClientDashboardThunk({ clientId: finalClientId, dateTime }));
+          dispatch(
+            getClientDashboardThunk({ clientId: finalClientId, dateTime })
+          );
         } else {
           dispatch(getClientDashboardThunk({ dateTime }));
         }
@@ -236,11 +239,13 @@ export default function ClientDashboardView({
           <div className="alert alert-danger mt-5" role="alert">
             <h4 className="alert-heading">Error Loading Dashboard</h4>
             <p>{error}</p>
-            <button 
-              className="btn btn-primary" 
+            <button
+              className="btn btn-primary"
               onClick={() => {
                 if (finalClientId) {
-                  dispatch(getClientDashboardThunk({ clientId: finalClientId }));
+                  dispatch(
+                    getClientDashboardThunk({ clientId: finalClientId })
+                  );
                 } else {
                   dispatch(getClientDashboardThunk());
                 }
@@ -357,15 +362,15 @@ export default function ClientDashboardView({
       };
 
       // For client role, include plannedMealId
-      if (isClientRole && selectedMeal.plannedMealId) {
-        mealData.plannedMealId = selectedMeal.plannedMealId;
-      }
+      // if (isClientRole && selectedMeal.plannedMealId) {
+      //   mealData.plannedMealId = selectedMeal.plannedMealId;
+      // }
 
       await dispatch(uploadMealThunk(mealData)).unwrap();
 
       alert("✅ Meal uploaded successfully!");
       closeCamera();
-      
+
       // Refresh dashboard
       if (isToday) {
         if (finalClientId) {
@@ -376,7 +381,9 @@ export default function ClientDashboardView({
       } else {
         const dateTime = new Date(selectedDate).toISOString();
         if (finalClientId) {
-          dispatch(getClientDashboardThunk({ clientId: finalClientId, dateTime }));
+          dispatch(
+            getClientDashboardThunk({ clientId: finalClientId, dateTime })
+          );
         } else {
           dispatch(getClientDashboardThunk({ dateTime }));
         }
@@ -466,42 +473,23 @@ export default function ClientDashboardView({
   };
 
   return (
-    <div className={viewMode === "details" ? "container-fluid px-2 px-md-3 py-3 py-md-4" : "container"}>
+    <div
+      className={
+        viewMode === "details"
+          ? "container-fluid px-2 px-md-3 py-3 py-md-4"
+          : "container"
+      }
+    >
       {shouldShowHeading && <Heading pageName="details" sticky={true} />}
-      <div className="d-flex flex-column" style={viewMode === "details" ? { height: "calc(100vh - 140px)" } : {}}>
-        <div className={`flex-grow-1 overflow-auto ${viewMode === "details" ? "pb-3" : "p-3 rounded shadow-sm"}`}>
-          {/* Date Header - Matching AdjustPlan style */}
-          {enableDatePicker && client && (
-            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3 p-2 p-md-3 bg-light rounded-3 gap-2">
-              <div className="d-flex align-items-start gap-2 w-100 w-md-auto">
-                <FaCalendar className="mt-1 text-primary flex-shrink-0" />
-                <div className="flex-grow-1">
-                  <div className="fw-bold fs-6 fs-md-5">
-                    {new Date(selectedDate).toLocaleDateString("en-IN", {
-                      weekday: "short",
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </div>
-                  <small className="text-muted d-block">
-                    <strong>{client.fullName || "Client"}</strong>
-                  </small>
-                </div>
-              </div>
-              
-              <div className="d-flex align-items-center gap-2 flex-wrap w-100 w-md-auto justify-content-between justify-content-md-end">
-                <button
-                  className="btn btn-outline-primary btn-sm rounded-pill"
-                  onClick={() => setShowDatePickerModal(true)}
-                >
-                  <FaCalendar className="me-1" /> 
-                  <span className="d-none d-sm-inline">Change </span>Date
-                </button>
-              </div>
-            </div>
-          )}
-
+      <div
+        className="d-flex flex-column"
+        style={viewMode === "details" ? { height: "calc(100vh - 140px)" } : {}}
+      >
+        <div
+          className={`flex-grow-1 overflow-auto ${
+            viewMode === "details" ? "pb-3" : "p-3 rounded shadow-sm"
+          }`}
+        >
           {/* Client Info Card */}
           <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
             <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
@@ -540,6 +528,15 @@ export default function ClientDashboardView({
                   )}
                 </div>
                 <div className="d-flex flex-wrap gap-2 justify-content-md-end">
+                  {enableDatePicker && client && (
+                    <button
+                      className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
+                      onClick={() => setShowDatePickerModal(true)}
+                    >
+                      <FaCalendar className="me-1" />
+                      <span className="d-none d-sm-inline">Change date</span>
+                    </button>
+                  )}
                   <button
                     className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
                     onClick={() =>
@@ -598,7 +595,12 @@ export default function ClientDashboardView({
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-2">
                     <h5 className="card-title mb-0 fw-bold">
-                      {isToday ? "Today's Macros" : `${new Date(selectedDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })} Macros`}
+                      {isToday
+                        ? "Today's Macros"
+                        : `${new Date(selectedDate).toLocaleDateString(
+                            "en-IN",
+                            { day: "2-digit", month: "short", year: "numeric" }
+                          )} Macros`}
                     </h5>
                   </div>
                   <div className="row">
@@ -672,7 +674,13 @@ export default function ClientDashboardView({
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="card-title fw-bold mb-0">
-                  {isToday ? "Today's Meals" : `${new Date(selectedDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })} Meals`}
+                  {isToday
+                    ? "Today's Meals"
+                    : `${new Date(selectedDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })} Meals`}
                 </h5>
                 <div>
                   <span className="text-success fw-semibold me-2">
@@ -687,7 +695,16 @@ export default function ClientDashboardView({
               {(dashboardData.meals || []).length === 0 ? (
                 <div className="text-center py-5">
                   <FaCamera className="text-muted fs-1 mb-3" />
-                  <p className="text-muted mb-0">No meals planned for {isToday ? "today" : new Date(selectedDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</p>
+                  <p className="text-muted mb-0">
+                    No meals planned for{" "}
+                    {isToday
+                      ? "today"
+                      : new Date(selectedDate).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                  </p>
                 </div>
               ) : (
                 <div className="row g-3">
@@ -700,8 +717,12 @@ export default function ClientDashboardView({
                             : "br-light-gray-dotted"
                         }`}
                         style={{
-                          cursor: meal.completed || !canUploadMeals ? "default" : "pointer",
-                          pointerEvents: meal.completed || !canUploadMeals ? "none" : "auto",
+                          cursor:
+                            meal.completed || !canUploadMeals
+                              ? "default"
+                              : "pointer",
+                          pointerEvents:
+                            meal.completed || !canUploadMeals ? "none" : "auto",
                         }}
                         onClick={() => handleMealClick(meal)}
                       >
@@ -725,7 +746,8 @@ export default function ClientDashboardView({
                               ? {
                                   minHeight: "120px",
                                   maxHeight: "200px",
-                                  backgroundColor: "var(--color-surface-variant)",
+                                  backgroundColor:
+                                    "var(--color-surface-variant)",
                                 }
                               : { height: "120px" }
                           }
@@ -760,7 +782,9 @@ export default function ClientDashboardView({
                                 viewMode === "details"
                                   ? {
                                       opacity: 0.8,
-                                      filter: meal.completed ? "none" : "grayscale(100%)",
+                                      filter: meal.completed
+                                        ? "none"
+                                        : "grayscale(100%)",
                                       maxHeight: "200px",
                                       width: "100%",
                                       objectFit: "contain",
@@ -786,7 +810,9 @@ export default function ClientDashboardView({
                                   className="text-muted mb-2"
                                   style={{ fontSize: "2rem" }}
                                 />
-                                <div className="small text-muted fw-semibold">Pending</div>
+                                <div className="small text-muted fw-semibold">
+                                  Pending
+                                </div>
                               </div>
                             </div>
                           )}
@@ -921,4 +947,3 @@ export default function ClientDashboardView({
     </div>
   );
 }
-
