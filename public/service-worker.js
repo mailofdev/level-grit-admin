@@ -1,7 +1,7 @@
 /**
  * Service Worker for LevelGrit PWA
  * 
- * Enhanced offline support, caching strategies, and push notifications.
+ * Enhanced offline support and caching strategies.
  * Optimized for India's intermittent connectivity.
  */
 
@@ -129,75 +129,6 @@ self.addEventListener('fetch', (event) => {
           });
         });
       })
-  );
-});
-
-// ✅ Push event - handle incoming push notifications
-self.addEventListener('push', (event) => {
-  console.log('[Service Worker] Push notification received');
-  
-  let data = {};
-  try {
-    data = event.data ? event.data.json() : {};
-  } catch (e) {
-    data = { title: 'New Notification', body: event.data?.text() || 'You have a new notification' };
-  }
-
-  const title = data.title || 'LevelGrit';
-  const options = {
-    body: data.body || 'You have a new message',
-    icon: data.icon || '/192.png',
-    badge: '/192.png',
-    tag: data.tag || 'notification',
-    requireInteraction: data.requireInteraction || false,
-    data: data.data || {},
-    vibrate: [200, 100, 200],
-    ...data.options,
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
-
-// ✅ Notification click event - handle when user clicks notification
-self.addEventListener('notificationclick', (event) => {
-  console.log('[Service Worker] Notification clicked');
-  event.notification.close();
-
-  const urlToOpen = event.notification.data?.url || '/';
-  const action = event.action;
-
-  // Handle different notification actions
-  if (action === 'view') {
-    event.waitUntil(
-      clients.openWindow(urlToOpen)
-    );
-    return;
-  }
-
-  event.waitUntil(
-    clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true,
-    }).then((clientList) => {
-      // Check if there's already a window/tab open
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i];
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          return client.focus().then(() => {
-            // Navigate to the notification URL if different
-            if (client.url !== urlToOpen && 'navigate' in client) {
-              return client.navigate(urlToOpen);
-            }
-          });
-        }
-      }
-      // If no existing window, open a new one
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
   );
 });
 

@@ -338,7 +338,7 @@ body {
   }
 }
 
-/* Better toast/notification positioning on mobile */
+/* Better toast positioning on mobile */
 @media (max-width: 768px) {
   .toast-container {
     padding: 0.75rem;

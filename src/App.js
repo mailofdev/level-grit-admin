@@ -22,12 +22,10 @@ import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { NotificationProvider } from "./contexts/NotificationContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import ScrollToTop from "./components/navigation/ScrollToTop";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
-import ToastNotification from "./components/notifications/ToastNotification";
 import { ROLES } from "./utils/roles";
 
 // ============================================
@@ -134,7 +132,6 @@ function App() {
         <Router>
           <ScrollToTop />
           <AuthProvider>
-            <NotificationProvider>
               <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* ============================================
@@ -287,9 +284,7 @@ function App() {
                 {/* 404 - Catch all unmatched routes */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              <ToastNotification />
             </Suspense>
-            </NotificationProvider>
           </AuthProvider>
         </Router>
       </ThemeProvider>

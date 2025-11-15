@@ -109,54 +109,14 @@ export default function AdminDashboard() {
 
       {/* Main Section */}
       <div className="row g-4">
-        {/* Left: Notifications */}
+        {/* Quick Actions */}
         <motion.div 
-          className="col-lg-6"
-          initial={{ opacity: 0, x: -30 }}
+          className="col-lg-12"
+          initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <AnimatedCard delay={0.4}>
-            <div className="card shadow-lg rounded-4 border-0">
-              <div className="card-body p-4">
-                <h5 className="card-title text-dark mb-4 d-flex align-items-center gap-2 fw-bold">
-                  <span style={{ fontSize: "1.5rem" }}>🔔</span>
-                  <span>Notifications</span>
-                </h5>
-                <ul className="list-group list-group-flush">
-                  {[
-                    { text: "New trainer registration request received", icon: "📢" },
-                    { text: "Client milestone achieved", icon: "✅" },
-                    { text: "System maintenance scheduled tonight", icon: "⚠️" }
-                  ].map((item, idx) => (
-                    <motion.li
-                      key={idx}
-                      className="list-group-item border-0 px-0 py-3 bg-transparent border-bottom"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.5 + idx * 0.1 }}
-                      style={{ borderBottomColor: "rgba(0,0,0,0.05) !important" }}
-                    >
-                      <div className="d-flex align-items-center gap-2">
-                        <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
-                        <span className="text-dark">{item.text}</span>
-                      </div>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </AnimatedCard>
-        </motion.div>
-
-        {/* Right: Quick Actions */}
-        <motion.div 
-          className="col-lg-6"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          <AnimatedCard delay={0.5}>
             <div className="card shadow-lg rounded-4 border-0 text-center" style={{ background: "linear-gradient(135deg, #f1fcf8 0%, #e8f5e9 100%)" }}>
               <div className="card-body p-4">
                 <h5 className="card-title text-dark mb-4 fw-bold">

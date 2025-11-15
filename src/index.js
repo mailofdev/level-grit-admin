@@ -40,7 +40,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
  * - Offline support
  * - Caching strategies
  * - Background sync
- * - Push notifications
  * 
  * Note: Service Worker only works in production builds and HTTPS
  */
