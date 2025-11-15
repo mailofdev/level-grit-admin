@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "./authThunks";
+import { logout } from "./authSlice";
 import Loader from "../../components/display/Loader";
 import { Eye, EyeClosed } from "lucide-react";
 import Heading from "../../components/navigation/Heading";
+import { ROLES, normalizeRole } from "../../utils/roles";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const loginType = searchParams.get("type") || "trainer"; // Default to trainer if no type specified
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,16 +38,19 @@ const LoginForm = () => {
 
   // Helper function to get dashboard route based on role
   const getDashboardRoute = (role) => {
-    switch (role) {
-      case "Trainer":
-        return "/trainer-dashboard";
-      case "Administrator":
-        return "/admin-dashboard";
-         case "Client":
-        return "/client-dashboard";
-      default:
-        return "/trainer-dashboard"; // Default fallback
+    // Normalize role to handle both string and number formats
+    const normalizedRole = normalizeRole(role);
+    
+    if (normalizedRole === ROLES.CLIENT) {
+      return "/client-dashboard";
+    } else if (normalizedRole === ROLES.TRAINER) {
+      return "/trainer-dashboard";
+    } else if (normalizedRole === ROLES.ADMINISTRATOR) {
+      return "/admin-dashboard";
     }
+    
+    // Default fallback
+    return "/trainer-dashboard";
   };
 
   const handleSubmit = async (e) => {
@@ -57,12 +64,40 @@ const LoginForm = () => {
       const result = await dispatch(loginThunk({ email, password })).unwrap();
       // Get role from the login response
       const userRole = result?.userInfo?.role || result?.role;
-      // Navigate to the appropriate dashboard based on role
+      const normalizedRole = normalizeRole(userRole);
+      
+      // Validate role against login entry point
+      if (loginType === "client") {
+        // Client login entry point - only allow Client role
+        if (normalizedRole === ROLES.TRAINER || normalizedRole === ROLES.ADMINISTRATOR) {
+          // Clear auth_data that was saved during login
+          dispatch(logout());
+          setErrorMessage(
+            "This login is intended only for clients. Trainers and should use the Trainer Login button instead."
+          );
+          setIsLoading(false);
+          return;
+        }
+      } else if (loginType === "trainer") {
+        // Trainer login entry point - allow Trainer and Administrator roles
+        if (normalizedRole === ROLES.CLIENT) {
+          // Clear auth_data that was saved during login
+          dispatch(logout());
+          setErrorMessage(
+            "This login is intended for trainers. Clients should use the Client Login button instead."
+          );
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      // Role validation passed - navigate to the appropriate dashboard
       const dashboardRoute = getDashboardRoute(userRole);
+      setIsLoading(false);
+      // Navigate to the appropriate dashboard
       navigate(dashboardRoute, { replace: true });
     } catch (error) {
       setErrorMessage(error || "Invalid credentials. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };

@@ -310,7 +310,7 @@ const AboutUs = () => {
                     For Trainers
                   </Link>
                   <Link 
-                    to="/login" 
+                    to="/login?type=client" 
                     className="btn btn-light btn-lg rounded-pill px-5 py-3"
                     style={{ fontWeight: '600', backgroundColor: '#43e97b', color: '#fff', border: 'none' }}
                   >

@@ -134,7 +134,7 @@ const RegisterForm = () => {
             detail: loginError?.message || "Could not log in automatically.",
             life: 3000,
           });
-          navigate("/login");
+          navigate("/login?type=client");
         } finally {
           setIsLoading(false);
         }
@@ -397,7 +397,7 @@ const RegisterForm = () => {
             <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
               Already have an account?{" "}
               <Link
-                to="/login"
+                to="/login?type=client"
                 className="text-decoration-none fw-semibold smooth-transition"
                 style={{ color: "var(--color-primary)" }}
               >

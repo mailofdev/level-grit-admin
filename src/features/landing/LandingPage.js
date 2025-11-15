@@ -87,10 +87,10 @@ const LandingPage = () => {
     setDeferredPrompt(null);
   };
 
-  const handleSignInNavigation = () => navigate("/login");
+  const handleSignInNavigation = () => navigate("/login?type=client");
   const handleSignUpNavigation = () => navigate("/register");
-  const handleClientLogin = () => navigate("/login");
-  const handleTrainerLogin = () => navigate("/login");
+  const handleClientLogin = () => navigate("/login?type=client");
+  const handleTrainerLogin = () => navigate("/login?type=trainer");
   const handleTrainerSignUp = () => navigate("/register");
 
   // Animation variants

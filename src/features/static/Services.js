@@ -189,7 +189,7 @@ const Services = () => {
                             style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate('/login')}
+                            onClick={() => navigate('/login?type=client')}
                           >
                             Join Now <FaArrowRight className="ms-2" />
                           </motion.button>
@@ -258,7 +258,7 @@ const Services = () => {
               <FaDumbbell className="me-2" />
               For Trainers
             </Link>
-            <Link to="/login" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#43e97b', color: '#fff', border: 'none' }}>
+            <Link to="/login?type=client" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#43e97b', color: '#fff', border: 'none' }}>
               <FaUsers className="me-2" />
               For Clients
             </Link>

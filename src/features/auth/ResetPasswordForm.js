@@ -145,7 +145,7 @@ const ResetPasswordForm = () => {
       
       // Redirect to login after 2 seconds
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login?type=client");
       }, 2000);
     } catch (error) {
       setErrorMessage(error || "Failed to reset password. Please check your OTP and try again.");
@@ -162,7 +162,7 @@ const ResetPasswordForm = () => {
       setErrorMessage("");
       setSuccessMessage("");
     } else {
-      navigate("/login");
+      navigate("/login?type=client");
     }
   };
 
@@ -534,7 +534,7 @@ const ResetPasswordForm = () => {
                 <p className="mb-2" style={{ fontSize: '0.9rem' }}>
                   Remember your password?{" "}
                   <Link
-                    to="/login"
+                    to="/login?type=client"
                     className="text-decoration-none fw-semibold smooth-transition"
                     style={{ color: "var(--color-primary)" }}
                   >
