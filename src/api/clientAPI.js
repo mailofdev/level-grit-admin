@@ -14,10 +14,15 @@ import axiosInstance from "./axiosInstance";
 /**
  * Get Client Dashboard Data
  * API Path: api/Client/GetDashboard
+ * @param {string|null} dateTime - Optional date in ISO format. If not provided, fetches today's data.
  * @returns {Promise<Object>} Client dashboard data
  */
-export const getClientDashboard = async () => {
-  const { data } = await axiosInstance.get("api/Client/GetDashboard");
+export const getClientDashboard = async (dateTime = null) => {
+  const params = {};
+  if (dateTime) {
+    params.dateTime = dateTime;
+  }
+  const { data } = await axiosInstance.get("api/Client/GetDashboard", { params });
   return data;
 };
 
@@ -30,6 +35,7 @@ export const getClientDashboard = async () => {
  * API Path: api/Client/UploadMeal
  * @param {Object} mealData - Meal data
  * @param {string|number} mealData.mealPlanId - Meal plan ID
+ * @param {string|number} mealData.plannedMealId - Planned meal ID (required for client role)
  * @param {string} mealData.mealName - Name of the meal
  * @param {number} mealData.sequence - Meal sequence number
  * @param {string} mealData.message - Optional message

@@ -61,23 +61,30 @@ export const registerClient = async (userData) => {
  * Get Client Dashboard Data (for trainers viewing a specific client)
  * API Path: api/Trainer/GetClientDashboard/{clientId} or api/Client/GetDashboard?clientId={clientId}
  * @param {string|number} clientId - Client identifier
+ * @param {string|null} dateTime - Optional date in ISO format. If not provided, fetches today's data.
  * @returns {Promise<Object>} Client dashboard data
  */
-export const getClientDashboardByTrainer = async (clientId) => {
+export const getClientDashboardByTrainer = async (clientId, dateTime = null) => {
   if (!clientId) {
     throw new Error("Client ID is required");
   }
   
   try {
     // Try trainer endpoint first (most likely pattern)
-    const { data } = await axiosInstance.get(`api/Trainer/GetClientDashboard/${clientId}`);
+    const params = {};
+    if (dateTime) {
+      params.dateTime = dateTime;
+    }
+    const { data } = await axiosInstance.get(`api/Trainer/GetClientDashboard/${clientId}`, { params });
     return data;
   } catch (error) {
     // If that fails, try client endpoint with clientId as query parameter
     try {
-      const { data } = await axiosInstance.get("api/Client/GetDashboard", {
-        params: { clientId },
-      });
+      const params = { clientId };
+      if (dateTime) {
+        params.dateTime = dateTime;
+      }
+      const { data } = await axiosInstance.get("api/Client/GetDashboard", { params });
       return data;
     } catch (err) {
       // If both fail, throw the original error

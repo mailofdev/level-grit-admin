@@ -16,17 +16,33 @@ import { formatErrorMessage, logError } from "../../utils/errorHandler";
 
 /**
  * Fetch Client Dashboard Data
- * @param {string|number} clientId - Optional client ID. If provided, uses trainer API endpoint.
+ * @param {Object|string|number} params - Parameters object or clientId string/number
+ * @param {string|number} params.clientId - Optional client ID. If provided, uses trainer API endpoint.
+ * @param {string|null} params.dateTime - Optional date in ISO format. If not provided, fetches today's data.
+ * @param {string|number} clientId - Legacy: Optional client ID (for backward compatibility)
+ * @param {string|null} dateTime - Legacy: Optional date (for backward compatibility)
  */
 export const getClientDashboardThunk = createAsyncThunk(
   "client/getDashboard",
-  async (clientId, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
+      // Handle both object params and legacy string/number clientId
+      let clientId = null;
+      let dateTime = null;
+      
+      if (typeof params === 'object' && params !== null) {
+        clientId = params.clientId;
+        dateTime = params.dateTime;
+      } else {
+        // Legacy: params is clientId
+        clientId = params;
+      }
+      
       // If clientId is provided, use trainer API endpoint (for trainers viewing a client)
       // Otherwise, use client API endpoint (for clients viewing their own dashboard)
       const data = clientId 
-        ? await getClientDashboardByTrainer(clientId)
-        : await getClientDashboard();
+        ? await getClientDashboardByTrainer(clientId, dateTime)
+        : await getClientDashboard(dateTime);
       return data;
     } catch (error) {
       logError(error, "Get Client Dashboard");
@@ -45,6 +61,7 @@ export const getClientDashboardThunk = createAsyncThunk(
  * Upload a meal (image + info)
  * @param {Object} mealData - Meal data
  * @param {string|number} mealData.mealPlanId - Meal plan ID
+ * @param {string|number} mealData.plannedMealId - Planned meal ID (required for client role)
  * @param {string} mealData.mealName - Name of the meal
  * @param {number} mealData.sequence - Meal sequence number
  * @param {string} mealData.message - Optional message
