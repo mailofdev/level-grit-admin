@@ -18,6 +18,7 @@ import { Modal, Form } from "react-bootstrap";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES, isClient } from "../../utils/roles";
 import Heading from "../../components/navigation/Heading";
+import Alert from "../../components/common/Alert";
 
 /**
  * Shared Client Dashboard View Component
@@ -236,9 +237,15 @@ export default function ClientDashboardView({
     return (
       <div className="container">
         {viewMode === "details" ? (
-          <div className="alert alert-danger mt-5" role="alert">
-            <h4 className="alert-heading">Error Loading Dashboard</h4>
-            <p>{error}</p>
+          <div>
+            <Alert
+              type="error"
+              title="Error Loading Dashboard"
+              message={error}
+              dismissible={false}
+              position="inline"
+              className="mt-5 mb-3"
+            />
             <button
               className="btn btn-primary"
               onClick={() => {
@@ -558,32 +565,35 @@ export default function ClientDashboardView({
                     <FaMessage className="me-1" /> Message
                   </button>
 
-                  <SplitButton
-                    label="Plan"
-                    icon="pi pi-plus"
-                    className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
-                    style={{
-                      color: "white",
-                    }}
-                    model={[
-                      {
-                        label: "Add",
-                        icon: "pi pi-pencil",
-                        command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: false },
-                          }),
-                      },
-                      {
-                        label: "Preview",
-                        icon: "pi pi-eye",
-                        command: () =>
-                          navigate(`/adjust-plan/${client.clientId}`, {
-                            state: { client, isView: true },
-                          }),
-                      },
-                    ]}
-                  />
+                  {/* Only show Plan button for trainers/admins, not for clients */}
+                  {!isClientRole && (
+                    <SplitButton
+                      label="Plan"
+                      icon="pi pi-plus"
+                      className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
+                      style={{
+                        color: "white",
+                      }}
+                      model={[
+                        {
+                          label: "Add",
+                          icon: "pi pi-pencil",
+                          command: () =>
+                            navigate(`/adjust-plan/${client.clientId}`, {
+                              state: { client, isView: false },
+                            }),
+                        },
+                        {
+                          label: "Preview",
+                          icon: "pi pi-eye",
+                          command: () =>
+                            navigate(`/adjust-plan/${client.clientId}`, {
+                              state: { client, isView: true },
+                            }),
+                        },
+                      ]}
+                    />
+                  )}
                 </div>
               </div>
             </div>

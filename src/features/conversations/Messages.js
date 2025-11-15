@@ -32,6 +32,7 @@ import {
   markConversationRead,
 } from "./conversationSlice";
 import { getChatId } from "../../config/chatService";
+import Alert from "../../components/common/Alert";
 
 export default function Messages({ isTrainer = false }) {
   const dispatch = useDispatch();
@@ -281,14 +282,14 @@ export default function Messages({ isTrainer = false }) {
       )}
       
       {error && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="alert alert-danger alert-dismissible fade show"
-          role="alert"
-        >
-          {error}
-        </motion.div>
+        <Alert
+          type="error"
+          message={error}
+          dismissible={true}
+          onClose={() => {}}
+          position="inline"
+          className="mb-3"
+        />
       )}
       
       <motion.div

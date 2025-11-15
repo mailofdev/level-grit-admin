@@ -7,6 +7,7 @@ import Loader from "../../components/display/Loader";
 import { Eye, EyeClosed } from "lucide-react";
 import Heading from "../../components/navigation/Heading";
 import { ROLES, normalizeRole } from "../../utils/roles";
+import Alert from "../../components/common/Alert";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -151,18 +152,14 @@ navigate('/')
         <div style={{ padding: '1.5rem' }}>
     
           {errorMessage && (
-            <div 
-              className="alert alert-danger text-center py-2 mb-3 smooth-transition" 
-              role="alert"
-              style={{ 
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                border: '1px solid rgba(220, 53, 69, 0.2)'
-              }}
-            >
-              <i className="fas fa-exclamation-triangle me-2"></i>
-              {errorMessage}
-            </div>
+            <Alert
+              type="error"
+              message={errorMessage}
+              dismissible={true}
+              onClose={() => setErrorMessage("")}
+              position="inline"
+              className="mb-3"
+            />
           )}
 
           <form onSubmit={handleSubmit} className="needs-validation">

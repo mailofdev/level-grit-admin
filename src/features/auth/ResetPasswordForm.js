@@ -6,6 +6,7 @@ import { clearError } from "./authSlice";
 import Loader from "../../components/display/Loader";
 import Heading from "../../components/navigation/Heading";
 import { Eye, EyeClosed } from "lucide-react";
+import Alert from "../../components/common/Alert";
 
 const ResetPasswordForm = () => {
   const navigate = useNavigate();
@@ -211,57 +212,47 @@ const ResetPasswordForm = () => {
         <div style={{ padding: '1.5rem' }}>
           {/* Success Alert (shown for 3 seconds after email sent) */}
           {showSuccessAlert && successMessage && (
-            <div 
-              className="alert alert-success text-center py-3 mb-3 smooth-transition" 
-              role="alert"
-              style={{ 
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                border: '1px solid rgba(40, 167, 69, 0.2)',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)'
-              }}
-            >
-              <i className="fas fa-check-circle me-2" style={{ fontSize: '1.1rem' }}></i>
-              <strong>Success!</strong>
-              <div className="mt-2">{successMessage}</div>
-              <div className="mt-2 small">
-                <i className="fas fa-envelope me-1"></i>
-                Please check your email: <strong>{storedEmail}</strong>
-              </div>
-            </div>
+            <Alert
+              type="success"
+              title="Success!"
+              message={
+                <div>
+                  <div className="mb-2">{successMessage}</div>
+                  <div className="small">
+                    <i className="fas fa-envelope me-1"></i>
+                    Please check your email: <strong>{storedEmail}</strong>
+                  </div>
+                </div>
+              }
+              dismissible={true}
+              onClose={() => setShowSuccessAlert(false)}
+              position="inline"
+              className="mb-3"
+            />
           )}
 
           {/* Success Message (for password reset) */}
           {!showSuccessAlert && successMessage && step === 2 && (
-            <div 
-              className="alert alert-success text-center py-3 mb-3 smooth-transition" 
-              role="alert"
-              style={{ 
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                border: '1px solid rgba(40, 167, 69, 0.2)',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)'
-              }}
-            >
-              <i className="fas fa-check-circle me-2" style={{ fontSize: '1.1rem' }}></i>
-              {successMessage}
-            </div>
+            <Alert
+              type="success"
+              message={successMessage}
+              dismissible={true}
+              onClose={() => setSuccessMessage("")}
+              position="inline"
+              className="mb-3"
+            />
           )}
 
           {/* Error Message */}
           {errorMessage && (
-            <div 
-              className="alert alert-danger text-center py-2 mb-3 smooth-transition" 
-              role="alert"
-              style={{ 
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                border: '1px solid rgba(220, 53, 69, 0.2)'
-              }}
-            >
-              <i className="fas fa-exclamation-triangle me-2"></i>
-              {errorMessage}
-            </div>
+            <Alert
+              type="error"
+              message={errorMessage}
+              dismissible={true}
+              onClose={() => setErrorMessage("")}
+              position="inline"
+              className="mb-3"
+            />
           )}
 
           {/* Step 1: Email Form */}
@@ -269,19 +260,13 @@ const ResetPasswordForm = () => {
             <>
               {/* Info Message */}
               {!showSuccessAlert && (
-                <div 
-                  className="alert alert-info text-center py-2 mb-3 smooth-transition" 
-                  role="alert"
-                  style={{ 
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                    border: '1px solid rgba(13, 110, 253, 0.2)',
-                    backgroundColor: 'rgba(13, 110, 253, 0.05)'
-                  }}
-                >
-                  <i className="fas fa-info-circle me-2"></i>
-                  Enter your email address and we'll send you an OTP to reset your password.
-                </div>
+                <Alert
+                  type="info"
+                  message="Enter your email address and we'll send you an OTP to reset your password."
+                  dismissible={false}
+                  position="inline"
+                  className="mb-3"
+                />
               )}
 
               <form onSubmit={handleEmailSubmit} className="needs-validation">
@@ -349,19 +334,13 @@ const ResetPasswordForm = () => {
           {step === 2 && (
             <>
               {/* Info Message */}
-              <div 
-                className="alert alert-info text-center py-2 mb-3 smooth-transition" 
-                role="alert"
-                style={{ 
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                  border: '1px solid rgba(13, 110, 253, 0.2)',
-                  backgroundColor: 'rgba(13, 110, 253, 0.05)'
-                }}
-              >
-                <i className="fas fa-info-circle me-2"></i>
-                Enter the OTP sent to <strong>{storedEmail}</strong> and your new password.
-              </div>
+              <Alert
+                type="info"
+                message={`Enter the OTP sent to ${storedEmail} and your new password.`}
+                dismissible={false}
+                position="inline"
+                className="mb-3"
+              />
 
               <form onSubmit={handlePasswordReset} className="needs-validation">
                 {/* OTP Field */}

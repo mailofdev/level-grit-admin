@@ -4,6 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import Alert from '../../components/common/Alert';
 
 export default function PlanButtonWithDatePicker({ client, navigate }) {
   const [showDateDialog, setShowDateDialog] = useState(false);
@@ -117,17 +118,23 @@ export default function PlanButtonWithDatePicker({ client, navigate }) {
           </div>
 
           {actionType === 'add' && selectedDate && selectedDate.toDateString() !== today.toDateString() && (
-            <div className="alert alert-info p-2 small">
-              <i className="pi pi-info-circle me-2"></i>
-              You can only edit today's plan. Future dates will be read-only.
-            </div>
+            <Alert
+              type="info"
+              message="You can only edit today's plan. Future dates will be read-only."
+              dismissible={false}
+              position="inline"
+              className="p-2 small"
+            />
           )}
 
           {actionType === 'preview' && (
-            <div className="alert alert-secondary p-2 small">
-              <i className="pi pi-eye me-2"></i>
-              Opening in preview mode (read-only)
-            </div>
+            <Alert
+              type="info"
+              message="Opening in preview mode (read-only)"
+              dismissible={false}
+              position="inline"
+              className="p-2 small"
+            />
           )}
         </div>
       </Dialog>
