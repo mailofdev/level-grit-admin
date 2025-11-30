@@ -184,21 +184,25 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-envelope text-primary me-2"></i>Email Address
+                <i className="fas fa-envelope text-primary me-2"></i>Email Address <span className="text-danger">*</span>
               </label>
               <input
                 type="email"
-                className="form-control smooth-transition"
+                className="form-control smooth-transition border-danger border-opacity-25"
                 placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
                 inputMode="email"
+                aria-required="true"
+                maxLength={100}
                 style={{ 
                   minHeight: '48px',
                   fontSize: '0.95rem',
-                  padding: '0.75rem 1rem'
+                  padding: '0.75rem 1rem',
+                  backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                  borderWidth: '2px'
                 }}
               />
             </div>
@@ -212,7 +216,7 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-lock text-primary me-2"></i>Password
+                <i className="fas fa-lock text-primary me-2"></i>Password <span className="text-danger">*</span>
               </label>
 
               <div className="position-relative">
@@ -223,6 +227,9 @@ navigate('/')
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="form-control w-100 pe-5 smooth-transition"
+                  aria-required="true"
+                  minLength={6}
+                  maxLength={100}
                   style={{ 
                     paddingRight: "3rem",
                     minHeight: '48px',

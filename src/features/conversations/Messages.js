@@ -226,7 +226,9 @@ export default function Messages({ isTrainer = false }) {
         })
       ).unwrap();
     } catch (err) {
-      console.error("Error sending message:", err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error sending message:", err);
+      }
       // Restore message on error
       setNewMessage(messageText);
     }
@@ -314,8 +316,14 @@ export default function Messages({ isTrainer = false }) {
             }}
           >
             {messages.length === 0 ? (
-              <div className="text-center text-muted mt-5">
-                <p>No messages yet. Start the conversation! 💬</p>
+              <div className="d-flex flex-column align-items-center justify-content-center h-100 text-center py-5">
+                <div className="mb-4" style={{ fontSize: "4rem" }}>
+                  💬
+                </div>
+                <h5 className="fw-bold text-muted mb-2">No messages yet</h5>
+                <p className="text-muted mb-0">
+                  Start the conversation by sending a message below.
+                </p>
               </div>
             ) : (
               <AnimatePresence>

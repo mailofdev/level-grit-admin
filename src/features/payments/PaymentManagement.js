@@ -39,11 +39,13 @@ export default function PaymentManagement() {
       const paymentsByTrainer = groupPaymentsByTrainer(successfulPayments);
       setTrainerPayments(paymentsByTrainer);
     } catch (error) {
-      console.error("Error loading payments:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error loading payments:", error);
+      }
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: error.message || "Failed to load payment records",
+        detail: error.message || "Unable to load payment records. Check your internet connection or try again.",
         life: 5000,
       });
     } finally {
@@ -294,10 +296,15 @@ export default function PaymentManagement() {
           </Card.Header>
           <Card.Body>
             {trainerPayments.length === 0 ? (
-              <Alert variant="info" className="text-center">
-                <i className="fas fa-info-circle me-2"></i>
-                No payment records found. Payments will appear here when trainers make payments.
-              </Alert>
+              <div className="text-center py-5">
+                <div className="mb-4" style={{ fontSize: "4rem" }}>
+                  💳
+                </div>
+                <h5 className="fw-bold text-muted mb-2">No payment records found</h5>
+                <p className="text-muted mb-0">
+                  Payment records will appear here when trainers make payments.
+                </p>
+              </div>
             ) : (
               <div className="table-responsive">
                 <Table hover className="mb-0">

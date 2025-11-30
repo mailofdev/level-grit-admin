@@ -217,8 +217,8 @@ const DynamicTable = ({ columns = [], data = [], formSchema = [], onRowSelect, o
           <button className="btn btn-danger" onClick={handleDeleteTop} disabled={multiSelect ? selectedRows.length === 0 : selectedRow == null} aria-label="Delete selected"><MdDelete /></button>
         </div>
       </div>
-      <div className="table-responsive" style={{overflowX: 'auto', width: '100%'}}>
-        <table className="table table-hover table-striped align-middle" aria-labelledby="tableTitle" style={{minWidth: 700}}>
+      <div className="table-responsive" style={{overflowX: 'auto', width: '100%', maxWidth: '100%'}}>
+        <table className="table table-hover table-striped align-middle" aria-labelledby="tableTitle" style={{minWidth: '100%', width: '100%'}}>
           <thead className="table-light">
             <tr>
               <th scope="col">Select</th>
@@ -230,7 +230,19 @@ const DynamicTable = ({ columns = [], data = [], formSchema = [], onRowSelect, o
           </thead>
           <tbody>
             {paginatedData.length === 0 ? (
-              <tr><td colSpan={columns.length + (actions.length > 0 ? 2 : 1)} className="text-center">No data</td></tr>
+              <tr>
+                <td colSpan={columns.length + (actions.length > 0 ? 2 : 1)} className="text-center py-5">
+                  <div className="d-flex flex-column align-items-center">
+                    <div className="mb-3" style={{ fontSize: "3rem" }}>
+                      📋
+                    </div>
+                    <p className="text-muted mb-0 fw-semibold">No items found</p>
+                    <small className="text-muted">
+                      {search ? "Try adjusting your search criteria." : "No data available yet."}
+                    </small>
+                  </div>
+                </td>
+              </tr>
             ) : (
               paginatedData.map((row, idx) => {
                 // idx here is the index in paginatedData, so get the real index in filteredData

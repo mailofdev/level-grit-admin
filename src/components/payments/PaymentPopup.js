@@ -50,20 +50,30 @@ const PaymentPopup = ({
       setLoading(true);
       setProcessing(true);
 
-      console.log("Starting payment process for clientId:", clientId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Starting payment process for clientId:", clientId);
+      }
 
       // Load Razorpay script first
-      console.log("Loading Razorpay script...");
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Loading Razorpay script...");
+      }
       await loadRazorpayScript();
 
       if (!window.Razorpay) {
-        console.error("Razorpay not available after loading script");
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Razorpay not available after loading script");
+        }
         throw new Error("Failed to load Razorpay. Please check your internet connection.");
       }
-      console.log("Razorpay script loaded successfully");
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Razorpay script loaded successfully");
+      }
 
       // Create order via backend
-      console.log("Creating order...", { clientId, amount, currency: "INR" });
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Creating order...", { clientId, amount, currency: "INR" });
+      }
       const orderResponse = await createOrder({
         clientId: clientId,
         amount: amount,
@@ -71,13 +81,17 @@ const PaymentPopup = ({
         receipt: `receipt_${clientId}_${Date.now()}`,
       });
 
-      console.log("Order response received:", orderResponse);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Order response received:", orderResponse);
+      }
 
       // Handle both camelCase (orderId) and snake_case (order_id)
       const orderId = orderResponse?.orderId || orderResponse?.order_id;
       
       if (!orderId) {
-        console.error("No order ID in response:", orderResponse);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("No order ID in response:", orderResponse);
+        }
         throw new Error("Failed to create order. Order ID not received from server.");
       }
 
@@ -86,18 +100,24 @@ const PaymentPopup = ({
         || orderResponse?.keyId 
         || process.env.REACT_APP_RAZORPAY_KEY_ID;
 
-      console.log("Razorpay key check:", {
-        hasKeyInResponse: !!(orderResponse?.key_id || orderResponse?.keyId),
-        hasEnvKey: !!process.env.REACT_APP_RAZORPAY_KEY_ID,
-        finalKey: razorpayKey ? "***" : "MISSING"
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Razorpay key check:", {
+          hasKeyInResponse: !!(orderResponse?.key_id || orderResponse?.keyId),
+          hasEnvKey: !!process.env.REACT_APP_RAZORPAY_KEY_ID,
+          finalKey: razorpayKey ? "***" : "MISSING"
+        });
+      }
 
       if (!razorpayKey) {
-        console.error("Razorpay key not found in response and no env var set");
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Razorpay key not found in response and no env var set");
+        }
         throw new Error("Razorpay configuration missing. Please check environment variables or contact support.");
       }
 
-      console.log("Opening Razorpay checkout with orderId:", orderId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Opening Razorpay checkout with orderId:", orderId);
+      }
 
       // Calculate amount in paise for Razorpay
       // CRITICAL: Razorpay expects amount in smallest currency unit (paise for INR)
@@ -114,21 +134,25 @@ const PaymentPopup = ({
       // Validate amount
       if (amount === 500 && amountInPaise !== 50000) {
         const errorMsg = `❌ CRITICAL ERROR: Amount calculation failed! Expected 50000 paise for ₹500, but got ${amountInPaise} paise (₹${amountInPaise / 100}). Payment cannot proceed.`;
-        console.error(errorMsg);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(errorMsg);
+        }
         throw new Error(`Payment amount error: Cannot calculate correct amount. Expected ₹500 but got ₹${amountInPaise / 100}. Please contact support.`);
       }
       
       // Warn if order response has different amount
-      if (orderResponse?.amount && orderResponse.amount !== amount && orderResponse.amount !== amountInPaise) {
+      if (process.env.NODE_ENV === 'development' && orderResponse?.amount && orderResponse.amount !== amount && orderResponse.amount !== amountInPaise) {
         console.warn(`⚠️ Warning: Order response amount (${orderResponse.amount}) differs from expected (${amount} rupees / ${amountInPaise} paise). Using expected amount: ${amountInPaise} paise.`);
       }
       
-      console.log("Amount calculation:", {
-        expectedAmount: `₹${amount} = ${amountInPaise} paise`,
-        orderResponseAmount: orderResponse?.amount,
-        finalAmountInPaise: amountInPaise,
-        note: "Using expected amount to ensure correct charge"
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Amount calculation:", {
+          expectedAmount: `₹${amount} = ${amountInPaise} paise`,
+          orderResponseAmount: orderResponse?.amount,
+          finalAmountInPaise: amountInPaise,
+          note: "Using expected amount to ensure correct charge"
+        });
+      }
 
       // CRITICAL: Amount must match the order amount exactly
       // If backend created order with wrong amount, payment will fail or charge wrong amount
@@ -167,7 +191,9 @@ const PaymentPopup = ({
               throw new Error(verifyResponse?.message || "Payment verification failed");
             }
           } catch (error) {
-            console.error("Payment verification error:", error);
+            if (process.env.NODE_ENV === 'development') {
+              console.error("Payment verification error:", error);
+            }
             showToast(
               "error",
               "Verification Failed",
@@ -195,19 +221,23 @@ const PaymentPopup = ({
       };
 
       // Open Razorpay checkout
-      console.log("Razorpay options:", { 
-        ...options, 
-        key: "***",
-        amount: options.amount,
-        currency: options.currency,
-        order_id: options.order_id
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Razorpay options:", { 
+          ...options, 
+          key: "***",
+          amount: options.amount,
+          currency: options.currency,
+          order_id: options.order_id
+        });
+      }
       
       try {
         const razorpay = new window.Razorpay(options);
         
         razorpay.on("payment.failed", function (response) {
-          console.error("Payment failed:", response);
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Payment failed:", response);
+          }
           setLoading(false);
           setProcessing(false);
           
@@ -216,7 +246,9 @@ const PaymentPopup = ({
           
           if (response.error) {
             const error = response.error;
-            console.error("Razorpay error details:", error);
+            if (process.env.NODE_ENV === 'development') {
+              console.error("Razorpay error details:", error);
+            }
             
             // Handle international transaction error
             if (error.reason === "international_transaction_not_allowed") {
@@ -236,11 +268,15 @@ const PaymentPopup = ({
         });
 
         razorpay.on("payment.authorized", function (response) {
-          console.log("Payment authorized:", response);
+          if (process.env.NODE_ENV === 'development') {
+            console.log("Payment authorized:", response);
+          }
         });
 
         razorpay.on("payment.cancelled", function (response) {
-          console.log("Payment cancelled:", response);
+          if (process.env.NODE_ENV === 'development') {
+            console.log("Payment cancelled:", response);
+          }
           setLoading(false);
           setProcessing(false);
           showToast(
@@ -250,22 +286,30 @@ const PaymentPopup = ({
           );
         });
 
-        console.log("Attempting to open Razorpay checkout...");
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Attempting to open Razorpay checkout...");
+        }
         razorpay.open();
-        console.log("Razorpay checkout opened successfully");
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Razorpay checkout opened successfully");
+        }
       } catch (razorpayError) {
-        console.error("Error opening Razorpay checkout:", razorpayError);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Error opening Razorpay checkout:", razorpayError);
+        }
         throw new Error(`Failed to open payment gateway: ${razorpayError.message}`);
       }
       
       setLoading(false);
     } catch (error) {
-      console.error("Payment initiation error:", error);
-      console.error("Error details:", {
-        message: error?.message,
-        response: error?.response?.data,
-        status: error?.response?.status,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Payment initiation error:", error);
+        console.error("Error details:", {
+          message: error?.message,
+          response: error?.response?.data,
+          status: error?.response?.status,
+        });
+      }
       showToast(
         "error",
         "Payment Error",

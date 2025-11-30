@@ -89,7 +89,17 @@ axiosInstance.interceptors.response.use(
   // Error handler - process and format errors
   (err) => {
     // Log error for debugging (development only)
-    logError(err, "Axios Response Error");
+    if (process.env.NODE_ENV === 'development') {
+      logError(err, "Axios Response Error");
+    }
+
+    // Handle network errors
+    if (!err.response) {
+      const networkError = new Error("Network error. Please check your internet connection and try again.");
+      networkError.isNetworkError = true;
+      networkError.originalError = err;
+      return Promise.reject(networkError);
+    }
 
     // Handle 401 Unauthorized - Session expired or invalid token
     if (err.response?.status === 401) {
@@ -103,6 +113,24 @@ axiosInstance.interceptors.response.use(
       }, 100);
       
       return Promise.reject(err);
+    }
+
+    // Handle 404 Not Found
+    if (err.response?.status === 404) {
+      const notFoundError = new Error("The requested resource was not found.");
+      notFoundError.response = err.response;
+      notFoundError.request = err.request;
+      notFoundError.config = err.config;
+      return Promise.reject(notFoundError);
+    }
+
+    // Handle 500+ server errors
+    if (err.response?.status >= 500) {
+      const serverError = new Error("Server error. Please try again later or contact support if the problem persists.");
+      serverError.response = err.response;
+      serverError.request = err.request;
+      serverError.config = err.config;
+      return Promise.reject(serverError);
     }
 
     // Format error message for better user experience

@@ -11,7 +11,6 @@ import {
   Button,
   Row,
   Col,
-  FloatingLabel,
 } from "react-bootstrap";
 import { Eye, EyeClosed } from "lucide-react";
 
@@ -50,7 +49,9 @@ const RegisterClientForm = () => {
     try {
       // Register client - backend will create client and return response
       const response = await registerClient(clientData);
-      console.log("Register client response:", response);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Register client response:", response);
+      }
       
       // Extract client ID - check multiple possible fields
       const clientId = response?.clientId 
@@ -60,8 +61,10 @@ const RegisterClientForm = () => {
         || response?.data?.id;
       
       if (!clientId) {
-        console.error("No client ID in response:", response);
-        throw new Error("Client ID not received from server. Response: " + JSON.stringify(response));
+        if (process.env.NODE_ENV === 'development') {
+          console.error("No client ID in response:", response);
+        }
+        throw new Error("Client ID not received from server. Please try again.");
       }
 
       // Check IsSubscriptionPaid status from backend response
@@ -79,21 +82,29 @@ const RegisterClientForm = () => {
       
       // If IsSubscriptionPaid is still undefined, check client count as fallback
       if (IsSubscriptionPaid === undefined) {
-        console.warn("IsSubscriptionPaid not in response, checking client count as fallback");
+        if (process.env.NODE_ENV === 'development') {
+          console.warn("IsSubscriptionPaid not in response, checking client count as fallback");
+        }
         try {
           const clients = await getClientsForTrainer();
           const clientCount = Array.isArray(clients) ? clients.length : 0;
           // If count > 1, this is 2nd+ client (needs payment, so IsSubscriptionPaid = false)
           IsSubscriptionPaid = clientCount <= 1; // First client is active, 2nd+ is inactive
-          console.log("Determined IsSubscriptionPaid from client count:", IsSubscriptionPaid, "Count:", clientCount);
+          if (process.env.NODE_ENV === 'development') {
+            console.log("Determined IsSubscriptionPaid from client count:", IsSubscriptionPaid, "Count:", clientCount);
+          }
         } catch (countError) {
-          console.error("Error fetching client count:", countError);
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Error fetching client count:", countError);
+          }
           // Default to true if we can't determine
           IsSubscriptionPaid = true;
         }
       }
 
-      console.log("Final IsSubscriptionPaid status:", IsSubscriptionPaid, "ClientId:", clientId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Final IsSubscriptionPaid status:", IsSubscriptionPaid, "ClientId:", clientId);
+      }
 
       // If client is not active (IsSubscriptionPaid === false), show payment popup
       if (IsSubscriptionPaid === false) {
@@ -118,14 +129,16 @@ const RegisterClientForm = () => {
         setTimeout(() => navigate(-1), 1000);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      console.error("Error response:", error?.response);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Registration error:", error);
+        console.error("Error response:", error?.response);
+      }
       
       // More detailed error message
       const errorMessage = error?.response?.data?.message 
         || error?.response?.data?.error
         || error?.message 
-        || "Registration failed. Please try again.";
+        || "Registration failed. Please check your information and try again.";
       
       toast.current.show({
         severity: "error",
@@ -186,7 +199,7 @@ const RegisterClientForm = () => {
 
       <div className="container">
         <Heading pageName="Register Client" sticky={true} />
-        <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
+        <div className="d-flex flex-column mt-4" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
           <div className="flex-grow-1 overflow-auto">
             <div className="row justify-content-center">
               <div className="col-12">
@@ -202,100 +215,114 @@ const RegisterClientForm = () => {
                       </h5>
                       <Row className="gy-3">
                         <Col md={6}>
-                          <FloatingLabel label="Full Name" className="smooth-transition">
-                            <Form.Control
-                              type="text"
-                              name="fullName"
-                              placeholder="Full Name"
-                              value={formData.fullName}
-                              onChange={handleChange}
-                              required
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="fw-semibold mb-2">
+                            Full Name <span className="text-danger">*</span>
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="fullName"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            required
+                            className="smooth-transition"
+                            aria-required="true"
+                            maxLength={100}
+                          />
                         </Col>
 
                         <Col md={6}>
-                          <FloatingLabel label="Email Address" className="smooth-transition">
-                            <Form.Control
-                              type="email"
-                              name="email"
-                              placeholder="Email Address"
-                              value={formData.email}
-                              onChange={handleChange}
-                              required
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="fw-semibold mb-2">
+                            Email Address <span className="text-danger">*</span>
+                          </Form.Label>
+                          <Form.Control
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="smooth-transition"
+                            aria-required="true"
+                            maxLength={100}
+                          />
                         </Col>
 
                         <Col md={6}>
-                          <FloatingLabel label="Phone Number" className="smooth-transition">
-                            <Form.Control
-                              type="tel"
-                              name="phoneNumber"
-                              placeholder="Phone Number"
-                              value={formData.phoneNumber}
-                              onChange={handleChange}
-                              required
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="fw-semibold mb-2">
+                            Phone Number <span className="text-danger">*</span>
+                          </Form.Label>
+                          <Form.Control
+                            type="tel"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            required
+                            className="smooth-transition"
+                            aria-required="true"
+                            minLength={7}
+                            maxLength={15}
+                            pattern="^\+?[0-9]{7,15}$"
+                          />
                         </Col>
 
                         <Col md={6}>
-                          <FloatingLabel label="Gender" className="smooth-transition">
-                            <Form.Select
-                              name="gender"
-                              value={formData.gender}
+                          <Form.Label className="fw-semibold mb-2">
+                            Gender <span className="text-danger">*</span>
+                          </Form.Label>
+                          <Form.Select
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            required
+                            className="smooth-transition"
+                            aria-required="true"
+                          >
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                          </Form.Select>
+                        </Col>
+
+                        <Col md={6}>
+                          <Form.Label className="mb-2">
+                            Date of Birth
+                          </Form.Label>
+                          <Form.Control
+                            type="date"
+                            name="dateOfBirth"
+                            value={formData.dateOfBirth}
+                            onChange={handleChange}
+                            className="smooth-transition"
+                          />
+                        </Col>
+
+                        <Col md={6}>
+                          <Form.Label className="fw-semibold mb-2">
+                            Password <span className="text-danger">*</span>
+                          </Form.Label>
+                          <div className="position-relative">
+                            <Form.Control
+                              type={showPassword ? "text" : "password"}
+                              name="password"
+                              placeholder="Enter password"
+                              value={formData.password}
                               onChange={handleChange}
                               required
-                              className="smooth-transition"
+                              className="w-100 pe-5"
+                              style={{ paddingRight: "40px" }}
+                              aria-required="true"
+                              minLength={6}
+                              maxLength={100}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
+                              style={{ right: "10px" }}
                             >
-                              <option value="">Select gender</option>
-                              <option value="male">Male</option>
-                              <option value="female">Female</option>
-                              <option value="other">Other</option>
-                            </Form.Select>
-                          </FloatingLabel>
-                        </Col>
-
-                        <Col md={6}>
-                          <FloatingLabel label="Date of Birth" className="smooth-transition">
-                            <Form.Control
-                              type="date"
-                              name="dateOfBirth"
-                              value={formData.dateOfBirth}
-                              onChange={handleChange}
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
-                        </Col>
-
-                        <Col md={6}>
-            <FloatingLabel label="Password" className="position-relative smooth-transition">
-
-               <Form.Control
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="password"
-                 value={formData.password}
-                onChange={handleChange}
-                required
-                className="form-control w-100 pe-5"
-                style={{ paddingRight: "40px" }} // ensure text doesn't overlap icon
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="position-absolute top-50 translate-middle-y border-0 bg-transparent"
-                style={{ right: "10px" }} // 👈 ensures button stays inside right end
-              >
-                {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
-              </button>
-
-           </FloatingLabel>
+                              {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+                            </button>
+                          </div>
                         </Col>
                       </Row>
                     </div>
@@ -309,58 +336,63 @@ const RegisterClientForm = () => {
                       </h5>
                       <Row className="gy-3">
                         <Col md={4}>
-                          <FloatingLabel label="Height (cm)" className="smooth-transition">
-                            <Form.Control
-                              type="number"
-                              name="height"
-                              placeholder="Height"
-                              value={formData.height}
-                              onChange={handleChange}
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="mb-2">
+                            Height (cm)
+                          </Form.Label>
+                          <Form.Control
+                            type="number"
+                            name="height"
+                            placeholder="Height"
+                            value={formData.height}
+                            onChange={handleChange}
+                            className="smooth-transition"
+                          />
                         </Col>
 
                         <Col md={4}>
-                          <FloatingLabel label="Current Weight (kg)" className="smooth-transition">
-                            <Form.Control
-                              type="number"
-                              name="weight"
-                              placeholder="Current Weight"
-                              value={formData.weight}
-                              onChange={handleChange}
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="mb-2">
+                            Current Weight (kg)
+                          </Form.Label>
+                          <Form.Control
+                            type="number"
+                            name="weight"
+                            placeholder="Current Weight"
+                            value={formData.weight}
+                            onChange={handleChange}
+                            className="smooth-transition"
+                          />
                         </Col>
 
                         <Col md={4}>
-                          <FloatingLabel label="Target Weight (kg)" className="smooth-transition">
-                            <Form.Control
-                              type="number"
-                              name="targetWeight"
-                              placeholder="Target Weight"
-                              value={formData.targetWeight}
-                              onChange={handleChange}
-                              className="smooth-transition"
-                            />
-                          </FloatingLabel>
+                          <Form.Label className="mb-2">
+                            Target Weight (kg)
+                          </Form.Label>
+                          <Form.Control
+                            type="number"
+                            name="targetWeight"
+                            placeholder="Target Weight"
+                            value={formData.targetWeight}
+                            onChange={handleChange}
+                            className="smooth-transition"
+                          />
                         </Col>
 
                         <Col md={6}>
-                          <FloatingLabel label="Fitness Goal" className="smooth-transition">
-                            <Form.Select
-                              name="goal"
-                              value={formData.goal}
-                              onChange={handleChange}
-                              required
-                              className="smooth-transition"
-                            >
-                              <option value="">Select fitness goal</option>
-                              <option value={0}>Muscle Gain</option>
-                              <option value={1}>Fat Loss</option>
-                            </Form.Select>
-                          </FloatingLabel>
+                          <Form.Label className="fw-semibold mb-2">
+                            Fitness Goal <span className="text-danger">*</span>
+                          </Form.Label>
+                          <Form.Select
+                            name="goal"
+                            value={formData.goal}
+                            onChange={handleChange}
+                            required
+                            className="smooth-transition"
+                            aria-required="true"
+                          >
+                            <option value="">Select fitness goal</option>
+                            <option value={0}>Muscle Gain</option>
+                            <option value={1}>Fat Loss</option>
+                          </Form.Select>
                         </Col>
                       </Row>
                     </div>

@@ -4,26 +4,37 @@ import React, { useState, useMemo, useRef } from "react";
  * Field-level Validation
  * ----------------------------*/
 const validateField = (field, value, formData) => {
+  // Trim string values for validation
+  const trimmedValue = typeof value === 'string' ? value.trim() : value;
+  
   if (
     field.required &&
-    (value === undefined ||
-      value === null ||
-      value === "" ||
-      (field.type === "checkbox" && !value))
+    (trimmedValue === undefined ||
+      trimmedValue === null ||
+      trimmedValue === "" ||
+      (field.type === "checkbox" && !trimmedValue))
   ) {
     return `${field.label} is required.`;
   }
-  if (field.minLength && value && value.length < field.minLength) {
+  if (field.minLength && trimmedValue && typeof trimmedValue === 'string' && trimmedValue.length < field.minLength) {
     return `${field.label} must be at least ${field.minLength} characters.`;
   }
-  if (field.maxLength && value && value.length > field.maxLength) {
+  if (field.maxLength && trimmedValue && typeof trimmedValue === 'string' && trimmedValue.length > field.maxLength) {
     return `${field.label} must be at most ${field.maxLength} characters.`;
   }
   if (field.pattern && value && !new RegExp(field.pattern).test(value)) {
     return `${field.label} is invalid.`;
   }
-  if (field.type === "email" && value && !/^\S+@\S+\.\S+$/.test(value)) {
+  if (field.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
     return `Please enter a valid email address.`;
+  }
+  // Phone number validation
+  if (field.type === "tel" && value) {
+    const phoneRegex = /^\+?[0-9]{7,15}$/;
+    const cleaned = value.replace(/\s+/g, '');
+    if (!phoneRegex.test(cleaned)) {
+      return `${field.label} must be a valid phone number (7-15 digits, + prefix optional).`;
+    }
   }
   if (field.type === "password" && value && field.confirmWith) {
     if (value !== formData[field.confirmWith]) {
@@ -50,8 +61,32 @@ const validateField = (field, value, formData) => {
   }
 
   if ((field.type === "file" || field.type === "multiFile") && value) {
-    if (field.required && (!value || value.length === 0)) {
+    if (field.required && (!value || (Array.isArray(value) && value.length === 0))) {
       return `${field.label} is required.`;
+    }
+    // File size validation
+    if (value) {
+      const files = Array.isArray(value) ? value : [value];
+      const maxSize = field.maxSize || (field.type === "file" ? 5 * 1024 * 1024 : 10 * 1024 * 1024); // 5MB for single, 10MB for multiple
+      for (const file of files) {
+        if (file && file.size && file.size > maxSize) {
+          const maxSizeMB = maxSize / (1024 * 1024);
+          return `${field.label}: File "${file.name || 'file'}" exceeds maximum size of ${maxSizeMB}MB.`;
+        }
+        // File type validation
+        if (field.accept && file && file.type) {
+          const acceptedTypes = field.accept.split(',').map(t => t.trim());
+          const matches = acceptedTypes.some(acceptType => {
+            if (acceptType.startsWith('.')) {
+              return file.name && file.name.toLowerCase().endsWith(acceptType.toLowerCase());
+            }
+            return file.type.match(acceptType.replace('*', '.*'));
+          });
+          if (!matches) {
+            return `${field.label}: File type not allowed. Accepted types: ${field.accept}`;
+          }
+        }
+      }
     }
   }
 
@@ -238,6 +273,7 @@ const DynamicForm = ({
                   onBlur={() => handleBlur(field.name)}
                   ref={ref}
                   aria-invalid={!!hasError}
+                  aria-required={field.required || undefined}
                   aria-describedby={
                     hasError ? `${field.name}-error` : undefined
                   }
@@ -257,9 +293,11 @@ const DynamicForm = ({
                   onBlur={() => handleBlur(field.name)}
                   ref={ref}
                   aria-invalid={!!hasError}
+                  aria-required={field.required || undefined}
                   aria-describedby={
                     hasError ? `${field.name}-error` : undefined
                   }
+                  maxLength={field.maxLength || 500}
                 />
               );
               break;
@@ -276,6 +314,7 @@ const DynamicForm = ({
                   onBlur={() => handleBlur(field.name)}
                   ref={ref}
                   aria-invalid={!!hasError}
+                  aria-required={field.required || undefined}
                   aria-describedby={
                     hasError ? `${field.name}-error` : undefined
                   }
@@ -568,10 +607,13 @@ const DynamicForm = ({
               key={idx}
             >
               {field.type !== "checkbox" && field.type !== "radio" && (
-                <label htmlFor={field.name} className="form-label">
+                <label 
+                  htmlFor={field.name} 
+                  className={`form-label ${field.required ? 'fw-semibold' : ''}`}
+                >
                   {field.label}
                   {field.required && (
-                    <span className="text-danger ms-1">*</span>
+                    <span className="text-danger ms-1" aria-label="required">*</span>
                   )}
                 </label>
               )}

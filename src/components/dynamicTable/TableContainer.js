@@ -155,12 +155,24 @@ const handleDeleteTop = () => {
         selectedRow={selectedRow}
         selectedRows={selectedRows}
       />
-      <div className="table-responsive" style={{overflowX: 'auto', width: '100%'}}>
-        <table className="table table-hover table-striped align-middle" aria-labelledby="tableTitle" style={{minWidth: 700}}>
+      <div className="table-responsive" style={{overflowX: 'auto', width: '100%', maxWidth: '100%'}}>
+        <table className="table table-hover table-striped align-middle" aria-labelledby="tableTitle" style={{minWidth: '100%', width: '100%'}}>
           <TableHeader columns={columns} actions={actions} multiSelect={multiSelect} />
           <tbody>
             {paginatedData.length === 0 ? (
-              <tr><td colSpan={columns.length + (actions.length > 0 ? 2 : 1)} className="text-center">No data</td></tr>
+              <tr>
+                <td colSpan={columns.length + (actions.length > 0 ? 2 : 1)} className="text-center py-5">
+                  <div className="d-flex flex-column align-items-center">
+                    <div className="mb-3" style={{ fontSize: "3rem" }}>
+                      📋
+                    </div>
+                    <p className="text-muted mb-0 fw-semibold">No items found</p>
+                    <small className="text-muted">
+                      {search ? "Try adjusting your search criteria." : "No data available yet."}
+                    </small>
+                  </div>
+                </td>
+              </tr>
             ) : (
               paginatedData.map((row, idx) => {
                 const realIdx = (page - 1) * PAGE_SIZE + idx;

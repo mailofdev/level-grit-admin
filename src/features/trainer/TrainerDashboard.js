@@ -58,7 +58,9 @@ const TrainerDashboard = () => {
   const handleViewClient = (client) => {
     const clientId = client.clientId || client.id;
     if (!clientId) {
-      console.error("Client ID not found in client object:", client);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Client ID not found in client object:", client);
+      }
       return;
     }
     navigate(`/client-details/${clientId}`, { state: { client } });
@@ -280,7 +282,7 @@ const TrainerDashboard = () => {
         )}
 
         {/* Progress Section - Only show if there are clients */}
-        {totalClients > 0 && (
+        {totalClients > 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -317,6 +319,30 @@ const TrainerDashboard = () => {
               />
             </Card>
           </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <Card
+              className="border-0 shadow-lg mt-4 p-4"
+              style={{
+                background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+                borderRadius: "1rem",
+              }}
+            >
+              <div className="text-center py-4">
+                <div className="mb-3" style={{ fontSize: "3rem" }}>
+                  📊
+                </div>
+                <h5 className="fw-bold text-muted mb-2">No client data available yet</h5>
+                <p className="text-muted mb-0">
+                  Add clients to see progress insights and analytics.
+                </p>
+              </div>
+            </Card>
+          </motion.div>
         )}
 
         {/* Clients Needing Attention */}
@@ -343,12 +369,9 @@ const TrainerDashboard = () => {
 
             {clientsNeedingAttention.length > 0 ? (
               <div
-                className="d-flex flex-row flex-nowrap overflow-auto pb-2"
+                className="d-flex flex-row flex-wrap gap-3 pb-2"
                 style={{
-                  gap: "1rem",
-                  scrollSnapType: "x mandatory",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "rgba(0,0,0,0.2) transparent",
+                  maxWidth: "100%",
                 }}
               >
                 {clientsNeedingAttention.map((client, idx) => (
@@ -360,12 +383,12 @@ const TrainerDashboard = () => {
                     whileHover={{ scale: 1.02, y: -4 }}
                   >
                     <Card
-                      className="border-0 shadow-sm p-3 flex-shrink-0 position-relative"
+                      className="border-0 shadow-sm p-3 position-relative"
                       style={{
-                        width: "320px",
-                        minWidth: "320px",
+                        width: "100%",
+                        maxWidth: "320px",
+                        minWidth: "280px",
                         borderRadius: "1rem",
-                        scrollSnapAlign: "start",
                         background:
                           "linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%)",
                         border: "1px solid rgba(255, 193, 7, 0.3)",
@@ -429,6 +452,24 @@ const TrainerDashboard = () => {
                     </Card>
                   </motion.div>
                 ))}
+              </div>
+            ) : totalClients === 0 ? (
+              <div className="text-center py-5">
+                <div className="mb-4" style={{ fontSize: "4rem" }}>
+                  👥
+                </div>
+                <h5 className="fw-bold text-muted mb-2">No clients yet</h5>
+                <p className="text-muted mb-4">
+                  You don't have any clients yet. Add your first client to get started.
+                </p>
+                <Button
+                  variant="primary"
+                  className="rounded-pill px-4"
+                  onClick={() => navigate("/register-client")}
+                  style={{ minHeight: "44px" }}
+                >
+                  + Add Client
+                </Button>
               </div>
             ) : (
               <div className="text-center py-4">

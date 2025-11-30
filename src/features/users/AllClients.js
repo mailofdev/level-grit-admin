@@ -32,11 +32,13 @@ export default function AllClients() {
         // Handle both array and object responses
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Error fetching clients:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Error fetching clients:", error);
+        }
         toast.current?.show({
           severity: "error",
           summary: "Error",
-          detail: error?.response?.data?.message || "Failed to load clients. Please try again.",
+          detail: error?.response?.data?.message || "Unable to load data. Check your internet connection or try again.",
           life: 4000,
         });
         setClients([]); // Set empty array on error
@@ -91,7 +93,9 @@ export default function AllClients() {
         // Handle both array and object responses
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Error fetching clients after payment:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Error fetching clients after payment:", error);
+        }
         toast.current?.show({
           severity: "warn",
           summary: "Warning",
@@ -177,8 +181,26 @@ export default function AllClients() {
 
 {/* Clients Grid - Desktop */}
 <div className="card-body d-none d-md-block">
-  <StaggerContainer className="row g-3" staggerDelay={0.05}>
-    {currentClients.map((client, idx) => {
+  {clients.length === 0 ? (
+    <div className="text-center py-5">
+      <div className="mb-4" style={{ fontSize: "4rem" }}>
+        👥
+      </div>
+      <h5 className="fw-bold text-muted mb-2">No clients yet</h5>
+      <p className="text-muted mb-4">
+        You don't have any clients yet. Tap "Add Client" to start adding your first client.
+      </p>
+      <button
+        className="btn btn-primary px-4 py-2 fw-semibold rounded-pill"
+        onClick={handleAddClient}
+        style={{ minHeight: '44px' }}
+      >
+        <span>+</span> <span>Add Your First Client</span>
+      </button>
+    </div>
+  ) : (
+    <StaggerContainer className="row g-3" staggerDelay={0.05}>
+      {currentClients.map((client, idx) => {
       // Handle both isSubscriptionPaid (lowercase) and IsSubscriptionPaid (uppercase) from API
       const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
       
@@ -285,13 +307,32 @@ export default function AllClients() {
       </StaggerContainer.Item>
       );
     })}
-  </StaggerContainer>
+    </StaggerContainer>
+  )}
 </div>
 
 {/* Clients List - Mobile */}
 <div className="card-body d-md-none">
-  <StaggerContainer staggerDelay={0.05}>
-    {currentClients.map((client, idx) => {
+  {clients.length === 0 ? (
+    <div className="text-center py-5">
+      <div className="mb-4" style={{ fontSize: "4rem" }}>
+        👥
+      </div>
+      <h5 className="fw-bold text-muted mb-2">No clients yet</h5>
+      <p className="text-muted mb-4">
+        You don't have any clients yet. Tap "Add Client" to start adding your first client.
+      </p>
+      <button
+        className="btn btn-primary px-4 py-2 fw-semibold rounded-pill w-100"
+        onClick={handleAddClient}
+        style={{ minHeight: '44px' }}
+      >
+        <span>+</span> <span>Add Your First Client</span>
+      </button>
+    </div>
+  ) : (
+    <StaggerContainer staggerDelay={0.05}>
+      {currentClients.map((client, idx) => {
       // Handle both isSubscriptionPaid (lowercase) and IsSubscriptionPaid (uppercase) from API
       const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
       
@@ -372,17 +413,17 @@ export default function AllClients() {
       </StaggerContainer.Item>
       );
     })}
-  </StaggerContainer>
+    </StaggerContainer>
+  )}
 </div>
 
-        {/* Pagination Footer */}
+        {/* Pagination Footer - Only show if there are clients */}
+        {clients.length > 0 && (
         <div className="card-footer border-0 bg-body-tertiary py-3 sticky-bottom">
           <div
-            className="d-flex justify-content-center align-items-center gap-3 flex-nowrap text-nowrap px-2"
+            className="d-flex justify-content-center align-items-center gap-3 flex-wrap px-2"
             style={{
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch",
-              scrollbarWidth: "none",
+              maxWidth: "100%",
             }}
           >
             <button
@@ -418,6 +459,7 @@ export default function AllClients() {
             </button>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

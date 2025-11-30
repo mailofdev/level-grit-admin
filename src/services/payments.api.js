@@ -26,7 +26,7 @@ export const createOrder = async (orderData) => {
   // Razorpay requires amount in smallest currency unit (paise for INR)
   const amountInRupees = orderData.amount || 500;
   
-  if (amountInRupees !== 500) {
+  if (process.env.NODE_ENV === 'development' && amountInRupees !== 500) {
     console.warn(`Expected amount ₹500, but got ₹${amountInRupees}`);
   }
   
@@ -37,12 +37,14 @@ export const createOrder = async (orderData) => {
     receipt: orderData.receipt || `receipt_${Date.now()}`,
   });
   
-  // Log for debugging
-  console.log("Create order request:", {
-    amountInRupees,
-    expectedPaise: amountInRupees * 100,
-    note: "Backend should convert to paise when creating Razorpay order"
-  });
+  // Log for debugging (development only)
+  if (process.env.NODE_ENV === 'development') {
+    console.log("Create order request:", {
+      amountInRupees,
+      expectedPaise: amountInRupees * 100,
+      note: "Backend should convert to paise when creating Razorpay order"
+    });
+  }
   
   return data;
 };

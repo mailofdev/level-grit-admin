@@ -13,9 +13,11 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     // Log error to error reporting service in production
-    if (process.env.NODE_ENV === 'production') {
-      // You can add error logging service here
+    if (process.env.NODE_ENV === 'development') {
+      console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
+    // In production, you can add error logging service here
+    // Example: Sentry.captureException(error, { extra: errorInfo });
   }
 
   handleReload = () => {
