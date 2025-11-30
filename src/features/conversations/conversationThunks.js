@@ -76,9 +76,9 @@ export const subscribeToConversationThunk = createAsyncThunk(
         // Check for new unread messages
         const state = getState();
         const activeConversation = state.conversations?.activeConversation;
-        const isActive = activeConversation?.chatId === chatId;
+        const IsSubscriptionPaid = activeConversation?.chatId === chatId;
 
-        if (!isActive && messages.length > 0) {
+        if (!IsSubscriptionPaid && messages.length > 0) {
           // Count unread messages (messages not sent by current user)
           const unreadCount = messages.filter(
             (msg) => msg.senderId !== currentUserId

@@ -28,9 +28,8 @@ import { formatErrorMessage, logError } from "../utils/errorHandler";
  * Note: Update baseURL for production deployment
  */
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:7240",
-  // Production URL example:
-  // baseURL: "https://api.yourdomain.com",
+  baseURL: "http://84.46.254.249/levelgrit/api",
+  // Production URL
   timeout: 10000, // 10 seconds
 });
 

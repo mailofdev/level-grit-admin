@@ -1,23 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
 import { registerClient, getClientsForTrainer } from "../../api/trainerAPI";
 import Loader from "../../components/display/Loader";
-import RazorpayPayment from "../payments/RazorpayPayment";
+import PaymentPopup from "../../components/payments/PaymentPopup";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
-import {
-  checkPaymentRequirement,
-  recordClientAddition,
-} from "../../utils/paymentStorage";
 import {
   Form,
   Button,
   Row,
   Col,
-  Card,
   FloatingLabel,
-  Alert,
 } from "react-bootstrap";
 import { Eye, EyeClosed } from "lucide-react";
 
@@ -25,11 +19,10 @@ const RegisterClientForm = () => {
   const navigate = useNavigate();
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [checkingPayment, setCheckingPayment] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [clientCount, setClientCount] = useState(0);
-  const [paymentRequired, setPaymentRequired] = useState(false);
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  const [newClientId, setNewClientId] = useState(null);
+  const [newClientName, setNewClientName] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -43,43 +36,6 @@ const RegisterClientForm = () => {
     gender: "",
   });
 
-  // Check client count and payment requirement on component mount
-  useEffect(() => {
-    const checkClientCount = async () => {
-      try {
-        setCheckingPayment(true);
-        const user = getDecryptedUser();
-        const trainerId = user?.userId || user?.id;
-        
-        if (!trainerId) {
-          setPaymentRequired(false);
-          setPaymentCompleted(true);
-          setCheckingPayment(false);
-          return;
-        }
-
-        const clients = await getClientsForTrainer();
-        const count = Array.isArray(clients) ? clients.length : 0;
-        setClientCount(count);
-        
-        // Check payment requirement using payment storage utility
-        const paymentCheck = checkPaymentRequirement(trainerId, count);
-        
-        setPaymentRequired(paymentCheck.paymentRequired);
-        setPaymentCompleted(!paymentCheck.paymentRequired);
-      } catch (error) {
-        console.error("Error fetching client count:", error);
-        // On error, allow registration (fail open)
-        setPaymentRequired(false);
-        setPaymentCompleted(true);
-      } finally {
-        setCheckingPayment(false);
-      }
-    };
-
-    checkClientCount();
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -87,51 +43,95 @@ const RegisterClientForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Check if payment is required and not completed
-    if (paymentRequired && !paymentCompleted) {
-      toast.current.show({
-        severity: "warn",
-        summary: "Payment Required",
-        detail: "Please complete the payment of ₹500 to register this client.",
-        life: 4000,
-      });
-      return;
-    }
 
     const clientData = { ...formData, role: 0 };
     setLoading(true);
 
     try {
+      // Register client - backend will create client and return response
       const response = await registerClient(clientData);
-      const user = getDecryptedUser();
-      const trainerId = user?.userId || user?.id;
+      console.log("Register client response:", response);
       
-      // Record client addition in payment storage
-      // This links the payment to the client if payment was made
-      if (trainerId && response?.clientId) {
-        recordClientAddition(
-          trainerId,
-          response.clientId,
-          formData.fullName
-        );
+      // Extract client ID - check multiple possible fields
+      const clientId = response?.clientId 
+        || response?.id 
+        || response?.userId 
+        || response?.data?.clientId
+        || response?.data?.id;
+      
+      if (!clientId) {
+        console.error("No client ID in response:", response);
+        throw new Error("Client ID not received from server. Response: " + JSON.stringify(response));
+      }
+
+      // Check IsSubscriptionPaid status from backend response
+      // Backend should set IsSubscriptionPaid = false for 2nd+ clients (requiring payment)
+      // Backend should set IsSubscriptionPaid = true for 1st client (free)
+      let IsSubscriptionPaid = response?.IsSubscriptionPaid;
+      
+      // Check nested structures
+      if (IsSubscriptionPaid === undefined && response?.userInfo) {
+        IsSubscriptionPaid = response.userInfo.IsSubscriptionPaid;
+      }
+      if (IsSubscriptionPaid === undefined && response?.data) {
+        IsSubscriptionPaid = response.data.IsSubscriptionPaid;
       }
       
-      toast.current.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Client registered successfully!",
-        life: 3000,
-      });
-      setTimeout(() => navigate(-1), 1000);
+      // If IsSubscriptionPaid is still undefined, check client count as fallback
+      if (IsSubscriptionPaid === undefined) {
+        console.warn("IsSubscriptionPaid not in response, checking client count as fallback");
+        try {
+          const clients = await getClientsForTrainer();
+          const clientCount = Array.isArray(clients) ? clients.length : 0;
+          // If count > 1, this is 2nd+ client (needs payment, so IsSubscriptionPaid = false)
+          IsSubscriptionPaid = clientCount <= 1; // First client is active, 2nd+ is inactive
+          console.log("Determined IsSubscriptionPaid from client count:", IsSubscriptionPaid, "Count:", clientCount);
+        } catch (countError) {
+          console.error("Error fetching client count:", countError);
+          // Default to true if we can't determine
+          IsSubscriptionPaid = true;
+        }
+      }
+
+      console.log("Final IsSubscriptionPaid status:", IsSubscriptionPaid, "ClientId:", clientId);
+
+      // If client is not active (IsSubscriptionPaid === false), show payment popup
+      if (IsSubscriptionPaid === false) {
+        setNewClientId(clientId);
+        setNewClientName(formData.fullName);
+        setShowPaymentPopup(true);
+        
+        toast.current.show({
+          severity: "success",
+          summary: "Client Registered",
+          detail: "Client registered successfully! Please complete payment to enable services.",
+          life: 4000,
+        });
+      } else {
+        // First client or already active - no payment needed
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Client registered successfully!",
+          life: 3000,
+        });
+        setTimeout(() => navigate(-1), 1000);
+      }
     } catch (error) {
+      console.error("Registration error:", error);
+      console.error("Error response:", error?.response);
+      
+      // More detailed error message
+      const errorMessage = error?.response?.data?.message 
+        || error?.response?.data?.error
+        || error?.message 
+        || "Registration failed. Please try again.";
+      
       toast.current.show({
         severity: "error",
-        summary: "Error",
-        detail:
-          error?.response?.data?.message ||
-          "Registration failed. Please try again.",
-        life: 4000,
+        summary: "Registration Error",
+        detail: errorMessage,
+        life: 5000,
       });
     } finally {
       setLoading(false);
@@ -139,27 +139,16 @@ const RegisterClientForm = () => {
   };
 
   const handlePaymentSuccess = (paymentData) => {
-    setPaymentCompleted(true);
     toast.current.show({
       severity: "success",
-      summary: "Payment Verified",
-      detail: "You can now register your client!",
+      summary: "Payment Successful",
+      detail: "Client services have been activated successfully!",
       life: 3000,
     });
-  };
-
-  const handlePaymentError = (error) => {
-    console.error("Payment error:", error);
-    // Payment error is already handled in RazorpayPayment component
-  };
-
-  const handlePaymentCancel = () => {
-    toast.current.show({
-      severity: "info",
-      summary: "Payment Cancelled",
-      detail: "Payment was cancelled. Please complete payment to register client.",
-      life: 3000,
-    });
+    
+    // Close popup and navigate back
+    setShowPaymentPopup(false);
+    setTimeout(() => navigate(-1), 1500);
   };
 
   const handleCancel = () => {
@@ -176,19 +165,24 @@ const RegisterClientForm = () => {
       gender: "",
     });
   };
-    
-  if (checkingPayment) {
-    return (
-      <div className="page-container auth-page-enter">
-        <Loader fullScreen text="Checking payment status..." color="var(--color-primary)" />
-      </div>
-    );
-  }
-
   return (
     <div className="page-container auth-page-enter">
       {loading && <Loader fullScreen text="Registering client..." color="var(--color-primary)" />}
       <Toast ref={toast} position="top-right" />
+
+      {/* Payment Popup */}
+      <PaymentPopup
+        show={showPaymentPopup}
+        onHide={() => {
+          setShowPaymentPopup(false);
+          // After closing popup (payment skipped), navigate back
+          setTimeout(() => navigate(-1), 500);
+        }}
+        onSuccess={handlePaymentSuccess}
+        clientId={newClientId}
+        clientName={newClientName}
+        amount={500}
+      />
 
       <div className="container">
         <Heading pageName="Register Client" sticky={true} />
@@ -197,52 +191,6 @@ const RegisterClientForm = () => {
             <div className="row justify-content-center">
               <div className="col-12">
                 <div className="card content-wrapper card-health p-4">
-                  {/* Payment Required Alert */}
-                  {paymentRequired && !paymentCompleted && (
-                    <Alert variant="warning" className="mb-4">
-                      <Alert.Heading>
-                        <i className="fas fa-exclamation-triangle me-2"></i>
-                        Payment Required
-                      </Alert.Heading>
-                      <p className="mb-2">
-                        You currently have <strong>{clientCount} client(s)</strong> registered. 
-                        The first client is free. To add additional clients, please complete a payment of <strong>₹500 per client</strong>.
-                      </p>
-                      <p className="mb-3 text-muted small">
-                        <i className="fas fa-info-circle me-2"></i>
-                        This payment allows you to register one additional client.
-                      </p>
-                      <div className="d-flex justify-content-center mt-3">
-                        <RazorpayPayment
-                          amount={500}
-                          onSuccess={handlePaymentSuccess}
-                          onError={handlePaymentError}
-                          onCancel={handlePaymentCancel}
-                        />
-                      </div>
-                    </Alert>
-                  )}
-
-                  {/* Payment Completed Success Message */}
-                  {paymentRequired && paymentCompleted && (
-                    <Alert variant="success" className="mb-4">
-                      <i className="fas fa-check-circle me-2"></i>
-                      Payment completed! You can now register your client.
-                    </Alert>
-                  )}
-              {/* <div className="text-center mb-4">
-                <div className="position-relative d-inline-block mb-3">
-                  <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
-                       style={{ width: "80px", height: "80px" }}>
-                    <FaBullseye size={40} className="text-white" />
-                  </div>
-                  <div className="position-absolute top-0 start-0 w-100 h-100 rounded-circle border border-2 border-success opacity-25 animate-pulse"></div>
-                </div>
-                <h3 className="fw-bold text-primary mb-2">Client Registration</h3>
-                <p className="text-muted">
-                  Add a new client to your health management system
-                </p>
-              </div> */}
 
               <Form onSubmit={handleSubmit} className="needs-validation">
                 <Row className="gy-4">
@@ -424,7 +372,7 @@ const RegisterClientForm = () => {
                     type="submit"
                     variant="primary"
                     className="px-5 fw-bold smooth-transition me-3"
-                    disabled={loading || (paymentRequired && !paymentCompleted)}
+                    disabled={loading}
                   >
                     {loading ? (
                       <>

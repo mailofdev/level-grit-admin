@@ -50,7 +50,7 @@ const LandingPageTabs = () => {
           >
             {tabs.map((tab) => {
               const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+              const IsSubscriptionPaid = activeTab === tab.id;
               
               return (
                 <motion.button
@@ -58,8 +58,8 @@ const LandingPageTabs = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold"
                   style={{
-                    backgroundColor: isActive ? tab.color : "transparent",
-                    color: isActive ? "#fff" : "#6c757d",
+                    backgroundColor: IsSubscriptionPaid ? tab.color : "transparent",
+                    color: IsSubscriptionPaid ? "#fff" : "#6c757d",
                     border: "none",
                     padding: "12px 24px",
                     transition: "all 0.3s ease",

@@ -79,6 +79,18 @@ const LoginForm = () => {
           setIsLoading(false);
           return;
         }
+
+        // Check if client is active (for client login only)
+        const IsSubscriptionPaid = result?.userInfo?.IsSubscriptionPaid ?? result?.IsSubscriptionPaid ?? true;
+        if (IsSubscriptionPaid === false) {
+          // Clear auth_data that was saved during login
+          dispatch(logout());
+          setErrorMessage(
+            "Your subscription is inactive. Please contact your trainer to activate your account."
+          );
+          setIsLoading(false);
+          return;
+        }
       } else if (loginType === "trainer") {
         // Trainer login entry point - allow Trainer and Administrator roles
         if (normalizedRole === ROLES.CLIENT) {
