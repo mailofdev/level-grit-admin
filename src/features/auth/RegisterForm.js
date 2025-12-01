@@ -38,6 +38,12 @@ const RegisterForm = () => {
     }
   }, [userType, navigate]);
 
+  // Trainer color scheme
+  const primaryColor = "#667eea";
+  const gradientBg = "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)";
+  const borderColor = "rgba(102, 126, 234, 0.3)";
+  const inputBg = "rgba(102, 126, 234, 0.05)";
+
   // Helper function to get dashboard route based on role
   const getDashboardRoute = (role) => {
     switch (role) {
@@ -170,7 +176,7 @@ const RegisterForm = () => {
       className="d-flex justify-content-center align-items-center auth-page-enter"
       style={{ 
         minHeight: '95vh', 
-        backgroundColor: 'var(--color-bg)'
+        background: gradientBg
       }}
     >
       <Toast ref={toast} />
@@ -178,7 +184,7 @@ const RegisterForm = () => {
         <Loader
           fullScreen={true}
           text="Creating your account..."
-          color="var(--color-primary)"
+          color={primaryColor}
         />
       )}
 
@@ -198,7 +204,9 @@ const RegisterForm = () => {
         <div style={{ 
           background: 'var(--color-card-bg)',
           padding: '0.5rem 0.5rem 0.5rem 0.5rem',
-          borderBottom: '1px solid var(--color-border)'
+          borderBottom: `3px solid ${primaryColor}`,
+          borderTopLeftRadius: '1.25rem',
+          borderTopRightRadius: '1.25rem'
         }}>
           <Heading 
             pageName="Create Account" 
@@ -232,7 +240,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-user text-primary me-2"></i>Full Name
+                  <i className="fas fa-user me-2" style={{ color: primaryColor }}></i>Full Name
                 </label>
                 <input
                   type="text"
@@ -245,8 +253,13 @@ const RegisterForm = () => {
                   style={{ 
                     minHeight: '38px',
                     fontSize: '0.95rem',
-                    padding: '0.75rem 1rem'
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
                   }}
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
 
@@ -259,7 +272,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-phone text-primary me-2"></i>Phone Number
+                  <i className="fas fa-phone me-2" style={{ color: primaryColor }}></i>Phone Number
                 </label>
                 <input
                   type="tel"
@@ -273,8 +286,13 @@ const RegisterForm = () => {
                   style={{ 
                     minHeight: '48px',
                     fontSize: '0.95rem',
-                    padding: '0.75rem 1rem'
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
                   }}
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
 
@@ -287,7 +305,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-venus-mars text-primary me-2"></i>Gender
+                  <i className="fas fa-venus-mars me-2" style={{ color: primaryColor }}></i>Gender
                 </label>
                 <select
                   name="gender"
@@ -298,8 +316,13 @@ const RegisterForm = () => {
                   style={{ 
                     minHeight: '48px',
                     fontSize: '0.95rem',
-                    padding: '0.75rem 1rem'
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
                   }}
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
                 >
                   <option value="">Select your gender</option>
                   <option value="male">Male</option>
@@ -317,7 +340,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-envelope text-primary me-2"></i>Email Address
+                  <i className="fas fa-envelope me-2" style={{ color: primaryColor }}></i>Email Address
                 </label>
                 <input
                   type="email"
@@ -330,8 +353,13 @@ const RegisterForm = () => {
                   style={{ 
                     minHeight: '48px',
                     fontSize: '0.95rem',
-                    padding: '0.75rem 1rem'
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
                   }}
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
 
@@ -344,24 +372,29 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-lock text-primary me-2"></i>Password
+                  <i className="fas fa-lock me-2" style={{ color: primaryColor }}></i>Password
                 </label>
                 <div className="position-relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    className="form-control pe-5 smooth-transition"
-                    placeholder="Create a strong password"
-                    value={password}
-                    onChange={handleChange}
-                    required
-                    style={{ 
-                      paddingRight: "3rem",
-                      minHeight: '48px',
-                      fontSize: '0.95rem',
-                      padding: '0.75rem 1rem'
-                    }}
-                  />
+                  className="form-control pe-5 smooth-transition"
+                  placeholder="Create a strong password"
+                  value={password}
+                  onChange={handleChange}
+                  required
+                  style={{ 
+                    paddingRight: "3rem",
+                    minHeight: '48px',
+                    fontSize: '0.95rem',
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
+                />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -376,10 +409,10 @@ const RegisterForm = () => {
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-muted)'}
-                  >
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onMouseEnter={(e) => e.currentTarget.style.color = primaryColor}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-muted)'}
+                >
                     {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
@@ -388,13 +421,29 @@ const RegisterForm = () => {
 
             <button
               type="submit"
-              className="btn btn-primary w-100 mt-4 smooth-transition"
+              className="btn w-100 mt-4 smooth-transition"
               disabled={isLoading}
               style={{ 
                 minHeight: '50px',
                 fontSize: '1rem',
                 fontWeight: '600',
-                borderRadius: '0.5rem'
+                borderRadius: '0.5rem',
+                backgroundColor: primaryColor,
+                color: '#fff',
+                border: 'none',
+                boxShadow: `0 4px 15px ${primaryColor}40`
+              }}
+              onMouseEnter={(e) => {
+                if (!isLoading) {
+                  e.target.style.backgroundColor = "#5568d3";
+                  e.target.style.boxShadow = `0 6px 20px ${primaryColor}60`;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLoading) {
+                  e.target.style.backgroundColor = primaryColor;
+                  e.target.style.boxShadow = `0 4px 15px ${primaryColor}40`;
+                }
               }}
             >
               {isLoading ? (
@@ -421,7 +470,7 @@ const RegisterForm = () => {
               <Link
                 to="/login?type=trainer"
                 className="text-decoration-none fw-semibold smooth-transition"
-                style={{ color: "var(--color-primary)" }}
+                style={{ color: primaryColor }}
               >
                 Sign In
               </Link>

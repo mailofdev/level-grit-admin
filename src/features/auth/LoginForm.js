@@ -119,20 +119,29 @@ const LoginForm = () => {
 navigate('/')
   };
 
+  // Color scheme based on login type
+  const isClient = loginType === "client";
+  const primaryColor = isClient ? "#43e97b" : "#667eea";
+  const gradientBg = isClient 
+    ? "linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%)"
+    : "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)";
+  const borderColor = isClient ? "rgba(67, 233, 123, 0.3)" : "rgba(102, 126, 234, 0.3)";
+  const inputBg = isClient ? "rgba(67, 233, 123, 0.05)" : "rgba(102, 126, 234, 0.05)";
+
   return (
     <div 
       className="d-flex justify-content-center align-items-center auth-page-enter"
       style={{ 
         minHeight: '100vh',
         padding: '2rem 1rem',
-        backgroundColor: 'var(--color-bg)'
+        background: gradientBg
       }}
     >
       {isLoading && (
         <Loader
           fullScreen={true}
           text="Logging in..."
-          color="var(--color-primary)"
+          color={primaryColor}
         />
       )}
 
@@ -150,7 +159,9 @@ navigate('/')
         <div style={{ 
           background: 'var(--color-card-bg)',
           padding: '1.5rem 1.5rem 1rem 1.5rem',
-          borderBottom: '1px solid var(--color-border)'
+          borderBottom: `3px solid ${primaryColor}`,
+          borderTopLeftRadius: '1.25rem',
+          borderTopRightRadius: '1.25rem'
         }}>
           <Heading 
             pageName="Sign in" 
@@ -184,11 +195,11 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-envelope text-primary me-2"></i>Email Address <span className="text-danger">*</span>
+                <i className="fas fa-envelope me-2" style={{ color: primaryColor }}></i>Email Address <span style={{ color: primaryColor }}>*</span>
               </label>
               <input
                 type="email"
-                className="form-control smooth-transition border-danger border-opacity-25"
+                className="form-control smooth-transition"
                 placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -201,9 +212,12 @@ navigate('/')
                   minHeight: '48px',
                   fontSize: '0.95rem',
                   padding: '0.75rem 1rem',
-                  backgroundColor: 'rgba(220, 53, 69, 0.05)',
-                  borderWidth: '2px'
+                  backgroundColor: inputBg,
+                  borderWidth: '2px',
+                  borderColor: borderColor
                 }}
+                onFocus={(e) => e.target.style.borderColor = primaryColor}
+                onBlur={(e) => e.target.style.borderColor = borderColor}
               />
             </div>
 
@@ -216,7 +230,7 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-lock text-primary me-2"></i>Password <span className="text-danger">*</span>
+                <i className="fas fa-lock me-2" style={{ color: primaryColor }}></i>Password <span style={{ color: primaryColor }}>*</span>
               </label>
 
               <div className="position-relative">
@@ -234,9 +248,14 @@ navigate('/')
                     paddingRight: "3rem",
                     minHeight: '48px',
                     fontSize: '0.95rem',
-                    padding: '0.75rem 1rem'
+                    padding: '0.75rem 1rem',
+                    backgroundColor: inputBg,
+                    borderWidth: '2px',
+                    borderColor: borderColor
                   }}
                   autoComplete="current-password"
+                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
 
                 <button
@@ -254,7 +273,7 @@ navigate('/')
                     justifyContent: 'center'
                   }}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+                  onMouseEnter={(e) => e.currentTarget.style.color = primaryColor}
                   onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-muted)'}
                 >
                   {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
@@ -264,13 +283,29 @@ navigate('/')
 
             <button
               type="submit"
-              className="btn btn-primary w-100 smooth-transition"
+              className="btn w-100 smooth-transition"
               disabled={isLoading}
               style={{ 
                 minHeight: '50px',
                 fontSize: '1rem',
                 fontWeight: '600',
-                borderRadius: '0.5rem'
+                borderRadius: '0.5rem',
+                backgroundColor: primaryColor,
+                color: '#fff',
+                border: 'none',
+                boxShadow: `0 4px 15px ${primaryColor}40`
+              }}
+              onMouseEnter={(e) => {
+                if (!isLoading) {
+                  e.target.style.backgroundColor = isClient ? "#38d977" : "#5568d3";
+                  e.target.style.boxShadow = `0 6px 20px ${primaryColor}60`;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLoading) {
+                  e.target.style.backgroundColor = primaryColor;
+                  e.target.style.boxShadow = `0 4px 15px ${primaryColor}40`;
+                }
               }}
             >
               {isLoading ? (
@@ -299,7 +334,7 @@ navigate('/')
               <Link
                 to="/register?type=trainer"
                 className="text-decoration-none fw-semibold smooth-transition"
-                style={{ color: "var(--color-primary)" }}
+                style={{ color: primaryColor }}
               >
                 Create Account
               </Link>
