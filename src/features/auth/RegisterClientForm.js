@@ -332,7 +332,7 @@ const RegisterClientForm = () => {
                   <Col xs={12}>
                     <div className="card card-info p-3 mb-3">
                       <h5 className="fw-semibold text-info mb-3">
-                        <i className="fas fa-heartbeat me-2"></i>Health Information
+                        <i className="fas fa-heartbeat me-2"></i>Body composition and Fitness Goals
                       </h5>
                       <Row className="gy-3">
                         <Col md={4}>

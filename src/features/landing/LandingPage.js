@@ -87,11 +87,10 @@ const LandingPage = () => {
     setDeferredPrompt(null);
   };
 
-  const handleSignInNavigation = () => navigate("/login?type=client");
-  const handleSignUpNavigation = () => navigate("/register");
+  const handleSignUpNavigation = () => navigate("/register?type=trainer");
   const handleClientLogin = () => navigate("/login?type=client");
   const handleTrainerLogin = () => navigate("/login?type=trainer");
-  const handleTrainerSignUp = () => navigate("/register");
+  const handleTrainerSignUp = () => navigate("/register?type=trainer");
 
   // Animation variants
   const fadeInUp = {
@@ -1479,13 +1478,13 @@ const LandingPage = () => {
             {[
               {
                 title: "Snap & Track",
-                desc: "Click a pic, get macros instantly.",
+                desc: "Just click a pic, get macros instantly.",
                 icon: FaCamera,
                 gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               },
               {
                 title: "Stay Consistent",
-                desc: "Daily streaks like Snapchat.",
+                desc: "Daily progress streaks just like Snapchat.",
                 icon: FaFire,
                 gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
               },

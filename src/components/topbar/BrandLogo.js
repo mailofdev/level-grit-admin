@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { memo, useMemo } from "react";
 import logo from '../../assets/images/logo3.jpeg'; 
 import { getRoutes } from "../navigation/Routes";
-import OptimizedImage from "../common/OptimizedImage";
 
 const BrandLogo = memo(() => {
   const routes = useMemo(() => getRoutes(), []);
@@ -10,13 +9,16 @@ const BrandLogo = memo(() => {
   
   return (
     <Link to={homePath} className="navbar-brand fw-bold d-flex align-items-center" aria-label="Level Grit Home">
-      <OptimizedImage 
+      <img 
         src={logo} 
         alt="Level Grit Logo" 
-        width="50px"
-        height="40px"
         className="rounded"
-        style={{ objectFit: 'contain' }}
+        style={{ 
+          width: '50px',
+          height: '40px',
+          objectFit: 'contain',
+          display: 'block'
+        }}
       />
     </Link>
   );

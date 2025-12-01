@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../api/authAPI";
 import { loginThunk } from "./authThunks";
@@ -8,10 +8,13 @@ import Loader from "../../components/display/Loader";
 import { Eye, EyeClosed } from "lucide-react";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
+import Alert from "../../components/common/Alert";
 const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const toast = useRef(null);
+  const [searchParams] = useSearchParams();
+  const userType = searchParams.get("type") || "trainer"; // Default to trainer
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -26,6 +29,14 @@ const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { fullName, phoneNumber, gender, email, password, role } = formData;
+
+  // Validate user type on mount - only trainers can register
+  useEffect(() => {
+    if (userType !== "trainer") {
+      // Redirect to home if not a trainer
+      navigate("/", { replace: true });
+    }
+  }, [userType, navigate]);
 
   // Helper function to get dashboard route based on role
   const getDashboardRoute = (role) => {
@@ -199,6 +210,17 @@ const RegisterForm = () => {
 
         {/* Form Section */}
         <div style={{ padding: '0.5rem' }}>
+          {/* Trainer Signup Alert */}
+          {userType === "trainer" && (
+            <Alert
+              type="info"
+              message="You are signing up as a trainer. This account will allow you to manage clients and track their progress."
+              dismissible={false}
+              position="inline"
+              className="mb-3"
+            />
+          )}
+          
           <form onSubmit={handleSubmit} className="needs-validation">
             <div className="row g-1">
               {/* Full Name */}
@@ -397,7 +419,7 @@ const RegisterForm = () => {
             <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
               Already have an account?{" "}
               <Link
-                to="/login?type=client"
+                to="/login?type=trainer"
                 className="text-decoration-none fw-semibold smooth-transition"
                 style={{ color: "var(--color-primary)" }}
               >

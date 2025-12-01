@@ -132,7 +132,7 @@ const Services = () => {
                           style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => navigate('/register')}
+                          onClick={() => navigate('/register?type=trainer')}
                         >
                           Get Started <FaArrowRight className="ms-2" />
                         </motion.button>
@@ -254,7 +254,7 @@ const Services = () => {
           </h3>
           <p className="text-muted mb-4">Whether you're a Trainer or Client, we have the perfect solution for you</p>
           <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
-            <Link to="/register" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#667eea', color: '#fff', border: 'none' }}>
+            <Link to="/register?type=trainer" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#667eea', color: '#fff', border: 'none' }}>
               <FaDumbbell className="me-2" />
               For Trainers
             </Link>

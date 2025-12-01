@@ -509,28 +509,16 @@ const ResetPasswordForm = () => {
           {/* Links */}
           <div className="text-center mt-4">
             {step === 1 && (
-              <>
-                <p className="mb-2" style={{ fontSize: '0.9rem' }}>
-                  Remember your password?{" "}
-                  <Link
-                    to="/login?type=client"
-                    className="text-decoration-none fw-semibold smooth-transition"
-                    style={{ color: "var(--color-primary)" }}
-                  >
-                    Sign In
-                  </Link>
-                </p>
-                <p className="mb-0" style={{ fontSize: '0.9rem' }}>
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    className="text-decoration-none fw-semibold smooth-transition"
-                    style={{ color: "var(--color-link)" }}
-                  >
-                    Create Account
-                  </Link>
-                </p>
-              </>
+              <p className="mb-0" style={{ fontSize: '0.9rem' }}>
+                Remember your password?{" "}
+                <Link
+                  to="/login"
+                  className="text-decoration-none fw-semibold smooth-transition"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  Sign In
+                </Link>
+              </p>
             )}
             {step === 2 && (
               <p className="mb-0" style={{ fontSize: '0.9rem' }}>

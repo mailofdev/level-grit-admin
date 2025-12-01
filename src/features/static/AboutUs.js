@@ -302,7 +302,7 @@ const AboutUs = () => {
                 </p>
                 <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
                   <Link 
-                    to="/register" 
+                    to="/register?type=trainer" 
                     className="btn btn-light btn-lg rounded-pill px-5 py-3"
                     style={{ fontWeight: '600', backgroundColor: '#667eea', color: '#fff', border: 'none' }}
                   >
