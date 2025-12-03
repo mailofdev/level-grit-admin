@@ -320,13 +320,34 @@ export default function AdjustPlan() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-                <Card className=" border-0 rounded-4 p-2 p-md-4 bg-white">
-              {/* Mobile-Optimized Date Header */}
-              <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3 p-2 p-md-3 bg-light rounded-3 gap-2">
-                <div className="d-flex align-items-start gap-2 w-100 w-md-auto">
-                  <FaCalendar className="mt-1 text-primary flex-shrink-0" />
-                  <div className="flex-grow-1">
-                    <div className="fw-bold fs-6 fs-md-5">
+                <Card className="border-0 rounded-4 p-2 p-md-4" style={{
+                  backgroundColor: "var(--color-card-bg)",
+                  border: "1px solid var(--color-border)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
+                }}>
+              {/* Header - Row 1: Username */}
+              <div className="mb-2">
+                <h4 className="fw-bold mb-0" style={{ 
+                  fontSize: "clamp(1rem, 3vw, 1.25rem)",
+                  color: "var(--color-text-dark)",
+                  lineHeight: "1.3"
+                }}>{client?.fullName || "N/A"}</h4>
+              </div>
+
+              {/* Row 2: Date and Date Picker Button */}
+              <div className="d-flex align-items-center justify-content-between gap-2 mb-3 p-2 rounded-3" style={{
+                backgroundColor: "var(--color-card-bg-alt)"
+              }}>
+                <div className="d-flex align-items-center gap-2">
+                  <FaCalendar style={{ 
+                    color: "var(--color-primary)",
+                    fontSize: "1rem"
+                  }} />
+                  <div>
+                    <div className="fw-bold" style={{ 
+                      fontSize: "0.9rem",
+                      color: "var(--color-text-dark)"
+                    }}>
                       {new Date(assignedDate).toLocaleDateString("en-IN", {
                         weekday: "short",
                         day: "2-digit",
@@ -334,20 +355,27 @@ export default function AdjustPlan() {
                         year: "numeric",
                       })}
                     </div>
-                    <small className="text-muted d-block">
-                      <strong>{client?.fullName || "N/A"}</strong>
-                    </small>
                   </div>
                 </div>
                 
-                <div className="d-flex align-items-center gap-2 flex-wrap w-100 w-md-auto justify-content-between justify-content-md-end">
+                <div className="d-flex align-items-center gap-2">
                   {!isToday && (
-                    <Badge bg="secondary" className="fs-6 py-2 px-3 rounded-pill">
+                    <Badge className="rounded-pill" style={{
+                      backgroundColor: "rgba(108, 117, 125, 0.1)",
+                      color: "var(--color-text-secondary)",
+                      fontSize: "0.7rem",
+                      padding: "0.25rem 0.5rem"
+                    }}>
                       🔒 Read-only
                     </Badge>
                   )}
                   {hasUnsavedChanges && (
-                    <Badge bg="warning" className="fs-6 py-2 px-3 rounded-pill">
+                    <Badge className="rounded-pill" style={{
+                      backgroundColor: "rgba(255, 193, 7, 0.1)",
+                      color: "var(--color-warning)",
+                      fontSize: "0.7rem",
+                      padding: "0.25rem 0.5rem"
+                    }}>
                       ⚠️ Unsaved
                     </Badge>
                   )}
@@ -358,6 +386,11 @@ export default function AdjustPlan() {
                       onClick={handleDateChangeRequest}
                       className="rounded-pill"
                       disabled={isSaving || isDeleting}
+                      style={{
+                        minHeight: "36px",
+                        fontSize: "0.75rem",
+                        padding: "0.375rem 0.75rem"
+                      }}
                     >
                       <FaCalendar className="me-1" /> 
                       <span className="d-none d-sm-inline">Change </span>Date
@@ -480,24 +513,38 @@ export default function AdjustPlan() {
         </div>
       </div>
 
-      {/* Date Picker Modal - Mobile Optimized */}
+      {/* Date Picker Modal - Centered */}
       <Modal
         show={showDatePickerModal}
         onHide={() => setShowDatePickerModal(false)}
         centered
-        fullscreen="sm-down"
+        size="sm"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>📅 Select Date</Modal.Title>
+        <Modal.Header closeButton style={{ 
+          borderBottomColor: "var(--color-border)",
+          backgroundColor: "var(--color-card-bg)"
+        }}>
+          <Modal.Title style={{ 
+            fontSize: "1.1rem",
+            color: "var(--color-text-dark)"
+          }}>📅 Select Date</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-3 p-md-4">
+        <Modal.Body className="p-4" style={{ 
+          backgroundColor: "var(--color-card-bg)"
+        }}>
           <Form.Group>
             <Form.Control
               type="date"
               value={assignedDate}
               onChange={(e) => handleDateChange(e.target.value)}
               className="rounded-3"
-              style={{ minHeight: "48px", fontSize: "16px" }}
+              style={{ 
+                minHeight: "44px", 
+                fontSize: "16px",
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-input-bg)",
+                color: "var(--color-text-dark)"
+              }}
             />
           </Form.Group>
         </Modal.Body>

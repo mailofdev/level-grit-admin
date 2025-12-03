@@ -26,6 +26,8 @@ import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import ScrollToTop from "./components/navigation/ScrollToTop";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
+import BackButtonHandler from "./components/common/BackButtonHandler";
+import { usePWASession } from "./hooks/usePWASession";
 import { ROLES } from "./utils/roles";
 
 // ============================================
@@ -132,8 +134,24 @@ function App() {
         <Router>
           <ScrollToTop />
           <AuthProvider>
-              <Suspense fallback={<PageLoader />}>
-              <Routes>
+            <AppContent />
+          </AuthProvider>
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+// App Content Component - Handles PWA session and routing
+function AppContent() {
+  // Initialize PWA session management
+  usePWASession();
+
+  return (
+    <>
+      <BackButtonHandler />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
                 {/* ============================================
                     Public Routes - No Authentication Required
                     ============================================ */}
@@ -284,11 +302,8 @@ function App() {
                 {/* 404 - Catch all unmatched routes */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </Suspense>
-          </AuthProvider>
-        </Router>
-      </ThemeProvider>
-    </ErrorBoundary>
+      </Suspense>
+    </>
   );
 }
 

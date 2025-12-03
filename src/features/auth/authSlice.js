@@ -36,8 +36,8 @@ const authSlice = createSlice({
       state.error = null;
       state.loading = false;
       sessionStorage.removeItem("auth_data");
-      sessionStorage.clear();
-      localStorage.clear();
+      localStorage.removeItem("auth_data");
+      localStorage.removeItem("auth_timestamp");
     },
     
     // Update user profile (for profile updates)

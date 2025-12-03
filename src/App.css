@@ -43,8 +43,8 @@
 
 .content-wrapper:hover {
   background: var(--color-card-bg-hover);
-  box-shadow: var(--shadow-lg);
-  /* Removed transform for smoother, less distracting hover */
+  box-shadow: var(--shadow);
+  /* Removed transform and border color change for smoother, less distracting hover */
 }
 
 /* Page Container */
@@ -98,8 +98,8 @@
 
 .section-container:hover {
   background: var(--color-card-bg-hover);
-  box-shadow: var(--shadow-lg);
-  /* Removed transform for smoother, less distracting hover */
+  box-shadow: var(--shadow);
+  /* Removed transform and border color change for smoother, less distracting hover */
 }
 
 /* Enhanced hover effects - simplified */
@@ -112,7 +112,7 @@
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-select:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 160, 128, 0.25);
   border-color: var(--color-input-focus);
 }
 

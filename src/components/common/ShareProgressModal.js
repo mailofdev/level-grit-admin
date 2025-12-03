@@ -13,27 +13,27 @@ const ShareProgressModal = ({ show, onHide, clientData }) => {
   const themes = {
     gradient: {
       name: 'Aurora',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+      background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 50%, #00C099 100%)',
       icon: '🌈'
     },
     sunset: {
       name: 'Sunset',
-      background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
       icon: '🌅'
     },
     ocean: {
       name: 'Ocean',
-      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
+      background: 'linear-gradient(135deg, var(--color-primary) 0%, #006650 50%, #008066 100%)',
       icon: '🌊'
     },
     forest: {
       name: 'Forest',
-      background: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+      background: 'linear-gradient(135deg, #006650 0%, var(--color-primary) 100%)',
       icon: '🌲'
     },
     fire: {
       name: 'Fire',
-      background: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
+      background: 'linear-gradient(135deg, var(--color-primary) 0%, #00C099 100%)',
       icon: '🔥'
     }
   };
@@ -197,7 +197,7 @@ const ShareProgressModal = ({ show, onHide, clientData }) => {
         onHide={onHide}
         header={
           <div className="d-flex align-items-center gap-2">
-            <div className="bg-gradient rounded-3 p-2" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+            <div className="bg-gradient rounded-3 p-2" style={{background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)'}}>
               <span style={{fontSize: '24px'}}>📊</span>
             </div>
             <div>
@@ -212,7 +212,7 @@ const ShareProgressModal = ({ show, onHide, clientData }) => {
       >
         <div className="row g-3 g-md-4 mt-2">
           <div className="col-12 col-lg-6">
-            <div className="bg-light rounded-4 p-3 p-md-4" style={{border: '2px dashed #dee2e6'}}>
+            <div className="bg-light rounded-4 p-3 p-md-4" style={{border: '2px dashed var(--color-border)'}}>
               <div className="mb-3">
                 <label className="fw-semibold mb-2 d-block small">🎨 Choose Theme</label>
                 <div className="d-flex flex-wrap gap-2">
@@ -418,9 +418,9 @@ const ShareProgressModal = ({ show, onHide, clientData }) => {
                   className="w-100"
                   style={{
                     minHeight: "56px",
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
                     border: 'none',
-                    color: 'white',
+                    color: 'var(--color-button-text)',
                   }}
                 />
               )}
@@ -461,9 +461,9 @@ const ShareProgressModal = ({ show, onHide, clientData }) => {
                 className="w-100"
                 style={{
                   minHeight: "56px",
-                  background: '#111827',
+                  background: 'var(--color-text-dark)',
                   border: 'none',
-                  color: 'white',
+                  color: 'var(--color-button-text)',
                 }}
               />
 

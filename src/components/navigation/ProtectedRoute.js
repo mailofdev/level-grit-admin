@@ -15,7 +15,28 @@ import { getUserRole, hasAnyRole, ROLES } from "../../utils/roles";
  */
 export default function ProtectedRoute({ children, allowedRoles, requireAuth = true }) {
   const { user, token } = useSelector((state) => state.auth);
-  const storedToken = sessionStorage.getItem("auth_data");
+  let storedToken = sessionStorage.getItem("auth_data");
+  
+  // If no active session, try to restore from localStorage
+  if (!storedToken) {
+    const persistedAuth = localStorage.getItem("auth_data");
+    const timestamp = localStorage.getItem("auth_timestamp");
+    
+    if (persistedAuth && timestamp) {
+      const sessionAge = Date.now() - parseInt(timestamp, 10);
+      const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+      
+      if (sessionAge < SESSION_DURATION) {
+        // Restore to sessionStorage
+        sessionStorage.setItem("auth_data", persistedAuth);
+        storedToken = persistedAuth;
+      } else {
+        // Session expired
+        localStorage.removeItem("auth_data");
+        localStorage.removeItem("auth_timestamp");
+      }
+    }
+  }
 
   // Check authentication
   if (requireAuth && !token && !storedToken) {

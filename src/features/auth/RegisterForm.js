@@ -38,11 +38,11 @@ const RegisterForm = () => {
     }
   }, [userType, navigate]);
 
-  // Trainer color scheme
-  const primaryColor = "#667eea";
-  const gradientBg = "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)";
-  const borderColor = "rgba(102, 126, 234, 0.3)";
-  const inputBg = "rgba(102, 126, 234, 0.05)";
+  // Using HealthifyMe theme
+  const primaryColor = "var(--color-primary)";
+  const gradientBg = "var(--color-bg)";
+  const borderColor = "var(--color-input-border)";
+  const inputBg = "var(--color-input-bg)";
 
   // Helper function to get dashboard route based on role
   const getDashboardRoute = (role) => {
@@ -175,7 +175,8 @@ const RegisterForm = () => {
     <div 
       className="d-flex justify-content-center align-items-center auth-page-enter"
       style={{ 
-        minHeight: '95vh', 
+        minHeight: '100vh',
+        padding: '1rem 0.75rem',
         background: gradientBg
       }}
     >
@@ -184,7 +185,7 @@ const RegisterForm = () => {
         <Loader
           fullScreen={true}
           text="Creating your account..."
-          color={primaryColor}
+          color="var(--color-primary)"
         />
       )}
 
@@ -203,8 +204,8 @@ const RegisterForm = () => {
         {/* Header Section */}
         <div style={{ 
           background: 'var(--color-card-bg)',
-          padding: '0.5rem 0.5rem 0.5rem 0.5rem',
-          borderBottom: `3px solid ${primaryColor}`,
+          padding: '1rem 1rem 0.75rem 1rem',
+          borderBottom: `3px solid var(--color-primary)`,
           borderTopLeftRadius: '1.25rem',
           borderTopRightRadius: '1.25rem'
         }}>
@@ -217,7 +218,7 @@ const RegisterForm = () => {
         </div>
 
         {/* Form Section */}
-        <div style={{ padding: '0.5rem' }}>
+        <div style={{ padding: '1rem' }}>
           {/* Trainer Signup Alert */}
           {userType === "trainer" && (
             <Alert
@@ -240,7 +241,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-user me-2" style={{ color: primaryColor }}></i>Full Name
+                  <i className="fas fa-user me-2" style={{ color: "var(--color-primary)" }}></i>Full Name
                 </label>
                 <input
                   type="text"
@@ -258,7 +259,7 @@ const RegisterForm = () => {
                     borderWidth: '2px',
                     borderColor: borderColor
                   }}
-                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                   onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
@@ -272,7 +273,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-phone me-2" style={{ color: primaryColor }}></i>Phone Number
+                  <i className="fas fa-phone me-2" style={{ color: "var(--color-primary)" }}></i>Phone Number
                 </label>
                 <input
                   type="tel"
@@ -291,7 +292,7 @@ const RegisterForm = () => {
                     borderWidth: '2px',
                     borderColor: borderColor
                   }}
-                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                   onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
@@ -305,7 +306,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-venus-mars me-2" style={{ color: primaryColor }}></i>Gender
+                  <i className="fas fa-venus-mars me-2" style={{ color: "var(--color-primary)" }}></i>Gender
                 </label>
                 <select
                   name="gender"
@@ -321,7 +322,7 @@ const RegisterForm = () => {
                     borderWidth: '2px',
                     borderColor: borderColor
                   }}
-                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                   onBlur={(e) => e.target.style.borderColor = borderColor}
                 >
                   <option value="">Select your gender</option>
@@ -340,7 +341,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-envelope me-2" style={{ color: primaryColor }}></i>Email Address
+                  <i className="fas fa-envelope me-2" style={{ color: "var(--color-primary)" }}></i>Email Address
                 </label>
                 <input
                   type="email"
@@ -358,7 +359,7 @@ const RegisterForm = () => {
                     borderWidth: '2px',
                     borderColor: borderColor
                   }}
-                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                   onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
               </div>
@@ -372,7 +373,7 @@ const RegisterForm = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  <i className="fas fa-lock me-2" style={{ color: primaryColor }}></i>Password
+                  <i className="fas fa-lock me-2" style={{ color: "var(--color-primary)" }}></i>Password
                 </label>
                 <div className="position-relative">
                   <input
@@ -392,7 +393,7 @@ const RegisterForm = () => {
                     borderWidth: '2px',
                     borderColor: borderColor
                   }}
-                  onFocus={(e) => e.target.style.borderColor = primaryColor}
+                  onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                   onBlur={(e) => e.target.style.borderColor = borderColor}
                 />
                   <button
@@ -410,7 +411,7 @@ const RegisterForm = () => {
                       justifyContent: 'center'
                     }}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  onMouseEnter={(e) => e.currentTarget.style.color = primaryColor}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "var(--color-primary)"}
                   onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-muted)'}
                 >
                     {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
@@ -423,28 +424,28 @@ const RegisterForm = () => {
               type="submit"
               className="btn w-100 mt-4 smooth-transition"
               disabled={isLoading}
-              style={{ 
-                minHeight: '50px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                borderRadius: '0.5rem',
-                backgroundColor: primaryColor,
-                color: '#fff',
-                border: 'none',
-                boxShadow: `0 4px 15px ${primaryColor}40`
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor = "#5568d3";
-                  e.target.style.boxShadow = `0 6px 20px ${primaryColor}60`;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor = primaryColor;
-                  e.target.style.boxShadow = `0 4px 15px ${primaryColor}40`;
-                }
-              }}
+                style={{ 
+                  minHeight: '50px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  borderRadius: '0.5rem',
+                  backgroundColor: "var(--color-button-bg)",
+                  color: "var(--color-button-text)",
+                  border: 'none',
+                  boxShadow: "var(--shadow)"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.target.style.backgroundColor = "var(--color-button-hover)";
+                    e.target.style.boxShadow = "var(--shadow-lg)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) {
+                    e.target.style.backgroundColor = "var(--color-button-bg)";
+                    e.target.style.boxShadow = "var(--shadow)";
+                  }
+                }}
             >
               {isLoading ? (
                 <>
@@ -470,7 +471,7 @@ const RegisterForm = () => {
               <Link
                 to="/login?type=trainer"
                 className="text-decoration-none fw-semibold smooth-transition"
-                style={{ color: primaryColor }}
+                style={{ color: "var(--color-primary)" }}
               >
                 Sign In
               </Link>

@@ -110,30 +110,22 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-vh-100" style={{ backgroundColor: "#ffffff" }}>
+    <div className="min-vh-100 bg-theme">
       {/* Header/Navigation Bar - Role-Based Design */}
-      <nav
-        className="navbar navbar-expand-lg navbar-light shadow-sm py-3 fixed-top"
-        style={{
-          backgroundColor: "rgba(255, 255, 255, 0.98)",
-          backdropFilter: "blur(10px)",
-          zIndex: 1000,
-          borderBottom: "1px solid rgba(0,0,0,0.05)",
-        }}
-      >
+      <nav className="navbar navbar-expand-lg navbar-light shadow-sm py-3 fixed-top bg-nav glass-effect border-bottom border-theme" style={{ zIndex: 1000 }}>
         <div className="container">
           {/* Logo */}
           <Link
-            className="navbar-brand fw-bold d-flex align-items-center"
+            className="navbar-brand fw-bold d-flex align-items-center text-theme-dark text-decoration-none"
             to="/"
-            style={{ fontSize: "1.5rem", color: "#000000", textDecoration: "none" }}
+            style={{ fontSize: "1.5rem" }}
           >
             <img
               src={logo3}
               alt="LevelGrit"
+              className="me-2"
               style={{
                 height: "40px",
-                marginRight: "10px",
                 borderRadius: "8px",
               }}
             />
@@ -142,14 +134,13 @@ const LandingPage = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="navbar-toggler border-0"
+            className="navbar-toggler border-0 touch-target"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
             aria-expanded="false"
             aria-label="Toggle navigation"
-            style={{ minHeight: "44px", minWidth: "44px" }}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -160,48 +151,24 @@ const LandingPage = () => {
             <ul className="navbar-nav me-auto align-items-center mb-3 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  className="nav-link"
+                  className="nav-link text-theme-dark touch-target d-flex align-items-center fw-medium"
                   to="/"
-                  style={{
-                    color: "#333",
-                    minHeight: "44px",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: "500",
-                    padding: "0.5rem 1rem",
-                  }}
                 >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link"
+                  className="nav-link text-theme-dark touch-target d-flex align-items-center fw-medium"
                   to="/about-us"
-                  style={{
-                    color: "#333",
-                    minHeight: "44px",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: "500",
-                    padding: "0.5rem 1rem",
-                  }}
                 >
                   About
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link"
+                  className="nav-link text-theme-dark touch-target d-flex align-items-center fw-medium"
                   to="/contact"
-                  style={{
-                    color: "#333",
-                    minHeight: "44px",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: "500",
-                    padding: "0.5rem 1rem",
-                  }}
                 >
                   Contact
                 </Link>
@@ -211,27 +178,13 @@ const LandingPage = () => {
             {/* Role-Based Action Buttons */}
             <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-3 ms-lg-auto">
               {/* Client Section - Clear Visual Grouping */}
-              <div 
-                className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3"
-                style={{
-                  backgroundColor: "rgba(67, 233, 123, 0.05)",
-                  border: "1px solid rgba(67, 233, 123, 0.2)",
-                }}
-              >
+              <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3" style={{ backgroundColor: "rgba(0, 160, 128, 0.05)", border: "1px solid rgba(0, 160, 128, 0.2)" }}>
                 <div className="d-flex align-items-center gap-2 mb-2 mb-lg-0">
-                  <div 
-                    className="rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      backgroundColor: "#43e97b",
-                      color: "#fff",
-                    }}
-                  >
+                  <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: "32px", height: "32px", backgroundColor: "var(--color-primary)", color: "var(--color-button-text)" }}>
                     <FaUser size={14} />
                   </div>
                   <div className="d-flex flex-column">
-                    <small className="fw-bold" style={{ fontSize: "0.7rem", color: "#43e97b", lineHeight: "1" }}>
+                    <small className="fw-bold text-primary" style={{ fontSize: "0.7rem", lineHeight: "1" }}>
                       FOR CLIENTS
                     </small>
                     <small className="text-muted d-none d-xl-inline" style={{ fontSize: "0.65rem" }}>
@@ -240,18 +193,10 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <motion.button
-                  className="btn rounded-pill px-4 fw-semibold"
+                  className="btn rounded-pill px-4 fw-semibold btn-primary-theme touch-target text-nowrap"
                   onClick={handleClientLogin}
-                  style={{
-                    backgroundColor: "#43e97b",
-                    color: "#fff",
-                    border: "none",
-                    minHeight: "44px",
-                    whiteSpace: "nowrap",
-                    boxShadow: "0 2px 8px rgba(67, 233, 123, 0.3)",
-                    fontSize: "0.9rem",
-                  }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(67, 233, 123, 0.4)" }}
+                  style={{ boxShadow: "0 2px 8px rgba(0, 160, 128, 0.3)", fontSize: "0.9rem" }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 160, 128, 0.4)" }}
                   whileTap={{ scale: 0.98 }}
                   title="Login as a Client to track your meals and join the 32-day challenge"
                 >
@@ -261,37 +206,16 @@ const LandingPage = () => {
               </div>
 
               {/* Visual Divider */}
-              <div 
-                className="d-none d-lg-flex align-items-center"
-                style={{
-                  width: "1px",
-                  height: "50px",
-                  backgroundColor: "rgba(0,0,0,0.1)",
-                }}
-              />
+              <div className="d-none d-lg-flex align-items-center border-theme" style={{ width: "1px", height: "50px", backgroundColor: "var(--color-border)" }} />
 
               {/* Trainer Section - Clear Visual Grouping */}
-              <div 
-                className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3"
-                style={{
-                  backgroundColor: "rgba(102, 126, 234, 0.05)",
-                  border: "1px solid rgba(102, 126, 234, 0.2)",
-                }}
-              >
+              <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 p-2 rounded-3" style={{ backgroundColor: "rgba(0, 160, 128, 0.05)", border: "1px solid rgba(0, 160, 128, 0.2)" }}>
                 <div className="d-flex align-items-center gap-2 mb-2 mb-lg-0">
-                  <div 
-                    className="rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      backgroundColor: "#667eea",
-                      color: "#fff",
-                    }}
-                  >
+                  <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: "32px", height: "32px", backgroundColor: "var(--color-primary)", color: "var(--color-button-text)" }}>
                     <FaDumbbell size={14} />
                   </div>
                   <div className="d-flex flex-column">
-                    <small className="fw-bold" style={{ fontSize: "0.7rem", color: "#667eea", lineHeight: "1" }}>
+                    <small className="fw-bold text-primary" style={{ fontSize: "0.7rem", lineHeight: "1" }}>
                       FOR TRAINERS
                     </small>
                     <small className="text-muted d-none d-xl-inline" style={{ fontSize: "0.65rem" }}>
@@ -301,20 +225,13 @@ const LandingPage = () => {
                 </div>
                 <div className="d-flex gap-2">
                   <motion.button
-                    className="btn rounded-pill px-3 px-md-4 fw-semibold"
+                    className="btn rounded-pill px-3 px-md-4 fw-semibold touch-target text-nowrap border-2 border-primary text-primary"
                     onClick={handleTrainerLogin}
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "#667eea",
-                      border: "2px solid #667eea",
-                      minHeight: "44px",
-                      whiteSpace: "nowrap",
-                      fontSize: "0.9rem",
-                    }}
+                    style={{ fontSize: "0.9rem" }}
                     whileHover={{ 
                       scale: 1.05, 
-                      backgroundColor: "#667eea",
-                      color: "#fff",
+                      backgroundColor: "var(--color-primary)",
+                      color: "var(--color-button-text)",
                     }}
                     whileTap={{ scale: 0.98 }}
                     title="Login as a Trainer to manage your clients"
@@ -323,18 +240,10 @@ const LandingPage = () => {
                     Login
                   </motion.button>
                   <motion.button
-                    className="btn rounded-pill px-3 px-md-4 fw-semibold"
+                    className="btn rounded-pill px-3 px-md-4 fw-semibold btn-primary-theme touch-target text-nowrap"
                     onClick={handleTrainerSignUp}
-                    style={{
-                      backgroundColor: "#667eea",
-                      color: "#fff",
-                      border: "none",
-                      minHeight: "44px",
-                      whiteSpace: "nowrap",
-                      boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
-                      fontSize: "0.9rem",
-                    }}
-                    whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)" }}
+                    style={{ boxShadow: "0 2px 8px rgba(0, 160, 128, 0.3)", fontSize: "0.9rem" }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 160, 128, 0.4)" }}
                     whileTap={{ scale: 0.98 }}
                     title="Sign up as a Trainer to start coaching clients"
                   >
@@ -350,16 +259,13 @@ const LandingPage = () => {
 
       {/* Tab Switcher - Sticky below navbar */}
       <motion.div
-        className="position-sticky"
+        className="position-sticky pt-4 pb-3 glass-effect"
         style={{
           top: "76px", // Navbar height + padding
           zIndex: 998,
-          paddingTop: "1.5rem",
-          paddingBottom: "1rem",
-          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.98)" : "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(10px)",
-          borderBottom: isScrolled ? "1px solid rgba(0,0,0,0.08)" : "none",
-          boxShadow: isScrolled ? "0 2px 10px rgba(0,0,0,0.05)" : "none",
+          backgroundColor: isScrolled ? "var(--color-nav-bg)" : "rgba(255, 255, 255, 0.95)",
+          borderBottom: isScrolled ? "1px solid var(--color-border)" : "none",
+          boxShadow: isScrolled ? "var(--shadow-sm)" : "none",
           transition: "all 0.3s ease",
         }}
         initial={{ opacity: 0, y: -20 }}
@@ -368,23 +274,13 @@ const LandingPage = () => {
       >
         <div className="container">
           <div className="d-flex justify-content-center">
-            <div
-              className="d-flex rounded-pill p-2 shadow-lg"
-              style={{
-                backgroundColor: "#f8f9fa",
-                border: "2px solid #e9ecef",
-                maxWidth: "600px",
-                width: "100%",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-              }}
-            >
+            <div className="d-flex rounded-pill p-2 shadow-lg bg-card border border-2 border-theme" style={{ maxWidth: "600px", width: "100%" }}>
               <motion.button
                 onClick={() => handleTabChange("trainer")}
-                className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative"
+                className={`btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative border-0 ${activeTab === "trainer" ? "btn-primary-theme" : ""}`}
                 style={{
-                  backgroundColor: activeTab === "trainer" ? "#667eea" : "transparent",
-                  color: activeTab === "trainer" ? "#fff" : "#6c757d",
-                  border: "none",
+                  backgroundColor: activeTab === "trainer" ? "var(--color-primary)" : "transparent",
+                  color: activeTab === "trainer" ? "var(--color-button-text)" : "var(--color-muted)",
                   padding: "14px 28px",
                   minHeight: "52px",
                   fontSize: "0.95rem",
@@ -392,7 +288,7 @@ const LandingPage = () => {
                 }}
                 whileHover={{ 
                   scale: activeTab === "trainer" ? 1 : 1.02,
-                  backgroundColor: activeTab === "trainer" ? "#667eea" : "rgba(102, 126, 234, 0.1)",
+                  backgroundColor: activeTab === "trainer" ? "var(--color-primary)" : "rgba(0, 160, 128, 0.1)",
                 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -406,7 +302,7 @@ const LandingPage = () => {
                     style={{
                       inset: 0,
                       borderRadius: "9999px",
-                      backgroundColor: "#667eea",
+                      backgroundColor: "var(--color-primary)",
                       zIndex: -1,
                     }}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
@@ -415,11 +311,10 @@ const LandingPage = () => {
               </motion.button>
               <motion.button
                 onClick={() => handleTabChange("client")}
-                className="btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative"
+                className={`btn flex-grow-1 rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold position-relative border-0 ${activeTab === "client" ? "btn-primary-theme" : ""}`}
                 style={{
-                  backgroundColor: activeTab === "client" ? "#43e97b" : "transparent",
-                  color: activeTab === "client" ? "#fff" : "#6c757d",
-                  border: "none",
+                  backgroundColor: activeTab === "client" ? "var(--color-primary)" : "transparent",
+                  color: activeTab === "client" ? "var(--color-button-text)" : "var(--color-muted)",
                   padding: "14px 28px",
                   minHeight: "52px",
                   fontSize: "0.95rem",
@@ -427,7 +322,7 @@ const LandingPage = () => {
                 }}
                 whileHover={{ 
                   scale: activeTab === "client" ? 1 : 1.02,
-                  backgroundColor: activeTab === "client" ? "#43e97b" : "rgba(67, 233, 123, 0.1)",
+                  backgroundColor: activeTab === "client" ? "var(--color-primary)" : "rgba(0, 160, 128, 0.1)",
                 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -441,7 +336,7 @@ const LandingPage = () => {
                     style={{
                       inset: 0,
                       borderRadius: "9999px",
-                      backgroundColor: "#43e97b",
+                      backgroundColor: "var(--color-primary)",
                       zIndex: -1,
                     }}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
@@ -472,7 +367,7 @@ const LandingPage = () => {
         style={{
           paddingTop: "2rem",
           paddingBottom: "6rem",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -512,14 +407,19 @@ const LandingPage = () => {
                   </span>
                 </motion.div>
                 <h1
-                  className="display-3 fw-bold mb-4"
-                  style={{ color: "#fff", lineHeight: "1.2", textShadow: "0 2px 10px rgba(0,0,0,0.2)" }}
+                  className="fw-bold mb-3 mb-md-4"
+                  style={{ 
+                    color: "#fff", 
+                    lineHeight: "1.2", 
+                    textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                    fontSize: "clamp(1.5rem, 5vw, 2.5rem)"
+                  }}
                 >
                   Track Smarter. Coach Effortlessly. Deliver Real Results.
                 </h1>
                 <p
-                  className="lead mb-4"
-                  style={{ color: "rgba(255,255,255,0.95)", fontSize: "1.2rem", lineHeight: "1.6" }}
+                  className="mb-3 mb-md-4"
+                  style={{ color: "rgba(255,255,255,0.95)", fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", lineHeight: "1.6" }}
                 >
                   Still tracking clients over WhatsApp or calls?
                   <br />
@@ -530,19 +430,16 @@ const LandingPage = () => {
                   </strong>
                 </p>
                 <motion.button
-                  className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2 w-100 w-md-auto"
+                  className="btn rounded-pill px-4 px-md-5 py-2 py-md-3 fw-semibold mb-3 d-inline-flex align-items-center gap-2 w-100 w-md-auto bg-theme border-0 shadow-lg"
                   onClick={handleSignUpNavigation}
                   style={{
-                    backgroundColor: "#fff",
-                    color: "#667eea",
-                    minHeight: "56px",
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-                    border: "none",
+                    color: "var(--color-primary)",
+                    minHeight: "48px",
                     fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
                     whiteSpace: "normal",
                     wordBreak: "break-word",
                   }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
+                  whileHover={{ scale: 1.05, boxShadow: "var(--shadow-lg)" }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
@@ -558,14 +455,14 @@ const LandingPage = () => {
                 className="d-flex align-items-center gap-3 mt-3"
               >
                 <div className="d-flex align-items-center gap-2">
-                  <FaCheckCircle style={{ color: "#4ade80", fontSize: "1.2rem" }} />
-                  <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
+                  <FaCheckCircle style={{ color: "var(--color-primary)", fontSize: "1rem" }} />
+                  <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.875rem" }}>
                     AI does the tracking
                   </span>
                 </div>
                 <div className="d-flex align-items-center gap-2">
-                  <FaCheckCircle style={{ color: "#4ade80", fontSize: "1.2rem" }} />
-                  <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.95rem" }}>
+                  <FaCheckCircle style={{ color: "var(--color-primary)", fontSize: "1rem" }} />
+                  <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.875rem" }}>
                     You deliver the transformation
                   </span>
                 </div>
@@ -610,8 +507,8 @@ const LandingPage = () => {
                       transition={{ delay: 0.8, type: "spring" }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      <FaRobot style={{ color: "#667eea", fontSize: "1.2rem" }} />
-                      <span className="fw-bold" style={{ color: "#333", fontSize: "0.9rem" }}>
+                      <FaRobot style={{ color: "var(--color-primary)", fontSize: "1.2rem" }} />
+                      <span className="fw-bold" style={{ color: "var(--color-text-dark)", fontSize: "0.9rem" }}>
                         AI Powered
                       </span>
                     </motion.div>
@@ -622,13 +519,14 @@ const LandingPage = () => {
                         left: "30px",
                         width: "60px",
                         height: "60px",
+                        backgroundColor: "var(--color-bg)",
                       }}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1 }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <FaCamera style={{ color: "#667eea", fontSize: "1.5rem" }} />
+                      <FaCamera style={{ color: "var(--color-primary)", fontSize: "1.5rem" }} />
                     </motion.div>
                     <motion.div
                       className="position-absolute bg-white rounded-3 p-3 shadow-lg"
@@ -636,6 +534,7 @@ const LandingPage = () => {
                         bottom: "30px",
                         right: "30px",
                         minWidth: "140px",
+                        backgroundColor: "var(--color-bg)",
                       }}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -644,8 +543,8 @@ const LandingPage = () => {
                     >
                       <small className="text-muted d-block mb-1">Macros Detected</small>
                       <div className="d-flex align-items-center gap-2">
-                        <FaChartBar style={{ color: "#4ade80", fontSize: "1.2rem" }} />
-                        <strong style={{ color: "#667eea", fontSize: "1.1rem" }}>
+                        <FaChartBar style={{ color: "var(--color-primary)", fontSize: "1.2rem" }} />
+                        <strong style={{ color: "var(--color-primary)", fontSize: "1.1rem" }}>
                           Real-time
                         </strong>
                       </div>
@@ -659,7 +558,7 @@ const LandingPage = () => {
       </section>
 
       {/* The Problem Section - Trainer */}
-      <section className="py-5" style={{ backgroundColor: "#fff", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ backgroundColor: "var(--color-bg)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -679,7 +578,7 @@ const LandingPage = () => {
                 style={{
                   width: "80px",
                   height: "80px",
-                  backgroundColor: "#fee2e2",
+                  backgroundColor: "var(--color-card-bg)",
                   margin: "0 auto",
                 }}
               >
@@ -687,14 +586,14 @@ const LandingPage = () => {
               </div>
             </motion.div>
             <h2
-              className="fw-bold mb-4"
-              style={{ fontSize: "2.8rem", color: "#1f2937", lineHeight: "1.2" }}
+              className="fw-bold mb-3 mb-md-4"
+              style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)", color: "var(--color-text-dark)", lineHeight: "1.2" }}
             >
               The Problem
             </h2>
             <p
-              className="lead mb-5"
-              style={{ color: "#6b7280", fontSize: "1.3rem", maxWidth: "700px", margin: "0 auto", fontWeight: "500" }}
+              className="mb-4 mb-md-5"
+              style={{ color: "var(--color-muted)", fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", maxWidth: "700px", margin: "0 auto", fontWeight: "500" }}
             >
               You already know how it goes:
             </p>
@@ -723,7 +622,7 @@ const LandingPage = () => {
                     <div
                       className="card border-0 shadow-sm h-100 p-4 rounded-4"
                       style={{
-                        backgroundColor: "#f9fafb",
+                        backgroundColor: "var(--color-card-bg)",
                         borderLeft: `4px solid ${item.color}`,
                       }}
                     >
@@ -738,7 +637,7 @@ const LandingPage = () => {
                       >
                         {item.icon}
                       </div>
-                      <p style={{ color: "#374151", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
+                      <p style={{ color: "var(--color-text-dark)", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
                         {item.text}
                       </p>
                     </div>
@@ -751,7 +650,7 @@ const LandingPage = () => {
       </section>
 
       {/* The Solution Section - Trainer */}
-      <section className="py-5" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -835,8 +734,8 @@ const LandingPage = () => {
                           style={{
                             width: "50px",
                             height: "50px",
-                            backgroundColor: "#667eea",
-                            color: "#fff",
+                            backgroundColor: "var(--color-primary)",
+                            color: "var(--color-button-text)",
                             fontSize: "1.2rem",
                             fontWeight: "bold",
                           }}
@@ -846,11 +745,11 @@ const LandingPage = () => {
                         <div className="flex-grow-1">
                           <div
                             className="mb-2"
-                            style={{ color: "#667eea" }}
+                            style={{ color: "var(--color-primary)" }}
                           >
                             {item.icon}
                           </div>
-                          <p style={{ color: "#374151", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
+                          <p style={{ color: "var(--color-text-dark)", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
                             {item.text}
                           </p>
                         </div>
@@ -887,7 +786,7 @@ const LandingPage = () => {
       </section>
 
       {/* The Fun Factor Section - Trainer */}
-      <section className="py-5" style={{ backgroundColor: "#fff", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ backgroundColor: "var(--color-bg)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -907,16 +806,16 @@ const LandingPage = () => {
                 style={{
                   width: "80px",
                   height: "80px",
-                  background: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+                  background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
                   margin: "0 auto",
                 }}
               >
-                <FaFire style={{ color: "#fff", fontSize: "2rem" }} />
+                <FaFire style={{ color: "var(--color-button-text)", fontSize: "2rem" }} />
               </div>
             </motion.div>
             <h2
               className="fw-bold mb-4"
-              style={{ fontSize: "2.8rem", color: "#1f2937", lineHeight: "1.2" }}
+              style={{ fontSize: "2.8rem", color: "var(--color-text-dark)", lineHeight: "1.2" }}
             >
               The Fun Factor (Engages Clients Too)
             </h2>
@@ -1011,7 +910,7 @@ const LandingPage = () => {
         <div className="container">
           <motion.h2
             className="text-center fw-bold mb-3"
-            style={{ fontSize: "2.5rem", color: "#333" }}
+            style={{ fontSize: "2.5rem", color: "var(--color-text-dark)" }}
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1031,35 +930,35 @@ const LandingPage = () => {
                 desc: "No spreadsheets, no WhatsApp chaos.",
                 icon: FaRobot,
                 img: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop&q=80",
-                gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Meal Photo Tracking",
                 desc: "AI extracts macros instantly.",
                 icon: FaCamera,
                 img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&q=80",
-                gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Challenge Mode",
                 desc: "Badges, streaks, milestones.",
                 icon: FaTrophy,
                 img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop&q=80",
-                gradient: "linear-gradient(135deg, #fad961 0%, #f76b1c 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Save Time",
                 desc: "More coaching, less admin work.",
                 icon: FaClock,
                 img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&q=80",
-                gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Boost Your Brand",
                 desc: "Share progress and attract more clients.",
                 icon: FaChartBar,
                 img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&q=80",
-                gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
             ].map((feature, idx) => (
               <div key={idx} className="col-lg-4 col-md-6 mb-4">
@@ -1115,7 +1014,7 @@ const LandingPage = () => {
                       </div>
                     </div>
                     <div className="card-body p-4">
-                      <h4 className="fw-bold mb-3" style={{ color: "#1f2937", fontSize: "1.3rem" }}>
+                      <h4 className="fw-bold mb-3" style={{ color: "var(--color-text-dark)", fontSize: "1.3rem" }}>
                         {feature.title}
                       </h4>
                       <p className="text-muted mb-0" style={{ fontSize: "1rem", lineHeight: "1.6" }}>
@@ -1131,14 +1030,14 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works Section - Trainer */}
-      <section className="py-5" style={{ background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ background: "var(--color-card-bg)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.h2
             className="text-center fw-bold mb-2"
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
-            style={{ fontSize: "2.8rem", color: "#1f2937" }}
+            style={{ fontSize: "2.8rem", color: "var(--color-text-dark)" }}
           >
             ⚙️ How It Works
           </motion.h2>
@@ -1160,28 +1059,28 @@ const LandingPage = () => {
                 title: "Invite your clients.",
                 desc: "Onboard in seconds — no tech skills or setup required.",
                 icon: FaUserPlus,
-                color: "#667eea",
+                color: "var(--color-primary)",
               },
               {
                 number: "2",
                 title: "Clients upload meal photos.",
                 desc: "AI reads, analyzes, and updates their macros instantly.",
                 icon: FaCamera,
-                color: "#f5576c",
+                color: "var(--color-primary)",
               },
               {
                 number: "3",
                 title: "AI updates macros + your dashboard.",
                 desc: "You monitor progress — effortlessly.",
                 icon: FaChartLine,
-                color: "#4facfe",
+                color: "var(--color-primary)",
               },
               {
                 number: "4",
                 title: "You monitor progress — effortlessly.",
                 desc: "See everything on one dashboard — stay in control, effortlessly.",
                 icon: FaChartBar,
-                color: "#43e97b",
+                color: "var(--color-primary)",
               },
             ].map((step, i) => (
               <motion.div
@@ -1196,7 +1095,7 @@ const LandingPage = () => {
                 <div
                   className="card border-0 shadow-lg text-center h-100 p-5 rounded-4 position-relative"
                   style={{
-                    backgroundColor: "#fff",
+                    backgroundColor: "var(--color-bg)",
                     overflow: "visible",
                   }}
                 >
@@ -1213,7 +1112,7 @@ const LandingPage = () => {
                       <step.icon size={40} />
                     </div>
                   </div>
-                  <h5 className="fw-bold text-dark mb-3" style={{ fontSize: "1.3rem" }}>
+                  <h5 className="fw-bold text-dark mb-3" style={{ fontSize: "1.3rem", color: "var(--color-text-dark)" }}>
                     {step.title}
                   </h5>
                   <p className="text-muted mb-0" style={{ fontSize: "1rem", lineHeight: "1.6" }}>
@@ -1243,7 +1142,7 @@ const LandingPage = () => {
         style={{
           paddingTop: "2rem",
           paddingBottom: "6rem",
-          background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+          background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -1322,16 +1221,16 @@ const LandingPage = () => {
                     className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold d-inline-flex align-items-center gap-2 flex-grow-1 flex-sm-grow-0"
                     onClick={handleClientLogin}
                     style={{
-                      backgroundColor: "#fff",
-                      color: "#43e97b",
+                      backgroundColor: "var(--color-bg)",
+                      color: "var(--color-primary)",
                       minHeight: "56px",
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+                      boxShadow: "var(--shadow-lg)",
                       border: "none",
                       fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
                       whiteSpace: "normal",
                       wordBreak: "break-word",
                     }}
-                    whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
+                    whileHover={{ scale: 1.05, boxShadow: "var(--shadow-lg)" }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
@@ -1382,7 +1281,7 @@ const LandingPage = () => {
       </section>
 
       {/* The Reality Section - Client */}
-      <section className="py-5" style={{ backgroundColor: "#fff", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ backgroundColor: "var(--color-bg)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1392,7 +1291,7 @@ const LandingPage = () => {
           >
             <h2
               className="fw-bold mb-4"
-              style={{ fontSize: "2.8rem", color: "#1f2937", lineHeight: "1.2" }}
+              style={{ fontSize: "2.8rem", color: "var(--color-text-dark)", lineHeight: "1.2" }}
             >
               💬 The Reality
             </h2>
@@ -1401,19 +1300,19 @@ const LandingPage = () => {
                 {[
                   {
                     text: "Diet plans? Easy to start.",
-                    color: "#43e97b",
+                    color: "var(--color-primary)",
                   },
                   {
                     text: "Following them? A different horror story.",
-                    color: "#f5576c",
+                    color: "var(--color-primary)",
                   },
                   {
                     text: "Manual calorie tracking? Nope.",
-                    color: "#f59e0b",
+                    color: "var(--color-primary)",
                   },
                   {
                     text: "Staying consistent? Hardest boss level.",
-                    color: "#8b5cf6",
+                    color: "var(--color-primary)",
                   },
                 ].map((item, idx) => (
                   <motion.div
@@ -1427,11 +1326,11 @@ const LandingPage = () => {
                     <div
                       className="card border-0 shadow-sm h-100 p-4 rounded-4"
                       style={{
-                        backgroundColor: "#f9fafb",
+                        backgroundColor: "var(--color-card-bg)",
                         borderLeft: `4px solid ${item.color}`,
                       }}
                     >
-                      <p style={{ color: "#374151", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
+                      <p style={{ color: "var(--color-text-dark)", fontSize: "1.05rem", margin: 0, lineHeight: "1.6" }}>
                         {item.text}
                       </p>
                     </div>
@@ -1446,7 +1345,7 @@ const LandingPage = () => {
               >
                 <p
                   className="lead fw-bold"
-                  style={{ color: "#1f2937", fontSize: "1.5rem" }}
+                  style={{ color: "var(--color-text-dark)", fontSize: "1.5rem" }}
                 >
                   We fix all of that.
                 </p>
@@ -1457,7 +1356,7 @@ const LandingPage = () => {
       </section>
 
       {/* Why You'll Love It Section - Client */}
-      <section className="py-5" style={{ background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.h2
             className="text-center fw-bold mb-5"
@@ -1480,25 +1379,25 @@ const LandingPage = () => {
                 title: "Snap & Track",
                 desc: "Just click a pic, get macros instantly.",
                 icon: FaCamera,
-                gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Stay Consistent",
                 desc: "Daily progress streaks just like Snapchat.",
                 icon: FaFire,
-                gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Brag Your Wins",
                 desc: "Auto-generated milestone banners for Instagram.",
                 icon: FaShareAlt,
-                gradient: "linear-gradient(135deg, #fad961 0%, #f76b1c 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 title: "Chat with Your Coach",
                 desc: "No boring calls or WhatsApp dumps.",
                 icon: FaComments,
-                gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
             ].map((feature, idx) => (
               <div key={idx} className="col-lg-3 col-md-6 mb-4">
@@ -1560,14 +1459,14 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works Section - Client */}
-      <section className="py-5" style={{ backgroundColor: "#fff", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-4 py-md-5" style={{ backgroundColor: "var(--color-bg)", paddingTop: "2rem", paddingBottom: "3rem" }}>
         <div className="container">
           <motion.h2
             className="text-center fw-bold mb-2"
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
-            style={{ fontSize: "2.8rem", color: "#1f2937" }}
+            style={{ fontSize: "2.8rem", color: "var(--color-text-dark)" }}
           >
             🚀 How It Works
           </motion.h2>
@@ -1583,28 +1482,28 @@ const LandingPage = () => {
                 title: "Snap your meals.",
                 desc: "Just take a photo of what you're eating.",
                 icon: FaCamera,
-                color: "#43e97b",
+                color: "var(--color-primary)",
               },
               {
                 number: "2",
                 title: "Get automatic calorie & macro breakdown.",
                 desc: "AI analyzes your meal instantly.",
                 icon: FaChartBar,
-                color: "#38f9d7",
+                color: "var(--color-primary)",
               },
               {
                 number: "3",
                 title: "Keep your 32-day streak alive.",
                 desc: "Build consistency with daily tracking.",
                 icon: FaFire,
-                color: "#f5576c",
+                color: "var(--color-primary)",
               },
               {
                 number: "4",
                 title: "Share your transformation proudly.",
                 desc: "Post milestone banners on social media.",
                 icon: FaShareAlt,
-                color: "#8b5cf6",
+                color: "var(--color-primary)",
               },
             ].map((step, i) => (
               <motion.div
@@ -1619,7 +1518,7 @@ const LandingPage = () => {
                 <div
                   className="card border-0 shadow-lg text-center h-100 p-5 rounded-4 position-relative"
                   style={{
-                    backgroundColor: "#f9fafb",
+                    backgroundColor: "var(--color-card-bg)",
                     overflow: "visible",
                   }}
                 >
@@ -1636,7 +1535,7 @@ const LandingPage = () => {
                       <step.icon size={40} />
                     </div>
                   </div>
-                  <h5 className="fw-bold text-dark mb-3" style={{ fontSize: "1.3rem" }}>
+                  <h5 className="fw-bold text-dark mb-3" style={{ fontSize: "1.3rem", color: "var(--color-text-dark)" }}>
                     {step.title}
                   </h5>
                   <p className="text-muted mb-0" style={{ fontSize: "1rem", lineHeight: "1.6" }}>
@@ -1650,11 +1549,11 @@ const LandingPage = () => {
       </section>
 
       {/* Users Love It Section - Client */}
-      <section className="py-5" style={{ backgroundColor: "#f8f9fa", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-5" style={{ backgroundColor: "var(--color-card-bg)", paddingTop: "5rem", paddingBottom: "5rem" }}>
         <div className="container">
           <motion.h2
             className="text-center fw-bold mb-5"
-            style={{ fontSize: "2.5rem", color: "#333" }}
+            style={{ fontSize: "2.5rem", color: "var(--color-text-dark)" }}
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1666,12 +1565,12 @@ const LandingPage = () => {
               {
                 quote: "It's like Snapchat streaks but for fitness — I've never missed a meal log!",
                 author: "Sneha, 28",
-                gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
               {
                 quote: "No typing, no tracking — just click and done.",
                 author: "Rohit, 31",
-                gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                gradient: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               },
             ].map((testimonial, idx) => (
               <motion.div
@@ -1703,11 +1602,11 @@ const LandingPage = () => {
       </section>
 
       {/* Final CTA Section - Client */}
-      <section className="py-5" style={{ background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)", paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section className="py-5" style={{ background: "linear-gradient(135deg, var(--color-text-dark) 0%, #000000 100%)", paddingTop: "5rem", paddingBottom: "5rem" }}>
         <div className="container text-center">
           <motion.h2
             className="fw-bold mb-4"
-            style={{ fontSize: "3rem", color: "#fff", lineHeight: "1.2" }}
+            style={{ fontSize: "3rem", color: "var(--color-bg)", lineHeight: "1.2" }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1728,10 +1627,10 @@ const LandingPage = () => {
             className="btn btn-lg rounded-pill px-3 px-md-5 py-3 fw-semibold d-inline-flex align-items-center gap-2 w-100 w-md-auto"
             onClick={handleClientLogin}
             style={{
-              backgroundColor: "#43e97b",
-              color: "#1f2937",
+              backgroundColor: "var(--color-primary)",
+              color: "var(--color-text-dark)",
               minHeight: "56px",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+              boxShadow: "var(--shadow-lg)",
               border: "none",
               fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
               whiteSpace: "normal",
@@ -1742,7 +1641,7 @@ const LandingPage = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.3)" }}
+            whileHover={{ scale: 1.05, boxShadow: "var(--shadow-lg)" }}
             whileTap={{ scale: 0.98 }}
           >
             <span className="d-flex align-items-center gap-2 flex-wrap justify-content-center">
@@ -1765,14 +1664,14 @@ const LandingPage = () => {
             zIndex: 1040,
             width: "56px",
             height: "56px",
-            backgroundColor: "#667eea",
+            backgroundColor: "var(--color-primary)",
             border: "none",
             marginBottom: showInstallButton ? "80px" : "16px",
           }}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}
-          whileHover={{ scale: 1.1, backgroundColor: "#5568d3" }}
+          whileHover={{ scale: 1.1, backgroundColor: "var(--color-button-hover)" }}
           whileTap={{ scale: 0.9 }}
           onClick={() => {
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1782,7 +1681,7 @@ const LandingPage = () => {
             style={{ 
               transform: "rotate(-90deg)",
               fontSize: "1.2rem",
-              color: "#fff"
+              color: "var(--color-button-text)"
             }} 
           />
         </motion.button>
@@ -1795,8 +1694,9 @@ const LandingPage = () => {
           style={{
             zIndex: 1050,
             minHeight: "56px",
-            backgroundColor: "#007AFF",
+            backgroundColor: "var(--color-primary)",
             border: "none",
+            color: "var(--color-button-text)",
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1810,65 +1710,73 @@ const LandingPage = () => {
         </motion.button>
       )}
 
-      {/* Footer */}
-      <footer className="bg-dark text-white pt-4">
+      {/* Footer - Compact & Modern */}
+      <footer className="bg-dark text-white pt-4 pb-3">
         <div className="container">
-          <div className="row g-4">
-            <div className="col-lg-3">
-              <h5 className="fw-bold mb-3">LevelGrit</h5>
-              <p className="text-muted mb-3">
-                123 Fitness Street
-                <br />
-                Health City, HC 12345
+          <div className="row g-3 g-md-4">
+            {/* Brand & Contact Section */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div className="d-flex align-items-center gap-2 mb-2">
+                <img
+                  src={logo3}
+                  alt="LevelGrit"
+                  className="rounded"
+                  style={{ height: "32px", width: "auto" }}
+                />
+                <h6 className="fw-bold mb-0">LevelGrit</h6>
+              </div>
+              <p className="text-muted small mb-2">
+                AI-powered fitness coaching platform for trainers and clients.
               </p>
-              <div className="d-flex gap-3 mb-3">
+              <div className="d-flex gap-2 mb-2">
                 <motion.a
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ opacity: 0.8 }}
+                  className="text-white-50 text-decoration-none"
+                  whileHover={{ scale: 1.1, color: "#1877f2" }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <FaFacebook
-                    size={24}
-                    style={{ cursor: "pointer", color: "#fff" }}
-                  />
+                  <FaFacebook size={20} />
                 </motion.a>
                 <motion.a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ opacity: 0.8 }}
+                  className="text-white-50 text-decoration-none"
+                  whileHover={{ scale: 1.1, color: "#e4405f" }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <FaInstagram
-                    size={24}
-                    style={{ cursor: "pointer", color: "#fff" }}
-                  />
+                  <FaInstagram size={20} />
                 </motion.a>
                 <motion.a
                   href="https://linkedin.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ opacity: 0.8 }}
+                  className="text-white-50 text-decoration-none"
+                  whileHover={{ scale: 1.1, color: "#0077b5" }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <FaLinkedin
-                    size={24}
-                    style={{ cursor: "pointer", color: "#fff" }}
-                  />
+                  <FaLinkedin size={20} />
                 </motion.a>
               </div>
-              <p className="text-muted mb-2">
-                <FaEnvelope className="me-2" />
-                info@levelgrit.com
-              </p>
-              <p className="text-muted">
-                <FaPhone className="me-2" />
-                +1 (555) 123-4567
-              </p>
+              <div className="d-flex flex-column gap-1 small">
+                <a href="mailto:info@levelgrit.com" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
+                  <FaEnvelope size={14} />
+                  <span>info@levelgrit.com</span>
+                </a>
+                <a href="tel:+15551234567" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
+                  <FaPhone size={14} />
+                  <span>+1 (555) 123-4567</span>
+                </a>
+              </div>
             </div>
-            <div className="col-lg-3">
-              <h6 className="fw-bold mb-3">Company</h6>
-              <ul className="list-unstyled">
-                <li className="mb-2">
+
+            {/* Quick Links - Compact Grid */}
+            <div className="col-6 col-md-3 col-lg-2">
+              <h6 className="fw-semibold mb-2 small text-uppercase text-white-50">Company</h6>
+              <ul className="list-unstyled mb-0 small">
+                <li className="mb-1">
                   <Link
                     to="/about-us"
                     className="text-white-50 text-decoration-none"
@@ -1876,56 +1784,76 @@ const LandingPage = () => {
                     About Us
                   </Link>
                 </li>
-              </ul>
-            </div>
-            <div className="col-lg-3">
-              <h6 className="fw-bold mb-3">Resources</h6>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <Link
-                    to="/privacy-policy"
-                    className="text-white-50 text-decoration-none"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    to="/terms-conditions"
-                    className="text-white-50 text-decoration-none"
-                  >
-                    Terms & Conditions
-                  </Link>
-                </li>
-                <li className="mb-2">
+                <li className="mb-1">
                   <Link
                     to="/contact"
                     className="text-white-50 text-decoration-none"
                   >
-                    Contact Us
+                    Contact
                   </Link>
                 </li>
               </ul>
             </div>
-            <div className="col-lg-3">
-              <h6 className="fw-bold mb-3">Legal</h6>
-              <ul className="list-unstyled">
-                <li className="mb-2">
+
+            <div className="col-6 col-md-3 col-lg-2">
+              <h6 className="fw-semibold mb-2 small text-uppercase text-white-50">Legal</h6>
+              <ul className="list-unstyled mb-0 small">
+                <li className="mb-1">
+                  <Link
+                    to="/privacy-policy"
+                    className="text-white-50 text-decoration-none"
+                  >
+                    Privacy
+                  </Link>
+                </li>
+                <li className="mb-1">
+                  <Link
+                    to="/terms-conditions"
+                    className="text-white-50 text-decoration-none"
+                  >
+                    Terms
+                  </Link>
+                </li>
+                <li className="mb-1">
                   <Link
                     to="/cancellation-policy"
                     className="text-white-50 text-decoration-none"
                   >
-                    Cancellation Policy
+                    Cancellation
                   </Link>
                 </li>
               </ul>
             </div>
-            <hr className="my-4" style={{ borderColor: "#444" }} />
-            <div className="text-center text-white mb-4">
-              <p className="mb-0 text-white bg-white px-2 py-1 rounded">
-                &copy; {new Date().getFullYear()} LevelGrit. All rights
-                reserved.
-              </p>
+
+            {/* CTA Section - Mobile Only */}
+            <div className="col-12 col-lg-4 d-lg-none text-center">
+              <motion.button
+                className="btn btn-primary rounded-pill px-4 py-2 small"
+                onClick={handleSignUpNavigation}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Get Started Free
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Bottom Bar - Compact */}
+          <hr className="my-3 border-secondary opacity-25" />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small">
+            <p className="mb-0 text-white-50">
+              &copy; {new Date().getFullYear()} LevelGrit. All rights reserved.
+            </p>
+            <div className="d-flex gap-3">
+              <Link to="/privacy-policy" className="text-white-50 text-decoration-none">
+                Privacy
+              </Link>
+              <Link to="/terms-conditions" className="text-white-50 text-decoration-none">
+                Terms
+              </Link>
+              <Link to="/contact" className="text-white-50 text-decoration-none">
+                Support
+              </Link>
             </div>
           </div>
         </div>

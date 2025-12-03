@@ -67,20 +67,20 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: '#ffffff' }}>
+    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: 'var(--color-bg)' }}>
       <Heading pageName="Testimonials" showBackButton={true} />
       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
         <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="container py-5">
+          <div className="container py-3 py-md-4">
         <motion.div 
           className="text-center mb-5"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="display-4 fw-bold mb-3" style={{ color: '#333' }}>
-            Success <span style={{ color: '#667eea' }}>Stories</span>
+          <h1 className="fw-bold mb-3" style={{ color: 'var(--color-text-dark)', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
+            Success <span style={{ color: 'var(--color-primary)' }}>Stories</span>
           </h1>
-          <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <p className="text-muted mb-4" style={{ maxWidth: '800px', margin: '0 auto', fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}>
             Hear from Trainers and Clients about how LevelGrit is transforming fitness coaching and accountability
           </p>
         </motion.div>
@@ -92,7 +92,7 @@ const Testimonials = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#43e97b' }}>
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: 'var(--color-primary)' }}>
             Client Success Stories
           </h2>
           <div className="row g-4 mb-5">
@@ -155,7 +155,7 @@ const Testimonials = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#667eea' }}>
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: 'var(--color-primary)' }}>
             Trainer Success Stories
           </h2>
           <div className="row g-4 mb-5">
@@ -214,13 +214,13 @@ const Testimonials = () => {
         {/* Stats Section */}
         <motion.section 
           className="py-5 mb-5"
-          style={{ backgroundColor: '#f8f9fa' }}
+          style={{ backgroundColor: 'var(--color-card-bg-alt)' }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
           <div className="container text-center">
-            <h2 className="fw-bold mb-5" style={{ fontSize: '2.5rem', color: '#333' }}>
+            <h2 className="fw-bold mb-5" style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)' }}>
               Results That Speak for Themselves
             </h2>
             <div className="row g-4">
@@ -239,7 +239,7 @@ const Testimonials = () => {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <div className="p-4">
-                    <h2 className="fw-bold mb-2" style={{ color: '#4CAF50', fontSize: '3rem' }}>
+                    <h2 className="fw-bold mb-2" style={{ color: 'var(--color-primary)', fontSize: '3rem' }}>
                       {stat.number}
                     </h2>
                     <p className="text-muted mb-0">{stat.label}</p>
@@ -254,8 +254,8 @@ const Testimonials = () => {
         <motion.section 
           className="text-center py-5"
           style={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #43e97b 100%)', 
-            color: '#fff', 
+            background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)', 
+            color: 'var(--color-button-text)', 
             borderRadius: '1rem' 
           }}
           initial={{ opacity: 0, scale: 0.9 }}
@@ -271,7 +271,7 @@ const Testimonials = () => {
               <Link 
                 to="/register?type=trainer" 
                 className="btn btn-light btn-lg rounded-pill px-5 py-3"
-                style={{ fontWeight: '600', backgroundColor: '#fff', color: '#667eea', border: 'none' }}
+                style={{ fontWeight: '600', backgroundColor: 'var(--color-bg)', color: 'var(--color-primary)', border: 'none' }}
               >
                 <FaDumbbell className="me-2" />
                 For Trainers
@@ -279,7 +279,7 @@ const Testimonials = () => {
               <Link 
                 to="/login?type=client" 
                 className="btn btn-light btn-lg rounded-pill px-5 py-3"
-                style={{ fontWeight: '600', backgroundColor: '#fff', color: '#43e97b', border: 'none' }}
+                style={{ fontWeight: '600', backgroundColor: 'var(--color-bg)', color: 'var(--color-primary)', border: 'none' }}
               >
                 <FaUsers className="me-2" />
                 For Clients

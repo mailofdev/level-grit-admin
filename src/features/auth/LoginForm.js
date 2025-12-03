@@ -119,35 +119,26 @@ const LoginForm = () => {
 navigate('/')
   };
 
-  // Color scheme based on login type
+  // Color scheme based on login type - using HealthifyMe theme
   const isClient = loginType === "client";
-  const primaryColor = isClient ? "#43e97b" : "#667eea";
-  const gradientBg = isClient 
-    ? "linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%)"
-    : "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)";
-  const borderColor = isClient ? "rgba(67, 233, 123, 0.3)" : "rgba(102, 126, 234, 0.3)";
-  const inputBg = isClient ? "rgba(67, 233, 123, 0.05)" : "rgba(102, 126, 234, 0.05)";
+  const primaryColor = "var(--color-primary)";
+  const gradientBg = "var(--color-bg)";
+  const borderColor = "var(--color-input-border)";
+  const inputBg = "var(--color-input-bg)";
 
   return (
-    <div 
-      className="d-flex justify-content-center align-items-center auth-page-enter"
-      style={{ 
-        minHeight: '100vh',
-        padding: '2rem 1rem',
-        background: gradientBg
-      }}
-    >
+    <div className="d-flex justify-content-center align-items-center auth-page-enter bg-theme min-vh-100 p-3 px-2">
       {isLoading && (
         <Loader
           fullScreen={true}
           text="Logging in..."
-          color={primaryColor}
+          color="var(--color-primary)"
         />
       )}
 
       {/* Enhanced Login Card */}
       <div
-        className="card border-0 shadow-lg w-100"
+        className="card border-0 shadow-lg w-100 bg-card"
         style={{ 
           maxWidth: "450px",
           background: 'var(--color-card-bg)',
@@ -158,8 +149,8 @@ navigate('/')
         {/* Header Section */}
         <div style={{ 
           background: 'var(--color-card-bg)',
-          padding: '1.5rem 1.5rem 1rem 1.5rem',
-          borderBottom: `3px solid ${primaryColor}`,
+          padding: '1rem 1rem 0.75rem 1rem',
+          borderBottom: `3px solid var(--color-primary)`,
           borderTopLeftRadius: '1.25rem',
           borderTopRightRadius: '1.25rem'
         }}>
@@ -172,7 +163,7 @@ navigate('/')
         </div>
 
         {/* Form Section */}
-        <div style={{ padding: '1.5rem' }}>
+        <div style={{ padding: '1rem' }}>
     
           {errorMessage && (
             <Alert
@@ -195,7 +186,7 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-envelope me-2" style={{ color: primaryColor }}></i>Email Address <span style={{ color: primaryColor }}>*</span>
+                <i className="fas fa-envelope me-2" style={{ color: "var(--color-primary)" }}></i>Email Address <span style={{ color: "var(--color-primary)" }}>*</span>
               </label>
               <input
                 type="email"
@@ -216,7 +207,7 @@ navigate('/')
                   borderWidth: '2px',
                   borderColor: borderColor
                 }}
-                onFocus={(e) => e.target.style.borderColor = primaryColor}
+                onFocus={(e) => e.target.style.borderColor = "var(--color-input-focus)"}
                 onBlur={(e) => e.target.style.borderColor = borderColor}
               />
             </div>
@@ -230,7 +221,7 @@ navigate('/')
                   fontSize: '0.9rem'
                 }}
               >
-                <i className="fas fa-lock me-2" style={{ color: primaryColor }}></i>Password <span style={{ color: primaryColor }}>*</span>
+                <i className="fas fa-lock me-2" style={{ color: "var(--color-primary)" }}></i>Password <span style={{ color: "var(--color-primary)" }}>*</span>
               </label>
 
               <div className="position-relative">
@@ -273,7 +264,7 @@ navigate('/')
                     justifyContent: 'center'
                   }}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  onMouseEnter={(e) => e.currentTarget.style.color = primaryColor}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "var(--color-primary)"}
                   onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-muted)'}
                 >
                   {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
@@ -285,28 +276,28 @@ navigate('/')
               type="submit"
               className="btn w-100 smooth-transition"
               disabled={isLoading}
-              style={{ 
-                minHeight: '50px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                borderRadius: '0.5rem',
-                backgroundColor: primaryColor,
-                color: '#fff',
-                border: 'none',
-                boxShadow: `0 4px 15px ${primaryColor}40`
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor = isClient ? "#38d977" : "#5568d3";
-                  e.target.style.boxShadow = `0 6px 20px ${primaryColor}60`;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor = primaryColor;
-                  e.target.style.boxShadow = `0 4px 15px ${primaryColor}40`;
-                }
-              }}
+                style={{ 
+                  minHeight: '50px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  borderRadius: '0.5rem',
+                  backgroundColor: "var(--color-button-bg)",
+                  color: "var(--color-button-text)",
+                  border: 'none',
+                  boxShadow: "var(--shadow)"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.target.style.backgroundColor = "var(--color-button-hover)";
+                    e.target.style.boxShadow = "var(--shadow-lg)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) {
+                    e.target.style.backgroundColor = "var(--color-button-bg)";
+                    e.target.style.boxShadow = "var(--shadow)";
+                  }
+                }}
             >
               {isLoading ? (
                 <>
@@ -334,7 +325,7 @@ navigate('/')
               <Link
                 to="/register?type=trainer"
                 className="text-decoration-none fw-semibold smooth-transition"
-                style={{ color: primaryColor }}
+                style={{ color: "var(--color-primary)" }}
               >
                 Create Account
               </Link>

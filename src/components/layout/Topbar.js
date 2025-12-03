@@ -38,6 +38,10 @@ const Topbar = ({
   const handleLogoutClick = () => setShowLogoutModal(true);
   const handleLogoutConfirm = () => {
     dispatch(logout());
+    // Clear session from both storages
+    sessionStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_timestamp");
     window.location.href = "/";
   };
 
@@ -56,14 +60,14 @@ const Topbar = ({
   return (
     <nav
       ref={navRef}
-      className="navbar navbar-expand-lg navbar-dark px-3 px-md-4 shadow-sm sticky-top fixed-top"
+      className="navbar navbar-expand-lg navbar-dark px-3 px-md-4 shadow-sm fixed-top bg-nav glass-effect safe-area-top"
       style={{ 
-        paddingTop: 'calc(0.5rem + env(safe-area-inset-top))', 
+        top: 0,
+        left: 0,
+        right: 0,
         minHeight: '56px',
-        background: 'linear-gradient(135deg, var(--color-nav-bg) 0%, rgba(40, 167, 69, 0.95) 100%)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        zIndex: 1030
+        zIndex: 1030,
+        position: 'fixed'
       }}
     >
       <div className="container-fluid px-2 px-md-3">
@@ -74,17 +78,13 @@ const Topbar = ({
 
         {/* Hamburger toggle */}
         <button
-          className="navbar-toggler ms-auto border-0"
+          className="navbar-toggler ms-auto border-0 touch-target p-2 rounded"
           type="button"
           onClick={() => setNavbarOpen(!navbarOpen)}
           aria-label="Toggle navigation"
           aria-expanded={navbarOpen}
           style={{ 
-            minWidth: '44px', 
-            minHeight: '44px', 
-            padding: '8px',
             background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '8px',
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
@@ -107,7 +107,7 @@ const Topbar = ({
               </div>
             )}
 
-            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-lg-auto" style={{ flexShrink: 0 }}>
+            <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 gap-lg-3 w-lg-auto flex-shrink-0">
               {showSearch && <SearchBar />}
               {showThemeToggle && <ThemeSwitch enableThemeAlert />}
               {showUserMenu && (

@@ -6,8 +6,9 @@ import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import AnimatedCard from "../../components/common/AnimatedCard";
 import StaggerContainer from "../../components/common/StaggerContainer";
 import PaymentPopup from "../../components/payments/PaymentPopup";
-import { FaDumbbell, FaWeight } from "react-icons/fa";
+import { FaDumbbell, FaWeight, FaPhone } from "react-icons/fa";
 import { Toast } from "primereact/toast";
+
 export default function AllClients() {
   const user = getDecryptedUser();
   const navigate = useNavigate();
@@ -29,7 +30,6 @@ export default function AllClients() {
       try {
         setLoading(true);
         const data = await getClientsForTrainer();
-        // Handle both array and object responses
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
@@ -41,7 +41,7 @@ export default function AllClients() {
           detail: error?.response?.data?.message || "Unable to load data. Check your internet connection or try again.",
           life: 4000,
         });
-        setClients([]); // Set empty array on error
+        setClients([]);
       } finally {
         setLoading(false);
       }
@@ -59,8 +59,6 @@ export default function AllClients() {
   }, [clients, currentPage, clientsPerPage]);
 
   const handleClientClick = useCallback((client) => {
-    // Don't allow navigation if client is inactive
-    // Handle both isSubscriptionPaid (lowercase) and IsSubscriptionPaid (uppercase)
     const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
     if (isPaid === false) {
       return;
@@ -73,7 +71,7 @@ export default function AllClients() {
   }, [navigate]);
 
   const handlePayNow = useCallback((client, e) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     setSelectedClient(client);
     setShowPaymentPopup(true);
   }, []);
@@ -86,11 +84,9 @@ export default function AllClients() {
       life: 4000,
     });
     
-    // Refresh clients list
     const fetchClients = async () => {
       try {
         const data = await getClientsForTrainer();
-        // Handle both array and object responses
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
@@ -121,10 +117,9 @@ export default function AllClients() {
   }
 
   return (
-    <div className="container-fluid px-2 px-md-3 py-3 py-md-4 theme-transition">
+    <div className="bg-theme min-vh-100 w-100 overflow-x-hidden p-3">
       <Toast ref={toast} position="top-right" />
       
-      {/* Payment Popup */}
       <PaymentPopup
         show={showPaymentPopup}
         onHide={() => {
@@ -136,330 +131,405 @@ export default function AllClients() {
         clientName={selectedClient?.fullName}
         amount={500}
       />
-      {/* Main Card Container */}
-      <div className="card border-0 shadow-lg theme-transition rounded-4 overflow-hidden">
-        {/* Header Section */}
-        <div className="card-header border-bottom bg-light-subtle py-3">
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-              <h5 className="fw-bold mb-1 fs-4 text-primary-emphasis">
-                👋 Welcome, {user.fullName}
-              </h5>
-              <small className="text-muted d-block">
-                Total Clients:{" "}
-                <span className="fw-semibold text-dark">
-                  {clients.length}
+
+      {/* Main Card Container - Centered */}
+      <div className="mx-auto d-flex flex-column" style={{ maxWidth: "1400px", width: "100%", height: "calc(100vh - 2rem)", maxHeight: "calc(100vh - 2rem)" }}>
+        <div className="card border-0 bg-card d-flex flex-column h-100 overflow-hidden rounded-3 shadow-sm" style={{ border: "1px solid var(--color-border)" }}>
+          {/* Sticky Header Section */}
+          <div className="card-header border-bottom bg-card border-theme position-sticky top-0 flex-shrink-0 py-2 px-3" style={{ zIndex: 10 }}>
+            <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap w-100">
+              <div className="d-flex align-items-center flex-shrink-0">
+                <span className="fw-semibold text-theme-dark text-nowrap" style={{ fontSize: "clamp(0.75rem, 2vw, 0.9rem)" }}>
+                  Total: <span className="text-primary">{clients.length}</span>
                 </span>
-              </small>
-            </div>
+              </div>
 
-            <button
-              className="btn btn-primary px-3 px-md-4 py-2 fw-semibold rounded-pill hover-scale shadow-sm d-flex align-items-center justify-content-center gap-2"
-              onClick={handleAddClient}
-              style={{ minHeight: '44px' }}
-            >
-              <span>+</span> <span>Add Client</span>
-            </button>
-          </div>
-
-          {/* Stats Pills */}
-          <div className="d-flex gap-2 flex-wrap mt-3">
-            <div className="px-3 py-2 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3">
-              <span className="fw-bold text-success">
-                {clients.filter((c) => c.status === "on-track").length}
-              </span>
-              <span className="small text-success ms-2">On Track</span>
-            </div>
-            <div className="px-3 py-2 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-3">
-              <span className="fw-bold text-warning">
-                {clients.filter((c) => c.status === "attention").length}
-              </span>
-              <span className="small text-warning ms-2">Need Attention</span>
-            </div>
-          </div>
-        </div>
-
-{/* Clients Grid - Desktop */}
-<div className="card-body d-none d-md-block">
-  {clients.length === 0 ? (
-    <div className="text-center py-5">
-      <div className="mb-4" style={{ fontSize: "4rem" }}>
-        👥
-      </div>
-      <h5 className="fw-bold text-muted mb-2">No clients yet</h5>
-      <p className="text-muted mb-4">
-        You don't have any clients yet. Tap "Add Client" to start adding your first client.
-      </p>
-      <button
-        className="btn btn-primary px-4 py-2 fw-semibold rounded-pill"
-        onClick={handleAddClient}
-        style={{ minHeight: '44px' }}
-      >
-        <span>+</span> <span>Add Your First Client</span>
-      </button>
-    </div>
-  ) : (
-    <StaggerContainer className="row g-3" staggerDelay={0.05}>
-      {currentClients.map((client, idx) => {
-      // Handle both isSubscriptionPaid (lowercase) and IsSubscriptionPaid (uppercase) from API
-      const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
-      
-      return (
-      <StaggerContainer.Item
-        key={client.clientId}
-        className="col-12 col-sm-6 col-md-4 col-lg-3"
-      >
-        <AnimatedCard
-          delay={idx * 0.05}
-          hover={isPaid !== false}
-          onClick={() => handleClientClick(client)}
-          className={`h-100 position-relative rounded-4 ${
-            isPaid === false ? "opacity-75" : "cursor-pointer"
-          }`}
-          style={{
-            filter: isPaid === false ? "grayscale(0.3)" : "none",
-          }}
-        >
-          <div
-            className="position-absolute top-0 start-0 end-0"
-            style={{
-              height: "3px",
-              background:
-                isPaid === false
-                  ? "linear-gradient(90deg, #dc3545, #ff6b6b)"
-                  : "linear-gradient(90deg, var(--color-primary), var(--color-info), var(--color-secondary))",
-              opacity: 0.6,
-            }}
-          />
-          <div className="card-body p-3">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="card-title fw-bold fs-5 mb-0">
-                {client.fullName}
-              </h5>
-
-              {/* Status Badge */}
-              {isPaid === false ? (
-                <span className="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill small">
-                  <i className="fas fa-lock me-1"></i>
-                  Inactive
-                </span>
-              ) : (
-                client.goal !== undefined && (
-                  <span
-                    className={`badge d-flex align-items-center gap-1 px-3 py-2 rounded-pill small ${
-                      client.goal === 0
-                        ? "bg-success bg-opacity-10 text-success"
-                        : "bg-danger bg-opacity-10 text-danger"
-                    }`}
-                  >
-                    {client.goal === 0 ? (
-                      <>
-                        <FaDumbbell /> Muscle Gain
-                      </>
-                    ) : (
-                      <>
-                        <FaWeight /> Weight Loss
-                      </>
-                    )}
+              <div className="d-flex align-items-center gap-1 flex-shrink-0">
+                <div className="px-2 py-1 rounded-pill text-nowrap" style={{ backgroundColor: "rgba(0, 100, 0, 0.1)", border: "1px solid rgba(0, 100, 0, 0.2)", fontSize: "clamp(0.7rem, 1.8vw, 0.75rem)" }}>
+                  <span className="fw-bold text-success">
+                    {clients.filter((c) => c.status === "on-track").length}
                   </span>
-                )
-              )}
-            </div>
+                  <span className="ms-1 text-success">On Track</span>
+                </div>
+                <div className="px-2 py-1 rounded-pill text-nowrap" style={{ backgroundColor: "rgba(255, 193, 7, 0.1)", border: "1px solid rgba(255, 193, 7, 0.2)", fontSize: "clamp(0.7rem, 1.8vw, 0.75rem)" }}>
+                  <span className="fw-bold text-warning">
+                    {clients.filter((c) => c.status === "attention").length}
+                  </span>
+                  <span className="ms-1 text-warning">Attention</span>
+                </div>
+              </div>
 
-            <div className="d-flex flex-column gap-2 small">
-              <p className="mb-0 d-flex align-items-start">
-                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
-                  Email
-                </span>
-                <span className="fw-medium text-break flex-grow-1">
-                  {client.email}
-                </span>
-              </p>
-              <p className="mb-0 d-flex align-items-center">
-                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
-                  Gender
-                </span>
-                <span className="fw-medium">{client.gender}</span>
-              </p>
-              <p className="mb-0 d-flex align-items-center">
-                <span className="text-muted me-2" style={{ minWidth: "55px" }}>
-                  Phone
-                </span>
-                <span className="fw-medium">{client.phoneNumber}</span>
-              </p>
-            </div>
-
-            {/* Pay Now Button for Inactive Clients */}
-            {isPaid === false && (
-              <div className="mt-3 pt-3 border-top">
+              <div className="flex-shrink-0">
                 <button
-                  className="btn btn-primary w-100 fw-semibold"
-                  onClick={(e) => handlePayNow(client, e)}
-                  style={{ minHeight: "40px" }}
+                  className="btn btn-primary px-3 py-1 fw-semibold rounded-pill d-flex align-items-center justify-content-center gap-1 touch-target text-nowrap"
+                  onClick={handleAddClient}
+                  style={{ fontSize: "clamp(0.75rem, 2vw, 0.85rem)" }}
                 >
-                  <i className="fas fa-credit-card me-2"></i>
-                  Pay Now ₹500
+                  <span>+ Add</span>
                 </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Clients Grid - Desktop */}
+          <div className="card-body d-none d-md-block p-3 overflow-y-auto overflow-x-hidden flex-fill" style={{ minHeight: 0 }}>
+            {clients.length === 0 ? (
+              <div className="text-center py-5">
+                <div className="mb-4" style={{ fontSize: "4rem" }}>
+                  👥
+                </div>
+                <h5 className="fw-bold mb-2 text-theme-dark" style={{ fontSize: "1.1rem" }}>No clients yet</h5>
+                <p className="mb-4 text-muted" style={{ fontSize: "0.9rem", lineHeight: "1.5" }}>
+                  You don't have any clients yet. Tap "Add Client" to start adding your first client.
+                </p>
+                <button
+                  className="btn btn-primary px-4 py-2 fw-semibold rounded-pill touch-target"
+                  onClick={handleAddClient}
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  <span>+</span> <span>Add Your First Client</span>
+                </button>
+              </div>
+            ) : (
+              <div className="row g-3 m-0">
+                {currentClients.map((client, idx) => {
+                  const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
+                  
+                  return (
+                    <div
+                      key={client.clientId}
+                      className="col-12 col-sm-6 col-md-4 col-lg-3"
+                      style={{ padding: 0 }}
+                    >
+                      <AnimatedCard
+                        delay={idx * 0.05}
+                        hover={isPaid !== false}
+                        onClick={() => handleClientClick(client)}
+                        className="h-100 position-relative"
+                        style={{
+                          borderRadius: "0.875rem",
+                          border: "1px solid var(--color-border)",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                          backgroundColor: "var(--color-card-bg)",
+                          filter: isPaid === false ? "grayscale(0.3)" : "none",
+                          transition: "all 0.2s ease",
+                          cursor: isPaid !== false ? "pointer" : "default"
+                        }}
+                      >
+                        <div
+                          className="position-absolute top-0 start-0 end-0"
+                          style={{
+                            height: "3px",
+                            background: isPaid === false ? "var(--color-danger)" : "var(--color-primary)",
+                            borderRadius: "0.875rem 0.875rem 0 0",
+                          }}
+                        />
+                        <div className="card-body p-3">
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h5 className="card-title fw-bold mb-0" style={{ 
+                              fontSize: "0.9rem",
+                              color: "var(--color-text-dark)",
+                              lineHeight: "1.3"
+                            }}>
+                              {client.fullName}
+                            </h5>
+
+                            {isPaid === false ? (
+                              <span className="badge px-2 py-1 rounded-pill small" style={{
+                                backgroundColor: "rgba(220, 53, 69, 0.1)",
+                                color: "var(--color-danger)",
+                                fontSize: "0.7rem"
+                              }}>
+                                <i className="fas fa-lock me-1"></i>
+                                Inactive
+                              </span>
+                            ) : (
+                              client.goal !== undefined && (
+                                <span
+                                  className="badge d-flex align-items-center gap-1 px-2 py-1 rounded-pill small"
+                                  style={{
+                                    backgroundColor: client.goal === 0 
+                                      ? "rgba(0, 100, 0, 0.1)" 
+                                      : "rgba(220, 53, 69, 0.1)",
+                                    color: client.goal === 0 
+                                      ? "var(--color-success)" 
+                                      : "var(--color-danger)",
+                                    fontSize: "0.7rem"
+                                  }}
+                                >
+                                  {client.goal === 0 ? (
+                                    <>
+                                      <FaDumbbell /> Muscle Gain
+                                    </>
+                                  ) : (
+                                    <>
+                                      <FaWeight /> Weight Loss
+                                    </>
+                                  )}
+                                </span>
+                              )
+                            )}
+                          </div>
+
+                          <div className="d-flex flex-column gap-1" style={{ fontSize: "0.8rem" }}>
+                            <p className="mb-0 d-flex align-items-start">
+                              <span className="me-2 text-muted" style={{ minWidth: "50px", fontSize: "0.75rem" }}>
+                                Email
+                              </span>
+                              <span className="fw-medium text-break flex-grow-1 text-theme-dark" style={{ fontSize: "0.8rem" }}>
+                                {client.email}
+                              </span>
+                            </p>
+                            <p className="mb-0 d-flex align-items-center">
+                              <span className="me-2 text-muted" style={{ minWidth: "50px", fontSize: "0.75rem" }}>
+                                Gender
+                              </span>
+                              <span className="fw-medium text-theme-dark" style={{ fontSize: "0.8rem" }}>{client.gender}</span>
+                            </p>
+                            <p className="mb-0 d-flex align-items-center">
+                              <span className="me-2 text-muted" style={{ minWidth: "50px", fontSize: "0.75rem" }}>
+                                Phone
+                              </span>
+                              <span className="fw-medium text-theme-dark" style={{ fontSize: "0.8rem" }}>{client.phoneNumber}</span>
+                            </p>
+                          </div>
+
+                          {isPaid === false && (
+                            <div className="mt-2 pt-2 border-top border-theme">
+                              <button
+                                className="btn btn-primary w-100 fw-semibold rounded-pill d-flex align-items-center justify-content-center gap-1"
+                                onClick={(e) => handlePayNow(client, e)}
+                                style={{ 
+                                  minHeight: "36px", 
+                                  fontSize: "0.75rem",
+                                  padding: "0.375rem 0.75rem"
+                                }}
+                              >
+                                <i className="fas fa-credit-card" style={{ fontSize: "0.7rem" }}></i>
+                                <span>Pay ₹500</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </AnimatedCard>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
-        </AnimatedCard>
-      </StaggerContainer.Item>
-      );
-    })}
-    </StaggerContainer>
-  )}
-</div>
 
-{/* Clients List - Mobile */}
-<div className="card-body d-md-none">
-  {clients.length === 0 ? (
-    <div className="text-center py-5">
-      <div className="mb-4" style={{ fontSize: "4rem" }}>
-        👥
-      </div>
-      <h5 className="fw-bold text-muted mb-2">No clients yet</h5>
-      <p className="text-muted mb-4">
-        You don't have any clients yet. Tap "Add Client" to start adding your first client.
-      </p>
-      <button
-        className="btn btn-primary px-4 py-2 fw-semibold rounded-pill w-100"
-        onClick={handleAddClient}
-        style={{ minHeight: '44px' }}
-      >
-        <span>+</span> <span>Add Your First Client</span>
-      </button>
-    </div>
-  ) : (
-    <StaggerContainer staggerDelay={0.05}>
-      {currentClients.map((client, idx) => {
-      // Handle both isSubscriptionPaid (lowercase) and IsSubscriptionPaid (uppercase) from API
-      const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
-      
-      return (
-      <StaggerContainer.Item key={client.clientId} className="mb-2">
-        <AnimatedCard
-          delay={idx * 0.05}
-          hover={isPaid !== false}
-          onClick={() => handleClientClick(client)}
-          className={`w-100 text-start rounded-4 ${
-            isPaid === false ? "opacity-75" : ""
-          }`}
-          style={{
-            cursor: isPaid !== false ? "pointer" : "default",
-            filter: isPaid === false ? "grayscale(0.3)" : "none",
-          }}
-        >
-          <div className="card-body p-3">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h6 className="fw-bold mb-0 fs-6 text-primary-emphasis">
-                {client.fullName}
-              </h6>
-
-              {/* Status Badge */}
-              {isPaid === false ? (
-                <span className="badge bg-danger bg-opacity-10 text-danger px-2 py-1 rounded-pill small">
-                  <i className="fas fa-lock me-1"></i>
-                  Inactive
-                </span>
-              ) : (
-                client.goal !== undefined && (
-                  <span
-                    className={`badge d-flex align-items-center gap-1 px-2 py-1 rounded-pill small ${
-                      client.goal === 0
-                        ? "bg-success bg-opacity-10 text-success"
-                        : "bg-danger bg-opacity-10 text-danger"
-                    }`}
-                  >
-                    {client.goal === 0 ? (
-                      <>
-                        <FaDumbbell /> Muscle Gain
-                      </>
-                    ) : (
-                      <>
-                        <FaWeight /> Weight Loss
-                      </>
-                    )}
-                  </span>
-                )
-              )}
-            </div>
-
-            <div className="d-flex flex-column gap-1">
-              <p className="mb-0 small text-muted">{client.email}</p>
-              <div className="d-flex gap-3 mt-1">
-                <small className="small text-muted">{client.gender}</small>
-                <small className="small text-muted">
-                  {client.phoneNumber}
-                </small>
-              </div>
-            </div>
-
-            {/* Pay Now Button for Inactive Clients */}
-            {isPaid === false && (
-              <div className="mt-2 pt-2 border-top">
+          {/* Clients List - Mobile - Centered & Enhanced */}
+          <div className="card-body d-md-none p-3 overflow-y-auto overflow-x-hidden flex-fill d-flex flex-column" style={{ minHeight: 0 }}>
+            {clients.length === 0 ? (
+              <div className="text-center py-5 my-auto">
+                <div className="mb-4" style={{ fontSize: "4rem" }}>
+                  👥
+                </div>
+                <h5 className="fw-bold mb-2 text-theme-dark" style={{ fontSize: "1.1rem" }}>No clients yet</h5>
+                <p className="mb-4 text-muted" style={{ fontSize: "0.9rem", lineHeight: "1.5" }}>
+                  You don't have any clients yet. Tap "Add Client" to start adding your first client.
+                </p>
                 <button
-                  className="btn btn-primary w-100 fw-semibold btn-sm"
-                  onClick={(e) => handlePayNow(client, e)}
-                  style={{ minHeight: "36px", fontSize: "0.875rem" }}
+                  className="btn btn-primary px-4 py-2 fw-semibold rounded-pill w-100 touch-target"
+                  onClick={handleAddClient}
+                  style={{ fontSize: "0.85rem" }}
                 >
-                  <i className="fas fa-credit-card me-2"></i>
-                  Pay Now ₹500
+                  <span>+</span> <span>Add Your First Client</span>
                 </button>
+              </div>
+            ) : (
+              <div className="d-flex flex-column align-items-center gap-3 w-100" style={{ maxWidth: "600px", margin: "0 auto" }}>
+                {currentClients.map((client, idx) => {
+                  const isPaid = client.isSubscriptionPaid ?? client.IsSubscriptionPaid ?? true;
+                  
+                  return (
+                    <AnimatedCard
+                      key={client.clientId}
+                      delay={idx * 0.05}
+                      hover={isPaid !== false}
+                      onClick={() => handleClientClick(client)}
+                      className="w-100 position-relative"
+                      style={{
+                        borderRadius: "1rem",
+                        border: "1px solid var(--color-border)",
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+                        backgroundColor: "var(--color-card-bg)",
+                        cursor: isPaid !== false ? "pointer" : "default",
+                        filter: isPaid === false ? "grayscale(0.3)" : "none",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        opacity: isPaid === false ? 0.75 : 1,
+                        overflow: "hidden"
+                      }}
+                    >
+                      {/* Top Accent Bar */}
+                      <div
+                        className="position-absolute top-0 start-0 end-0"
+                        style={{
+                          height: "4px",
+                          background: isPaid === false 
+                            ? "linear-gradient(90deg, var(--color-danger) 0%, rgba(220, 53, 69, 0.5) 100%)" 
+                            : "linear-gradient(90deg, var(--color-primary) 0%, rgba(0, 160, 128, 0.5) 100%)",
+                        }}
+                      />
+                      
+                      <div className="card-body p-3">
+                        {/* Header Row */}
+                        <div className="d-flex justify-content-between align-items-start mb-3">
+                          <div className="flex-grow-1">
+                            <h6 className="fw-bold mb-1 text-theme-dark" style={{ 
+                              fontSize: "1rem",
+                              lineHeight: "1.3",
+                              letterSpacing: "-0.01em"
+                            }}>
+                              {client.fullName}
+                            </h6>
+                            <p className="mb-0 text-muted small" style={{ 
+                              fontSize: "0.8rem",
+                              lineHeight: "1.4"
+                            }}>
+                              {client.email}
+                            </p>
+                          </div>
+
+                          {isPaid === false ? (
+                            <span className="badge px-2 py-1 rounded-pill flex-shrink-0" style={{
+                              backgroundColor: "rgba(220, 53, 69, 0.15)",
+                              color: "var(--color-danger)",
+                              fontSize: "0.7rem",
+                              fontWeight: "600",
+                              border: "1px solid rgba(220, 53, 69, 0.2)"
+                            }}>
+                              <i className="fas fa-lock me-1"></i>
+                              Inactive
+                            </span>
+                          ) : (
+                            client.goal !== undefined && (
+                              <span
+                                className="badge d-flex align-items-center gap-1 px-2 py-1 rounded-pill flex-shrink-0"
+                                style={{
+                                  backgroundColor: client.goal === 0 
+                                    ? "rgba(0, 100, 0, 0.15)" 
+                                    : "rgba(220, 53, 69, 0.15)",
+                                  color: client.goal === 0 
+                                    ? "var(--color-success)" 
+                                    : "var(--color-danger)",
+                                  fontSize: "0.7rem",
+                                  fontWeight: "600",
+                                  border: client.goal === 0 
+                                    ? "1px solid rgba(0, 100, 0, 0.2)" 
+                                    : "1px solid rgba(220, 53, 69, 0.2)"
+                                }}
+                              >
+                                {client.goal === 0 ? (
+                                  <>
+                                    <FaDumbbell size={10} /> Muscle Gain
+                                  </>
+                                ) : (
+                                  <>
+                                    <FaWeight size={10} /> Weight Loss
+                                  </>
+                                )}
+                              </span>
+                            )
+                          )}
+                        </div>
+
+                        {/* Details Row */}
+                        <div className="d-flex gap-3 pt-2 border-top border-theme">
+                          <div className="d-flex align-items-center gap-1">
+                            <span className="text-muted small" style={{ fontSize: "0.75rem" }}>
+                              {client.gender}
+                            </span>
+                          </div>
+                          <div className="d-flex align-items-center gap-1">
+                            <FaPhone size={12} className="text-muted" />
+                            <span className="text-muted small" style={{ fontSize: "0.75rem" }}>
+                              {client.phoneNumber}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Payment Button */}
+                        {isPaid === false && (
+                          <div className="mt-3 pt-3 border-top border-theme">
+                            <button
+                              className="btn btn-primary w-100 fw-semibold rounded-pill d-flex align-items-center justify-content-center gap-2 touch-target"
+                              onClick={(e) => handlePayNow(client, e)}
+                              style={{ 
+                                minHeight: "44px", 
+                                fontSize: "0.85rem",
+                                boxShadow: "0 2px 8px rgba(0, 160, 128, 0.25)"
+                              }}
+                            >
+                              <i className="fas fa-credit-card"></i>
+                              <span>Pay ₹500 to Activate</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </AnimatedCard>
+                  );
+                })}
               </div>
             )}
           </div>
-        </AnimatedCard>
-      </StaggerContainer.Item>
-      );
-    })}
-    </StaggerContainer>
-  )}
-</div>
 
-        {/* Pagination Footer - Only show if there are clients */}
-        {clients.length > 0 && (
-        <div className="card-footer border-0 bg-body-tertiary py-3 sticky-bottom">
-          <div
-            className="d-flex justify-content-center align-items-center gap-3 flex-wrap px-2"
-            style={{
-              maxWidth: "100%",
-            }}
-          >
-            <button
-              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all d-flex align-items-center justify-content-center ${
-                currentPage === 1
-                  ? "btn-outline-secondary disabled opacity-75"
-                  : "btn-primary shadow-sm"
-              }`}
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-              style={{ minHeight: '44px', minWidth: '44px' }}
-              aria-label="Previous page"
-            >
-              ← 
-            </button>
+          {/* Pagination Footer */}
+          {clients.length > 0 && (
+            <div className="card-footer border-0 py-3" style={{ 
+              backgroundColor: "var(--color-card-bg)",
+              borderTop: "1px solid var(--color-border)",
+              flexShrink: 0
+            }}>
+              <div
+                className="d-flex justify-content-center align-items-center gap-3 flex-wrap"
+                style={{
+                  width: "100%",
+                  maxWidth: "100%"
+                }}
+              >
+                <button
+                  className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 d-flex align-items-center justify-content-center ${
+                    currentPage === 1
+                      ? "btn-outline-secondary disabled opacity-75"
+                      : "btn-primary"
+                  }`}
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                  style={{ minHeight: '44px', minWidth: '44px', fontSize: "0.85rem" }}
+                  aria-label="Previous page"
+                >
+                  ← 
+                </button>
 
-            <span className="fw-semibold small px-3 px-sm-4 py-2 bg-white border rounded-pill shadow-sm text-secondary d-flex align-items-center" style={{ minHeight: '44px' }}>
-              Page {currentPage} of {totalPages}
-            </span>
+                <span className="fw-semibold small px-3 px-sm-4 py-2 rounded-pill d-flex align-items-center" style={{ 
+                  minHeight: '44px',
+                  fontSize: "0.85rem",
+                  backgroundColor: "var(--color-card-bg)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text-secondary)"
+                }}>
+                  Page {currentPage} of {totalPages}
+                </span>
 
-            <button
-              className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 transition-all d-flex align-items-center justify-content-center ${
-                currentPage === totalPages
-                  ? "btn-outline-secondary disabled opacity-75"
-                  : "btn-primary shadow-sm"
-              }`}
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              style={{ minHeight: '44px', minWidth: '44px' }}
-              aria-label="Next page"
-            >
-               →
-            </button>
-          </div>
+                <button
+                  className={`btn fw-semibold rounded-pill px-3 px-sm-4 py-2 d-flex align-items-center justify-content-center ${
+                    currentPage === totalPages
+                      ? "btn-outline-secondary disabled opacity-75"
+                      : "btn-primary"
+                  }`}
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  style={{ minHeight: '44px', minWidth: '44px', fontSize: "0.85rem" }}
+                  aria-label="Next page"
+                >
+                   →
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        )}
       </div>
     </div>
   );

@@ -20,10 +20,13 @@ export const loginThunk = createAsyncThunk(
         userInfo: result
       };
 
-      // Encrypt and store in sessionStorage
+      // Encrypt and store in both sessionStorage (active) and localStorage (persistent)
       try {
         const encryptedAuth = encryptToken(JSON.stringify(authData));
         sessionStorage.setItem("auth_data", encryptedAuth);
+        // Also persist to localStorage for PWA session restoration
+        localStorage.setItem("auth_data", encryptedAuth);
+        localStorage.setItem("auth_timestamp", Date.now().toString());
       } catch (encryptError) {
         logError(encryptError, "Login - Encryption");
         throw new Error("Failed to save session. Please try again.");

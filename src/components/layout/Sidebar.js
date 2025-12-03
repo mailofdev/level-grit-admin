@@ -48,15 +48,15 @@ const Sidebar = memo(({ showIcons }) => {
         }
 
         .nav-link:hover {
-          background-color: #e9ecef;
-          color: #000;
+          background-color: var(--color-card-bg-hover);
+          color: var(--color-text-dark);
         }
 
         .nav-link.active {
           font-weight: 600;
-          background-color: #dee2e6;
-          border-left: 4px solid #0d6efd;
-          color: #0d6efd;
+          background-color: var(--color-card-bg-alt);
+          border-left: 4px solid var(--color-primary);
+          color: var(--color-primary);
         }
 
         @media (max-width: 991.98px) {

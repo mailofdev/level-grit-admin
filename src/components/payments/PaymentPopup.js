@@ -208,7 +208,7 @@ const PaymentPopup = ({
           // Optional: Prefill user details if available
         },
         theme: {
-          color: "#36d198", // Match your primary color
+          color: "var(--color-primary)", // HealthifyMe primary color
         },
         modal: {
           ondismiss: function () {

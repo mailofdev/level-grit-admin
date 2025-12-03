@@ -21,18 +21,18 @@ const LogoutModal = ({ show, onCancel, onConfirm }) => {
       }}
     >
       <div className="modal-dialog modal-dialog-centered">
-        <div
-          className="modal-content border-0 shadow-lg"
-          style={{
-            borderRadius: "1rem",
-            background: "#f7f8f8",
-          }}
-        >
+          <div
+            className="modal-content border-0 shadow-lg"
+            style={{
+              borderRadius: "1rem",
+              background: "var(--color-card-bg)",
+            }}
+          >
           {/* Header */}
           <div
             className="modal-header text-white border-0"
             style={{
-              background: "linear-gradient(135deg, #36d198, #07976a)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)",
               borderTopLeftRadius: "1rem",
               borderTopRightRadius: "1rem",
             }}
@@ -50,10 +50,10 @@ const LogoutModal = ({ show, onCancel, onConfirm }) => {
 
           {/* Body */}
           <div className="modal-body text-center py-4">
-            <p className="fw-semibold fs-5">
-              Are you sure you want to logout?
+            <p className="fw-semibold fs-5 mb-2">
+              Do you want to log out?
             </p>
-            <p className="text-muted">
+            <p className="text-muted mb-0">
               You will need to log in again to access your dashboard.
             </p>
           </div>
@@ -61,7 +61,7 @@ const LogoutModal = ({ show, onCancel, onConfirm }) => {
           {/* Footer */}
           <div
             className="modal-footer border-0 justify-content-center"
-            style={{ backgroundColor: "#f1fcf8" }}
+            style={{ backgroundColor: "var(--color-card-bg)" }}
           >
             <button
               type="button"
@@ -72,10 +72,12 @@ const LogoutModal = ({ show, onCancel, onConfirm }) => {
             </button>
             <button
               type="button"
-              className="btn btn-danger fw-semibold px-4"
+              className="btn fw-semibold px-4"
               style={{
-                background: "#ef4343",
-                borderColor: "#ef4343",
+                background: "var(--color-primary)",
+                borderColor: "var(--color-primary)",
+                color: "var(--color-button-text)",
+                minHeight: "44px",
               }}
               onClick={onConfirm}
             >

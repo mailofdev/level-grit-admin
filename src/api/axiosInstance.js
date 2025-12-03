@@ -47,7 +47,31 @@ const axiosInstance = axios.create({
  */
 axiosInstance.interceptors.request.use(
   (config) => {
-    const encrypted = sessionStorage.getItem("auth_data");
+    // Try sessionStorage first (active session), then localStorage (restored session)
+    let encrypted = sessionStorage.getItem("auth_data");
+    
+    // If no active session, try to restore from localStorage
+    if (!encrypted) {
+      const persistedAuth = localStorage.getItem("auth_data");
+      const timestamp = localStorage.getItem("auth_timestamp");
+      
+      // Check if session is still valid (7 days)
+      if (persistedAuth && timestamp) {
+        const sessionAge = Date.now() - parseInt(timestamp, 10);
+        const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+        
+        if (sessionAge < SESSION_DURATION) {
+          // Restore to sessionStorage
+          sessionStorage.setItem("auth_data", persistedAuth);
+          encrypted = persistedAuth;
+        } else {
+          // Session expired, clear it
+          localStorage.removeItem("auth_data");
+          localStorage.removeItem("auth_timestamp");
+        }
+      }
+    }
+    
     if (encrypted) {
       try {
         const decrypted = decryptToken(encrypted);
@@ -59,6 +83,8 @@ axiosInstance.interceptors.request.use(
         // If decryption fails, clear invalid auth data
         logError(error, "Axios Request Interceptor");
         sessionStorage.removeItem("auth_data");
+        localStorage.removeItem("auth_data");
+        localStorage.removeItem("auth_timestamp");
       }
     }
     return config;
@@ -103,14 +129,20 @@ axiosInstance.interceptors.response.use(
 
     // Handle 401 Unauthorized - Session expired or invalid token
     if (err.response?.status === 401) {
-      // Clear all session data
-      sessionStorage.clear();
+      // Clear all session data (both active and persistent)
+      sessionStorage.removeItem("auth_data");
+      localStorage.removeItem("auth_data");
+      localStorage.removeItem("auth_timestamp");
       
-      // Redirect to login page
-      // Using setTimeout to avoid navigation during render cycle
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 100);
+      // Only redirect if we're not already on login page
+      // This prevents redirect loops when app resumes
+      if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
+        // Redirect to login page
+        // Using setTimeout to avoid navigation during render cycle
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 100);
+      }
       
       return Promise.reject(err);
     }

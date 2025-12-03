@@ -21,11 +21,11 @@ const AboutUs = () => {
   };
 
   return (
-    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: '#ffffff' }}>
+    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: 'var(--color-bg)' }}>
       <Heading pageName="About Us" showBackButton={true} />
       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
         <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="container py-5">
+          <div className="container py-3 py-md-4">
             {/* Hero Section */}
             <motion.div 
               className="text-center mb-5"
@@ -42,10 +42,10 @@ const AboutUs = () => {
                   borderRadius: '12px' 
                 }} 
               />
-              <h1 className="display-4 fw-bold mb-4" style={{ color: '#333' }}>
-                About <span style={{ color: '#007AFF' }}>Level Grit</span>
+              <h1 className="fw-bold mb-3 mb-md-4" style={{ color: 'var(--color-text-dark)', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
+                About <span style={{ color: 'var(--color-primary)' }}>Level Grit</span>
               </h1>
-              <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.2rem', lineHeight: '1.8' }}>
+              <p className="text-muted mb-4" style={{ maxWidth: '800px', margin: '0 auto', fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', lineHeight: '1.6' }}>
                 LevelGrit is an AI-powered fitness platform that connects Trainers and Clients through 
                 smart meal tracking, real-time progress monitoring, and seamless communication. 
                 We're making fitness coaching effortless for trainers and accountability fun for clients.
@@ -70,7 +70,7 @@ const AboutUs = () => {
                   />
                 </div>
                 <div className="col-lg-6">
-                  <h2 className="fw-bold mb-4" style={{ fontSize: '2.5rem', color: '#333' }}>
+                  <h2 className="fw-bold mb-4" style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)' }}>
                     Our Mission
                   </h2>
                   <p className="text-muted mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
@@ -85,9 +85,9 @@ const AboutUs = () => {
             <motion.section 
               className="mb-5 py-5"
               style={{ 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
                 borderRadius: '1rem',
-                color: '#fff'
+                color: 'var(--color-button-text)'
               }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -143,9 +143,9 @@ const AboutUs = () => {
             <motion.section 
               className="mb-5 py-5"
               style={{ 
-                background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                background: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
                 borderRadius: '1rem',
-                color: '#fff'
+                color: 'var(--color-button-text)'
               }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -199,7 +199,7 @@ const AboutUs = () => {
             {/* The Future of Fitness Section */}
             <motion.section 
               className="mb-5 py-5"
-              style={{ backgroundColor: '#f8f9fa', borderRadius: '1rem' }}
+              style={{ backgroundColor: 'var(--color-card-bg-alt)', borderRadius: '1rem' }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -214,13 +214,13 @@ const AboutUs = () => {
                         style={{ 
                           width: '60px', 
                           height: '60px', 
-                          backgroundColor: '#007AFF',
-                          color: '#fff'
+                          backgroundColor: 'var(--color-primary)',
+                          color: 'var(--color-button-text)'
                         }}
                       >
                         <FaRocket size={28} />
                       </div>
-                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: '#333' }}>
+                      <h2 className="fw-bold mb-0" style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)' }}>
                         The Future of Fitness
                       </h2>
                     </div>
@@ -247,7 +247,7 @@ const AboutUs = () => {
               transition={{ duration: 0.4 }}
             >
               <div className="container">
-                <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem', color: '#333' }}>
+                <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)' }}>
                   Why Choose Level Grit?
                 </h2>
                 <div className="row g-4">
@@ -271,7 +271,7 @@ const AboutUs = () => {
                     <div key={idx} className="col-md-4">
                       <Animated3DCard delay={idx * 0.1}>
                         <div className="card border-0 shadow-sm h-100 text-center p-4" style={{ borderRadius: '1rem' }}>
-                          <feature.icon size={50} className="mb-3" style={{ color: '#007AFF' }} />
+                          <feature.icon size={50} className="mb-3" style={{ color: 'var(--color-primary)' }} />
                           <h4 className="fw-bold mb-3">{feature.title}</h4>
                           <p className="text-muted mb-0">{feature.desc}</p>
                         </div>
@@ -286,8 +286,8 @@ const AboutUs = () => {
             <motion.section 
               className="text-center py-5"
               style={{ 
-                backgroundColor: '#007AFF', 
-                color: '#fff',
+                backgroundColor: 'var(--color-primary)', 
+                color: 'var(--color-button-text)',
                 borderRadius: '1rem'
               }}
               initial={{ opacity: 0, y: 10 }}
@@ -304,7 +304,7 @@ const AboutUs = () => {
                   <Link 
                     to="/register?type=trainer" 
                     className="btn btn-light btn-lg rounded-pill px-5 py-3"
-                    style={{ fontWeight: '600', backgroundColor: '#667eea', color: '#fff', border: 'none' }}
+                    style={{ fontWeight: '600', backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}
                   >
                     <FaDumbbell className="me-2" />
                     For Trainers
@@ -312,7 +312,7 @@ const AboutUs = () => {
                   <Link 
                     to="/login?type=client" 
                     className="btn btn-light btn-lg rounded-pill px-5 py-3"
-                    style={{ fontWeight: '600', backgroundColor: '#43e97b', color: '#fff', border: 'none' }}
+                    style={{ fontWeight: '600', backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}
                   >
                     <FaUsers className="me-2" />
                     For Clients

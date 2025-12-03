@@ -38,7 +38,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="container-fluid px-2 px-md-3 py-3 py-md-4" style={{ backgroundColor: "var(--color-bg)", minHeight: "100vh" }}>
+    <div className="container-fluid px-2 px-md-3 py-2 py-md-3 bg-theme min-vh-100">
       {/* Header */}
       <motion.div 
         className="text-center mb-4 mb-md-5"
@@ -136,16 +136,14 @@ export default function AdminDashboard() {
                       {action.href ? (
                         <Link
                           to={action.href}
-                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm text-decoration-none`}
-                          style={{ minHeight: '48px', color: 'white' }}
+                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm text-decoration-none touch-target text-white`}
                         >
                           <span className="me-2">{action.icon}</span>
                           {action.label}
                         </Link>
                       ) : (
                         <button 
-                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm`}
-                          style={{ minHeight: '48px' }}
+                          className={`btn btn-${action.variant} btn-lg rounded-pill w-100 shadow-sm touch-target`}
                         >
                           <span className="me-2">{action.icon}</span>
                           {action.label}

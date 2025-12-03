@@ -8,7 +8,31 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = () => {
     try {
-      const encryptedToken = sessionStorage.getItem("auth_data");
+      // Try sessionStorage first (active session)
+      let encryptedToken = sessionStorage.getItem("auth_data");
+      
+      // If no active session, try to restore from localStorage
+      if (!encryptedToken) {
+        const persistedAuth = localStorage.getItem("auth_data");
+        const timestamp = localStorage.getItem("auth_timestamp");
+        
+        if (persistedAuth && timestamp) {
+          const sessionAge = Date.now() - parseInt(timestamp, 10);
+          const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+          
+          if (sessionAge < SESSION_DURATION) {
+            // Restore to sessionStorage
+            sessionStorage.setItem("auth_data", persistedAuth);
+            encryptedToken = persistedAuth;
+          } else {
+            // Session expired
+            localStorage.removeItem("auth_data");
+            localStorage.removeItem("auth_timestamp");
+            return false;
+          }
+        }
+      }
+      
       if (encryptedToken) {
         const token = decryptToken(encryptedToken);
         return !!token;
@@ -31,12 +55,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     sessionStorage.setItem("auth_data", token);
+    // Also persist to localStorage for PWA session restoration
+    localStorage.setItem("auth_data", token);
+    localStorage.setItem("auth_timestamp", Date.now().toString());
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    sessionStorage.clear();
-    localStorage.clear();
+    sessionStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_timestamp");
     setIsAuthenticated(false);
   };
 

@@ -38,11 +38,11 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: '#ffffff' }}>
+    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: 'var(--color-bg)' }}>
       <Heading pageName="Contact Us" showBackButton={true} />
       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
         <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="container py-5">
+          <div className="container py-3 py-md-4">
             <Row className="justify-content-center">
             <Col>
               <Card className="border-0 shadow-sm rounded-4 mb-3">

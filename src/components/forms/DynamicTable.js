@@ -16,9 +16,9 @@ const Toast = ({ message, type, onClose }) => (
 
 const getRowStyle = (isSelected, idx) => {
   if (isSelected) {
-    return { backgroundColor: "gold" };
+    return { backgroundColor: "var(--color-primary)" };
   }
-  return { backgroundColor: idx % 2 === 0 ? "#ffe0f0" : "#fff9c4" };
+  return { backgroundColor: idx % 2 === 0 ? "var(--color-card-bg)" : "var(--color-card-bg-alt)" };
 };
 
 const PAGE_SIZE = 5;

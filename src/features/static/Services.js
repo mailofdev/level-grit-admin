@@ -12,8 +12,8 @@ const Services = () => {
     {
       title: 'AI-Powered Client Tracking',
       icon: FaDumbbell,
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      color: '#667eea',
+      gradient: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
+      color: 'var(--color-primary)',
       features: [
         'AI analyzes client meal photos automatically',
         'Real-time macro calculations and progress tracking',
@@ -26,8 +26,8 @@ const Services = () => {
     {
       title: 'Smart Meal Plan Management',
       icon: FaStar,
-      gradient: 'linear-gradient(135deg, #f5576c 0%, #f093fb 100%)',
-      color: '#f5576c',
+      gradient: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
+      color: 'var(--color-primary)',
       features: [
         'Create and customize meal plans instantly',
         'Track client adherence in real-time',
@@ -43,8 +43,8 @@ const Services = () => {
     {
       title: '32-Day Fitness Challenge',
       icon: FaUsers,
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      color: '#43e97b',
+      gradient: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
+      color: 'var(--color-primary)',
       features: [
         'Join the transformative 32-day journey',
         'Snap meal photos - AI does the rest',
@@ -57,8 +57,8 @@ const Services = () => {
     {
       title: 'Progress Sharing & Accountability',
       icon: FaHeart,
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      color: '#4facfe',
+      gradient: 'linear-gradient(135deg, var(--color-primary) 0%, #008066 100%)',
+      color: 'var(--color-primary)',
       features: [
         'Share meal photos and progress updates',
         'Real-time feedback from your trainer',
@@ -71,20 +71,20 @@ const Services = () => {
   ];
 
   return (
-    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: '#ffffff' }}>
+    <div className="container-fluid px-2 px-md-3" style={{ backgroundColor: 'var(--color-bg)' }}>
       <Heading pageName="Services" showBackButton={true} />
       <div className="d-flex flex-column" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
         <div className="flex-grow-1 overflow-auto pb-3">
-          <div className="container py-5">
+          <div className="container py-3 py-md-4">
         <motion.div 
           className="text-center mb-5"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="display-4 fw-bold mb-3" style={{ color: '#333' }}>
-            Our <span style={{ color: '#667eea' }}>Services</span>
+          <h1 className="fw-bold mb-3" style={{ color: 'var(--color-text-dark)', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
+            Our <span style={{ color: 'var(--color-primary)' }}>Services</span>
           </h1>
-          <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <p className="text-muted mb-4" style={{ maxWidth: '800px', margin: '0 auto', fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}>
             AI-powered fitness solutions for Trainers and Clients — making coaching smarter and accountability fun
           </p>
         </motion.div>
@@ -96,7 +96,7 @@ const Services = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#667eea' }}>
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: 'var(--color-primary)' }}>
             <FaDumbbell className="me-2" />
             For Trainers
           </h2>
@@ -112,24 +112,24 @@ const Services = () => {
                   <div className="card-body p-5">
                     <div className="d-flex align-items-center mb-4">
                       <service.icon size={40} className="me-3" style={{ color: service.color }} />
-                      <h3 className="fw-bold mb-0" style={{ color: '#333' }}>{service.title}</h3>
+                      <h3 className="fw-bold mb-0" style={{ color: 'var(--color-text-dark)' }}>{service.title}</h3>
                     </div>
                     <ul className="list-unstyled mb-4">
                       {service.features.map((feature, fIdx) => (
                         <li key={fIdx} className="mb-3 d-flex align-items-start">
                           <FaCheck className="text-success me-2 mt-1" />
-                          <span style={{ color: '#333' }}>{feature}</span>
+                          <span style={{ color: 'var(--color-text-dark)' }}>{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <div className="border-top pt-4 mt-4">
                       <div className="d-flex justify-content-between align-items-center">
-                        <span className="fw-bold" style={{ color: '#333', fontSize: '1.2rem' }}>
+                        <span className="fw-bold" style={{ color: 'var(--color-text-dark)', fontSize: '1.2rem' }}>
                           {service.price}
                         </span>
                         <motion.button
                           className="btn rounded-pill px-4"
-                          style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
+                          style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => navigate('/register?type=trainer')}
@@ -153,7 +153,7 @@ const Services = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: '#43e97b' }}>
+          <h2 className="fw-bold mb-4 text-center" style={{ fontSize: '2rem', color: 'var(--color-primary)' }}>
             <FaUsers className="me-2" />
             For Clients
           </h2>
@@ -169,24 +169,24 @@ const Services = () => {
                     <div className="card-body p-5">
                       <div className="d-flex align-items-center mb-4">
                         <service.icon size={40} className="me-3" style={{ color: service.color }} />
-                        <h3 className="fw-bold mb-0" style={{ color: '#333' }}>{service.title}</h3>
+                        <h3 className="fw-bold mb-0" style={{ color: 'var(--color-text-dark)' }}>{service.title}</h3>
                       </div>
                       <ul className="list-unstyled mb-4">
                         {service.features.map((feature, fIdx) => (
                           <li key={fIdx} className="mb-3 d-flex align-items-start">
                             <FaCheck className="text-success me-2 mt-1" />
-                            <span style={{ color: '#333' }}>{feature}</span>
+                            <span style={{ color: 'var(--color-text-dark)' }}>{feature}</span>
                           </li>
                         ))}
                       </ul>
                       <div className="border-top pt-4 mt-4">
                         <div className="d-flex justify-content-between align-items-center">
-                          <span className="fw-bold" style={{ color: '#333', fontSize: '1.2rem' }}>
-                            {service.price}
-                          </span>
+                          <span className="fw-bold" style={{ color: 'var(--color-text-dark)', fontSize: '1.2rem' }}>
+                          {service.price}
+                        </span>
                           <motion.button
                             className="btn rounded-pill px-4"
-                            style={{ backgroundColor: service.color, color: '#fff', border: 'none' }}
+                            style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate('/login?type=client')}
@@ -206,13 +206,13 @@ const Services = () => {
         {/* Why Choose Us */}
         <motion.section 
           className="py-5"
-          style={{ backgroundColor: '#f8f9fa' }}
+          style={{ backgroundColor: 'var(--color-card-bg-alt)' }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
           <div className="container">
-            <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem', color: '#333' }}>
+            <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)' }}>
               Why Choose LevelGrit?
             </h2>
             <div className="row g-4">
@@ -233,7 +233,7 @@ const Services = () => {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <div className="card border-0 shadow-sm h-100 p-4 text-center" style={{ borderRadius: '1rem' }}>
-                    <h5 className="fw-bold mb-3" style={{ color: '#667eea' }}>{benefit.title}</h5>
+                    <h5 className="fw-bold mb-3" style={{ color: 'var(--color-primary)' }}>{benefit.title}</h5>
                     <p className="text-muted mb-0">{benefit.desc}</p>
                   </div>
                 </motion.div>
@@ -249,16 +249,16 @@ const Services = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <h3 className="fw-bold mb-3" style={{ fontSize: '2rem', color: '#333' }}>
+          <h3 className="fw-bold mb-3" style={{ fontSize: '2rem', color: 'var(--color-text-dark)' }}>
             Ready to Transform Your Fitness Journey?
           </h3>
           <p className="text-muted mb-4">Whether you're a Trainer or Client, we have the perfect solution for you</p>
           <div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
-            <Link to="/register?type=trainer" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#667eea', color: '#fff', border: 'none' }}>
+            <Link to="/register?type=trainer" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}>
               <FaDumbbell className="me-2" />
               For Trainers
             </Link>
-            <Link to="/login?type=client" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: '#43e97b', color: '#fff', border: 'none' }}>
+            <Link to="/login?type=client" className="btn btn-lg rounded-pill px-5 py-3" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-button-text)', border: 'none' }}>
               <FaUsers className="me-2" />
               For Clients
             </Link>

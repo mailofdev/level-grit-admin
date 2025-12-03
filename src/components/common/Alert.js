@@ -48,11 +48,11 @@ const Alert = ({
     },
     success: {
       icon: FaCheckCircle,
-      bgColor: "rgba(40, 167, 69, 0.1)",
-      borderColor: "#28a745",
-      textColor: "#28a745",
-      iconColor: "#28a745",
-      iconBg: "rgba(40, 167, 69, 0.15)",
+      bgColor: "rgba(0, 160, 128, 0.1)",
+      borderColor: "var(--color-primary)",
+      textColor: "var(--color-primary)",
+      iconColor: "var(--color-primary)",
+      iconBg: "rgba(0, 160, 128, 0.15)",
     },
     warning: {
       icon: FaExclamationTriangle,
@@ -64,11 +64,11 @@ const Alert = ({
     },
     info: {
       icon: FaInfoCircle,
-      bgColor: "rgba(23, 162, 184, 0.1)",
-      borderColor: "#17a2b8",
-      textColor: "#0c5460",
-      iconColor: "#17a2b8",
-      iconBg: "rgba(23, 162, 184, 0.15)",
+      bgColor: "rgba(0, 160, 128, 0.1)",
+      borderColor: "var(--color-primary)",
+      textColor: "var(--color-primary)",
+      iconColor: "var(--color-primary)",
+      iconBg: "rgba(0, 160, 128, 0.15)",
     },
   };
 

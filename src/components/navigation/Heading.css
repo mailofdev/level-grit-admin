@@ -44,8 +44,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #000000;
-  color: #ffffff;
+  background: var(--color-text-dark);
+  color: var(--color-bg);
   border: none;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -53,15 +53,15 @@
 }
 
 .btn-back:hover {
-  background: #333333;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-bg);
   box-shadow: var(--shadow);
   transform: scale(1.05);
 }
 
 .btn-back:active {
   transform: scale(0.95);
-  background: #1a1a1a;
+  background: var(--color-button-hover);
 }
 
 .heading-title {

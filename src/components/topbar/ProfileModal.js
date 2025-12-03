@@ -142,6 +142,10 @@ const ProfileModal = ({ show, onClose }) => {
       
       // On successful deletion, logout and redirect
       dispatch(logout());
+      // Clear session from both storages
+      sessionStorage.removeItem("auth_data");
+      localStorage.removeItem("auth_data");
+      localStorage.removeItem("auth_timestamp");
       window.location.href = "/";
     } catch (error) {
       // Handle error
@@ -152,59 +156,56 @@ const ProfileModal = ({ show, onClose }) => {
 
   return (
     <div
-      className="modal fade show"
+      className="modal fade show d-block glass-effect position-fixed top-0 start-0 end-0 bottom-0"
       tabIndex="-1"
       style={{ 
-        display: "block", 
         background: "rgba(0,0,0,0.75)", 
-        backdropFilter: "blur(6px)",
-        zIndex: 1055,
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
+        zIndex: 1055
       }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content border-0 shadow-lg overflow-hidden" style={{ borderRadius: "1rem", background: "#f7f8f8" }}>
-          {/* Header */}
-          <div className="modal-header text-white border-0" style={{ background: "linear-gradient(135deg, #36d198 0%, #07976a 100%)" }}>
-            <h5 className="modal-title fw-bold d-flex align-items-center">
-              <FaDumbbell className="me-2 fs-4" /> {user.fullName?.split(" ")[0]}'s Profile
-            </h5>
-            <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
+      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "600px", width: "95%" }}>
+        <div className="modal-content border-0 shadow-lg d-flex flex-column rounded-3 bg-light" style={{ maxHeight: "90vh" }}>
+          {/* Header - Compact */}
+          <div className="modal-header text-white border-0 flex-shrink-0 gradient-primary py-2 px-3">
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <div className="d-flex align-items-center gap-2">
+                <FaDumbbell className="fs-5" />
+                <h5 className="modal-title fw-bold mb-0" style={{ fontSize: "1rem" }}>
+                  {user.fullName?.split(" ")[0]}'s Profile
+                </h5>
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <span className="badge px-2 py-1 text-white" style={{ 
+                  background: "rgba(255,255,255,0.25)", 
+                  border: "1px solid rgba(255,255,255,0.3)", 
+                  fontSize: "0.75rem" 
+                }}>
+                  {getRoleIcon(user.role, "emoji")} {user.role}
+                </span>
+                <button type="button" className="btn-close btn-close-white" onClick={onClose} style={{ fontSize: "0.75rem" }}></button>
+              </div>
+            </div>
           </div>
 
-          {/* Avatar */}
-          <div className="text-center py-2 position-relative" style={{ background: "linear-gradient(90deg, #36d198, #07976a)", color: "#fff" }}>
-            {/* <div className="rounded-circle mx-auto shadow d-flex align-items-center justify-content-center" style={{ width: "110px", height: "110px", background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.4)", fontSize: "48px" }}>
-              <FaUser />
-            </div> */}
-            <h4 className="mt-3 mb-1 fw-bold text-uppercase">{user.fullName}</h4>
-            <span className="badge" style={{ background: "rgba(255,255,255,0.25)", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", padding: "0.5rem 1rem", fontSize: "0.9rem" }}>
-              {getRoleIcon(user.role, "emoji")} {user.role}
-            </span>
-          </div>
-
-          {/* Body */}
-          <div className="modal-body p-4">
+          {/* Body - Scrollable */}
+          <div className="modal-body p-3 overflow-auto flex-grow-1" style={{ maxHeight: "calc(90vh - 140px)" }}>
             {showDeleteAlert ? (
-              <div className="text-center py-5">
-                <h5 className="text-danger fw-bold">⚠️ Warning: Account Deletion</h5>
-                <p className="text-muted">
+              <div className="text-center py-4">
+                <h5 className="text-danger fw-bold mb-3" style={{ fontSize: "1.1rem" }}>⚠️ Warning: Account Deletion</h5>
+                <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
                   If you delete your account, <strong>all your data</strong> will be permanently removed.
                 </p>
                 
                 {deleteError && (
-                  <Alert variant="danger" className="mt-3 mb-0">
+                  <Alert variant="danger" className="mt-3 mb-3" style={{ fontSize: "0.85rem" }}>
                     {deleteError}
                   </Alert>
                 )}
                 
-                <div className="d-flex justify-content-center gap-3 mt-4">
+                <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 mt-4">
                   <button 
-                    className="btn btn-outline-secondary px-4" 
+                    className="btn btn-outline-secondary px-3 touch-target" 
+                    style={{ fontSize: "0.875rem" }}
                     onClick={() => {
                       setShowDeleteAlert(false);
                       setDeleteError(null);
@@ -214,7 +215,8 @@ const ProfileModal = ({ show, onClose }) => {
                     Cancel
                   </button>
                   <button 
-                    className="btn btn-danger px-4 fw-semibold d-flex align-items-center gap-2" 
+                    className="btn btn-danger px-3 fw-semibold d-flex align-items-center justify-content-center gap-2 touch-target" 
+                    style={{ fontSize: "0.875rem" }}
                     onClick={handleDeleteConfirm}
                     disabled={deleting}
                   >
@@ -250,24 +252,25 @@ const ProfileModal = ({ show, onClose }) => {
                 {/* Target Weight */}
                 <ProfileField icon={FaDumbbell} label="Target Weight (kg)" name="targetWeight" value={formData.targetWeight} isEditing={isEditing} onChange={handleChange} type="number" />
                 {/* Goal */}
-                <div className="col-md-6">
-                  <div className="shadow-sm rounded py-2 px-3 bg-white d-flex align-items-center border">
-                    <FaDumbbell className="text-primary me-3 fs-5" />
+                <div className="col-12 col-md-6">
+                  <div className="shadow-sm rounded py-2 px-2 bg-white d-flex align-items-center border">
+                    <FaDumbbell className="text-primary me-2" style={{ fontSize: "1rem", flexShrink: 0 }} />
                     <div className="w-100">
-                      <small className="text-muted">Goal</small>
+                      <small className="text-muted" style={{ fontSize: "0.75rem" }}>Goal</small>
                       {isEditing ? (
                         <Form.Select
                           name="goal"
                           value={formData.goal}
                           onChange={handleChange}
                           className="mt-1"
+                          style={{ fontSize: "0.875rem", padding: "0.25rem 0.5rem" }}
                         >
                           <option value="">Select fitness goal</option>
                           <option value={0}>Muscle Gain</option>
                           <option value={1}>Fat Loss</option>
                         </Form.Select>
                       ) : (
-                        <p className="mb-0 fw-semibold text-dark">
+                        <p className="mb-0 fw-semibold text-dark" style={{ fontSize: "0.875rem", marginTop: "0.25rem" }}>
                           {formData.goal === 0 ? "Muscle Gain" : formData.goal === 1 ? "Fat Loss" : "Not specified"}
                         </p>
                       )}
@@ -278,19 +281,46 @@ const ProfileModal = ({ show, onClose }) => {
             )}
           </div>
 
-          {/* Footer */}
+          {/* Footer - Compact */}
           {!showDeleteAlert && (
-            <div className="modal-footer border-0 py-3 d-flex justify-content-between" style={{ backgroundColor: "#f1fcf8" }}>
-              <button className="btn btn-outline-danger fw-semibold px-4" onClick={handleDeleteClick}>Delete My Account</button>
-              <div className="d-flex gap-3">
-                <button className="btn btn-outline-secondary fw-semibold px-4" onClick={onClose}>Close</button>
-                <button className={`btn ${isEditing ? "btn-success" : "btn-primary"} fw-semibold px-4`} style={{ backgroundColor: isEditing ? "#11b981" : "#3a83f6", borderColor: isEditing ? "#11b981" : "#3a83f6" }} onClick={handleUpdateClick} disabled={updating}>
+            <div className="modal-footer border-0 flex-shrink-0 py-2 px-3" style={{ 
+              backgroundColor: "#f1fcf8",
+              flexWrap: "wrap",
+              gap: "0.5rem"
+            }}>
+              <button 
+                className="btn btn-outline-danger fw-semibold px-3" 
+                style={{ minHeight: "38px", fontSize: "0.875rem" }}
+                onClick={handleDeleteClick}
+              >
+                Delete Account
+              </button>
+              <div className="d-flex gap-2 ms-auto">
+                <button 
+                  className="btn btn-outline-secondary fw-semibold px-3" 
+                  style={{ minHeight: "38px", fontSize: "0.875rem" }}
+                  onClick={onClose}
+                >
+                  Close
+                </button>
+                <button 
+                  className={`btn fw-semibold px-3`} 
+                  style={{ 
+                    backgroundColor: isEditing ? "#11b981" : "#3a83f6", 
+                    borderColor: isEditing ? "#11b981" : "#3a83f6",
+                    color: "#fff",
+                    minHeight: "38px", 
+                    fontSize: "0.875rem" 
+                  }} 
+                  onClick={handleUpdateClick} 
+                  disabled={updating}
+                >
                   {updating ? (
                     <>
                       <Spinner animation="border" size="sm" className="me-2" /> Updating...
                     </>
                   ) : (
-                    isEditing ? "Submit" : "Update Profile"
+                    isEditing ? "Submit" : "Update"
                   )}
                 </button>
               </div>
@@ -302,16 +332,22 @@ const ProfileModal = ({ show, onClose }) => {
   );
 };
 
-// ProfileField component
+// ProfileField component - Compact version
 const ProfileField = ({ icon: Icon, label, name, value, isEditing, onChange, type = "text", options = [], disabled = false }) => (
-  <div className="col-md-6">
-    <div className="shadow-sm rounded py-2 px-3 bg-white d-flex align-items-center border">
-      <Icon className="text-primary me-3 fs-5" />
-      <div className="w-100">
-        <small className="text-muted">{label}</small>
+  <div className="col-12 col-md-6">
+    <div className="shadow-sm rounded px-2 bg-white d-flex align-items-center border" style={{ minHeight: "48px", paddingTop: "0.375rem", paddingBottom: "0.375rem" }}>
+      <Icon className="text-primary me-2" style={{ fontSize: "0.9rem", flexShrink: 0 }} />
+      <div className="w-100" style={{ minWidth: 0 }}>
+        <small className="text-muted d-block" style={{ fontSize: "0.7rem", lineHeight: "1.2", marginBottom: "0.125rem" }}>{label}</small>
         {isEditing && !disabled ? (
           type === "select" ? (
-            <select name={name} value={value || ""} onChange={onChange} className="form-select form-select-sm mt-1">
+            <select 
+              name={name} 
+              value={value || ""} 
+              onChange={onChange} 
+              className="form-select form-select-sm"
+              style={{ fontSize: "0.875rem", padding: "0.25rem 0.5rem", marginTop: "0.125rem" }}
+            >
               <option value="">Select</option>
               {options.map((opt) => (
                 <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
@@ -323,11 +359,14 @@ const ProfileField = ({ icon: Icon, label, name, value, isEditing, onChange, typ
               name={name}
               value={value || ""}
               onChange={onChange}
-              className="form-control form-control-sm mt-1"
+              className="form-control form-control-sm"
+              style={{ fontSize: "0.875rem", padding: "0.25rem 0.5rem", marginTop: "0.125rem" }}
             />
           )
         ) : (
-          <p className="mb-0 fw-semibold text-dark">{value || "Not specified"}</p>
+          <p className="mb-0 fw-semibold text-dark" style={{ fontSize: "0.875rem", marginTop: "0.125rem", wordBreak: "break-word" }}>
+            {value || "Not specified"}
+          </p>
         )}
       </div>
     </div>

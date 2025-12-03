@@ -77,7 +77,7 @@ export default function Messages({ isTrainer = false }) {
 
   // Loader
   if (loading) {
-    return <Loader fullScreen text="Fetching Messages..." color="#0d6efd" />;
+    return <Loader fullScreen text="Fetching Messages..." color="var(--color-primary)" />;
   }
 
   if ((!client && isTrainer) || (!trainer && !isTrainer)) {
@@ -89,7 +89,7 @@ export default function Messages({ isTrainer = false }) {
   }
 
   return (
-    <div className="container-fluid px-2 px-md-3 py-3">
+    <div className="container-fluid px-2 px-md-3 py-2">
       <Heading pageName={chatName} sticky={true} />
 
       <motion.div
@@ -98,20 +98,21 @@ export default function Messages({ isTrainer = false }) {
         transition={{ duration: 0.5 }}
       >
         <Card
-          className="border-0 shadow-lg d-flex flex-column mb-5"
+          className="border-0 shadow-lg d-flex flex-column mb-3"
           style={{
-            height: "calc(100vh - 160px)",
-            borderRadius: "16px",
+            height: "calc(100vh - 140px)",
+            maxHeight: "calc(100vh - 140px)",
+            borderRadius: "1rem",
             overflow: "hidden",
-            background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)"
+            background: "var(--color-bg)"
           }}
         >
         {/* Chat Messages */}
         <div
-          className="flex-grow-1 overflow-auto p-3"
+          className="flex-grow-1 overflow-auto p-2 p-md-3"
           style={{
-            background:
-              "linear-gradient(180deg, #e0f7fa 0%, #ffffff 60%, #e8f5e9 100%)",
+            background: "var(--color-bg)",
+            WebkitOverflowScrolling: "touch",
           }}
         >
           {messages.length === 0 ? (
@@ -139,11 +140,11 @@ export default function Messages({ isTrainer = false }) {
                         maxWidth: "70%",
                         wordBreak: "break-word",
                         backgroundColor: isSender 
-                          ? "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)" 
-                          : "#ffffff",
+                          ? "var(--color-primary)" 
+                          : "var(--color-card-bg)",
                         background: isSender 
-                          ? "linear-gradient(135deg, #007AFF 0%, #0056b3 100%)" 
-                          : "#ffffff",
+                          ? "var(--color-primary)" 
+                          : "var(--color-card-bg)",
                         borderRadius: isSender
                           ? "20px 20px 0 20px"
                           : "20px 20px 20px 0",
@@ -151,7 +152,7 @@ export default function Messages({ isTrainer = false }) {
                       }}
                       whileHover={{ scale: 1.02 }}
                     >
-                      <div style={{ fontSize: "0.95rem", color: "#333" }}>{msg.text}</div>
+                      <div style={{ fontSize: "0.95rem", color: isSender ? "var(--color-button-text)" : "var(--color-text-dark)" }}>{msg.text}</div>
                       <div
                         className={`text-muted ${isSender ? "text-end" : "text-start"}`}
                         style={{ fontSize: "0.75rem", marginTop: "4px" }}
@@ -173,7 +174,7 @@ export default function Messages({ isTrainer = false }) {
         {/* Message Input */}
         <motion.div 
           className="bg-light p-3 position-relative border-top"
-          style={{ background: "linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)" }}
+          style={{ background: "var(--color-card-bg)" }}
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -208,7 +209,7 @@ export default function Messages({ isTrainer = false }) {
                   style={{
                     width: "45px",
                     height: "45px",
-                    backgroundColor: "#007AFF",
+                    backgroundColor: "var(--color-primary)",
                     minWidth: "45px",
                     minHeight: "45px"
                   }}
@@ -224,7 +225,7 @@ export default function Messages({ isTrainer = false }) {
                 onChange={(e) => setNewMessage(e.target.value)}
                 className="rounded-pill border-0 shadow-sm px-4 py-2"
                 style={{
-                  backgroundColor: "#ffffff",
+                  backgroundColor: "var(--color-bg)",
                   fontSize: "1rem",
                   minHeight: "45px"
                 }}

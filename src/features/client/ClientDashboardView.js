@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { SplitButton } from "primereact/splitbutton";
-import { Modal, Form } from "react-bootstrap";
+import { Modal, Form, Button } from "react-bootstrap";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES, isClient } from "../../utils/roles";
 import Heading from "../../components/navigation/Heading";
@@ -95,6 +95,33 @@ export default function ClientDashboardView({
 
   // Check if selected date is today
   const isToday = selectedDate === new Date().toISOString().split("T")[0];
+
+  // Prevent body scroll when camera modal is open
+  useEffect(() => {
+    if (showCamera) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Prevent scrolling - simpler approach
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
+      return () => {
+        // Restore scroll position
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [showCamera]);
 
   // Fetch dashboard data
   useEffect(() => {
@@ -433,7 +460,7 @@ export default function ClientDashboardView({
               cy="60"
               r="45"
               fill="none"
-              stroke="#e9ecef"
+              stroke="var(--color-border)"
               strokeWidth="8"
             />
             <circle
@@ -443,10 +470,10 @@ export default function ClientDashboardView({
               fill="none"
               stroke={
                 color === "success"
-                  ? "#28a745"
+                  ? "var(--color-primary)"
                   : color === "info"
-                  ? "#17a2b8"
-                  : "#ffc107"
+                  ? "var(--color-primary)"
+                  : "var(--color-warning)"
               }
               strokeWidth="8"
               strokeDasharray={strokeDasharray}
@@ -457,11 +484,20 @@ export default function ClientDashboardView({
             />
           </svg>
           <div className="position-absolute top-50 start-50 translate-middle">
-            <div className="fw-bold fs-5">{percentage}%</div>
+            <div className="fw-bold" style={{ 
+              fontSize: "1rem",
+              color: "var(--color-text-dark)"
+            }}>{percentage}%</div>
           </div>
         </div>
-        <h6 className="mb-1 text-capitalize fw-semibold">{label}</h6>
-        <small className="text-muted">
+        <h6 className="mb-1 text-capitalize fw-semibold" style={{ 
+          fontSize: "0.75rem",
+          color: "var(--color-text-dark)"
+        }}>{label}</h6>
+        <small style={{ 
+          fontSize: "0.7rem",
+          color: "var(--color-text-secondary)"
+        }}>
           {Math.round(current)} / {target}
         </small>
       </div>
@@ -474,7 +510,7 @@ export default function ClientDashboardView({
 
   // Helper function to get placeholder image for incomplete meals
   const getMealPlaceholderImage = () => {
-    const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#f8f9fa"/><circle cx="100" cy="80" r="30" fill="none" stroke="#dee2e6" stroke-width="3" stroke-dasharray="5,5"/><path d="M 70 120 L 130 120" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><path d="M 70 140 L 130 140" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><path d="M 70 160 L 110 160" stroke="#dee2e6" stroke-width="3" stroke-linecap="round"/><text x="100" y="190" font-family="Arial" font-size="14" fill="#6c757d" text-anchor="middle">Pending</text></svg>`;
+    const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="var(--color-card-bg-alt)"/><circle cx="100" cy="80" r="30" fill="none" stroke="var(--color-border)" stroke-width="3" stroke-dasharray="5,5"/><path d="M 70 120 L 130 120" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><path d="M 70 140 L 130 140" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><path d="M 70 160 L 110 160" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><text x="100" y="190" font-family="Arial" font-size="14" fill="var(--color-muted)" text-anchor="middle">Pending</text></svg>`;
     const encoded = encodeURIComponent(svg);
     return `data:image/svg+xml;charset=utf-8,${encoded}`;
   };
@@ -483,9 +519,10 @@ export default function ClientDashboardView({
     <div
       className={
         viewMode === "details"
-          ? "container-fluid px-2 px-md-3 py-3 py-md-4"
-          : "container"
+          ? "container-fluid px-2 px-md-3 py-2 py-md-3"
+          : "container px-2 px-md-3"
       }
+      style={{ backgroundColor: "var(--color-bg)" }}
     >
       {shouldShowHeading && <Heading pageName="details" sticky={true} />}
       <div
@@ -493,23 +530,42 @@ export default function ClientDashboardView({
         style={viewMode === "details" ? { height: "calc(100vh - 140px)" } : {}}
       >
         <div
-          className={`flex-grow-1 overflow-auto ${
-            viewMode === "details" ? "pb-3" : "p-3 rounded shadow-sm"
+          className={`flex-grow-1 overflow-auto mt-3 ${
+            viewMode === "details" ? "pb-3" : "p-3"
           }`}
+          style={viewMode !== "details" ? {
+            borderRadius: "0.875rem",
+            border: "1px solid var(--color-border)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            backgroundColor: "var(--color-card-bg)"
+          } : {}}
         >
-          {/* Client Info Card */}
-          <div className="card shadow-sm rounded-4 mb-3 mt-3 border-0">
-            <div className="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-              <div>
-                <h4 className="fw-bold">{client.fullName}</h4>
-                <p className="mb-1 text-muted small">
-                  Goal: <span className="fw-semibold">{client.goal}</span> •
-                  Start: {client.startDate}
-                </p>
+          {/* Client Info Card - 3 Rows Layout */}
+          <div className="card mb-2 mt-1 border-0" style={{
+            borderRadius: "0.875rem",
+            border: "1px solid var(--color-border)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            backgroundColor: "var(--color-card-bg)"
+          }}>
+            <div className="card-body p-2">
+              {/* Row 1: Username and Status */}
+              <div className="d-flex align-items-center justify-content-between mb-2">
+                <h4 className="fw-bold mb-0" style={{ 
+                  fontSize: "clamp(1rem, 3vw, 1.25rem)",
+                  color: "var(--color-text-dark)",
+                  lineHeight: "1.3"
+                }}>{client.fullName}</h4>
                 <span
-                  className={`badge px-3 py-2 ${
-                    client.status === "attention" ? "bg-danger" : "bg-success"
-                  }`}
+                  className="badge px-2 py-1 rounded-pill"
+                  style={{
+                    backgroundColor: client.status === "attention" 
+                      ? "rgba(220, 53, 69, 0.1)" 
+                      : "rgba(0, 100, 0, 0.1)",
+                    color: client.status === "attention" 
+                      ? "var(--color-danger)" 
+                      : "var(--color-success)",
+                    fontSize: "0.7rem"
+                  }}
                 >
                   {client.status === "attention"
                     ? "Need Attention"
@@ -517,63 +573,104 @@ export default function ClientDashboardView({
                 </span>
               </div>
 
-              <div className="text-md-end mt-3 mt-md-0">
-                <div className="d-flex align-items-center justify-content-md-end mb-3">
+              {/* Row 2: Goal, Start Date, and Streak Count */}
+              <div className="d-flex align-items-center flex-wrap gap-2 mb-2" style={{ fontSize: "0.75rem" }}>
+                <span style={{ color: "var(--color-text-secondary)" }}>
+                  Goal: <span className="fw-semibold" style={{ color: "var(--color-text-dark)" }}>{client.goal}</span>
+                </span>
+                <span style={{ color: "var(--color-text-secondary)" }}>•</span>
+                <span style={{ color: "var(--color-text-secondary)" }}>
+                  Start: {client.startDate}
+                </span>
+                <span style={{ color: "var(--color-text-secondary)" }}>•</span>
+                <div className="d-flex align-items-center">
                   <span
-                    className={`fw-bold ${
-                      client.streak === "Missed meal"
-                        ? "text-danger"
-                        : "text-success"
-                    }`}
+                    className="fw-bold"
+                    style={{
+                      color: client.streak === "Missed meal"
+                        ? "var(--color-danger)"
+                        : "var(--color-success)"
+                    }}
                   >
                     {dashboardData.streakProgress.current} day streak
                   </span>
                   {client.streak === "Missed meal" ? (
-                    <FaSadCry className="text-danger ms-2" />
+                    <FaSadCry className="ms-1" style={{ color: "var(--color-danger)", fontSize: "0.9rem" }} />
                   ) : (
-                    <FaFire className="text-success ms-2" />
+                    <FaFire className="ms-1" style={{ color: "var(--color-success)", fontSize: "0.9rem" }} />
                   )}
                 </div>
-                <div className="d-flex flex-wrap gap-2 justify-content-md-end">
-                  {enableDatePicker && client && (
-                    <button
-                      className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
-                      onClick={() => setShowDatePickerModal(true)}
-                    >
-                      <FaCalendar className="me-1" />
-                      <span className="d-none d-sm-inline">Change date</span>
-                    </button>
-                  )}
-                  <button
-                    className="bg-white fs-6 btn-sm p-2 d-flex align-items-center border-0 rounded-3 shadow-sm"
-                    onClick={() =>
-                      navigate(
-                        viewMode === "dashboard"
-                          ? `/client-messages/${client.trainerId}`
-                          : `/messages/${client.clientId}`,
-                        {
-                          state: {
-                            client,
-                            trainerId: client.trainerId,
-                            clientId: client.clientId,
-                            clientName: client.clientName,
-                          },
-                        }
-                      )
-                    }
-                  >
-                    <FaMessage className="me-1" /> Message
-                  </button>
+              </div>
 
-                  {/* Only show Plan button for trainers/admins, not for clients */}
-                  {!isClientRole && (
+              {/* Row 3: Calendar, Message, and Plan Buttons */}
+              <div className="d-flex align-items-center gap-1" style={{ flexWrap: "nowrap" }}>
+                {enableDatePicker && client && (
+                  <button
+                    className="btn btn-sm  d-flex align-items-center justify-content-center"
+                    onClick={() => setShowDatePickerModal(true)}
+                    style={{ 
+                      height: "36px",
+                      width: "40px",
+                      minWidth: "40px",
+                      maxWidth: "40px",
+                      padding: "0",
+                      backgroundColor: "var(--color-primary)",
+                      color: "#fff",
+                      border: "none",
+                      flexShrink: 0
+                    }}
+                    title="Change Date"
+                  >
+                    <FaCalendar style={{ fontSize: "0.9rem" }} /> 
+                  </button>
+                )}
+                <button
+                  className="btn btn-sm  d-flex align-items-center justify-content-center"
+                  onClick={() =>
+                    navigate(
+                      viewMode === "dashboard"
+                        ? `/client-messages/${client.trainerId}`
+                        : `/messages/${client.clientId}`,
+                      {
+                        state: {
+                          client,
+                          trainerId: client.trainerId,
+                          clientId: client.clientId,
+                          clientName: client.clientName,
+                        },
+                      }
+                    )
+                  }
+                  style={{ 
+                    height: "36px",
+                    width: "40px",
+                    minWidth: "40px",
+                    maxWidth: "40px",
+                    padding: "0",
+                    backgroundColor: "var(--color-info)",
+                    color: "#fff",
+                    border: "none",
+                    flexShrink: 0
+                  }}
+                  title="Message"
+                >
+                  <FaMessage style={{ fontSize: "0.9rem" }} /> 
+                </button> 
+
+                {/* Only show Plan button for trainers/admins, not for clients */}
+                {!isClientRole && (
+                  <div 
+                    className="plan-split-button-wrapper" 
+                    style={{ 
+                      flex: "1 1 0",
+                      minWidth: 0,
+                      height: "40px"
+                    }}
+                  >
                     <SplitButton
                       label="Plan"
                       icon="pi pi-plus"
-                      className="bg-button fs-6 text-secondary btn-sm border-0 rounded-3 shadow-sm"
-                      style={{
-                        color: "white",
-                      }}
+                      className="plan-split-button"
                       model={[
                         {
                           label: "Add",
@@ -593,18 +690,27 @@ export default function ClientDashboardView({
                         },
                       ]}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="row mb-2 bg-gray">
+          <div className="row mb-2">
             <div className="col-lg-8 mb-3">
-              <div className="card rounded-4 shadow-sm h-100">
-                <div className="card-body">
+              <div className="card h-100 border-0" style={{
+                borderRadius: "0.875rem",
+                border: "1px solid var(--color-border)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                backgroundColor: "var(--color-card-bg)"
+              }}>
+                <div className="card-body p-2">
                   <div className="d-flex align-items-center mb-2">
-                    <h5 className="card-title mb-0 fw-bold">
+                    <h5 className="card-title mb-0 fw-bold" style={{ 
+                      fontSize: "0.85rem",
+                      color: "var(--color-text-dark)",
+                      lineHeight: "1.3"
+                    }}>
                       {isToday
                         ? "Today's Macros"
                         : `${new Date(selectedDate).toLocaleDateString(
@@ -613,10 +719,10 @@ export default function ClientDashboardView({
                           )} Macros`}
                     </h5>
                   </div>
-                  <div className="row">
+                  <div className="row g-2">
                     {Object.entries(dashboardData.macros).map(
                       ([key, value], index) => (
-                        <div key={key} className="col-12 col-sm-3 mb-3">
+                        <div key={key} className="col-6 mb-2">
                           <CircularProgress
                             current={value.value}
                             target={value.target}
@@ -637,40 +743,82 @@ export default function ClientDashboardView({
               </div>
             </div>
 
-            <div className="col-lg-4 mb-3">
-              <div className="card rounded-4 shadow-sm h-100">
-                <div className="card-body text-center d-flex flex-column">
+            <div className="col-lg-4 mb-2">
+              <div className="card h-100 border-0" style={{
+                borderRadius: "0.875rem",
+                border: "1px solid var(--color-border)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                backgroundColor: "var(--color-card-bg)"
+              }}>
+                <div className="card-body text-center d-flex flex-column p-3">
                   <div className="mb-3">
-                    <FaFire className="text-warning fs-2 mb-2" />
-                    <h6 className="fw-bold">Streak Progress</h6>
+                    <div className="mb-2" style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(255, 193, 7, 0.1)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto"
+                    }}>
+                      <FaFire style={{ 
+                        fontSize: "1.5rem",
+                        color: "var(--color-warning)"
+                      }} />
+                    </div>
+                    <h6 className="fw-bold mb-1" style={{ 
+                      fontSize: "0.9rem",
+                      color: "var(--color-text-dark)"
+                    }}>Streak Progress</h6>
                   </div>
                   <div className="flex-grow-1 d-flex flex-column justify-content-center">
-                    <h4 className="text-primary mb-3">
-                      {dashboardData.streakProgress.current} /{" "}
-                      {dashboardData.streakProgress.goal}
-                      <small className="text-muted ms-1">days</small>
-                    </h4>
-                    <div className="progress mb-4" style={{ height: "8px" }}>
+                    <h3 className="mb-2" style={{ 
+                      fontSize: "1.8rem",
+                      color: "var(--color-primary)",
+                      fontWeight: "700"
+                    }}>
+                      {dashboardData.streakProgress.current}
+                      <small className="ms-1" style={{ 
+                        fontSize: "1rem",
+                        color: "var(--color-text-secondary)",
+                        fontWeight: "400"
+                      }}>/ {dashboardData.streakProgress.goal}</small>
+                    </h3>
+                    <p className="mb-3" style={{ 
+                      fontSize: "0.75rem",
+                      color: "var(--color-text-secondary)"
+                    }}>days</p>
+                    <div className="progress mb-3" style={{ 
+                      height: "8px",
+                      backgroundColor: "var(--color-border)",
+                      borderRadius: "4px"
+                    }}>
                       <div
-                        className="progress-bar bg-gradient"
+                        className="progress-bar"
                         style={{
                           width: `${
                             (dashboardData.streakProgress.current /
                               dashboardData.streakProgress.goal) *
                             100
                           }%`,
-                          background:
-                            "linear-gradient(90deg, #28a745, #20c997)",
+                          backgroundColor: "var(--color-primary)",
+                          borderRadius: "4px",
+                          transition: "width 0.3s ease"
                         }}
                       ></div>
                     </div>
                     {canShareProgress && (
                       <button
                         onClick={handleShare}
-                        className="btn btn-outline-primary btn-sm"
+                        className="btn btn-outline-primary btn-sm rounded-pill"
+                        style={{ 
+                          minHeight: "36px",
+                          fontSize: "0.75rem"
+                        }}
                       >
-                        <FaShareAlt className="me-2" />
-                        Share Progress
+                        <FaShareAlt className="me-1" style={{ fontSize: "0.7rem" }} />
+                        Share
                       </button>
                     )}
                   </div>
@@ -680,10 +828,19 @@ export default function ClientDashboardView({
           </div>
 
           {/* Meal Plan Section */}
-          <div className="card rounded-4 shadow-sm mb-4">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="card-title fw-bold mb-0">
+          <div className="card mb-3 border-0" style={{
+            borderRadius: "0.875rem",
+            border: "1px solid var(--color-border)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            backgroundColor: "var(--color-card-bg)"
+          }}>
+            <div className="card-body p-2">
+              <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                <h5 className="card-title fw-bold mb-0" style={{ 
+                  fontSize: "0.85rem",
+                  color: "var(--color-text-dark)",
+                  lineHeight: "1.3"
+                }}>
                   {isToday
                     ? "Today's Meals"
                     : `${new Date(selectedDate).toLocaleDateString("en-IN", {
@@ -692,11 +849,17 @@ export default function ClientDashboardView({
                         year: "numeric",
                       })} Meals`}
                 </h5>
-                <div>
-                  <span className="text-success fw-semibold me-2">
+                <div className="d-flex gap-2 flex-wrap">
+                  <span className="fw-semibold" style={{ 
+                    fontSize: "0.75rem",
+                    color: "var(--color-success)"
+                  }}>
                     {completedMeals} completed
                   </span>
-                  <span className="text-danger fw-semibold">
+                  <span className="fw-semibold" style={{ 
+                    fontSize: "0.75rem",
+                    color: "var(--color-danger)"
+                  }}>
                     {remainingMeals} remaining
                   </span>
                 </div>
@@ -704,8 +867,15 @@ export default function ClientDashboardView({
 
               {(dashboardData.meals || []).length === 0 ? (
                 <div className="text-center py-5">
-                  <FaCamera className="text-muted fs-1 mb-3" />
-                  <p className="text-muted mb-0">
+                  <FaCamera className="mb-3" style={{ 
+                    fontSize: "3rem",
+                    color: "var(--color-text-secondary)"
+                  }} />
+                  <p className="mb-0" style={{ 
+                    fontSize: "0.9rem",
+                    color: "var(--color-text-secondary)",
+                    lineHeight: "1.5"
+                  }}>
                     No meals planned for{" "}
                     {isToday
                       ? "today"
@@ -717,50 +887,64 @@ export default function ClientDashboardView({
                   </p>
                 </div>
               ) : (
-                <div className="row g-3">
+                <div className="row g-2">
                   {dashboardData.meals.map((meal, idx) => (
-                    <div key={idx} className="col-12 col-md-4 col-lg-4">
+                    <div key={idx} className="col-12 col-md-6">
                       <div
-                        className={`h-100 rounded-4 p-3 position-relative ${
-                          meal.completed
-                            ? "br-light-green-2"
-                            : "br-light-gray-dotted"
-                        }`}
+                        className="h-100 p-2 position-relative"
                         style={{
+                          borderRadius: "0.75rem",
+                          border: meal.completed 
+                            ? "1px solid var(--color-success)" 
+                            : "1px solid var(--color-border)",
+                          backgroundColor: meal.completed 
+                            ? "rgba(0, 100, 0, 0.05)" 
+                            : "var(--color-card-bg)",
                           cursor:
                             meal.completed || !canUploadMeals
                               ? "default"
                               : "pointer",
                           pointerEvents:
                             meal.completed || !canUploadMeals ? "none" : "auto",
+                          transition: "all 0.2s ease"
                         }}
                         onClick={() => handleMealClick(meal)}
                       >
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h6 className="fw-semibold mb-1">{meal.name}</h6>
+                        <div className="d-flex justify-content-between align-items-center mb-1">
+                          <h6 className="fw-semibold mb-0" style={{ 
+                            fontSize: "0.8rem",
+                            color: "var(--color-text-dark)",
+                            lineHeight: "1.3"
+                          }}>{meal.name}</h6>
                           {meal.completed ? (
-                            <FaCheckCircle className="text-success fs-5" />
+                            <FaCheckCircle style={{ 
+                              fontSize: "1.2rem",
+                              color: "var(--color-success)"
+                            }} />
                           ) : (
-                            <FaCamera className="text-secondary fs-5" />
+                            <FaCamera style={{ 
+                              fontSize: "1.2rem",
+                              color: "var(--color-text-secondary)"
+                            }} />
                           )}
                         </div>
 
                         <div
-                          className={`rounded-3 overflow-hidden mb-2 ${
-                            viewMode === "details"
-                              ? "position-relative d-flex align-items-center justify-content-center"
-                              : ""
-                          }`}
-                          style={
-                            viewMode === "details"
+                          className="overflow-hidden mb-2"
+                          style={{
+                            borderRadius: "0.75rem",
+                            ...(viewMode === "details"
                               ? {
+                                  position: "relative",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   minHeight: "120px",
                                   maxHeight: "200px",
-                                  backgroundColor:
-                                    "var(--color-surface-variant)",
+                                  backgroundColor: "var(--color-card-bg-alt)",
                                 }
-                              : { height: "120px" }
-                          }
+                              : { height: "120px" })
+                          }}
                         >
                           {meal.image ? (
                             <img
@@ -811,16 +995,22 @@ export default function ClientDashboardView({
                             <div
                               className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
                               style={{
-                                background: "rgba(0, 0, 0, 0.1)",
+                                background: "rgba(0, 0, 0, 0.05)",
                                 pointerEvents: "none",
+                                borderRadius: "0.75rem"
                               }}
                             >
                               <div className="text-center">
                                 <FaCamera
-                                  className="text-muted mb-2"
-                                  style={{ fontSize: "2rem" }}
+                                  className="mb-2"
+                                  style={{ 
+                                    fontSize: "2rem",
+                                    color: "var(--color-text-secondary)"
+                                  }}
                                 />
-                                <div className="small text-muted fw-semibold">
+                                <div className="small fw-semibold" style={{ 
+                                  color: "var(--color-text-secondary)"
+                                }}>
                                   Pending
                                 </div>
                               </div>
@@ -828,19 +1018,28 @@ export default function ClientDashboardView({
                           )}
                         </div>
 
-                        <p className="mb-1 small text-muted">
+                        <p className="mb-1" style={{ 
+                          fontSize: "0.75rem",
+                          color: "var(--color-text-secondary)"
+                        }}>
                           {meal.calories} calories
                           {meal.completed && meal.plannedCalories && (
-                            <span className="text-success ms-1">
+                            <span className="ms-1" style={{ color: "var(--color-success)" }}>
                               (Target: {meal.plannedCalories})
                             </span>
                           )}
                         </p>
-                        <div className="small text-muted">
+                        <div style={{ 
+                          fontSize: "0.7rem",
+                          color: "var(--color-text-secondary)"
+                        }}>
                           P: {meal.protein}g | C: {meal.carbs}g | F: {meal.fat}g
                         </div>
                         {meal.completed && (
-                          <div className="small text-success mt-1">
+                          <div className="mt-1" style={{ 
+                            fontSize: "0.7rem",
+                            color: "var(--color-success)"
+                          }}>
                             <FaCheckCircle className="me-1" />
                             Completed
                           </div>
@@ -863,40 +1062,73 @@ export default function ClientDashboardView({
           centered
           fullscreen="sm-down"
         >
-          <Modal.Header closeButton>
-            <Modal.Title>📅 Select Date</Modal.Title>
+          <Modal.Header closeButton style={{ 
+            borderBottomColor: "var(--color-border)",
+            backgroundColor: "var(--color-card-bg)"
+          }}>
+            <Modal.Title style={{ 
+              fontSize: "1.1rem",
+              color: "var(--color-text-dark)"
+            }}>📅 Select Date</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="p-3 p-md-4">
+          <Modal.Body className="p-3 p-md-4" style={{ 
+            backgroundColor: "var(--color-card-bg)"
+          }}>
             <Form.Group>
               <Form.Control
                 type="date"
                 value={selectedDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 className="rounded-3"
-                style={{ minHeight: "48px", fontSize: "16px" }}
+                style={{ 
+                  minHeight: "44px", 
+                  fontSize: "16px",
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-input-bg)",
+                  color: "var(--color-text-dark)"
+                }}
               />
             </Form.Group>
           </Modal.Body>
         </Modal>
       )}
 
-      {/* Camera Modal */}
+      {/* Camera Modal - Centered */}
       {showCamera && canUploadMeals && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          className="position-fixed top-0 start-0 end-0 bottom-0 w-100 h-100"
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.9)",
-            zIndex: 9999,
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            overflow: "auto"
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isProcessing) {
+              closeCamera();
+            }
           }}
         >
           <div
-            className="bg-white rounded-4 p-4"
-            style={{ maxWidth: "600px", width: "90%" }}
+            className="bg-card rounded-3 overflow-hidden d-flex flex-column"
+            style={{ 
+              maxWidth: "600px",
+              width: "100%",
+              maxHeight: "90vh",
+              margin: "auto 0"
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="mb-0">Capture {selectedMeal?.name}</h5>
+            {/* Header */}
+            <div className="d-flex justify-content-between align-items-center p-3 flex-shrink-0 border-bottom border-theme">
+              <h5 className="mb-0 text-theme-dark" style={{ fontSize: "1.1rem" }}>
+                Capture {selectedMeal?.name}
+              </h5>
               <button
-                className="btn btn-link text-dark p-0"
+                className="btn btn-link p-0 text-theme-dark touch-target d-flex align-items-center justify-content-center"
                 onClick={closeCamera}
                 disabled={isProcessing}
               >
@@ -904,23 +1136,34 @@ export default function ClientDashboardView({
               </button>
             </div>
 
-            <div className="mb-3">
+            {/* Video Container - Centered */}
+            <div className="p-3 flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden" style={{ 
+              minHeight: 0,
+              maxHeight: "calc(100vh - 200px)"
+            }}>
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
-                className="w-100 rounded-3"
-                style={{ maxHeight: "400px", objectFit: "cover" }}
+                className="w-100 h-100"
+                style={{ 
+                  maxHeight: "100%",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                  borderRadius: "0.75rem"
+                }}
               />
             </div>
 
-            <canvas ref={canvasRef} style={{ display: "none" }} />
+            <canvas ref={canvasRef} className="d-none" />
 
-            <div className="d-flex gap-2">
+            {/* Footer */}
+            <div className="d-flex gap-2 p-3 flex-shrink-0 border-top border-theme">
               <button
-                className="btn btn-primary flex-grow-1"
+                className="btn btn-primary flex-grow-1 rounded-pill touch-target"
                 onClick={capturePhoto}
                 disabled={isProcessing}
+                style={{ fontSize: "0.85rem" }}
               >
                 {isProcessing ? (
                   <>
@@ -935,9 +1178,10 @@ export default function ClientDashboardView({
                 )}
               </button>
               <button
-                className="btn btn-secondary"
+                className="btn btn-outline-secondary rounded-pill touch-target"
                 onClick={closeCamera}
                 disabled={isProcessing}
+                style={{ fontSize: "0.85rem" }}
               >
                 Cancel
               </button>

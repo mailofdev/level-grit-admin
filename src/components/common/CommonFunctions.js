@@ -96,8 +96,33 @@ export default getRoleIcon;
  * }
  */
 export const getDecryptedUser = () => {
-  const encryptedAuth = sessionStorage.getItem("auth_data");
-  if (!encryptedAuth) return null;
+  // Try sessionStorage first (active session), then localStorage (persistent)
+  let encryptedAuth = sessionStorage.getItem("auth_data");
+  
+  // If no active session, try to restore from localStorage
+  if (!encryptedAuth) {
+    const persistedAuth = localStorage.getItem("auth_data");
+    const timestamp = localStorage.getItem("auth_timestamp");
+    
+    // Check if session is still valid (7 days)
+    if (persistedAuth && timestamp) {
+      const sessionAge = Date.now() - parseInt(timestamp, 10);
+      const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+      
+      if (sessionAge < SESSION_DURATION) {
+        // Restore to sessionStorage
+        sessionStorage.setItem("auth_data", persistedAuth);
+        encryptedAuth = persistedAuth;
+      } else {
+        // Session expired, clear it
+        localStorage.removeItem("auth_data");
+        localStorage.removeItem("auth_timestamp");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
   try {
     const decrypted = decryptToken(encryptedAuth);
@@ -105,7 +130,10 @@ export const getDecryptedUser = () => {
     return parsed?.userInfo || null;
   } catch (error) {
     // Failed to decrypt auth_data - invalid or corrupted
-    // Return null to allow app to handle gracefully
+    // Clear invalid data
+    sessionStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_data");
+    localStorage.removeItem("auth_timestamp");
     return null;
   }
 };

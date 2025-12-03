@@ -1,120 +1,159 @@
 /* ===============================
    Modern Bootstrap Theme Variables
+   HealthifyMe Color Palette
 ================================= */
 
-/* Light Theme (default) - Fittr.com Inspired */
+/* Light Theme (default) - HealthifyMe Inspired */
 :root {
-  /* Bootstrap 5.3+ CSS Variables - Fittr Theme */
-  --bs-primary: #007AFF;
-  --bs-secondary: #FF6B35;
-  --bs-success: #28a745;
+  /* HealthifyMe Color Palette - Updated */
+  --healthifyme-black: #000000;
+  --healthifyme-black-light: #1A1A1A;
+  --healthifyme-white: #FFFFFF;
+  --healthifyme-warm-white: #FDF8F4;
+  --healthifyme-grey: #808080;
+  --healthifyme-grey-light: #E5E5E5;
+  --healthifyme-green-dark: #006400;
+  --healthifyme-green-bottle: #0A4D3C;
+  
+  /* Bootstrap 5.3+ CSS Variables - HealthifyMe Theme */
+  --bs-primary: #0A4D3C;
+  --bs-secondary: #006400;
+  --bs-success: #006400;
   --bs-danger: #dc3545;
   --bs-warning: #ffc107;
-  --bs-info: #17a2b8;
-  --bs-light: #f8f9fa;
-  --bs-dark: #212529;
+  --bs-info: #0A4D3C;
+  --bs-light: #FDF8F4;
+  --bs-dark: #000000;
   
-  /* Fittr.com Theme Variables - Clean White UI */
-  --color-bg: #ffffff;
-  --color-bg-solid: #ffffff;
+  /* HealthifyMe Theme Variables - Clean, Modern, Minimal */
+  --color-bg: #FFFFFF;
+  --color-bg-solid: #FFFFFF;
+  --color-bg-warm: #FDF8F4;
   --color-text: #000000;
-  --color-primary: #007AFF;
-  --color-secondary: #FF6B35;
-  --color-success: #28a745;
+  --color-text-dark: #000000;
+  --color-text-light: #1A1A1A;
+  --color-primary: #0A4D3C;
+  --color-primary-hover: #006400;
+  --color-secondary: #006400;
+  --color-success: #006400;
   --color-danger: #dc3545;
   --color-warning: #ffc107;
-  --color-info: #17a2b8;
-  --color-border: #e5e5e5;
-  --color-card-bg: #f4f6f8;
-  --color-card-bg-hover: #eeeeee;
-  --color-nav-bg: rgba(255, 255, 255, 0.95);
-  --color-muted: #6c757d;
-  --color-link: #007AFF;
-  --color-link-hover: #0056b3;
-  --color-scrollbar: #d0d0d0;
-  --color-scrollbar-bg: #f5f5f5;
-  --color-shadow: rgba(0, 0, 0, 0.08);
-  --color-shadow-hover: rgba(0, 0, 0, 0.12);
-  --color-shadow-lg: rgba(0, 0, 0, 0.15);
-  --color-input-bg: #ffffff;
-  --color-input-border: #e5e5e5;
-  --color-input-focus: #007AFF;
-  --color-button-bg: #000000;
-  --color-button-text: #ffffff;
-  --color-button-hover: #333333;
-  --color-button-secondary: #000000;
-  --color-button-secondary-hover: #333333;
+  --color-info: #0A4D3C;
+  --color-border: #E5E5E5;
+  --color-border-mid: #E5E5E5;
+  --color-border-light: #FDF8F4;
+  --color-card-bg: #FFFFFF;
+  --color-card-bg-hover: #FDF8F4;
+  --color-card-bg-alt: #FDF8F4;
+  --color-nav-bg: rgba(255, 255, 255, 0.98);
+  --color-muted: #808080;
+  --color-text-secondary: #808080;
+  --color-text-tertiary: #808080;
+  --color-link: #0A4D3C;
+  --color-link-hover: #006400;
+  --color-scrollbar: #E5E5E5;
+  --color-scrollbar-bg: #FDF8F4;
+  /* Soft, minimal shadows - HealthifyMe style */
+  --color-shadow: rgba(0, 0, 0, 0.04);
+  --color-shadow-hover: rgba(0, 0, 0, 0.06);
+  --color-shadow-lg: rgba(0, 0, 0, 0.08);
+  --color-input-bg: #FFFFFF;
+  --color-input-border: #E5E5E5;
+  --color-input-focus: #0A4D3C;
+  --color-button-bg: #0A4D3C;
+  --color-button-text: #FFFFFF;
+  --color-button-hover: #006400;
+  --color-button-secondary: #FFFFFF;
+  --color-button-secondary-hover: #FDF8F4;
   
   /* Modern UI Enhancements */
-  --color-surface: #ffffff;
-  --color-surface-variant: #f5f5f5;
-  --color-surface-hover: #eeeeee;
-  --color-outline: #e5e5e5;
-  --color-outline-variant: #d0d0d0;
-  --border-radius: 0.75rem;
+  --color-surface: #FFFFFF;
+  --color-surface-variant: #F0F0F0;
+  --color-surface-hover: #E0E0E0;
+  --color-outline: #E0E0E0;
+  --color-outline-variant: #D0D0D0;
+  --border-radius: 0.875rem;
   --border-radius-lg: 1rem;
   --border-radius-xl: 1.25rem;
-  /* Consistent shadow system - subtle and professional */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  /* Soft, minimal shadows - HealthifyMe style */
+  --shadow-sm: 0 1px 2px rgba(16, 16, 16, 0.04);
+  --shadow: 0 2px 8px rgba(16, 16, 16, 0.06);
+  --shadow-lg: 0 4px 16px rgba(16, 16, 16, 0.08);
   /* shadow-xl removed - using shadow-lg for consistency */
   
   /* Glassmorphism & Transparency Effects */
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(255, 255, 255, 0.3);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 4px 16px rgba(16, 16, 16, 0.06);
   --backdrop-blur: blur(20px);
   
-  /* Fittr App Specific */
-  --health-gradient: #ffffff;
-  --card-glass: rgba(245, 245, 245, 0.9);
-  --card-border: rgba(229, 229, 229, 0.5);
-  --card-transparent: rgba(245, 245, 245, 0.6);
+  /* HealthifyMe App Specific */
+  --health-gradient: #FFFFFF;
+  --card-glass: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(232, 232, 232, 0.8);
+  --card-transparent: rgba(255, 255, 255, 0.8);
 }
 
-/* Dark Theme - Fittr.com Inspired */
+/* Dark Theme - HealthifyMe Inspired */
 body.dark {
-  /* Bootstrap 5.3+ CSS Variables for Dark Theme */
-  --bs-primary: #007AFF;
-  --bs-secondary: #FF6B35;
-  --bs-success: #28a745;
-  --bs-danger: #dc3545;
-  --bs-warning: #ffc107;
-  --bs-info: #17a2b8;
-  --bs-light: #f8f9fa;
-  --bs-dark: #212529;
+  /* HealthifyMe Color Palette - Dark Mode */
+  --healthifyme-black: #000000;
+  --healthifyme-black-light: #1A1A1A;
+  --healthifyme-white: #FFFFFF;
+  --healthifyme-warm-white: #1A1A1A;
+  --healthifyme-grey: #808080;
+  --healthifyme-grey-light: #2d2d2d;
+  --healthifyme-green-dark: #006400;
+  --healthifyme-green-bottle: #0A4D3C;
   
-  /* Fittr.com Dark Theme Variables */
-  --color-bg: #121212;
-  --color-bg-solid: #121212;
-  --color-text: #ffffff;
-  --color-primary: #007AFF;
-  --color-secondary: #FF6B35;
-  --color-success: #4caf50;
+  /* Bootstrap 5.3+ CSS Variables for Dark Theme */
+  --bs-primary: #0A4D3C;
+  --bs-secondary: #006400;
+  --bs-success: #006400;
+  --bs-danger: #ef5350;
+  --bs-warning: #ffb300;
+  --bs-info: #0A4D3C;
+  --bs-light: #1A1A1A;
+  --bs-dark: #000000;
+  
+  /* HealthifyMe Dark Theme Variables */
+  --color-bg: #000000;
+  --color-bg-solid: #000000;
+  --color-bg-warm: #1A1A1A;
+  --color-text: #FFFFFF;
+  --color-text-dark: #FFFFFF;
+  --color-text-light: #E5E5E5;
+  --color-primary: #0A4D3C;
+  --color-primary-hover: #006400;
+  --color-secondary: #006400;
+  --color-success: #006400;
   --color-danger: #ef5350;
   --color-warning: #ffb300;
-  --color-info: #29b6f6;
+  --color-info: #0A4D3C;
   --color-border: #2d2d2d;
-  --color-card-bg: #1a1a1a;
+  --color-border-mid: #3d3d3d;
+  --color-card-bg: #1A1A1A;
   --color-card-bg-hover: #252525;
-  --color-nav-bg: rgba(18, 18, 18, 0.95);
-  --color-muted: #8b949e;
-  --color-link: #007AFF;
-  --color-link-hover: #3395ff;
-  --color-scrollbar: #3d3d3d;
-  --color-scrollbar-bg: #1a1a1a;
+  --color-card-bg-alt: #1A1A1A;
+  --color-nav-bg: rgba(0, 0, 0, 0.98);
+  --color-muted: #808080;
+  --color-text-secondary: #808080;
+  --color-text-tertiary: #808080;
+  --color-link: #0A4D3C;
+  --color-link-hover: #006400;
+  --color-scrollbar: #2d2d2d;
+  --color-scrollbar-bg: #1A1A1A;
   --color-shadow: rgba(0, 0, 0, 0.4);
   --color-shadow-hover: rgba(0, 0, 0, 0.6);
   --color-shadow-lg: rgba(0, 0, 0, 0.8);
-  --color-input-bg: #1a1a1a;
+  --color-input-bg: #1A1A1A;
   --color-input-border: #2d2d2d;
-  --color-input-focus: #007AFF;
-  --color-button-bg: #000000;
-  --color-button-text: #ffffff;
-  --color-button-hover: #333333;
-  --color-button-secondary: #000000;
-  --color-button-secondary-hover: #333333;
+  --color-input-focus: #0A4D3C;
+  --color-button-bg: #0A4D3C;
+  --color-button-text: #FFFFFF;
+  --color-button-hover: #006400;
+  --color-button-secondary: #1A1A1A;
+  --color-button-secondary-hover: #252525;
   
   /* Modern UI Enhancements for Dark Theme */
   --color-surface: #1a1a1a;
@@ -122,10 +161,10 @@ body.dark {
   --color-surface-hover: #2d2d2d;
   --color-outline: #2d2d2d;
   --color-outline-variant: #3d3d3d;
-  /* Consistent shadow system - subtle and professional */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  /* Soft, minimal shadows - HealthifyMe style (Dark Mode) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
   /* shadow-xl removed - using shadow-lg for consistency */
   
   /* Glassmorphism & Transparency Effects - Dark */
@@ -134,10 +173,10 @@ body.dark {
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   --backdrop-blur: blur(20px);
   
-  /* Fittr App Specific - Dark */
-  --health-gradient: #121212;
+  /* HealthifyMe App Specific - Dark */
+  --health-gradient: #101010;
   --card-glass: rgba(26, 26, 26, 0.9);
-  --card-border: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(45, 45, 45, 0.5);
   --card-transparent: rgba(26, 26, 26, 0.6);
 }
 
