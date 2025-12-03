@@ -1,8 +1,8 @@
 {
   "id": "/",
   "short_name": "Level Grit",
-  "name": "Level Grit Admin",
-  "description": "Level Grit admin application",
+  "name": "Level Grit",
+  "description": "Level Grit application",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
