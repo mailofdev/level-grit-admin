@@ -17,7 +17,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import React, { Suspense, lazy } from "react";
 import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -144,11 +144,72 @@ function App() {
 
 // App Content Component - Handles PWA session and routing
 function AppContent() {
+  const [isResuming, setIsResuming] = React.useState(false);
+  
   // Initialize PWA session management
-  usePWASession();
+  const { restoreSession } = usePWASession();
+
+  // Handle app resume with smooth transition
+  React.useEffect(() => {
+    let resumeTimeout;
+    
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // App resumed, show brief loading state for smooth transition
+        setIsResuming(true);
+        
+        // Restore session if needed
+        if (!sessionStorage.getItem('auth_data')) {
+          restoreSession();
+        }
+        
+        // Hide loading state after brief delay for smooth UX
+        resumeTimeout = setTimeout(() => {
+          setIsResuming(false);
+        }, 300);
+      } else {
+        setIsResuming(false);
+      }
+    };
+
+    const handleFocus = () => {
+      // App brought to foreground
+      if (!sessionStorage.getItem('auth_data')) {
+        restoreSession();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [restoreSession]);
 
   return (
     <>
+      {isResuming && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'var(--color-bg)',
+            zIndex: 999999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: isResuming ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            pointerEvents: 'none'
+          }}
+        />
+      )}
       <BackButtonHandler />
       <Suspense fallback={<PageLoader />}>
         <Routes>

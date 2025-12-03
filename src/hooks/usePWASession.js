@@ -98,21 +98,46 @@ export const usePWASession = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // App became visible, restore session if needed
+        // App became visible/resumed, restore session if needed
         if (!sessionStorage.getItem(AUTH_STORAGE_KEY)) {
-          restoreSession();
+          const restored = restoreSession();
+          if (restored) {
+            // Verify restored session is valid
+            const user = getDecryptedUser();
+            if (!user) {
+              // Invalid session, clear it
+              clearSession();
+            } else {
+              // Valid session restored, trigger a re-render by dispatching storage event
+              window.dispatchEvent(new Event('storage'));
+            }
+          }
         } else {
-          // Update persistence timestamp
+          // Active session exists, update persistence timestamp
           persistSession();
         }
       } else {
-        // App hidden, persist current session
+        // App hidden/minimized, persist current session
         persistSession();
       }
     };
 
     const handleBeforeUnload = () => {
       // Persist session before page unload
+      persistSession();
+    };
+
+    // Handle page focus (when app is brought to foreground)
+    const handleFocus = () => {
+      if (!sessionStorage.getItem(AUTH_STORAGE_KEY)) {
+        restoreSession();
+      } else {
+        persistSession();
+      }
+    };
+
+    // Handle page blur (when app goes to background)
+    const handleBlur = () => {
       persistSession();
     };
 
@@ -125,11 +150,15 @@ export const usePWASession = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
 
     return () => {
       clearInterval(persistInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
     };
   }, []);
 

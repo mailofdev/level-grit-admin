@@ -1,13 +1,16 @@
 // src/components/navigation/ProtectedRoute.js
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { getDecryptedUser } from "../common/CommonFunctions";
 import { getUserRole, hasAnyRole, ROLES } from "../../utils/roles";
+import { restoreSession } from "../../hooks/usePWASession";
 
 /**
  * ProtectedRoute Component
  * 
  * Protects routes by requiring authentication and optionally specific roles.
+ * Handles session restoration for PWA resume scenarios.
  * 
  * @param {React.ReactNode} children - Child components to render if access is granted
  * @param {number[]} allowedRoles - Optional array of role codes that can access this route
@@ -15,27 +18,29 @@ import { getUserRole, hasAnyRole, ROLES } from "../../utils/roles";
  */
 export default function ProtectedRoute({ children, allowedRoles, requireAuth = true }) {
   const { user, token } = useSelector((state) => state.auth);
-  let storedToken = sessionStorage.getItem("auth_data");
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [storedToken, setStoredToken] = useState(sessionStorage.getItem("auth_data"));
   
-  // If no active session, try to restore from localStorage
-  if (!storedToken) {
-    const persistedAuth = localStorage.getItem("auth_data");
-    const timestamp = localStorage.getItem("auth_timestamp");
-    
-    if (persistedAuth && timestamp) {
-      const sessionAge = Date.now() - parseInt(timestamp, 10);
-      const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
-      
-      if (sessionAge < SESSION_DURATION) {
-        // Restore to sessionStorage
-        sessionStorage.setItem("auth_data", persistedAuth);
-        storedToken = persistedAuth;
-      } else {
-        // Session expired
-        localStorage.removeItem("auth_data");
-        localStorage.removeItem("auth_timestamp");
+  // Restore session on mount (for PWA resume scenarios)
+  useEffect(() => {
+    const checkAndRestoreSession = async () => {
+      if (!storedToken) {
+        // Try to restore from localStorage
+        const restored = restoreSession();
+        if (restored) {
+          const restoredToken = sessionStorage.getItem("auth_data");
+          setStoredToken(restoredToken);
+        }
       }
-    }
+      setIsCheckingSession(false);
+    };
+
+    checkAndRestoreSession();
+  }, [storedToken]);
+  
+  // Show loading state while checking session
+  if (isCheckingSession && !storedToken && !token) {
+    return null; // Or return a loading spinner
   }
 
   // Check authentication

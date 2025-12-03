@@ -1,23 +1,23 @@
 /**
  * Back Button Handler Component
  * 
- * Handles browser back button on dashboard pages by showing
- * logout confirmation modal instead of navigating away.
+ * Handles browser back button intelligently:
+ * - Allows proper in-app navigation (back through app history)
+ * - Only shows logout confirmation when at root dashboard (no history to go back to)
+ * - Does NOT interfere with native gestures or PWA navigation
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
 import LogoutModal from '../topbar/LogoutModal';
 
-// Dashboard routes that should show logout confirmation on back button
-const DASHBOARD_ROUTES = [
+// Root dashboard routes (where we show logout confirmation if no history)
+const ROOT_DASHBOARD_ROUTES = [
   '/trainer-dashboard',
   '/client-dashboard',
   '/admin-dashboard',
-  '/AllClients',
-  '/payment-management',
 ];
 
 const BackButtonHandler = () => {
@@ -25,27 +25,66 @@ const BackButtonHandler = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [isDashboardRoute, setIsDashboardRoute] = useState(false);
+  const historyStackRef = useRef([]);
+  const isInitialMountRef = useRef(true);
+  const isNavigatingRef = useRef(false);
 
+  // Track navigation history
   useEffect(() => {
-    // Check if current route is a dashboard route
-    const isDashboard = DASHBOARD_ROUTES.some(route => 
-      location.pathname === route || location.pathname.startsWith(route + '/')
-    );
-    setIsDashboardRoute(isDashboard);
+    // Skip initial mount
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      historyStackRef.current = [location.pathname];
+      return;
+    }
+
+    // If we're programmatically navigating, don't add to stack
+    if (isNavigatingRef.current) {
+      isNavigatingRef.current = false;
+      return;
+    }
+
+    // Add current path to history stack (limit to 50 entries)
+    const currentPath = location.pathname;
+    const lastPath = historyStackRef.current[historyStackRef.current.length - 1];
+    
+    if (currentPath !== lastPath) {
+      historyStackRef.current.push(currentPath);
+      if (historyStackRef.current.length > 50) {
+        historyStackRef.current.shift();
+      }
+    }
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!isDashboardRoute) return;
+    // Only handle back button on root dashboard routes
+    const isRootDashboard = ROOT_DASHBOARD_ROUTES.some(route => 
+      location.pathname === route
+    );
 
-    // Push a new state to history to prevent immediate back navigation
-    window.history.pushState(null, '', location.pathname);
+    if (!isRootDashboard) {
+      return;
+    }
+
+    // Check if we have navigation history (more than just current page)
+    const hasHistory = historyStackRef.current.length > 1;
 
     const handlePopState = (event) => {
-      // Prevent default back navigation
+      // If we have history, allow normal navigation
+      if (hasHistory && historyStackRef.current.length > 1) {
+        // Remove current from stack and navigate to previous
+        historyStackRef.current.pop();
+        const previousPath = historyStackRef.current[historyStackRef.current.length - 1];
+        if (previousPath && previousPath !== location.pathname) {
+          isNavigatingRef.current = true;
+          navigate(previousPath, { replace: false });
+        }
+        return;
+      }
+
+      // No history - we're at root dashboard, show logout confirmation
       event.preventDefault();
       
-      // Show logout confirmation modal
       if (!showLogoutModal) {
         setShowLogoutModal(true);
       }
@@ -54,12 +93,17 @@ const BackButtonHandler = () => {
       window.history.pushState(null, '', location.pathname);
     };
 
+    // Only add history state if we're at root and don't have history
+    if (!hasHistory) {
+      window.history.pushState(null, '', location.pathname);
+    }
+
     window.addEventListener('popstate', handlePopState);
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [isDashboardRoute, location.pathname, showLogoutModal]);
+  }, [location.pathname, navigate, showLogoutModal]);
 
   const handleLogoutConfirm = () => {
     dispatch(logout());
@@ -68,11 +112,15 @@ const BackButtonHandler = () => {
     localStorage.removeItem("auth_data");
     localStorage.removeItem("auth_timestamp");
     setShowLogoutModal(false);
+    historyStackRef.current = [];
+    isNavigatingRef.current = true;
     navigate('/login', { replace: true });
   };
 
   const handleLogoutCancel = () => {
     setShowLogoutModal(false);
+    // Push state again to prevent navigation
+    window.history.pushState(null, '', location.pathname);
   };
 
   return (
