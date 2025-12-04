@@ -19,6 +19,7 @@ import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES, isClient } from "../../utils/roles";
 import Heading from "../../components/navigation/Heading";
 import Alert from "../../components/common/Alert";
+import Loader from "../../components/display/Loader";
 
 /**
  * Shared Client Dashboard View Component
@@ -170,7 +171,7 @@ export default function ClientDashboardView({
         trainerId: dashboard.trainerId,
         clientName: dashboard.clientName,
         fullName: dashboard.clientName,
-        goal: "- - -",
+        goal: "",
         startDate: new Date().toLocaleDateString(),
         status: dashboard.currentStreakDays >= 3 ? "on-track" : "attention",
         streak:
@@ -250,11 +251,12 @@ export default function ClientDashboardView({
   if (loading && !dashboard) {
     return (
       <div className="container">
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3">Loading your dashboard...</p>
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "60vh" }}>
+          <Loader
+            size="120px"
+            color="var(--color-primary)"
+            text="Loading your dashboard..."
+          />
         </div>
       </div>
     );
@@ -524,6 +526,15 @@ export default function ClientDashboardView({
       }
       style={{ backgroundColor: "var(--color-bg)" }}
     >
+      {/* Loading overlay when date changes (loading && dashboard exists) */}
+      {loading && dashboard && (
+        <Loader
+          fullScreen={true}
+          text="Loading dashboard..."
+          color="var(--color-primary)"
+        />
+      )}
+      
       {shouldShowHeading && <Heading pageName="details" sticky={true} />}
       <div
         className="d-flex flex-column"
@@ -579,10 +590,10 @@ export default function ClientDashboardView({
                   Goal: <span className="fw-semibold" style={{ color: "var(--color-text-dark)" }}>{client.goal}</span>
                 </span>
                 <span style={{ color: "var(--color-text-secondary)" }}>•</span>
-                <span style={{ color: "var(--color-text-secondary)" }}>
+                {/* <span style={{ color: "var(--color-text-secondary)" }}>
                   Start: {client.startDate}
-                </span>
-                <span style={{ color: "var(--color-text-secondary)" }}>•</span>
+                </span> */}
+                {/* <span style={{ color: "var(--color-text-secondary)" }}>•</span> */}
                 <div className="d-flex align-items-center">
                   <span
                     className="fw-bold"
@@ -1093,101 +1104,88 @@ export default function ClientDashboardView({
         </Modal>
       )}
 
-      {/* Camera Modal - Centered */}
+      {/* Camera Modal - Bootstrap Modal */}
       {showCamera && canUploadMeals && (
-        <div
-          className="position-fixed top-0 start-0 end-0 bottom-0 w-100 h-100"
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            zIndex: 99999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "1rem",
-            overflow: "auto"
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !isProcessing) {
-              closeCamera();
-            }
-          }}
+        <Modal
+          show={showCamera}
+          onHide={closeCamera}
+          centered
+          fullscreen="md-down"
+          size="lg"
+          backdrop="static"
+          keyboard={!isProcessing}
         >
-          <div
-            className="bg-card rounded-3 overflow-hidden d-flex flex-column"
-            style={{ 
-              maxWidth: "600px",
-              width: "100%",
-              maxHeight: "90vh",
-              margin: "auto 0"
-            }}
-            onClick={(e) => e.stopPropagation()}
+          <Modal.Header 
+            closeButton={!isProcessing}
+            className="border-bottom border-secondary"
+            style={{ backgroundColor: "var(--color-card-bg)" }}
           >
-            {/* Header */}
-            <div className="d-flex justify-content-between align-items-center p-3 flex-shrink-0 border-bottom border-theme">
-              <h5 className="mb-0 text-theme-dark" style={{ fontSize: "1.1rem" }}>
-                Capture {selectedMeal?.name}
-              </h5>
-              <button
-                className="btn btn-link p-0 text-theme-dark touch-target d-flex align-items-center justify-content-center"
-                onClick={closeCamera}
-                disabled={isProcessing}
-              >
-                <FaTimes size={24} />
-              </button>
-            </div>
-
-            {/* Video Container - Centered */}
-            <div className="p-3 flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden" style={{ 
-              minHeight: 0,
-              maxHeight: "calc(100vh - 200px)"
+            <Modal.Title className="fw-bold" style={{ 
+              fontSize: "1.1rem",
+              color: "var(--color-text-dark)"
             }}>
+              Capture {selectedMeal?.name}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body 
+            className="p-3 d-flex align-items-center justify-content-center"
+            style={{ 
+              backgroundColor: "#000",
+              minHeight: "50vh",
+              maxHeight: "70vh",
+              overflow: "hidden"
+            }}
+          >
+            <div className="w-100 h-100 d-flex align-items-center justify-content-center">
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
-                className="w-100 h-100"
+                className="w-100"
                 style={{ 
-                  maxHeight: "100%",
+                  maxHeight: "60vh",
                   maxWidth: "100%",
                   objectFit: "contain",
                   borderRadius: "0.75rem"
                 }}
               />
             </div>
-
             <canvas ref={canvasRef} className="d-none" />
-
-            {/* Footer */}
-            <div className="d-flex gap-2 p-3 flex-shrink-0 border-top border-theme">
-              <button
-                className="btn btn-primary flex-grow-1 rounded-pill touch-target"
-                onClick={capturePhoto}
-                disabled={isProcessing}
-                style={{ fontSize: "0.85rem" }}
-              >
-                {isProcessing ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <FaCamera className="me-2" />
-                    Capture Photo
-                  </>
-                )}
-              </button>
-              <button
-                className="btn btn-outline-secondary rounded-pill touch-target"
-                onClick={closeCamera}
-                disabled={isProcessing}
-                style={{ fontSize: "0.85rem" }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+          </Modal.Body>
+          <Modal.Footer 
+            className="border-top border-secondary d-flex gap-2"
+            style={{ backgroundColor: "var(--color-card-bg)" }}
+          >
+            <Button
+              variant="primary"
+              className="flex-grow-1 rounded-pill"
+              onClick={capturePhoto}
+              disabled={isProcessing}
+              style={{ fontSize: "0.85rem" }}
+            >
+              {isProcessing ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <FaCamera className="me-2" />
+                  Capture Photo
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline-secondary"
+              className="rounded-pill"
+              onClick={closeCamera}
+              disabled={isProcessing}
+              style={{ fontSize: "0.85rem" }}
+            >
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
 
       {/* Share Progress Modal */}
