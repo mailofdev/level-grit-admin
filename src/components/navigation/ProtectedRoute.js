@@ -1,10 +1,10 @@
 // src/components/navigation/ProtectedRoute.js
 import { Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getDecryptedUser } from "../common/CommonFunctions";
 import { getUserRole, hasAnyRole, ROLES } from "../../utils/roles";
-import { restoreSession } from "../../hooks/usePWASession";
+import { restoreSession as restoreSessionAction } from "../../features/auth/authSlice";
 
 /**
  * ProtectedRoute Component
@@ -17,34 +17,32 @@ import { restoreSession } from "../../hooks/usePWASession";
  * @param {boolean} requireAuth - Whether authentication is required (default: true)
  */
 export default function ProtectedRoute({ children, allowedRoles, requireAuth = true }) {
+  const dispatch = useDispatch();
   const { user, token } = useSelector((state) => state.auth);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
-  const [storedToken, setStoredToken] = useState(sessionStorage.getItem("auth_data"));
   
   // Restore session on mount (for PWA resume scenarios)
   useEffect(() => {
-    const checkAndRestoreSession = async () => {
-      if (!storedToken) {
-        // Try to restore from localStorage
-        const restored = restoreSession();
-        if (restored) {
-          const restoredToken = sessionStorage.getItem("auth_data");
-          setStoredToken(restoredToken);
-        }
+    const checkAndRestoreSession = () => {
+      // If no token in Redux state, try to restore from localStorage
+      if (!token) {
+        dispatch(restoreSessionAction());
       }
       setIsCheckingSession(false);
     };
 
     checkAndRestoreSession();
-  }, [storedToken]);
+  }, [dispatch, token]);
   
   // Show loading state while checking session
-  if (isCheckingSession && !storedToken && !token) {
+  if (isCheckingSession && !token) {
     return null; // Or return a loading spinner
   }
 
-  // Check authentication
-  if (requireAuth && !token && !storedToken) {
+  // Check authentication - use localStorage as fallback if Redux state is not yet updated
+  const hasToken = token || sessionStorage.getItem("auth_data") || localStorage.getItem("auth_data");
+  
+  if (requireAuth && !hasToken) {
     return <Navigate to="/login" replace />;
   }
 

@@ -18,6 +18,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
+import { useDispatch } from "react-redux";
 import "./styles/themes/variables.css";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -29,6 +30,7 @@ import MainLayout from "./layouts/MainLayout";
 import BackButtonHandler from "./components/common/BackButtonHandler";
 import { usePWASession } from "./hooks/usePWASession";
 import { ROLES } from "./utils/roles";
+import { restoreSession } from "./features/auth/authSlice";
 
 // ============================================
 // Lazy Load Components - Performance Optimization
@@ -144,10 +146,17 @@ function App() {
 
 // App Content Component - Handles PWA session and routing
 function AppContent() {
+  const dispatch = useDispatch();
   const [isResuming, setIsResuming] = React.useState(false);
   
   // Initialize PWA session management
-  const { restoreSession } = usePWASession();
+  const { restoreSession: restorePWASession } = usePWASession();
+
+  // Restore session to Redux state on app initialization
+  React.useEffect(() => {
+    // Restore session from localStorage to Redux state on mount
+    dispatch(restoreSession());
+  }, [dispatch]);
 
   // Handle app resume with smooth transition
   React.useEffect(() => {
@@ -158,9 +167,13 @@ function AppContent() {
         // App resumed, show brief loading state for smooth transition
         setIsResuming(true);
         
-        // Restore session if needed
+        // Restore session if needed (both sessionStorage and Redux state)
         if (!sessionStorage.getItem('auth_data')) {
-          restoreSession();
+          restorePWASession();
+          dispatch(restoreSession());
+        } else {
+          // Ensure Redux state is synced even if sessionStorage exists
+          dispatch(restoreSession());
         }
         
         // Hide loading state after brief delay for smooth UX
@@ -175,7 +188,11 @@ function AppContent() {
     const handleFocus = () => {
       // App brought to foreground
       if (!sessionStorage.getItem('auth_data')) {
-        restoreSession();
+        restorePWASession();
+        dispatch(restoreSession());
+      } else {
+        // Ensure Redux state is synced
+        dispatch(restoreSession());
       }
     };
 
@@ -187,7 +204,7 @@ function AppContent() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [restoreSession]);
+  }, [dispatch, restorePWASession]);
 
   return (
     <>
