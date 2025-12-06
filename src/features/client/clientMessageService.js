@@ -29,7 +29,7 @@ export const getTrainerForClient = async (clientId) => {
         if (userInfo.trainerId) {
           return {
             trainerId: userInfo.trainerId,
-            fullName: userInfo.trainerName || "Your Trainer",
+            fullName: userInfo.trainerName || "Trainer",
             email: userInfo.trainerEmail || "",
             phoneNumber: userInfo.trainerPhone || "",
             profileImage: null,
@@ -45,7 +45,7 @@ export const getTrainerForClient = async (clientId) => {
     // To test: Get the actual trainer's userId from their login and use it here
     return {
       trainerId: "trainer-001", // ⚠️ Replace with actual trainer ID for testing
-      fullName: "John Trainer",
+      fullName: "Trainer",
       email: "trainer@example.com",
       phoneNumber: "1234567890",
       profileImage: null,

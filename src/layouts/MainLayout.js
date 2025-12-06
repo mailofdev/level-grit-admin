@@ -31,7 +31,7 @@ const MainLayout = ({ children, config }) => {
         />
       )}
       <div className="container-fluid flex-grow-1 pb-5 pb-md-5 pb-lg-0" style={{ 
-        paddingTop: cfg.showTopbar ? 'calc(56px + 1rem + env(safe-area-inset-top))' : '1rem', 
+        paddingTop: cfg.showTopbar ? 'calc(52px + 1rem + env(safe-area-inset-top))' : '1rem', 
         paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))', 
         backgroundColor: 'var(--color-bg)',
         minHeight: 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))'

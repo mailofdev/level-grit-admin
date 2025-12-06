@@ -11,15 +11,17 @@ import {
   FaShareAlt,
   FaTimes,
   FaCalendar,
+  FaPen,
 } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
-import { SplitButton } from "primereact/splitbutton";
 import { Modal, Form, Button } from "react-bootstrap";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES, isClient } from "../../utils/roles";
 import Heading from "../../components/navigation/Heading";
 import Alert from "../../components/common/Alert";
 import Loader from "../../components/display/Loader";
+import CustomSplitButton from "../../components/common/CustomSplitButton";
+import { FaPlus, FaEye } from "react-icons/fa";
 
 /**
  * Shared Client Dashboard View Component
@@ -524,7 +526,7 @@ export default function ClientDashboardView({
           ? "container-fluid px-2 px-md-3 py-2 py-md-3"
           : "container px-2 px-md-3"
       }
-      style={{ backgroundColor: "var(--color-bg)" }}
+      style={{ backgroundColor: "#F5F5F5", minHeight: "100vh" }}
     >
       {/* Loading overlay when date changes (loading && dashboard exists) */}
       {loading && dashboard && (
@@ -546,17 +548,17 @@ export default function ClientDashboardView({
           }`}
           style={viewMode !== "details" ? {
             borderRadius: "0.875rem",
-            border: "1px solid var(--color-border)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-            backgroundColor: "var(--color-card-bg)"
+            border: "1px solid #E0E0E0",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            backgroundColor: "#FFFFFF"
           } : {}}
         >
           {/* Client Info Card - 3 Rows Layout */}
           <div className="card mb-2 mt-1 border-0" style={{
             borderRadius: "0.875rem",
-            border: "1px solid var(--color-border)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-            backgroundColor: "var(--color-card-bg)"
+            border: "1px solid #E0E0E0",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            backgroundColor: "#FFFFFF"
           }}>
             <div className="card-body p-2">
               {/* Row 1: Username and Status */}
@@ -571,10 +573,10 @@ export default function ClientDashboardView({
                   style={{
                     backgroundColor: client.status === "attention" 
                       ? "rgba(220, 53, 69, 0.1)" 
-                      : "rgba(0, 100, 0, 0.1)",
+                      : "rgba(34, 197, 94, 0.1)",
                     color: client.status === "attention" 
                       ? "var(--color-danger)" 
-                      : "var(--color-success)",
+                      : "#22C55E",
                     fontSize: "0.7rem"
                   }}
                 >
@@ -600,7 +602,7 @@ export default function ClientDashboardView({
                     style={{
                       color: client.streak === "Missed meal"
                         ? "var(--color-danger)"
-                        : "var(--color-success)"
+                        : "#22C55E"
                     }}
                   >
                     {dashboardData.streakProgress.current} day streak
@@ -608,7 +610,7 @@ export default function ClientDashboardView({
                   {client.streak === "Missed meal" ? (
                     <FaSadCry className="ms-1" style={{ color: "var(--color-danger)", fontSize: "0.9rem" }} />
                   ) : (
-                    <FaFire className="ms-1" style={{ color: "var(--color-success)", fontSize: "0.9rem" }} />
+                    <FaFire className="ms-1" style={{ color: "#22C55E", fontSize: "0.9rem" }} />
                   )}
                 </div>
               </div>
@@ -624,11 +626,14 @@ export default function ClientDashboardView({
                       width: "40px",
                       minWidth: "40px",
                       maxWidth: "40px",
+                      minHeight: "36px",
+                      maxHeight: "36px",
                       padding: "0",
-                      backgroundColor: "var(--color-primary)",
+                      backgroundColor: "#22C55E",
                       color: "#fff",
                       border: "none",
-                      flexShrink: 0
+                      flexShrink: 0,
+                      borderRadius: "4px"
                     }}
                     title="Change Date"
                   >
@@ -657,11 +662,14 @@ export default function ClientDashboardView({
                     width: "40px",
                     minWidth: "40px",
                     maxWidth: "40px",
+                    minHeight: "36px",
+                    maxHeight: "36px",
                     padding: "0",
-                    backgroundColor: "var(--color-info)",
+                    backgroundColor: "#22C55E",
                     color: "#fff",
                     border: "none",
-                    flexShrink: 0
+                    flexShrink: 0,
+                    borderRadius: "4px"
                   }}
                   title="Message"
                 >
@@ -670,22 +678,42 @@ export default function ClientDashboardView({
 
                 {/* Only show Plan button for trainers/admins, not for clients */}
                 {!isClientRole && (
-                  <div 
-                    className="plan-split-button-wrapper" 
-                    style={{ 
-                      flex: "1 1 0",
-                      minWidth: 0,
-                      height: "40px"
-                    }}
-                  >
-                    <SplitButton
-                      label="Plan"
-                      icon="pi pi-plus"
-                      className="plan-split-button"
-                      model={[
+                  viewMode === "details" ? (
+                    // In details view, show normal button that navigates to add plan
+                    <button
+                      className="btn btn-sm d-flex align-items-center justify-content-center"
+                      onClick={() =>
+                        navigate(`/adjust-plan/${client.clientId}`, {
+                          state: { client, isView: false },
+                        })
+                      }
+                      style={{ 
+                        height: "36px",
+                        width: "40px",
+                        minWidth: "40px",
+                        maxWidth: "40px",
+                        minHeight: "36px",
+                        maxHeight: "36px",
+                        padding: "0",
+                        backgroundColor: "#22C55E",
+                        color: "#fff",
+                        border: "none",
+                        flexShrink: 0,
+                        borderRadius: "4px"
+                      }}
+                      title="Add Plan"
+                    >
+                      <FaPlus style={{ fontSize: "0.9rem" }} />
+                    </button>
+                  ) : (
+                    // In dashboard view, show split button with options
+                    <CustomSplitButton
+                      label=""
+                      icon={<FaPlus style={{ fontSize: "0.9rem" }} />}
+                      items={[
                         {
                           label: "Add",
-                          icon: "pi pi-pencil",
+                          icon: <FaPen style={{ fontSize: "0.85rem" }} />,
                           command: () =>
                             navigate(`/adjust-plan/${client.clientId}`, {
                               state: { client, isView: false },
@@ -693,15 +721,18 @@ export default function ClientDashboardView({
                         },
                         {
                           label: "Preview",
-                          icon: "pi pi-eye",
+                          icon: <FaEye style={{ fontSize: "0.85rem" }} />,
                           command: () =>
                             navigate(`/adjust-plan/${client.clientId}`, {
                               state: { client, isView: true },
                             }),
                         },
                       ]}
+                      width="40px"
+                      height="36px"
+                      title="Plan"
                     />
-                  </div>
+                  )
                 )}
               </div>
             </div>

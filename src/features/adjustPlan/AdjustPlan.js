@@ -532,7 +532,24 @@ export default function AdjustPlan() {
         <Modal.Body className="p-4" style={{ 
           backgroundColor: "var(--color-card-bg)"
         }}>
+          <div className="mb-3 p-3 rounded-3" style={{
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            border: "1px solid rgba(34, 197, 94, 0.2)"
+          }}>
+            <div className="d-flex align-items-start gap-2">
+              <span style={{ fontSize: "1.2rem" }}>ℹ️</span>
+              <div style={{ fontSize: "0.875rem", color: "var(--color-text-dark)" }}>
+                <strong>Select a date to view or edit meal plans.</strong>
+                <div className="mt-1" style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)" }}>
+                  You can select any date to check old meals or plan future meals. Only today's date allows editing.
+                </div>
+              </div>
+            </div>
+          </div>
           <Form.Group>
+            <Form.Label className="fw-semibold mb-2" style={{ fontSize: "0.9rem" }}>
+              Select Date
+            </Form.Label>
             <Form.Control
               type="date"
               value={assignedDate}

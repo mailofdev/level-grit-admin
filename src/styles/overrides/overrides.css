@@ -767,7 +767,7 @@ a:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+  padding: unset !important;
   z-index: 1030;
   background: transparent;
 }
@@ -810,9 +810,9 @@ a:hover {
   font-size: 0.7rem;
   font-weight: 500;
   padding: 10px 8px;
-  border-radius: 12px;
+  border-radius: 8px;
   position: relative;
-  min-height: 60px;
+  min-height: 20px !important;
   width: 100%;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;

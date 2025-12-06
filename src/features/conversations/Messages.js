@@ -68,16 +68,16 @@ export default function Messages({ isTrainer = false }) {
   // Debug logging (remove in production)
   if (process.env.NODE_ENV === 'development') {
     console.log('Messages Debug:', {
-      isTrainer,
+      // isTrainer,
       userRole,
-      loggedInUser,
-      clientFromState: client,
-      clientIdFromUrl,
-      trainerIdFromUrl,
-      finalTrainerId: trainerId,
-      finalClientId: clientId,
-      currentUserId,
-      chatId,
+      // loggedInUser,
+      // clientFromState: client,
+      // clientIdFromUrl,
+      // trainerIdFromUrl,
+      // finalTrainerId: trainerId,
+      // finalClientId: clientId,
+      // currentUserId,
+      // chatId,
     });
   }
   
@@ -240,10 +240,34 @@ export default function Messages({ isTrainer = false }) {
     setShowEmojiPicker(false);
   }, []);
   
+  // Back navigation handler - must be defined before any conditional returns
+  const goBack = useCallback(() => {
+    console.log('goBack called', { isTrainer, userRole, historyLength: window.history.length });
+    
+    // Navigate to appropriate dashboard based on role
+    if (isTrainer || userRole === ROLES.TRAINER) {
+      navigate("/trainer-dashboard", { replace: false });
+    } else if (userRole === ROLES.CLIENT) {
+      navigate("/client-dashboard", { replace: false });
+    } else {
+      // Fallback: try to go back, or navigate home
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate("/", { replace: false });
+      }
+    }
+  }, [navigate, isTrainer, userRole]);
+  
   // Get chat name - use trainerInfo if available (for client view)
   const chatName = isTrainer || userRole === ROLES.TRAINER
     ? `Chat with ${client?.fullName || client?.name || "Client"}`
     : `Chat with ${trainerInfo?.fullName || trainerInfo?.name || trainer?.fullName || trainer?.name || "Trainer"}`;
+  
+  // Determine if message is from current user
+  const isMessageFromCurrentUser = (message) => {
+    return message.senderId === currentUserId;
+  };
   
   // Loading state
   if (loading && messages.length === 0) {
@@ -253,233 +277,276 @@ export default function Messages({ isTrainer = false }) {
   // Error state
   if (!trainerId || !clientId) {
     return (
-      <div className="container-fluid px-2 px-md-3 py-3">
-        <Heading pageName="Messages" sticky={true} />
-        <div className="text-center text-muted mt-5">
-          <p>Unable to load conversation. Please try again.</p>
+      <>
+        <style>{`
+          .messages-heading-override .heading-container {
+            position: fixed !important;
+            top: 70px !important;
+            z-index: 1040 !important;
+          }
+          .messages-heading-override .heading-spacer {
+            display: none !important;
+          }
+        `}</style>
+        {/* Fixed Heading at Top - Positioned below Topbar */}
+        <div className="messages-heading-override">
+          <Heading pageName="Messages" sticky={true} onBack={goBack} />
         </div>
-      </div>
+        <div 
+          className="container-fluid d-flex flex-column position-fixed w-100"
+          style={{ 
+            top: "112px",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            overflow: "hidden",
+            backgroundColor: "var(--color-bg)",
+            zIndex: 1
+          }}
+        >
+          <div className="d-flex align-items-center justify-content-center flex-grow-1">
+            <div className="text-center text-muted">
+              <p>Unable to load conversation. Please try again.</p>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
   
-  // Determine if message is from current user
-  const isMessageFromCurrentUser = (message) => {
-    return message.senderId === currentUserId;
-  };
-  
   return (
-    <div className="container-fluid px-2 px-md-3 py-3">
-      <Heading pageName={chatName} sticky={true} />
-      
-      {unreadCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-2"
-        >
-          <Badge bg="primary" className="rounded-pill px-3 py-2">
-            {unreadCount} new message{unreadCount !== 1 ? "s" : ""}
-          </Badge>
-        </motion.div>
-      )}
-      
-      {error && (
-        <Alert
-          type="error"
-          message={error}
-          dismissible={true}
-          onClose={() => {}}
-          position="inline"
-          className="mb-3"
-        />
-      )}
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+    <>
+      <style>{`
+        .messages-heading-override .heading-container {
+          position: fixed !important;
+          top: 67px !important;
+          z-index: 1040 !important;
+          pointer-events: auto !important;
+        }
+        .messages-heading-override .heading-spacer {
+          display: none !important;
+        }
+        .messages-heading-override .btn-back {
+          pointer-events: auto !important;
+          cursor: pointer !important;
+          z-index: 1041 !important;
+        }
+      `}</style>
+      {/* Fixed Heading at Top - Positioned below Topbar */}
+      <div className="messages-heading-override">
+        <Heading pageName={chatName} sticky={true} onBack={goBack} />
+      </div>
+
+      {/* Main Content Container - Positioned below fixed heading and topbar */}
+      <div 
+        className="container-fluid d-flex flex-column px-2 px-md-3 position-fixed w-100"
+        style={{ 
+          top: "122px",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          overflow: "hidden",
+          backgroundColor: "var(--color-bg)",
+          zIndex: 1
+        }}
       >
-        <Card
-          className="border-0 shadow-lg d-flex flex-column mb-3"
-          style={{
-            height: "calc(100vh - 140px)",
-            maxHeight: "calc(100vh - 140px)",
-            borderRadius: "1rem",
-            overflow: "hidden",
-            background: "var(--color-bg)",
+        {/* Unread Badge and Error Alert */}
+        {(unreadCount > 0 || error) && (
+          <div className="flex-shrink-0 pt-2 pb-2">
+            {unreadCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-2"
+              >
+                <Badge bg="primary" className="rounded-pill px-3 py-2">
+                  {unreadCount} new message{unreadCount !== 1 ? "s" : ""}
+                </Badge>
+              </motion.div>
+            )}
+
+            {error && (
+              <Alert
+                type="error"
+                message={error}
+                dismissible={true}
+                onClose={() => {}}
+                position="inline"
+                className="mb-2"
+              />
+            )}
+          </div>
+        )}
+
+        {/* Scrollable Messages Container */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="flex-grow-1 overflow-auto px-1 px-md-2"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {messages.length === 0 ? (
+            <div className="d-flex flex-column align-items-center justify-content-center h-100 text-center py-5">
+              <div className="mb-4" style={{ fontSize: "4rem" }}>
+                💬
+              </div>
+              <h5 className="fw-bold text-muted mb-2">No messages yet</h5>
+              <p className="text-muted mb-0">
+                Start the conversation by sending a message below.
+              </p>
+            </div>
+          ) : (
+            <AnimatePresence>
+              {messages.map((msg, idx) => {
+                const isSender = isMessageFromCurrentUser(msg);
+                return (
+                  <motion.div
+                    key={msg.id || idx}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                    className={`d-flex mb-3 ${
+                      isSender ? "justify-content-end" : "justify-content-start"
+                    }`}
+                  >
+                    <motion.div
+                      className="p-3 rounded-4 shadow-sm"
+                      style={{
+                        maxWidth: "70%",
+                        wordBreak: "break-word",
+                        background: isSender
+                          ? "var(--color-primary)"
+                          : "var(--color-card-bg)",
+                        borderRadius: isSender
+                          ? "20px 20px 0 20px"
+                          : "20px 20px 20px 0",
+                        border: isSender ? "none" : "1px solid rgba(0,0,0,0.1)",
+                      }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <div
+                        className="small"
+                        style={{
+                          color: isSender ? "var(--color-button-text)" : "var(--color-text-dark)",
+                        }}
+                      >
+                        {msg.text}
+                      </div>
+                      <div
+                        className={`small ${isSender ? "text-end" : "text-start"}`}
+                        style={{
+                          fontSize: "0.75rem",
+                          marginTop: "4px",
+                          color: isSender ? "rgba(255,255,255,0.8)" : "var(--color-muted)",
+                        }}
+                      >
+                        {msg.timestamp?.toDate
+                          ? msg.timestamp.toDate().toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : msg.timestamp?.seconds
+                          ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "Just now"}
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          )}
+          <div ref={messagesEndRef} />
+        </motion.div>
+
+        {/* Fixed Message Input at Bottom */}
+        <motion.div
+          className="flex-shrink-0 position-relative border-top bg-light px-2 px-md-3 py-2"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          style={{ 
+            background: "var(--color-card-bg)",
+            borderTop: "1px solid var(--color-border)",
+            boxShadow: "0 -2px 8px rgba(0,0,0,0.05)",
           }}
         >
-          {/* Chat Messages */}
-          <div
-            className="flex-grow-1 overflow-auto p-2 p-md-3"
-            style={{
-              background: "var(--color-bg)",
-              WebkitOverflowScrolling: "touch",
-            }}
-          >
-            {messages.length === 0 ? (
-              <div className="d-flex flex-column align-items-center justify-content-center h-100 text-center py-5">
-                <div className="mb-4" style={{ fontSize: "4rem" }}>
-                  💬
-                </div>
-                <h5 className="fw-bold text-muted mb-2">No messages yet</h5>
-                <p className="text-muted mb-0">
-                  Start the conversation by sending a message below.
-                </p>
-              </div>
-            ) : (
-              <AnimatePresence>
-                {messages.map((msg, idx) => {
-                  const isSender = isMessageFromCurrentUser(msg);
-                  return (
-                    <motion.div
-                      key={msg.id || idx}
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 }}
-                      className={`d-flex mb-3 ${
-                        isSender ? "justify-content-end" : "justify-content-start"
-                      }`}
-                    >
-                      <motion.div
-                        className="p-3 rounded-4 shadow-sm"
-                        style={{
-                          maxWidth: "70%",
-                          wordBreak: "break-word",
-                          background: isSender
-                            ? "var(--color-primary)"
-                            : "var(--color-card-bg)",
-                          borderRadius: isSender
-                            ? "20px 20px 0 20px"
-                            : "20px 20px 20px 0",
-                          border: isSender ? "none" : "1px solid rgba(0,0,0,0.1)",
-                        }}
-                        whileHover={{ scale: 1.02 }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "0.95rem",
-                            color: isSender ? "var(--color-button-text)" : "var(--color-text-dark)",
-                          }}
-                        >
-                          {msg.text}
-                        </div>
-                        <div
-                          className={`${isSender ? "text-end" : "text-start"}`}
-                          style={{
-                            fontSize: "0.75rem",
-                            marginTop: "4px",
-                            color: isSender ? "rgba(255,255,255,0.8)" : "var(--color-muted)",
-                          }}
-                        >
-                          {msg.timestamp?.toDate
-                            ? msg.timestamp.toDate().toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : msg.timestamp?.seconds
-                            ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : "Just now"}
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+          <AnimatePresence>
+            {showEmojiPicker && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="position-absolute"
+                style={{
+                  bottom: "70px",
+                  left: "10px",
+                  zIndex: 1000,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                }}
+              >
+                <EmojiPicker onEmojiClick={onEmojiClick} />
+              </motion.div>
             )}
-            <div ref={messagesEndRef} />
-          </div>
-          
-          {/* Message Input */}
-          <motion.div
-            className="bg-light p-2 p-md-3 position-relative border-top"
-            style={{ background: "var(--color-card-bg)" }}
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <AnimatePresence>
-              {showEmojiPicker && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="position-absolute"
-                  style={{
-                    bottom: "70px",
-                    left: "10px",
-                    zIndex: 1000,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <EmojiPicker onEmojiClick={onEmojiClick} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            
-            <Form onSubmit={handleSubmit}>
-              <InputGroup className="align-items-center">
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                  <Button
-                    variant="light"
-                    type="button"
-                    className="rounded-circle me-2 border-0 shadow-sm d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "45px",
-                      height: "45px",
-                      backgroundColor: "var(--color-primary)",
-                      minWidth: "45px",
-                      minHeight: "45px",
-                    }}
-                    onClick={() => setShowEmojiPicker((prev) => !prev)}
-                  >
-                    <FaSmile size={20} color="white" />
-                  </Button>
-                </motion.div>
-                
-                <Form.Control
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  className="rounded-pill border-0 shadow-sm px-4 py-2"
-                  style={{
-                    backgroundColor: "var(--color-bg)",
-                    fontSize: "1rem",
-                    minHeight: "45px",
-                  }}
-                  disabled={sending}
-                />
-                
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="rounded-circle ms-2 border-0 shadow-sm d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "45px",
-                      height: "45px",
-                      minWidth: "45px",
-                      minHeight: "45px",
-                      backgroundColor: "var(--color-primary)",
-                      opacity: sending || !newMessage.trim() ? 0.6 : 1,
-                    }}
-                    disabled={sending || !newMessage.trim()}
-                  >
-                    <FaPaperPlane />
-                  </Button>
-                </motion.div>
-              </InputGroup>
-            </Form>
-          </motion.div>
-        </Card>
-      </motion.div>
-    </div>
+          </AnimatePresence>
+
+          <Form onSubmit={handleSubmit} className="w-100">
+            <InputGroup className="align-items-center">
+              <Button
+                variant="light"
+                type="button"
+                className="rounded-circle me-2 border-0 shadow-sm d-flex align-items-center justify-content-center p-0"
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  backgroundColor: "var(--color-primary)",
+                  minWidth: "45px",
+                  minHeight: "45px",
+                }}
+                onClick={() => setShowEmojiPicker((prev) => !prev)}
+              >
+                <FaSmile size={20} color="white" />
+              </Button>
+
+              <Form.Control
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="rounded-pill border-0 shadow-sm px-4"
+                style={{
+                  backgroundColor: "var(--color-bg)",
+                  minHeight: "45px",
+                }}
+                disabled={sending}
+              />
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="rounded-circle ms-2 border-0 shadow-sm d-flex align-items-center justify-content-center p-0"
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  backgroundColor: "var(--color-primary)",
+                  minWidth: "45px",
+                  minHeight: "45px",
+                  opacity: sending || !newMessage.trim() ? 0.6 : 1,
+                }}
+                disabled={sending || !newMessage.trim()}
+              >
+                <FaPaperPlane color="white" />
+              </Button>
+            </InputGroup>
+          </Form>
+        </motion.div>
+      </div>
+    </>
   );
 }
 

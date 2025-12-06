@@ -53,10 +53,10 @@ const MobileBottomNav = memo(() => {
                   aria-current={active ? "page" : undefined}
                 >
                   {item.icon && <i className={`bi ${item.icon}`}></i>}
-                  <span className="label text-truncate">{item.label}</span>
-                  {active && (
+                  {/* <span className="label text-truncate">{item.label}</span> */}
+                  {/* {active && (
                     <span className="active-indicator" aria-hidden="true"></span>
-                  )}
+                  )} */}
                 </Link>
               </li>
             );
