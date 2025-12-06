@@ -27,16 +27,46 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Animated3DCard from "../../components/landing/Animated3DCard";
 import logo3 from "../../assets/images/logo3.jpeg";
+import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import { getUserRole, ROLES } from "../../utils/roles";
+import { restoreSession } from "../../features/auth/authSlice";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
   const [activeTab, setActiveTab] = useState("trainer");
   const [isScrolled, setIsScrolled] = useState(false);
   const contentRef = useRef(null);
+  
+  // Check if user is authenticated and redirect to appropriate dashboard
+  useEffect(() => {
+    // Restore session first
+    dispatch(restoreSession());
+    
+    // Check for valid session in storage (synchronous check)
+    const hasToken = token || sessionStorage.getItem("auth_data") || localStorage.getItem("auth_data");
+    
+    if (hasToken) {
+      // Get user role to redirect to appropriate dashboard
+      const user = getDecryptedUser();
+      if (user) {
+        const userRole = getUserRole(user);
+        if (userRole === ROLES.CLIENT) {
+          navigate("/client-dashboard", { replace: true });
+        } else if (userRole === ROLES.TRAINER) {
+          navigate("/trainer-dashboard", { replace: true });
+        } else if (userRole === ROLES.ADMINISTRATOR) {
+          navigate("/admin-dashboard", { replace: true });
+        }
+      }
+    }
+  }, [dispatch, navigate, token]);
 
   useEffect(() => {
     const handler = (e) => {

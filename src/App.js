@@ -196,13 +196,24 @@ function AppContent() {
       }
     };
 
+    // Handle browser back/forward navigation (including mobile swipe gestures)
+    const handlePopState = () => {
+      // Restore session before navigation happens
+      if (!sessionStorage.getItem('auth_data')) {
+        restorePWASession();
+      }
+      dispatch(restoreSession());
+    };
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', handleFocus);
+    window.addEventListener('popstate', handlePopState);
 
     return () => {
       if (resumeTimeout) clearTimeout(resumeTimeout);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, [dispatch, restorePWASession]);
 

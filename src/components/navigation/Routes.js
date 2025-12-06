@@ -38,12 +38,12 @@ export const getRoutes = () => {
       : []),
     ...(isClient(userRole) || user?.role === "Client"
       ? [
-          {
-            label: "Dashboard",
-            href: "/client-dashboard",
-            icon: "bi-speedometer2",
-            showIn: ["sidebar", "topbar"],
-          }
+          // {
+          //   label: "Dashboard",
+          //   href: "/client-dashboard",
+          //   icon: "bi-speedometer2",
+          //   showIn: ["sidebar", "topbar"],
+          // }
         ]
       : []),
   ];
