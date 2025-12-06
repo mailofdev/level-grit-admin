@@ -24,6 +24,7 @@ import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
+import PublicRoute from "./components/navigation/PublicRoute";
 import ScrollToTop from "./components/navigation/ScrollToTop";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
@@ -242,20 +243,52 @@ function AppContent() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
                 {/* ============================================
-                    Public Routes - No Authentication Required
+                    Public Routes - STRICT: Block authenticated users
                     ============================================ */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginForm />} />
+                <Route 
+                  path="/" 
+                  element={
+                    <PublicRoute>
+                      <LandingPage />
+                    </PublicRoute>
+                  } 
+                />
+                <Route 
+                  path="/login" 
+                  element={
+                    <PublicRoute>
+                      <LoginForm />
+                    </PublicRoute>
+                  } 
+                />
                 <Route
                   path="/index.html"
                   element={<Navigate to="/" replace />}
                 />
-                <Route path="/register" element={<RegisterForm />} />
+                <Route 
+                  path="/register" 
+                  element={
+                    <PublicRoute>
+                      <RegisterForm />
+                    </PublicRoute>
+                  } 
+                />
                 <Route
                   path="/register-client"
-                  element={<RegisterClientForm />}
+                  element={
+                    <PublicRoute>
+                      <RegisterClientForm />
+                    </PublicRoute>
+                  }
                 />
-                <Route path="/reset-password" element={<ResetPasswordForm />} />
+                <Route 
+                  path="/reset-password" 
+                  element={
+                    <PublicRoute>
+                      <ResetPasswordForm />
+                    </PublicRoute>
+                  } 
+                />
 
                 {/* Static Information Pages */}
                 <Route
