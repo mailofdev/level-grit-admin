@@ -28,9 +28,14 @@ const Topbar = ({
   const isHome = location.pathname === homeHref;
   const user = getDecryptedUser();
 
+  // Filter routes that should show in topbar
+  const filteredRoutes = routes.filter((item) => item.showIn?.includes("topbar"));
+  const hasNoRoutes = filteredRoutes.length === 0;
+
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [autoOpenUserMenu, setAutoOpenUserMenu] = useState(false);
 
   const navRef = useRef(null);
 
@@ -45,11 +50,25 @@ const Topbar = ({
     window.location.href = "/";
   };
 
+  // Auto-open UserMenu dropdown when navbar opens if there are no routes
+  useEffect(() => {
+    if (navbarOpen && hasNoRoutes) {
+      // Small delay to ensure the navbar collapse animation completes
+      const timer = setTimeout(() => {
+        setAutoOpenUserMenu(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    } else {
+      setAutoOpenUserMenu(false);
+    }
+  }, [navbarOpen, hasNoRoutes]);
+
   // Close menu if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navbarOpen && navRef.current && !navRef.current.contains(event.target)) {
         setNavbarOpen(false);
+        setAutoOpenUserMenu(false);
       }
     };
 
@@ -115,6 +134,8 @@ const Topbar = ({
                   user={user}
                   onProfile={handleProfileClick}
                   onLogout={handleLogoutClick}
+                  autoOpen={autoOpenUserMenu}
+                  onClose={() => setAutoOpenUserMenu(false)}
                 />
               )}
             </div>

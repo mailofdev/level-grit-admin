@@ -1,8 +1,10 @@
 import getRoleIcon from "../common/CommonFunctions";
-import React, { useState, memo, useMemo } from "react";
+import React, { useState, memo, useMemo, useEffect, useRef } from "react";
 
-const UserMenu = memo(({ user, onProfile, onLogout }) => {
+const UserMenu = memo(({ user, onProfile, onLogout, autoOpen = false, onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
 
   // Function to get initials from full name
   const getInitials = (name) => {
@@ -26,16 +28,116 @@ const UserMenu = memo(({ user, onProfile, onLogout }) => {
   const roleColor = useMemo(() => getRoleColor(user?.role), [user?.role]);
   const initials = useMemo(() => getInitials(user?.fullName), [user?.fullName]);
 
+  // Handle auto-open when there are no routes
+  useEffect(() => {
+    if (autoOpen && buttonRef.current && dropdownRef.current) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        // Use Bootstrap's dropdown API to show the dropdown
+        const bootstrap = window.bootstrap;
+        if (bootstrap && bootstrap.Dropdown) {
+          try {
+            const dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(buttonRef.current);
+            dropdownInstance.show();
+          } catch (e) {
+            // Fallback: manually show dropdown using classes
+            dropdownRef.current.classList.add('show');
+            buttonRef.current.setAttribute('aria-expanded', 'true');
+          }
+        } else {
+          // Fallback: manually show dropdown using classes
+          dropdownRef.current.classList.add('show');
+          buttonRef.current.setAttribute('aria-expanded', 'true');
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    } else if (!autoOpen && isOpen) {
+      // Close dropdown when autoOpen becomes false
+      setIsOpen(false);
+      if (buttonRef.current && dropdownRef.current) {
+        const bootstrap = window.bootstrap;
+        if (bootstrap && bootstrap.Dropdown) {
+          try {
+            const dropdownInstance = bootstrap.Dropdown.getInstance(buttonRef.current);
+            if (dropdownInstance) {
+              dropdownInstance.hide();
+            }
+          } catch (e) {
+            // Fallback: manually hide dropdown
+            dropdownRef.current.classList.remove('show');
+            buttonRef.current.setAttribute('aria-expanded', 'false');
+          }
+        } else {
+          // Fallback: manually hide dropdown
+          dropdownRef.current.classList.remove('show');
+          buttonRef.current.setAttribute('aria-expanded', 'false');
+        }
+      }
+      if (onClose) onClose();
+    }
+  }, [autoOpen, onClose]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+        if (onClose) onClose();
+        // Hide Bootstrap dropdown
+        const bootstrap = window.bootstrap;
+        if (bootstrap && bootstrap.Dropdown && buttonRef.current) {
+          const dropdownInstance = bootstrap.Dropdown.getInstance(buttonRef.current);
+          if (dropdownInstance) {
+            dropdownInstance.hide();
+          }
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen, onClose]);
+
   return (
     <ul className="navbar-nav mb-2 mb-lg-0 ms-lg-3">
       <li className="nav-item dropdown">
         <button
+          ref={buttonRef}
           className="nav-link dropdown-toggle d-flex align-items-center bg-transparent border-0 px-3 py-2 rounded-pill position-relative"
           id="userDropdown"
           data-bs-toggle="dropdown"
-          aria-expanded="false"
-          onMouseEnter={() => setIsOpen(true)}
-          onMouseLeave={() => setIsOpen(false)}
+          aria-expanded={isOpen}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (autoOpen) {
+              // If auto-opened, allow manual toggle
+              setIsOpen(!isOpen);
+              if (onClose && isOpen) onClose();
+            } else {
+              // Normal toggle behavior
+              setIsOpen(!isOpen);
+            }
+          }}
+          onMouseEnter={() => {
+            if (!autoOpen) {
+              setIsOpen(true);
+            }
+          }}
+          onMouseLeave={() => {
+            if (!autoOpen) {
+              setIsOpen(false);
+            }
+          }}
           style={{
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             background: isOpen
@@ -78,7 +180,8 @@ const UserMenu = memo(({ user, onProfile, onLogout }) => {
 
         {/* Enhanced Dropdown Menu */}
         <ul
-          className="dropdown-menu dropdown-menu-end shadow-lg mt-3 border-0 animate__animated animate__fadeIn animate__faster"
+          ref={dropdownRef}
+          className={`dropdown-menu dropdown-menu-end shadow-lg mt-3 border-0 animate__animated animate__fadeIn animate__faster ${isOpen ? 'show' : ''}`}
           aria-labelledby="userDropdown"
           style={{
             minWidth: "260px",
