@@ -426,7 +426,6 @@ export default function TrainerPage() {
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           background: var(--glass-bg) !important;
-          border-bottom: 1px solid var(--color-border);
         }
         .tab-button {
           flex: 1 1 0;
