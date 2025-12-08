@@ -181,7 +181,7 @@ const RegisterClientForm = () => {
 
   // Back navigation handler
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate('/trainer-dashboard');
   }, [navigate]);
 
   return (
