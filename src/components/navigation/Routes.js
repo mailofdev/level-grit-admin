@@ -12,18 +12,18 @@ export const getRoutes = () => {
   return [
     ...(isTrainer(userRole) || user?.role === "Trainer"
       ? [
-          {
-            label: "Dashboard",
-            href: "/trainer-dashboard",
-            icon: "bi-speedometer2",
-            showIn: ["sidebar", "topbar"],
-          },
-          {
-            label: "View Clients",
-            href: "/AllClients",
-            icon: "bi-people-fill",
-            showIn: ["sidebar", "topbar"],
-          }
+          // {
+          //   label: "Dashboard",
+          //   href: "/trainer-dashboard",
+          //   icon: "bi-speedometer2",
+          //   showIn: ["sidebar", "topbar"],
+          // },
+          // {
+          //   label: "View Clients",
+          //   href: "/AllClients",
+          //   icon: "bi-people-fill",
+          //   showIn: ["sidebar", "topbar"],
+          // }
         ]
       : []),
     ...(isAdministrator(userRole) || user?.role === "Administrator"

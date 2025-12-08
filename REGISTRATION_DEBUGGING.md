@@ -68,7 +68,7 @@ The backend should return:
 
 ## Backend Requirements
 
-The backend `api/Trainer/Register-client` endpoint should:
+The backend `api/Trainer/registerClient` endpoint should:
 
 1. **Return `IsSubscriptionPaid` status**:
    - `true` for first client (free)

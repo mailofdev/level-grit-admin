@@ -28,7 +28,6 @@ const PUBLIC_ROUTES = [
   '/',
   '/login',
   '/register',
-  '/register-client',
   '/reset-password',
 ];
 

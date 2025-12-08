@@ -246,7 +246,8 @@ export default function Messages({ isTrainer = false }) {
     
     // Navigate to appropriate dashboard based on role
     if (isTrainer || userRole === ROLES.TRAINER) {
-      navigate("/trainer-dashboard", { replace: false });
+      // navigate("/client", { replace: false });
+      navigate(`/client-details/${clientId}`, { state: { client } });
     } else if (userRole === ROLES.CLIENT) {
       navigate("/client-dashboard", { replace: false });
     } else {

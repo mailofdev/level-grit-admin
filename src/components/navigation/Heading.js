@@ -29,8 +29,17 @@ export default function Heading({
           {showBackButton && (
             <div className="heading-back-button">
               <button
+                type="button"
                 className="btn btn-back"
-                onClick={onBack || handleDefaultBack}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (onBack) {
+                    onBack();
+                  } else {
+                    handleDefaultBack();
+                  }
+                }}
                 aria-label="Go back"
               >
                 <FaArrowLeft />

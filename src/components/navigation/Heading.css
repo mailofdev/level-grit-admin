@@ -27,12 +27,14 @@
   min-height: 56px;
   gap: 0.75rem;
   max-width: 100%;
+  position: relative;
 }
 
 .heading-back-button {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  width: 44px;
 }
 
 .btn-back {
@@ -65,13 +67,17 @@
 }
 
 .heading-title {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   min-width: 0;
   padding: 0 0.5rem;
+  pointer-events: none;
+  max-width: calc(100% - 120px);
 }
 
 .heading-title-text {
@@ -92,6 +98,7 @@
   gap: 0.5rem;
   flex-shrink: 0;
   margin-left: auto;
+  min-width: 44px;
 }
 
 .heading-right-content .btn {
@@ -111,11 +118,19 @@
     gap: 0.5rem;
   }
 
+  .heading-back-button {
+    width: 40px;
+  }
+
   .btn-back {
     width: 40px;
     height: 40px;
     min-width: 40px;
     min-height: 40px;
+  }
+
+  .heading-title {
+    max-width: calc(100% - 100px);
   }
 
   .heading-title-text {
@@ -124,6 +139,7 @@
 
   .heading-right-content {
     gap: 0.375rem;
+    min-width: 40px;
   }
 
   .heading-right-content .btn {
@@ -141,6 +157,10 @@
     gap: 0.375rem;
   }
 
+  .heading-back-button {
+    width: 38px;
+  }
+
   .btn-back {
     width: 38px;
     height: 38px;
@@ -148,8 +168,16 @@
     min-height: 38px;
   }
 
+  .heading-title {
+    max-width: calc(100% - 90px);
+  }
+
   .heading-title-text {
     font-size: 0.85rem;
+  }
+
+  .heading-right-content {
+    min-width: 38px;
   }
 
   .heading-right-content .btn {

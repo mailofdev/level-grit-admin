@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
@@ -178,8 +178,14 @@ const RegisterClientForm = () => {
       gender: "",
     });
   };
+
+  // Back navigation handler
+  const handleBack = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
+
   return (
-    <div className="page-container auth-page-enter">
+    <>
       {loading && <Loader fullScreen text="Registering client..." color="var(--color-primary)" />}
       <Toast ref={toast} position="top-right" />
 
@@ -197,24 +203,68 @@ const RegisterClientForm = () => {
         amount={500}
       />
 
-      <div className="container">
-        <Heading pageName="Register Client" sticky={true} />
-        <div className="d-flex flex-column mt-4" style={{ height: "calc(100vh - 140px)", overflow: "hidden" }}>
-          <div className="flex-grow-1 overflow-auto">
-            <div className="row justify-content-center">
-              <div className="col-12">
-                <div className="card content-wrapper card-health p-4">
+      <style>{`
+        .register-client-heading-override .heading-container {
+          position: fixed !important;
+          top: 70px !important;
+          z-index: 1040 !important;
+          pointer-events: auto !important;
+        }
+        .register-client-heading-override .heading-spacer {
+          display: none !important;
+        }
+        .register-client-heading-override .heading-back-button {
+          pointer-events: auto !important;
+          z-index: 1041 !important;
+        }
+        .register-client-heading-override .btn-back {
+          pointer-events: auto !important;
+          cursor: pointer !important;
+          z-index: 1041 !important;
+          position: relative !important;
+        }
+        .register-client-heading-override .btn-back:active {
+          pointer-events: auto !important;
+        }
+      `}</style>
+      {/* Fixed Heading at Top - Positioned below Topbar */}
+      <div className="register-client-heading-override">
+        <Heading pageName="Add new client" sticky={true} showBackButton={true} onBack={handleBack} />
+      </div>
 
-              <Form onSubmit={handleSubmit} className="needs-validation">
-                <Row className="gy-4">
+      {/* Main Content Container - Positioned below fixed heading and topbar */}
+      <div 
+        className="container-fluid d-flex flex-column px-2 px-md-3 position-fixed w-100"
+        style={{ 
+          top: "122px",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          overflow: "hidden",
+          backgroundColor: "var(--color-bg)",
+          zIndex: 1
+        }}
+      >
+        {/* Scrollable Form Content */}
+        <div 
+          className="flex-grow-1 overflow-auto px-1 px-md-2"
+          style={{ 
+            WebkitOverflowScrolling: "touch",
+            paddingTop: '1rem',
+            paddingBottom: '2rem'
+          }}
+        >
+          <div className="container">
+            <Form onSubmit={handleSubmit} className="needs-validation">
+
                   {/* Personal Information Section */}
                   <Col xs={12}>
                     <div className="card card-stats p-3 mb-3">
                       <h5 className="fw-semibold text-primary mb-3">
                         <i className="fas fa-user me-2"></i>Personal Information
                       </h5>
-                      <Row className="gy-3">
-                        <Col md={6}>
+                      <Row className="">
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="fw-semibold mb-2">
                             Full Name <span className="text-danger">*</span>
                           </Form.Label>
@@ -230,7 +280,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="fw-semibold mb-2">
                             Email Address <span className="text-danger">*</span>
                           </Form.Label>
@@ -246,7 +296,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="fw-semibold mb-2">
                             Phone Number <span className="text-danger">*</span>
                           </Form.Label>
@@ -264,7 +314,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="fw-semibold mb-2">
                             Gender <span className="text-danger">*</span>
                           </Form.Label>
@@ -283,7 +333,7 @@ const RegisterClientForm = () => {
                           </Form.Select>
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="mb-2">
                             Date of Birth
                           </Form.Label>
@@ -296,7 +346,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={6} className="my-0 py-0">
                           <Form.Label className="fw-semibold mb-2">
                             Password <span className="text-danger">*</span>
                           </Form.Label>
@@ -335,7 +385,7 @@ const RegisterClientForm = () => {
                         <i className="fas fa-heartbeat me-2"></i>Body composition and Fitness Goals
                       </h5>
                       <Row className="gy-3">
-                        <Col md={4}>
+                        <Col md={4} className="my-0 py-0">
                           <Form.Label className="mb-2">
                             Height (cm)
                           </Form.Label>
@@ -349,7 +399,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={4}>
+                        <Col md={4} className="my-0 py-0">
                           <Form.Label className="mb-2">
                             Current Weight (kg)
                           </Form.Label>
@@ -363,7 +413,7 @@ const RegisterClientForm = () => {
                           />
                         </Col>
 
-                        <Col md={4}>
+                        <Col md={4} className="my-0 py-0">
                           <Form.Label className="mb-2">
                             Target Weight (kg)
                           </Form.Label>
@@ -397,46 +447,44 @@ const RegisterClientForm = () => {
                       </Row>
                     </div>
                   </Col>
-                </Row>
 
-                <div className="text-center mt-4">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="px-5 fw-bold smooth-transition me-3"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                        Registering...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-user-plus me-2"></i>
-                        Register Client
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline-secondary"
-                    className="px-4 smooth-transition"
-                    type="button"
-                    onClick={handleCancel}
-                    disabled={loading}
-                  >
-                    <i className="fas fa-undo me-2"></i>
-                    Reset Form
-                  </Button>
-                </div>
-              </Form>
-            </div>
+
+                <Row className="mt-4">
+                  <Col  className="d-flex justify-content-center gap-3">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className=" fw-bold smooth-transition"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Registering...
+                        </>
+                      ) : (
+                        <>
+                          Register Client
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      className=" smooth-transition"
+                      type="button"
+                      onClick={handleCancel}
+                      disabled={loading}
+                    >
+                      <i className="fas fa-undo me-2"></i>
+                      Reset Form
+                    </Button>
+                  </Col>
+                </Row>
+            </Form>
           </div>
         </div>
-        </div>
-        </div>
       </div>
-    </div>
+</>
   );
 };
 

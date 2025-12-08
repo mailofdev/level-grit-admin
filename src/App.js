@@ -54,8 +54,14 @@ const RegisterClientForm = lazy(() =>
 const AdminDashboard = lazy(() =>
   import("./features/dashboard/AdminDashboard")
 );
-const TrainerDashboard = lazy(() =>
-  import("./features/trainer/TrainerDashboard")
+// const TrainerDashboard = lazy(() =>
+//   import("./features/trainer/TrainerDashboard")
+// );
+const TrainerPage = lazy(() =>
+  import("./features/trainer/TrainerPage")
+);
+const TrainerDetailsPage = lazy(() =>
+  import("./features/trainer/TrainerDetailsPage")
 );
 const ClientDashboard = lazy(() =>
   import("./features/client/ClientDashboard")
@@ -273,14 +279,6 @@ function AppContent() {
                     </PublicRoute>
                   } 
                 />
-                <Route
-                  path="/register-client"
-                  element={
-                    <PublicRoute>
-                      <RegisterClientForm />
-                    </PublicRoute>
-                  }
-                />
                 <Route 
                   path="/reset-password" 
                   element={
@@ -321,7 +319,23 @@ function AppContent() {
                           showFooter: false,
                         }}
                       >
-                        <TrainerDashboard />
+                        <TrainerPage />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/register-client"
+                  element={
+                    <ProtectedRoute allowedRoles={[ROLES.TRAINER]}>
+                      <MainLayout
+                        config={{
+                          showTopbar: true,
+                          showSidebar: false,
+                          showFooter: false,
+                        }}
+                      >
+                        <RegisterClientForm /> 
                       </MainLayout>
                     </ProtectedRoute>
                   }
@@ -376,8 +390,14 @@ function AppContent() {
                   path="/client-details/:clientId"
                   element={
                     <ProtectedRoute allowedRoles={[ROLES.TRAINER, ROLES.ADMINISTRATOR]}>
-                      <MainLayout>
-                        <ClientDetails />
+                      <MainLayout
+                        config={{
+                          showTopbar: true,
+                          showSidebar: false,
+                          showFooter: false,
+                        }}
+                      >
+                        <TrainerDetailsPage />
                       </MainLayout>
                     </ProtectedRoute>
                   }
