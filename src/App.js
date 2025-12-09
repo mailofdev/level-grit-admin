@@ -63,8 +63,8 @@ const TrainerPage = lazy(() =>
 const TrainerDetailsPage = lazy(() =>
   import("./features/trainer/TrainerDetailsPage")
 );
-const ClientDashboard = lazy(() =>
-  import("./features/client/ClientDashboard")
+const ClientPage = lazy(() =>
+  import("./features/client/ClientPage")
 );
 const PaymentManagement = lazy(() =>
   import("./features/payments/PaymentManagement")
@@ -351,7 +351,7 @@ function AppContent() {
                           showFooter: false,
                         }}
                       >
-                        <ClientDashboard />
+                        <ClientPage />
                       </MainLayout>
                     </ProtectedRoute>
                   }
