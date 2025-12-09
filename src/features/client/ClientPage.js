@@ -543,9 +543,8 @@ export default function ClientPage() {
 
   // Helper function to get placeholder image for incomplete meals
   const getMealPlaceholderImage = () => {
-    const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="var(--color-card-bg-alt)"/><circle cx="100" cy="80" r="30" fill="none" stroke="var(--color-border)" stroke-width="3" stroke-dasharray="5,5"/><path d="M 70 120 L 130 120" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><path d="M 70 140 L 130 140" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><path d="M 70 160 L 110 160" stroke="var(--color-border)" stroke-width="3" stroke-linecap="round"/><text x="100" y="190" font-family="Arial" font-size="14" fill="var(--color-muted)" text-anchor="middle">Pending</text></svg>`;
-    const encoded = encodeURIComponent(svg);
-    return `data:image/svg+xml;charset=utf-8,${encoded}`;
+    // Return null to use CSS background instead
+    return null;
   };
 
   return (
@@ -609,8 +608,25 @@ export default function ClientPage() {
           aspect-ratio: 16 / 9;
           max-height: 200px;
           overflow: hidden;
-          background: var(--color-card-bg-alt);
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
           position: relative;
+        }
+        body.dark .meal-image-container {
+          background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+        .meal-placeholder {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          color: #8e8e93;
+        }
+        body.dark .meal-placeholder {
+          background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+          color: #a0a0a5;
         }
         .meal-image {
           width: 100%;
@@ -680,6 +696,21 @@ export default function ClientPage() {
           font-weight: 600;
           background: var(--color-card-bg-alt);
           border: 1px solid var(--color-border);
+        }
+        .alert-modal .modal-content {
+          border-radius: 1rem !important;
+          overflow: hidden !important;
+          border: none !important;
+        }
+        .alert-modal .modal-header {
+          border-bottom: none !important;
+        }
+        .alert-modal .modal-body {
+          border-top: none !important;
+          border-bottom: none !important;
+        }
+        .alert-modal .modal-footer {
+          border-top: none !important;
         }
       `}</style>
       
@@ -960,32 +991,36 @@ export default function ClientPage() {
                                 }}
                               />
                             ) : (
-                              <img
-                                src={getMealPlaceholderImage()}
-                                alt="Meal not completed"
-                                className="meal-image"
-                              />
-                            )}
-                            {!meal.completed && (
-                              <div
-                                className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                                style={{
-                                  background: "rgba(0, 0, 0, 0.2)",
-                                  pointerEvents: "none",
-                                }}
-                              >
-                                <div className="text-center text-white">
-                                  <FaCamera
-                                    className="mb-2"
-                                    style={{ fontSize: "2rem" }}
-                                  />
-                                  <div className="fw-semibold" style={{ fontSize: "13px" }}>
-                                    Tap to upload
-                                  </div>
+                              <div className="meal-placeholder">
+                                <div
+                                  style={{
+                                    width: "64px",
+                                    height: "64px",
+                                    borderRadius: "50%",
+                                    background: "rgba(255, 255, 255, 0.3)",
+                                    backdropFilter: "blur(10px)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginBottom: "12px",
+                                    border: "2px dashed currentColor",
+                                  }}
+                                >
+                                  <FaCamera style={{ fontSize: "1.8rem" }} />
                                 </div>
+                                {!meal.completed && (
+                                  <div className="text-center">
+                                    <div className="fw-semibold mb-1" style={{ fontSize: "14px" }}>
+                                      Tap to upload
+                                    </div>
+                                    <div className="small" style={{ fontSize: "12px", opacity: 0.8 }}>
+                                      Add meal photo
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
-                            {meal.completed && (
+                            {meal.completed && meal.image && (
                               <div
                                 className="position-absolute top-2 end-2"
                                 style={{
@@ -1186,6 +1221,7 @@ export default function ClientPage() {
         onHide={() => setAlertModal({ show: false, message: "", type: "success" })}
         centered
         size="sm"
+        contentClassName="border-0 shadow-lg alert-modal"
       >
         <Modal.Header 
           closeButton
@@ -1194,58 +1230,72 @@ export default function ClientPage() {
             background: alertModal.type === "success"
               ? "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)"
               : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-            borderTopLeftRadius: "1rem",
-            borderTopRightRadius: "1rem",
+            padding: "1rem 1.25rem",
           }}
         >
-          <Modal.Title className="d-flex align-items-center gap-2">
+          <Modal.Title className="d-flex align-items-center gap-2 mb-0" style={{ fontSize: "1.1rem" }}>
             {alertModal.type === "success" ? (
-              <FaCheckCircle className="fs-4" />
+              <FaCheckCircle className="fs-5" />
             ) : (
-              <FaTimesCircle className="fs-4" />
+              <FaTimesCircle className="fs-5" />
             )}
             {alertModal.type === "success" ? "Success" : "Error"}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center py-4" style={{ backgroundColor: "var(--color-card-bg)" }}>
+        <Modal.Body 
+          className="text-center border-0" 
+          style={{ 
+            backgroundColor: "var(--color-card-bg)",
+            paddingTop: "2rem",
+            paddingBottom: "1.5rem",
+            paddingLeft: "1.5rem",
+            paddingRight: "1.5rem",
+          }}
+        >
           <div
-            className="mx-auto mb-3 d-flex align-items-center justify-content-center"
+            className="mx-auto mb-4 d-flex align-items-center justify-content-center"
             style={{
-              width: "64px",
-              height: "64px",
+              width: "80px",
+              height: "80px",
               borderRadius: "50%",
               background: alertModal.type === "success"
-                ? "rgba(34, 197, 94, 0.1)"
-                : "rgba(239, 68, 68, 0.1)",
+                ? "rgba(34, 197, 94, 0.15)"
+                : "rgba(239, 68, 68, 0.15)",
             }}
           >
             {alertModal.type === "success" ? (
               <FaCheckCircle
                 style={{
-                  fontSize: "2rem",
+                  fontSize: "2.5rem",
                   color: "#22c55e"
                 }}
               />
             ) : (
               <FaTimesCircle
                 style={{
-                  fontSize: "2rem",
+                  fontSize: "2.5rem",
                   color: "#ef4444"
                 }}
               />
             )}
           </div>
-          <p className="fw-semibold fs-6 mb-0 text-theme-dark">
+          <p className="fw-semibold mb-0 text-theme-dark" style={{ fontSize: "1rem", lineHeight: "1.5" }}>
             {alertModal.message}
           </p>
         </Modal.Body>
         <Modal.Footer 
           className="border-0 justify-content-center"
-          style={{ backgroundColor: "var(--color-card-bg)" }}
+          style={{ 
+            backgroundColor: "var(--color-card-bg)",
+            paddingTop: "0.5rem",
+            paddingBottom: "1.5rem",
+            paddingLeft: "1.5rem",
+            paddingRight: "1.5rem",
+          }}
         >
           <Button
             variant="primary"
-            className="fw-semibold px-5"
+            className="fw-semibold px-5 rounded-pill border-0"
             style={{
               background: alertModal.type === "success"
                 ? "#22c55e"
@@ -1255,6 +1305,8 @@ export default function ClientPage() {
                 : "#ef4444",
               color: "#ffffff",
               minHeight: "44px",
+              fontSize: "0.95rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
             }}
             onClick={() => setAlertModal({ show: false, message: "", type: "success" })}
           >

@@ -9,7 +9,6 @@ import {
   FaEnvelope,
   FaPhone,
   FaUserPlus,
-  FaDownload,
   FaCamera,
   FaRobot,
   FaTrophy,
@@ -33,13 +32,12 @@ import logo3 from "../../assets/images/logo3.jpeg";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES } from "../../utils/roles";
 import { restoreSession } from "../../features/auth/authSlice";
+import PWAInstallButton from "../../components/common/PWAInstallButton";
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
   const [activeTab, setActiveTab] = useState("trainer");
   const [isScrolled, setIsScrolled] = useState(false);
   const contentRef = useRef(null);
@@ -68,22 +66,6 @@ const LandingPage = () => {
     }
   }, [dispatch, navigate, token]);
 
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallButton(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handler);
-
-    // Check if app is already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setShowInstallButton(false);
-    }
-
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
 
   // Handle scroll for tab styling
   useEffect(() => {
@@ -104,18 +86,6 @@ const LandingPage = () => {
     });
   };
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === "accepted") {
-      setShowInstallButton(false);
-    }
-    
-    setDeferredPrompt(null);
-  };
 
   const handleSignUpNavigation = () => navigate("/register?type=trainer");
   const handleClientLogin = () => navigate("/login?type=client");
@@ -1696,7 +1666,7 @@ const LandingPage = () => {
             height: "56px",
             backgroundColor: "var(--color-primary)",
             border: "none",
-            marginBottom: showInstallButton ? "80px" : "16px",
+            marginBottom: "16px",
           }}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1717,28 +1687,8 @@ const LandingPage = () => {
         </motion.button>
       )}
 
-      {/* PWA Install Button - Floating */}
-      {showInstallButton && (
-        <motion.button
-          className="position-fixed bottom-0 end-0 m-4 btn btn-primary shadow-lg rounded-pill d-flex align-items-center gap-2 px-4 py-3"
-          style={{
-            zIndex: 1050,
-            minHeight: "56px",
-            backgroundColor: "var(--color-primary)",
-            border: "none",
-            color: "var(--color-button-text)",
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3 }}
-          onClick={handleInstallClick}
-          whileHover={{ opacity: 0.9 }}
-        >
-          <FaDownload size={20} />
-          <span className="fw-semibold">Install App</span>
-        </motion.button>
-      )}
+      {/* PWA Install Button - Only on Landing Page */}
+      <PWAInstallButton />
 
       {/* Footer - Compact & Modern */}
       <footer className="bg-dark text-white pt-4 pb-3">
