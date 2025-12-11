@@ -8,6 +8,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import Heading from "../../components/navigation/Heading";
 import { ROLES, normalizeRole } from "../../utils/roles";
 import Alert from "../../components/common/Alert";
+import { extractErrorMessageFromResponse } from "../../utils/errorHandler";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -110,7 +111,12 @@ const LoginForm = () => {
       // Navigate to the appropriate dashboard
       navigate(dashboardRoute, { replace: true });
     } catch (error) {
-      setErrorMessage(error || "Invalid credentials. Please try again.");
+      // Extract error message from response body using global utility
+      const errorMsg = extractErrorMessageFromResponse(error) 
+        || error?.message 
+        || error 
+        || "Invalid credentials. Please try again.";
+      setErrorMessage(errorMsg);
       setIsLoading(false);
     }
   };
@@ -168,6 +174,7 @@ navigate('/')
           {errorMessage && (
             <Alert
               type="error"
+              title="Error"
               message={errorMessage}
               dismissible={true}
               onClose={() => setErrorMessage("")}

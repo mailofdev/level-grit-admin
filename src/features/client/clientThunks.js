@@ -8,7 +8,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getClientDashboard, uploadMeal } from "../../api/clientAPI";
 import { getClientDashboardByTrainer } from "../../api/trainerAPI";
-import { formatErrorMessage, logError } from "../../utils/errorHandler";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 // ============================================
 // Dashboard
@@ -46,9 +46,8 @@ export const getClientDashboardThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Get Client Dashboard");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to fetch client dashboard data")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to fetch client dashboard data");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -78,9 +77,8 @@ export const uploadMealThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Upload Meal");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to upload meal")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to upload meal");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );

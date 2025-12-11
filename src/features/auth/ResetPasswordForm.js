@@ -7,6 +7,7 @@ import Loader from "../../components/display/Loader";
 import Heading from "../../components/navigation/Heading";
 import { Eye, EyeClosed } from "lucide-react";
 import Alert from "../../components/common/Alert";
+import { extractErrorMessageFromResponse } from "../../utils/errorHandler";
 
 const ResetPasswordForm = () => {
   const navigate = useNavigate();
@@ -112,7 +113,12 @@ const ResetPasswordForm = () => {
       // Clear email input
       setEmail("");
     } catch (error) {
-      setErrorMessage(error || "Failed to send reset OTP. Please try again.");
+      // Extract error message from response body using global utility
+      const errorMsg = extractErrorMessageFromResponse(error) 
+        || error?.message 
+        || error 
+        || "Failed to send reset OTP. Please try again.";
+      setErrorMessage(errorMsg);
     }
   };
 
@@ -149,7 +155,12 @@ const ResetPasswordForm = () => {
         navigate("/login?type=client");
       }, 2000);
     } catch (error) {
-      setErrorMessage(error || "Failed to reset password. Please check your OTP and try again.");
+      // Extract error message from response body using global utility
+      const errorMsg = extractErrorMessageFromResponse(error) 
+        || error?.message 
+        || error 
+        || "Failed to reset password. Please check your OTP and try again.";
+      setErrorMessage(errorMsg);
     }
   };
 

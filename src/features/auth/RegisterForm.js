@@ -9,6 +9,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
 import Alert from "../../components/common/Alert";
+import { extractErrorMessageFromResponse } from "../../utils/errorHandler";
 const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -157,10 +158,10 @@ const RegisterForm = () => {
         }
       }, 1500);
     } catch (error) {
-      const errMsg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Registration failed. Please try again.";
+      // Extract error message from response body using global utility
+      const errMsg = extractErrorMessageFromResponse(error) 
+        || error?.message 
+        || "Registration failed. Please try again.";
       toast.current.show({
         severity: "error",
         summary: "Error",

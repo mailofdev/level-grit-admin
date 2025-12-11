@@ -3,8 +3,6 @@ import {
   FaUsers,
   FaChartLine,
   FaCheckCircle,
-  FaFacebook,
-  FaInstagram,
   FaLinkedin,
   FaEnvelope,
   FaPhone,
@@ -33,6 +31,7 @@ import { getDecryptedUser } from "../../components/common/CommonFunctions";
 import { getUserRole, ROLES } from "../../utils/roles";
 import { restoreSession } from "../../features/auth/authSlice";
 import PWAInstallButton from "../../components/common/PWAInstallButton";
+import Logo from "../../components/common/Logo";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -118,18 +117,9 @@ const LandingPage = () => {
           <Link
             className="navbar-brand fw-bold d-flex align-items-center text-theme-dark text-decoration-none"
             to="/"
-            style={{ fontSize: "1.5rem" }}
+            style={{ lineHeight: 1, height: '100%', maxHeight: '100%' }}
           >
-            <img
-              src={logo3}
-              alt="LevelGrit"
-              className="me-2"
-              style={{
-                height: "40px",
-                borderRadius: "8px",
-              }}
-            />
-            <span className="d-none d-sm-inline">LevelGrit</span>
+           <Logo variant="landing" animated={true} />
           </Link>
 
           {/* Mobile Menu Toggle */}
@@ -1710,44 +1700,25 @@ const LandingPage = () => {
               </p>
               <div className="d-flex gap-2 mb-2">
                 <motion.a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white-50 text-decoration-none"
-                  whileHover={{ scale: 1.1, color: "#1877f2" }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <FaFacebook size={20} />
-                </motion.a>
-                <motion.a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white-50 text-decoration-none"
-                  whileHover={{ scale: 1.1, color: "#e4405f" }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <FaInstagram size={20} />
-                </motion.a>
-                <motion.a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/level-grit/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white-50 text-decoration-none"
                   whileHover={{ scale: 1.1, color: "#0077b5" }}
                   transition={{ duration: 0.2 }}
+                  aria-label="LinkedIn"
                 >
                   <FaLinkedin size={20} />
                 </motion.a>
               </div>
               <div className="d-flex flex-column gap-1 small">
-                <a href="mailto:info@levelgrit.com" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
+                <a href="mailto:support@levelgrit.com" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
                   <FaEnvelope size={14} />
-                  <span>info@levelgrit.com</span>
+                  <span>support@levelgrit.com</span>
                 </a>
-                <a href="tel:+15551234567" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
+                <a href="tel:7387568929" className="text-white-50 text-decoration-none d-flex align-items-center gap-1">
                   <FaPhone size={14} />
-                  <span>+1 (555) 123-4567</span>
+                  <span>7387568929</span>
                 </a>
               </div>
             </div>

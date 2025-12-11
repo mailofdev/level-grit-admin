@@ -15,7 +15,7 @@ import {
   getMealPlanPreview,
   createOrUpdateMealPlan,
 } from "../../api/trainerAPI";
-import { formatErrorMessage, logError } from "../../utils/errorHandler";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 // ============================================
 // Dashboard
@@ -32,9 +32,8 @@ export const getTrainerDashboardThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Get Trainer Dashboard");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to fetch trainer dashboard data")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to fetch trainer dashboard data");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -58,9 +57,8 @@ export const deleteTrainerThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Delete Trainer");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to delete trainer account")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to delete trainer account");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -80,9 +78,8 @@ export const getClientsForTrainerThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Get Clients for Trainer");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to fetch clients")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to fetch clients");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -99,9 +96,8 @@ export const registerClientThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Register Client");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to register client")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to register client");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -127,9 +123,8 @@ export const getMealPlanThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Get Meal Plan");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to fetch meal plan")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to fetch meal plan");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -151,9 +146,8 @@ export const getMealPlanPreviewThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Get Meal Plan Preview");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to fetch meal plan preview")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to fetch meal plan preview");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -176,9 +170,8 @@ export const createOrUpdateMealPlanThunk = createAsyncThunk(
       return data;
     } catch (error) {
       logError(error, "Create/Update Meal Plan");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to save meal plan")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to save meal plan");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );

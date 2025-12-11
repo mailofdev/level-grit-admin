@@ -2,7 +2,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserById, loginUser, registerUser, UpdateProfileData, ChangePassword, ForgotPassword, ResetPassword } from "../../api/authAPI";
 import { encryptToken } from "../../utils/crypto";
-import { formatErrorMessage, logError } from "../../utils/errorHandler";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
@@ -35,7 +35,8 @@ export const loginThunk = createAsyncThunk(
       return authData;
     } catch (error) {
       logError(error, "Login");
-      return rejectWithValue(formatErrorMessage(error, "Login failed. Please check your credentials and try again."));
+      const errorMessage = formatErrorMessage(error, "Login failed. Please check your credentials and try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -49,7 +50,8 @@ export const registerThunk = createAsyncThunk(
       return result;
     } catch (error) {
       logError(error, "Registration");
-      return rejectWithValue(formatErrorMessage(error, "Registration failed. Please check your information and try again."));
+      const errorMessage = formatErrorMessage(error, "Registration failed. Please check your information and try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -68,7 +70,8 @@ export const getCurrentUserThunk = createAsyncThunk(
       return user;
     } catch (err) {
       logError(err, "Get Current User");
-      return rejectWithValue(formatErrorMessage(err, "Failed to load user information. Please log in again."));
+      const errorMessage = formatErrorMessage(err, "Failed to load user information. Please log in again.");
+      return rejectWithValue(createPreservedError(err, errorMessage));
     }
   }
 );
@@ -81,7 +84,8 @@ export const updateProfileThunk = createAsyncThunk(
       return result;
     } catch (error) {
       logError(error, "Update Profile");
-      return rejectWithValue(formatErrorMessage(error, "Failed to update profile. Please try again."));
+      const errorMessage = formatErrorMessage(error, "Failed to update profile. Please try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -94,7 +98,8 @@ export const forgotPasswordThunk = createAsyncThunk(
       return result;
     } catch (error) {
       logError(error, "Forgot Password");
-      return rejectWithValue(formatErrorMessage(error, "Failed to send reset link. Please check your email and try again."));
+      const errorMessage = formatErrorMessage(error, "Failed to send reset link. Please check your email and try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -107,7 +112,8 @@ export const resetPasswordThunk = createAsyncThunk(
       return result;
     } catch (error) {
       logError(error, "Reset Password");
-      return rejectWithValue(formatErrorMessage(error, "Failed to reset password. Please check your OTP and try again."));
+      const errorMessage = formatErrorMessage(error, "Failed to reset password. Please check your OTP and try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );

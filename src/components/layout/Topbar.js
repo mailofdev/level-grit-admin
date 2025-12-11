@@ -91,7 +91,7 @@ const Topbar = ({
     >
       <div className="container-fluid px-2 px-md-3">
         {/* Left: Logo */}
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center" style={{ height: '100%', maxHeight: '56px' }}>
           <BrandLogo />
         </div>
 

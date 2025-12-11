@@ -7,6 +7,7 @@ import {
   getUserById,
 } from "../../api/authAPI";
 import { getClientsForTrainer } from "../../api/trainerAPI";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 // Fetch all users
 export const fetchUsers = createAsyncThunk("users/GetClientsForTrainer", async (_, { rejectWithValue }) => {
@@ -14,7 +15,9 @@ export const fetchUsers = createAsyncThunk("users/GetClientsForTrainer", async (
     const data = await getClientsForTrainer();
     return [...data].reverse();
   } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "Failed to fetch users");
+    logError(err, "Fetch Users");
+    const errorMessage = formatErrorMessage(err, "Failed to fetch users");
+    return rejectWithValue(createPreservedError(err, errorMessage));
   }
 });
 
@@ -24,7 +27,9 @@ export const removeUsers = createAsyncThunk("users/remove", async (ids, { reject
     await Promise.all(ids.map(id => deleteUserById(id)));
     return ids;
   } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "Failed to delete users");
+    logError(err, "Remove Users");
+    const errorMessage = formatErrorMessage(err, "Failed to delete users");
+    return rejectWithValue(createPreservedError(err, errorMessage));
   }
 });
 
@@ -33,7 +38,9 @@ export const fetchUserById = createAsyncThunk("users/fetchOne", async (id, { rej
   try {
     return await getUserById(id);
   } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "User not found");
+    logError(err, "Fetch User By ID");
+    const errorMessage = formatErrorMessage(err, "User not found");
+    return rejectWithValue(createPreservedError(err, errorMessage));
   }
 });
 
@@ -42,7 +49,9 @@ export const addUser = createAsyncThunk("users/add", async (data, { rejectWithVa
   try {
     return await registerUser(data);
   } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "Failed to add user");
+    logError(err, "Add User");
+    const errorMessage = formatErrorMessage(err, "Failed to add user");
+    return rejectWithValue(createPreservedError(err, errorMessage));
   }
 });
 
@@ -51,7 +60,9 @@ export const editUser = createAsyncThunk("users/edit", async ({ id, data }, { re
   try {
     return await updateUserById(id, data);
   } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "Failed to update user");
+    logError(err, "Edit User");
+    const errorMessage = formatErrorMessage(err, "Failed to update user");
+    return rejectWithValue(createPreservedError(err, errorMessage));
   }
 });
 

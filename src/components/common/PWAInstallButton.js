@@ -29,7 +29,8 @@ export default function PWAInstallButton() {
     // Check if app is already installed (standalone mode)
     const standalone = window.matchMedia("(display-mode: standalone)").matches ||
                        (window.navigator.standalone === true) ||
-                       document.referrer.includes("android-app://");
+                       document.referrer.includes("android-app://") ||
+                       window.matchMedia("(display-mode: fullscreen)").matches;
     setIsStandalone(standalone);
 
     if (standalone) {
@@ -50,7 +51,16 @@ export default function PWAInstallButton() {
     // iOS: Show install button immediately if not standalone
     // iOS doesn't support beforeinstallprompt, so we show instructions
     if (iOS && !standalone) {
-      setShowInstallButton(true);
+      // Check if user has dismissed the install prompt before (localStorage)
+      const dismissedKey = 'pwa-install-dismissed';
+      const dismissed = localStorage.getItem(dismissedKey);
+      const dismissedTime = dismissed ? parseInt(dismissed, 10) : 0;
+      const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      
+      // Show button if not dismissed or dismissed more than a week ago
+      if (!dismissed || dismissedTime < oneWeekAgo) {
+        setShowInstallButton(true);
+      }
     }
 
     // Android fallback: Check if PWA is installable even if beforeinstallprompt hasn't fired
@@ -67,13 +77,29 @@ export default function PWAInstallButton() {
             // Wait a bit for beforeinstallprompt, then show button if it hasn't fired
             setTimeout(() => {
               if (!promptReceivedRef.current) {
-                // Show button anyway - user can try to install via browser menu
-                setShowInstallButton(true);
+                // Check if user has dismissed before
+                const dismissedKey = 'pwa-install-dismissed';
+                const dismissed = localStorage.getItem(dismissedKey);
+                const dismissedTime = dismissed ? parseInt(dismissed, 10) : 0;
+                const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+                
+                // Show button if not dismissed or dismissed more than a week ago
+                if (!dismissed || dismissedTime < oneWeekAgo) {
+                  setShowInstallButton(true);
+                }
               }
-            }, 3000); // Wait 3 seconds for beforeinstallprompt
+            }, 2000); // Reduced to 2 seconds for faster display
+          } else {
+            // Even without service worker, show button for manual install instructions
+            setTimeout(() => {
+              setShowInstallButton(true);
+            }, 3000);
           }
         } catch (error) {
-          // Silently fail
+          // Silently fail, but still show button after delay
+          setTimeout(() => {
+            setShowInstallButton(true);
+          }, 3000);
         }
       };
       
@@ -100,6 +126,11 @@ export default function PWAInstallButton() {
         
         if (outcome === "accepted") {
           setShowInstallButton(false);
+          // Clear dismissal flag since user installed
+          localStorage.removeItem('pwa-install-dismissed');
+        } else {
+          // User dismissed - remember for a week
+          localStorage.setItem('pwa-install-dismissed', Date.now().toString());
         }
         
         setDeferredPrompt(null);
@@ -112,6 +143,13 @@ export default function PWAInstallButton() {
       // No deferred prompt available - show instructions for manual install
       setShowIOSModal(true);
     }
+  };
+
+  const handleDismiss = () => {
+    setShowIOSModal(false);
+    // Remember dismissal for a week
+    localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+    setShowInstallButton(false);
   };
 
   // Don't show if already installed
@@ -132,14 +170,15 @@ export default function PWAInstallButton() {
       <motion.button
         className="position-fixed btn btn-primary shadow-lg rounded-pill d-flex align-items-center gap-2 px-3 px-md-4 py-2 py-md-3"
         style={{
-          bottom: "calc(80px + env(safe-area-inset-bottom))", // Above mobile bottom nav
-          right: "1rem",
+          bottom: "calc(80px + env(safe-area-inset-bottom, 0px))", // Above mobile bottom nav
+          right: "max(1rem, env(safe-area-inset-right, 1rem))", // Respect safe area on iOS
           zIndex: 1040,
           minHeight: "48px",
           backgroundColor: "var(--color-primary)",
           border: "none",
           color: "#ffffff",
           fontSize: "0.9rem",
+          boxShadow: "0 4px 12px rgba(10, 77, 60, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)",
         }}
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -154,10 +193,10 @@ export default function PWAInstallButton() {
         <span className="fw-semibold d-inline d-sm-none">Install</span>
       </motion.button>
 
-      {/* iOS Install Instructions Modal */}
+      {/* iOS/Android Install Instructions Modal */}
       <Modal
         show={showIOSModal}
-        onHide={() => setShowIOSModal(false)}
+        onHide={handleDismiss}
         centered
         size="sm"
         contentClassName="border-0 shadow-lg"
@@ -182,29 +221,39 @@ export default function PWAInstallButton() {
             </p>
             <div className="text-start">
               {isIOS ? (
-                <ol className="mb-0" style={{ paddingLeft: "1.25rem", lineHeight: "1.8" }}>
-                  <li className="mb-2 text-theme-dark">
-                    Tap the <strong>Share</strong> button <span style={{ fontSize: "1.2rem" }}>📤</span> at the bottom of your screen
-                  </li>
-                  <li className="mb-2 text-theme-dark">
-                    Scroll down and tap <strong>"Add to Home Screen"</strong> <span style={{ fontSize: "1.2rem" }}>➕</span>
-                  </li>
-                  <li className="text-theme-dark">
-                    Tap <strong>"Add"</strong> to confirm
-                  </li>
-                </ol>
+                <div>
+                  <ol className="mb-3" style={{ paddingLeft: "1.25rem", lineHeight: "1.8" }}>
+                    <li className="mb-2 text-theme-dark">
+                      Tap the <strong>Share</strong> button <span style={{ fontSize: "1.2rem" }}>📤</span> at the bottom of Safari (or top right in some versions)
+                    </li>
+                    <li className="mb-2 text-theme-dark">
+                      Scroll down in the share menu and tap <strong>"Add to Home Screen"</strong> <span style={{ fontSize: "1.2rem" }}>➕</span>
+                    </li>
+                    <li className="text-theme-dark">
+                      Tap <strong>"Add"</strong> in the top right corner to confirm
+                    </li>
+                  </ol>
+                  <div className="alert alert-info small mb-0" style={{ backgroundColor: "rgba(0, 160, 128, 0.1)", border: "1px solid rgba(0, 160, 128, 0.3)" }}>
+                    <strong>Tip:</strong> Make sure you're using Safari browser. Chrome on iOS doesn't support this feature.
+                  </div>
+                </div>
               ) : (
-                <ol className="mb-0" style={{ paddingLeft: "1.25rem", lineHeight: "1.8" }}>
-                  <li className="mb-2 text-theme-dark">
-                    Tap the <strong>Menu</strong> button <span style={{ fontSize: "1.2rem" }}>⋮</span> (three dots) in your browser
-                  </li>
-                  <li className="mb-2 text-theme-dark">
-                    Look for <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong> option
-                  </li>
-                  <li className="text-theme-dark">
-                    Tap it and follow the prompts to install
-                  </li>
-                </ol>
+                <div>
+                  <ol className="mb-3" style={{ paddingLeft: "1.25rem", lineHeight: "1.8" }}>
+                    <li className="mb-2 text-theme-dark">
+                      Tap the <strong>Menu</strong> button <span style={{ fontSize: "1.2rem" }}>⋮</span> (three dots) in the top right of Chrome
+                    </li>
+                    <li className="mb-2 text-theme-dark">
+                      Look for <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong> in the menu
+                    </li>
+                    <li className="text-theme-dark">
+                      Tap it and follow the prompts to install
+                    </li>
+                  </ol>
+                  <div className="alert alert-info small mb-0" style={{ backgroundColor: "rgba(0, 160, 128, 0.1)", border: "1px solid rgba(0, 160, 128, 0.3)" }}>
+                    <strong>Note:</strong> If you don't see the install option, make sure you're using Chrome or Edge browser on Android.
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -213,7 +262,7 @@ export default function PWAInstallButton() {
           <Button
             variant="primary"
             className="rounded-pill px-4"
-            onClick={() => setShowIOSModal(false)}
+            onClick={handleDismiss}
             style={{ minHeight: "44px" }}
           >
             Got it!

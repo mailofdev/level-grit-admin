@@ -6,6 +6,7 @@ import { registerClient, getClientsForTrainer } from "../../api/trainerAPI";
 import Loader from "../../components/display/Loader";
 import PaymentPopup from "../../components/payments/PaymentPopup";
 import { getDecryptedUser } from "../../components/common/CommonFunctions";
+import { extractErrorMessageFromResponse } from "../../utils/errorHandler";
 import {
   Form,
   Button,
@@ -134,9 +135,8 @@ const RegisterClientForm = () => {
         console.error("Error response:", error?.response);
       }
       
-      // More detailed error message
-      const errorMessage = error?.response?.data?.message 
-        || error?.response?.data?.error
+      // Extract error message from response body using global utility
+      const errorMessage = extractErrorMessageFromResponse(error) 
         || error?.message 
         || "Registration failed. Please check your information and try again.";
       

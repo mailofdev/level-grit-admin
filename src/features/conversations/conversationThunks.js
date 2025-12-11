@@ -7,7 +7,7 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { sendMessage, subscribeToMessages, getChatId } from "../../config/chatService";
-import { formatErrorMessage, logError } from "../../utils/errorHandler";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 /**
  * Send a message in a conversation
@@ -34,9 +34,8 @@ export const sendMessageThunk = createAsyncThunk(
       return { chatId, success: true };
     } catch (error) {
       logError(error, "Send Message");
-      return rejectWithValue(
-        formatErrorMessage(error, "Failed to send message. Please try again.")
-      );
+      const errorMessage = formatErrorMessage(error, "Failed to send message. Please try again.");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );

@@ -1,32 +1,47 @@
 {
   "id": "/",
   "short_name": "Level Grit",
-  "name": "Level Grit",
-  "description": "Level Grit application",
+  "name": "Level Grit - AI Fitness Coaching",
+  "description": "AI-powered fitness coaching platform for trainers and clients",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
+  "theme_color": "#0A4D3C",
+  "background_color": "#FFFFFF",
+  "categories": ["health", "fitness", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/180.png",
       "sizes": "180x180",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -44,5 +59,6 @@
       "form_factor": "narrow",
       "label": "Mobile View"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }

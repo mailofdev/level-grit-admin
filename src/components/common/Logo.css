@@ -1,0 +1,179 @@
+/* Logo Component Styles */
+.logo-component {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.3s ease;
+  /* Ensure logo doesn't exceed container height */
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.logo-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  /* Ensure SVG fits within container */
+  object-fit: contain;
+}
+
+.logo-text {
+  user-select: none;
+  pointer-events: none;
+}
+
+.logo-bg {
+  transition: fill 0.3s ease;
+}
+
+/* Responsive sizing for variants - Fixed to maintain header heights */
+/* Navbar variant: Must fit within 56px minHeight (Topbar) */
+.logo-responsive[data-variant="navbar"] {
+  width: 140px;
+  height: 36px; /* Reduced to fit within 56px header with padding */
+  max-height: 36px;
+}
+
+.logo-responsive[data-variant="navbar"] .logo-text {
+  font-size: 24px;
+}
+
+/* Landing variant: Must fit within navbar with py-3 padding */
+.logo-responsive[data-variant="landing"] {
+  width: 160px;
+  height: 38px; /* Reduced to fit within navbar with py-3 */
+  max-height: 38px;
+}
+
+.logo-responsive[data-variant="landing"] .logo-text {
+  font-size: 28px;
+}
+
+.logo-responsive[data-variant="hero"] {
+  width: 200px;
+  height: 50px;
+  max-height: 50px;
+}
+
+.logo-responsive[data-variant="hero"] .logo-text {
+  font-size: 36px;
+}
+
+/* Tablet and up */
+@media (min-width: 576px) {
+  .logo-responsive[data-variant="navbar"] {
+    width: 160px;
+    height: 38px; /* Maintains header height */
+    max-height: 38px;
+  }
+
+  .logo-responsive[data-variant="navbar"] .logo-text {
+    font-size: 28px;
+  }
+
+  .logo-responsive[data-variant="landing"] {
+    width: 200px;
+    height: 42px; /* Maintains navbar height */
+    max-height: 42px;
+  }
+
+  .logo-responsive[data-variant="landing"] .logo-text {
+    font-size: 34px;
+  }
+
+  .logo-responsive[data-variant="hero"] {
+    width: 280px;
+    height: 70px;
+    max-height: 70px;
+  }
+
+  .logo-responsive[data-variant="hero"] .logo-text {
+    font-size: 48px;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 768px) {
+  .logo-responsive[data-variant="navbar"] {
+    width: 180px;
+    height: 40px; /* Maintains header height */
+    max-height: 40px;
+  }
+
+  .logo-responsive[data-variant="navbar"] .logo-text {
+    font-size: 30px;
+  }
+
+  .logo-responsive[data-variant="landing"] {
+    width: 240px;
+    height: 44px; /* Maintains navbar height */
+    max-height: 44px;
+  }
+
+  .logo-responsive[data-variant="landing"] .logo-text {
+    font-size: 38px;
+  }
+
+  .logo-responsive[data-variant="hero"] {
+    width: 360px;
+    height: 90px;
+    max-height: 90px;
+  }
+
+  .logo-responsive[data-variant="hero"] .logo-text {
+    font-size: 60px;
+  }
+}
+
+/* Animation effects */
+.logo-animated {
+  cursor: pointer;
+}
+
+.logo-animated:hover {
+  transform: scale(1.05);
+}
+
+.logo-animated:active {
+  transform: scale(0.98);
+}
+
+.logo-animated .logo-text {
+  transition: fill 0.3s ease, transform 0.3s ease;
+}
+
+.logo-animated:hover .logo-text {
+  fill: #0A4D3C;
+}
+
+/* Smooth transitions */
+.logo-component * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure proper rendering */
+.logo-svg text {
+  dominant-baseline: middle;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .logo-component {
+    /* Add dark mode styles if needed */
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .logo-text {
+    stroke: currentColor;
+    stroke-width: 0.5;
+  }
+}
+

@@ -5,6 +5,7 @@ import {
   getMealPlanPreview,
 } from "../../api/trainerAPI";
 import axiosInstance from "../../api/axiosInstance";
+import { formatErrorMessage, logError, createPreservedError } from "../../utils/errorHandler";
 
 // ✅ Fetch meal plan by clientId and date
 export const getMealPlanThunk = createAsyncThunk(
@@ -14,11 +15,9 @@ export const getMealPlanThunk = createAsyncThunk(
       const result = await getMealPlan(clientId, date);
       return result;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to fetch meal plan"
-      );
+      logError(error, "Get Meal Plan");
+      const errorMessage = formatErrorMessage(error, "Failed to fetch meal plan");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -30,11 +29,9 @@ export const createOrUpdateMealPlanThunk = createAsyncThunk(
     try {
       return await createOrUpdateMealPlan(clientId, date, meals);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to save meal plan"
-      );
+      logError(error, "Create/Update Meal Plan");
+      const errorMessage = formatErrorMessage(error, "Failed to save meal plan");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -53,11 +50,9 @@ export const deleteMealsThunk = createAsyncThunk(
       );
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to delete meals"
-      );
+      logError(error, "Delete Meals");
+      const errorMessage = formatErrorMessage(error, "Failed to delete meals");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );
@@ -70,11 +65,9 @@ export const getMealPlanPreviewThunk = createAsyncThunk(
       const result = await getMealPlanPreview(clientId, date);
       return result;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to fetch meal plan preview"
-      );
+      logError(error, "Get Meal Plan Preview");
+      const errorMessage = formatErrorMessage(error, "Failed to fetch meal plan preview");
+      return rejectWithValue(createPreservedError(error, errorMessage));
     }
   }
 );

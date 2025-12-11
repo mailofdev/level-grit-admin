@@ -232,7 +232,7 @@ const ContactUs = () => {
                             Mon–Fri: 9:00 AM - 6:00 PM EST
                           </p>
                           <p className="text-muted small mb-0">
-                            +1 (555) 123-4567
+                            <a href="tel:7387568929" className="text-decoration-none">7387568929</a>
                           </p>
                         </div>
 
@@ -241,11 +241,8 @@ const ContactUs = () => {
                             <i className="fas fa-envelope me-2 text-primary"></i>
                             Email Support
                           </h6>
-                          <p className="text-muted small mb-1">
-                            General: support@levelgrit.com
-                          </p>
                           <p className="text-muted small mb-0">
-                            Technical: tech@levelgrit.com
+                            <a href="mailto:support@levelgrit.com" className="text-decoration-none">support@levelgrit.com</a>
                           </p>
                         </div>
 
