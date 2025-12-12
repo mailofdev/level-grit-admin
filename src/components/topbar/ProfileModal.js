@@ -15,6 +15,7 @@ import getRoleIcon from "../common/CommonFunctions";
 import { GetProfileData, UpdateProfileData } from "../../api/authAPI";
 import { deleteTrainerThunk } from "../../features/trainer/trainerThunks";
 import { logout } from "../../features/auth/authSlice";
+import { isTrainer } from "../../utils/roles";
 
 const ProfileModal = ({ show, onClose }) => {
   const dispatch = useDispatch();
@@ -288,13 +289,17 @@ const ProfileModal = ({ show, onClose }) => {
               flexWrap: "wrap",
               gap: "0.5rem"
             }}>
-              <button 
-                className="btn btn-outline-danger fw-semibold px-3" 
-                style={{ minHeight: "38px", fontSize: "0.875rem" }}
-                onClick={handleDeleteClick}
-              >
-                Delete Account
-              </button>
+              
+              {/* Show Delete Account button only for trainers */}
+              {isTrainer(user) && (
+                <button 
+                  className="btn btn-outline-danger fw-semibold px-3" 
+                  style={{ minHeight: "38px", fontSize: "0.875rem" }}
+                  onClick={handleDeleteClick}
+                >
+                  Delete Account
+                </button>
+              )}
               <div className="d-flex gap-2 ms-auto">
                 <button 
                   className="btn btn-outline-secondary fw-semibold px-3" 

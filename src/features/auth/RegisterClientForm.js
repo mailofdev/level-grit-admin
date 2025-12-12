@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Heading from "../../components/navigation/Heading";
 import { registerClient, getClientsForTrainer } from "../../api/trainerAPI";
@@ -12,17 +12,21 @@ import {
   Button,
   Row,
   Col,
+  Alert,
 } from "react-bootstrap";
 import { Eye, EyeClosed } from "lucide-react";
 
 const RegisterClientForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [newClientId, setNewClientId] = useState(null);
   const [newClientName, setNewClientName] = useState("");
+  // Get client count from navigation state, default to 0 if not provided
+  const [clientCount, setClientCount] = useState(location.state?.clientCount ?? 0);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -106,6 +110,9 @@ const RegisterClientForm = () => {
       if (process.env.NODE_ENV === 'development') {
         console.log("Final IsSubscriptionPaid status:", IsSubscriptionPaid, "ClientId:", clientId);
       }
+
+      // Update client count after successful registration (increment locally)
+      setClientCount(prevCount => prevCount + 1);
 
       // If client is not active (IsSubscriptionPaid === false), show payment popup
       if (IsSubscriptionPaid === false) {
@@ -255,6 +262,22 @@ const RegisterClientForm = () => {
           }}
         >
           <div className="container">
+            {/* Client Count and Payment Info Alert */}
+            <Alert variant="info" className="mb-3">
+              <div className="d-flex align-items-start">
+                <i className="fas fa-info-circle me-2 mt-1" style={{ fontSize: "1.1rem" }}></i>
+                <div>
+                  <strong>Payment Information:</strong>
+                  <p className="mb-0 mt-1">
+                    You have added <strong>{clientCount}</strong> {clientCount === 1 ? 'client' : 'clients'}. 
+                    {clientCount >= 1 && (
+                      <> The next client needs to pay <strong>₹500</strong> to activate services.</>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </Alert>
+
             <Form onSubmit={handleSubmit} className="needs-validation">
 
                   {/* Personal Information Section */}

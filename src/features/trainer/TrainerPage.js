@@ -369,8 +369,12 @@ export default function TrainerPage() {
       e.stopPropagation();
     }
 
-    navigate('/register-client', { replace: false });
-  }, [navigate]);
+    // Pass client count to RegisterClientForm to avoid duplicate API call
+    navigate('/register-client', { 
+      replace: false,
+      state: { clientCount: clients.length }
+    });
+  }, [navigate, clients.length]);
 
   /**
    * Get initial letter for avatar

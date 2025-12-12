@@ -226,21 +226,7 @@ const UserMenu = memo(({ user, onProfile, onLogout, autoOpen = false, onClose })
           </div>
 
           {/* Profile Header with overlap */}
-          <li className="text-center px-4" style={{ marginTop: "-45px" }}>
-            <div
-              className="rounded-circle mx-auto mb-3 d-flex justify-content-center align-items-center border border-4 border-white"
-              style={{
-                width: "70px",
-                height: "70px",
-                background: roleColor,
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: "1.4rem",
-                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-              }}
-            >
-              {initials}
-            </div>
+          <li className="text-center px-4" style={{ }}>
             <div className="fw-bold text-dark mb-1" style={{ fontSize: "1.05rem" }}>
               {user?.fullName || "Unknown User"}
             </div>

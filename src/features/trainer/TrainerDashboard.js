@@ -206,7 +206,9 @@ const TrainerDashboard = () => {
               <Button
                 variant="primary"
                 className="rounded-pill"
-                onClick={() => navigate("/register-client")}
+                onClick={() => navigate("/register-client", { 
+                  state: { clientCount: totalClients }
+                })}
                 style={{ 
                   minHeight: "40px", 
                   fontSize: "0.8rem", 
@@ -497,7 +499,9 @@ const TrainerDashboard = () => {
                   variant="outline-primary"
                   size="sm"
                   className="flex-grow-1 rounded-pill"
-                  onClick={() => navigate("/register-client")}
+                  onClick={() => navigate("/register-client", { 
+                    state: { clientCount: totalClients }
+                  })}
                   style={{ 
                     minHeight: "44px", 
                     fontSize: "0.85rem",
@@ -557,7 +561,9 @@ const TrainerDashboard = () => {
                 variant="primary"
                 size="sm"
                 className="rounded-pill"
-                onClick={() => navigate("/register-client")}
+                onClick={() => navigate("/register-client", { 
+                  state: { clientCount: totalClients }
+                })}
                 style={{ 
                   minHeight: "44px", 
                   fontSize: "0.85rem", 

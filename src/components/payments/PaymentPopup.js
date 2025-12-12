@@ -131,7 +131,7 @@ const PaymentPopup = ({
       // This ensures we charge the correct amount regardless of what backend returns
       const amountInPaise = Math.round(amount * 100); // ₹500 = 50000 paise
       
-      // Validate amount
+      // Validate amount calculation
       if (amount === 500 && amountInPaise !== 50000) {
         const errorMsg = `❌ CRITICAL ERROR: Amount calculation failed! Expected 50000 paise for ₹500, but got ${amountInPaise} paise (₹${amountInPaise / 100}). Payment cannot proceed.`;
         if (process.env.NODE_ENV === 'development') {
@@ -140,7 +140,32 @@ const PaymentPopup = ({
         throw new Error(`Payment amount error: Cannot calculate correct amount. Expected ₹500 but got ₹${amountInPaise / 100}. Please contact support.`);
       }
       
-      // Warn if order response has different amount
+      // CRITICAL: Validate that backend created order with correct amount
+      // If backend returns amount in the response, check if it matches expected amount
+      // Backend should return amount in paise (50000 for ₹500)
+      const orderAmountInPaise = orderResponse?.amount;
+      if (orderAmountInPaise !== undefined && orderAmountInPaise !== null) {
+        // Check if backend returned amount in rupees (500) instead of paise (50000)
+        if (orderAmountInPaise === amount) {
+          // Backend returned amount in rupees, which is wrong - it should be in paise
+          const errorMsg = `❌ CRITICAL ERROR: Backend created order with wrong amount! Expected 50000 paise (₹500), but backend created order with ${orderAmountInPaise} paise (₹${orderAmountInPaise / 100}). This will charge only ₹${orderAmountInPaise / 100} instead of ₹500. Payment cannot proceed.`;
+          if (process.env.NODE_ENV === 'development') {
+            console.error(errorMsg);
+          }
+          throw new Error(`Payment amount error: Backend created order with incorrect amount (₹${orderAmountInPaise / 100} instead of ₹500). Please contact support.`);
+        }
+        
+        // Check if backend returned correct amount in paise
+        if (orderAmountInPaise !== amountInPaise) {
+          const errorMsg = `❌ CRITICAL ERROR: Order amount mismatch! Expected ${amountInPaise} paise (₹${amount}), but backend created order with ${orderAmountInPaise} paise (₹${orderAmountInPaise / 100}). Payment cannot proceed.`;
+          if (process.env.NODE_ENV === 'development') {
+            console.error(errorMsg);
+          }
+          throw new Error(`Payment amount error: Order amount mismatch. Expected ₹${amount} but order was created with ₹${orderAmountInPaise / 100}. Please contact support.`);
+        }
+      }
+      
+      // Warn if order response has different amount (for development)
       if (process.env.NODE_ENV === 'development' && orderResponse?.amount && orderResponse.amount !== amount && orderResponse.amount !== amountInPaise) {
         console.warn(`⚠️ Warning: Order response amount (${orderResponse.amount}) differs from expected (${amount} rupees / ${amountInPaise} paise). Using expected amount: ${amountInPaise} paise.`);
       }

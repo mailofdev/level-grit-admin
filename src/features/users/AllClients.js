@@ -79,8 +79,11 @@ export default function AllClients() {
   );
 
   const handleAddClient = useCallback(() => {
-    navigate("/register-client");
-  }, [navigate]);
+    // Pass client count to RegisterClientForm to avoid duplicate API call
+    navigate("/register-client", { 
+      state: { clientCount: clients.length }
+    });
+  }, [navigate, clients.length]);
 
   const handlePayNow = useCallback((client, e) => {
     e.stopPropagation();
